@@ -1,0 +1,37 @@
+//database.php
+
+        'mysql' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'options' => [PDO::ATTR_EMULATE_PREPARES => true],
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+//app.php
+
+    'key' => env('APP_KEY',base64_decode('99zo48agV7mmSy09tjEy0ewtOW/sTnaAnugwg0CfOqg=')),
+
+    'cipher' => 'AES-256-CBC',
+
+
+1. phân trang
+@section('header')
+  @if($goods->currentPage()> $goods->lastPage())
+      {{header("location:".$goods->url($goods->lastPage()))}}{{exit}}
+  @endif
+@stop
+
+
+
+2. login
+@if(Session::has('arrReq')){{Session::get('arrReq')['username']}} @endif
+
+3. so luong sp
+@if(isset($id)) {{$catalog->name}} ({{$count}}) @else ({{count($goods)}}) @endif
