@@ -17,7 +17,7 @@ class CreateRoomModeTable extends Migration
             $table->increments('id');
             $table->integer('price');
             $table->string('name');
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });
     }

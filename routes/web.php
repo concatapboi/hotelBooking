@@ -1,158 +1,115 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+//Start routes Frontend
+Route::group(['prefix'=>''],function(){
 
-	Route::get('/vue',function(){
-		return view('Frontend.vue');
-	});
-
-	Route::get('/test',function(){
-		return ;
-	});
-
-	Route::get('/a',[
+	Route::get('/',[
 		'as' => 'home',
 		'uses' => 'Frontend\PageController@index'
 	]);
 
-	Route::get('/home.html',[
-		'as' => 'home',
-		'uses' => 'PageController@index'
+	Route::get('/blog.html',[
+		'as' => 'blog',
+		'uses' => 'Frontend\PageController@blog'
+	]);
+
+	Route::get('/single-blog.html',[
+		'as' => 'blog',
+		'uses' => 'Frontend\PageController@singleBlog'
 	]);
 
 	Route::get('/about.html',[
 		'as' => 'about',
-		'uses' => 'PageController@about'
+		'uses' => 'Frontend\PageController@about'
 	]);
 
 	Route::get('/contact.html',[
 		'as' => 'contact',
-		'uses' => 'PageController@contact'
+		'uses' => 'Frontend\PageController@contact'
 	]);
 
-	Route::get('/blog.html',[
-		'as' => 'blog',
-		'uses' => 'PageController@blog'
-	]);
-
-	Route::get('/all-hotels.html',[
-		'as' => 'allHotels',
-		'uses' => 'PageController@allHotels'
-	]);
-	Route::get('/hotel-info.html',[
-		'as' => 'hotelInfo',
-		'uses' => 'PageController@hotelInfo'
-	]);
-
-	Route::get('/single-blog.html',[
-		'as' => 'singleBlog',
-		'uses' => 'PageController@singleBlog'
-	]);
-
-	Route::get('/register.html',[
-		'as
-
-		' => 'register',
-		'uses' => 'PageController@register'
+	Route::get('/customer.html',[
+		'as' => 'customer',
+		'uses' => 'Frontend\CustomerController@index'
 	]);
 
 	Route::get('/login.html',[
 		'as' => 'login',
-		'uses' => 'PageController@register'
+		'uses' => 'Frontend\PageController@login'
 	]);
 
-	Route::post('/login',[
+	Route::post('/post-login.html',[
 		'as' => 'postLogin',
-		'uses' => 'PageController@postLogin'
+		'uses' => 'Frontend\PageController@postLogin'
 	]);
 
-	Route::post('/following',[
-		'as' => 'follow',
-		'uses' => 'PageController@alert'
+	Route::get('/register.html',[
+		'as' => 'register',
+		'uses' => 'Frontend\PageController@register'
 	]);
 
-	Route::get('/customer',[
-		'as' => 'customer',
-		'uses' => 'CustomerController@index'
+	Route::post('/post-register.html',[
+		'as' => 'postRegister',
+		'uses' => 'Frontend\PageController@postRegister'
 	]);
 
 	Route::get('/logout.html',[
 		'as' => 'logout',
-		'uses' => 'CustomerController@logout'
+		'uses' => 'Frontend\CustomerController@logout'
 	]);
 
-	Route::get('/abc',function(){
-		dd(Auth::user());
+	Route::get('/profile.html',[
+		'as' => 'profile',
+		'uses' => 'Frontend\CustomerController@profile'
+	]);
+
+	Route::group(['prefix'=>'user/'],function(){
+
+		Route::get('/',[
+			'as' => 'user',
+			'uses' => 'Frontend\PageController@index'
+		]);
+
+		Route::get('/{id}',[
+			'as' => 'user',
+			'uses' => 'Frontend\PageController@user'
+		]);
+
+		Route::post('/following/{id}',[
+			'as' => 'following',
+			'uses' => 'Frontend\CustomerController@followUser'
+		]);
+
+		Route::post('/unfollowing/{id}',[
+			'as' => 'un-following',
+			'uses' => 'Frontend\CustomerController@unfollowUser'
+		]);
+
 	});
 
-//////////////////////////////////////////////////////
-// Route::get('/a',[
-// 	'as' => 'home',
-// 	'uses' => 'AdminController@index'
-// ]);
+	Route::group(['prefix'=>'hotel/'],function(){
 
-Route::get('/test.html',[
-	'as' => 'test',
-	'uses' => 'AdminController@test'
-]);
+		Route::get('/all-hotels.html',[
+			'as' => 'allHotels',
+			'uses' => 'Frontend\PageController@allHotels'
+		]);
 
-Route::get('/login.html',[
-	'as' => 'login',
-	'uses' => 'PageController@login'
-]);
+		Route::get('/{id}',[
+			'as' => 'hotelInfo',
+			'uses' => 'Frontend\PageController@hotelInfo'
+		]);
 
-Route::post('/login.html',[
-	'as' => 'postlogin',
-	'uses' => 'PageController@postLogin'
-]);
+		Route::post('/following/{id}',[
+			'as' => 'hotel-following',
+			'uses' => 'Frontend\CustomerController@followHotel'
+		]);
 
-Route::get('/logout.html',[
-	'as' => 'logout',
-	'uses' => 'AdminController@logout'
-]);
+		Route::post('/unfollowing/{id}',[
+			'as' => 'hotel-unfollowing',
+			'uses' => 'Frontend\CustomerController@unfollowHotel'
+		]);
 
-Route::get('/abc',function(){
-	dd(Auth::guard('admin')->user());
-});
-
-Route::group(['prefix'=>'/manager'],function(){
-	Route::get('/',[
-		'as' => 'manager-home',
-		'uses' => 'ManagerController@index'
-	]);
-
-	Route::get('/test.html',[
-		'as' => 'manger-test',
-		'uses' => 'ManagerController@test'
-	]);
-
-	Route::get('/login.html',[
-		'as' => 'manager-login',
-		'uses' => 'PageController@login'
-	]);
-
-	Route::post('/login.html',[
-		'as' => 'manager-postlogin',
-		'uses' => 'PageController@postLogin'
-	]);
-
-	Route::get('/logout.html',[
-		'as' => 'manager-logout',
-		'uses' => 'ManagerController@logout'
-	]);
-
-	Route::get('/abc',function(){
-		dd(Auth::guard('manager')->user());
 	});
-});
 
-///////////////////////////////////////////////////////////////////////
+});
+//End routes Frontend

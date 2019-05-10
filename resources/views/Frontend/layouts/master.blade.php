@@ -11,10 +11,10 @@
     <title>Roberto - Hotel &amp; Resort HTML Template</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="/blog/img/core-img/favicon.png'">
+    <link rel="icon" href="{{asset('blog/img/core-img/favicon.png')}}">
 
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="/blog/style.css">
+    <link rel="stylesheet" href="{{asset('blog/style.css')}}">
 
 </head>
 
@@ -32,7 +32,7 @@
     <!-- Call To Action Area Start -->
     <section class="roberto-cta-area">
         <div class="container">
-            <div class="cta-content bg-img bg-overlay jarallax" style="background-image: url(/blog/img/bg-img/1.jpg);">
+            <div class="cta-content bg-img bg-overlay jarallax" style="background-image: url({{asset('blog/img/bg-img/1.jpg')}});">
                 <div class="row align-items-center">
                     <div class="col-12 col-md-7">
                         <div class="cta-text mb-50">
@@ -56,15 +56,15 @@
                 <div class="col-12">
                     <div class="partner-logo-content d-flex align-items-center justify-content-between wow fadeInUp" data-wow-delay="300ms">
                         <!-- Single Partner Logo -->
-                        <a href="#" class="partner-logo"><img src="/blog/img/core-img/p1.png" alt=""></a>
+                        <a href="#" class="partner-logo"><img src="{{asset('blog/img/core-img/p1.png')}}" alt=""></a>
                         <!-- Single Partner Logo -->
-                        <a href="#" class="partner-logo"><img src="/blog/img/core-img/p2.png" alt=""></a>
+                        <a href="#" class="partner-logo"><img src="{{asset('blog/img/core-img/p2.png{')}}" alt=""></a>
                         <!-- Single Partner Logo -->
-                        <a href="#" class="partner-logo"><img src="/blog/img/core-img/p3.png" alt=""></a>
+                        <a href="#" class="partner-logo"><img src="{{asset('blog/img/core-img/p3.png')}}" alt=""></a>
                         <!-- Single Partner Logo -->
-                        <a href="#" class="partner-logo"><img src="/blog/img/core-img/p4.png" alt=""></a>
+                        <a href="#" class="partner-logo"><img src="{{asset('blog/img/core-img/p4.png')}}" alt=""></a>
                         <!-- Single Partner Logo -->
-                        <a href="#" class="partner-logo"><img src="/blog/img/core-img/p5.png" alt=""></a>
+                        <a href="#" class="partner-logo"><img src="{{asset('blog/img/core-img/p5.png')}}" alt=""></a>
                     </div>
                 </div>
             </div>
@@ -78,15 +78,15 @@
 
     <!-- **** All JS Files ***** -->
     <!-- jQuery 2.2.4 -->
-    <script src="/blog/js/jquery.min.js"></script>
+    <script src="{{asset('blog/js/jquery.min.js')}}"></script>
     <!-- Popper -->
-    <script src="/blog/js/popper.min.js"></script>
+    <script src="{{asset('blog/js/popper.min.js')}}"></script>
     <!-- Bootstrap -->
-    <script src="/blog/js/bootstrap.min.js"></script>
+    <script src="{{asset('blog/js/bootstrap.min.js')}}"></script>
     <!-- All Plugins -->
-    <script src="/blog/js/roberto.bundle.js"></script>
+    <script src="{{asset('blog/js/roberto.bundle.js')}}"></script>
     <!-- Active -->
-    <script src="/blog/js/default-assets/active.js"></script>
+    <script src="{{asset('blog/js/default-assets/active.js')}}"></script>
 
 </body>
 

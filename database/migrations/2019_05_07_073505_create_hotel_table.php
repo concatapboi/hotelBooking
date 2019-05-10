@@ -15,17 +15,17 @@ class CreateHotelTable extends Migration
     {
         Schema::create('hotel', function (Blueprint $table) {
             $table->increments('id');
-            $table->tinyInteger('verified');
+            $table->tinyInteger('verified')->default(0);
             $table->string('credit_card');
             $table->integer('rank_point');
             $table->string('name');
             $table->string('meta_name');
             $table->string('tax_code');
-            $table->double('review_point');
+            $table->double('review_point')->default(0);
             $table->string('fax_number');
-            $table->integer('coin');
-            $table->integer('hotel_type_id')->unsigned()->unique(); 
-            $table->integer('hotel_manager_id')->unsigned()->unique(); 
+            $table->integer('coin')->default(0);
+            $table->integer('hotel_type_id')->unsigned();
+            $table->integer('hotel_manager_id')->unsigned();
             $table->timestamps();
             $table->foreign('hotel_type_id')
             ->references('id')->on('hotel_type')

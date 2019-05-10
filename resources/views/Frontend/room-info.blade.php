@@ -1,7 +1,7 @@
-@extends('Frontend::layouts.master')
+@extends('Frontend.layouts.master')
 @section('content')
 	<!-- Breadcrumb Area Start -->
-    <div class="breadcrumb-area bg-img bg-overlay jarallax" style="background-image: url(/blog/img/bg-img/16.jpg);">
+    <div class="breadcrumb-area bg-img bg-overlay jarallax" style="background-image: url({{asset('/blog/img/bg-img/16.jpg')}});">
         <div class="container h-100">
             <div class="row h-100 align-items-end">
                 <div class="col-12">
@@ -27,37 +27,37 @@
                             <div id="room-thumbnail--slide" class="carousel slide" data-ride="carousel">
                                 <div class="carousel-inner">
                                     <div class="carousel-item active">
-                                        <img src="/blog/img/bg-img/48.jpg" class="d-block w-100" alt="">
+                                        <img src="{{asset('/blog/img/bg-img/48.jpg')}}" class="d-block w-100" alt="">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="/blog/img/bg-img/49.jpg" class="d-block w-100" alt="">
+                                        <img src="{{asset('/blog/img/bg-img/49.jpg')}}" class="d-block w-100" alt="">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="/blog/img/bg-img/50.jpg" class="d-block w-100" alt="">
+                                        <img src="{{asset('/blog/img/bg-img/50.jpg')}}" class="d-block w-100" alt="">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="/blog/img/bg-img/51.jpg" class="d-block w-100" alt="">
+                                        <img src="{{asset('/blog/img/bg-img/51.jpg')}}" class="d-block w-100" alt="">
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="/blog/img/bg-img/52.jpg" class="d-block w-100" alt="">
+                                        <img src="{{asset('/blog/img/bg-img/52.jpg')}}" class="d-block w-100" alt="">
                                     </div>
                                 </div>
 
                                 <ol class="carousel-indicators">
                                     <li data-target="#room-thumbnail--slide" data-slide-to="0" class="active">
-                                        <img src="/blog/img/bg-img/48.jpg" class="d-block w-100" alt="">
+                                        <img src="{{asset('/blog/img/bg-img/48.jpg')}}" class="d-block w-100" alt="">
                                     </li>
                                     <li data-target="#room-thumbnail--slide" data-slide-to="1">
-                                        <img src="/blog/img/bg-img/49.jpg" class="d-block w-100" alt="">
+                                        <img src="{{asset('/blog/img/bg-img/49.jpg')}}" class="d-block w-100" alt="">
                                     </li>
                                     <li data-target="#room-thumbnail--slide" data-slide-to="2">
-                                        <img src="/blog/img/bg-img/50.jpg" class="d-block w-100" alt="">
+                                        <img src="{{asset('/blog/img/bg-img/50.jpg')}}" class="d-block w-100" alt="">
                                     </li>
                                     <li data-target="#room-thumbnail--slide" data-slide-to="3">
-                                        <img src="/blog/img/bg-img/51.jpg" class="d-block w-100" alt="">
+                                        <img src="{{asset('/blog/img/bg-img/51.jpg')}}" class="d-block w-100" alt="">
                                     </li>
                                     <li data-target="#room-thumbnail--slide" data-slide-to="4">
-                                        <img src="/blog/img/bg-img/52.jpg" class="d-block w-100" alt="">
+                                        <img src="{{asset('/blog/img/bg-img/52.jpg')}}" class="d-block w-100" alt="">
                                     </li>
                                 </ol>
                             </div>
@@ -89,12 +89,12 @@
                         <h4>Room Services</h4>
 
                         <ul>
-                            <li><img src="/blog/img/core-img/icon1.png" alt=""> Air Conditioning</li>
-                            <li><img src="/blog/img/core-img/icon2.png" alt=""> Free drinks</li>
-                            <li><img src="/blog/img/core-img/icon3.png" alt=""> Restaurant quality</li>
-                            <li><img src="/blog/img/core-img/icon4.png" alt=""> Cable TV</li>
-                            <li><img src="/blog/img/core-img/icon5.png" alt=""> Unlimited Wifi</li>
-                            <li><img src="/blog/img/core-img/icon6.png" alt=""> Service 24/24</li>
+                            <li><img src="{{asset('/blog/img/core-img/icon1.png')}}" alt=""> Air Conditioning</li>
+                            <li><img src="{{asset('/blog/img/core-img/icon2.png')}}" alt=""> Free drinks</li>
+                            <li><img src="{{asset('/blog/img/core-img/icon3.png')}}" alt=""> Restaurant quality</li>
+                            <li><img src="{{asset('/blog/img/core-img/icon4.png')}}" alt=""> Cable TV</li>
+                            <li><img src="{{asset('/blog/img/core-img/icon5.png')}}" alt=""> Unlimited Wifi</li>
+                            <li><img src="{{asset('/blog/img/core-img/icon6.png')}}" alt=""> Service 24/24</li>
                         </ul>
                     </div>
                     <!-- Room Review -->
@@ -104,7 +104,7 @@
                         <!-- Single Review Area -->
                         <div class="single-room-review-area d-flex align-items-center">
                             <div class="reviwer-thumbnail">
-                                <img src="/blog/img/bg-img/53.jpg" alt="">
+                                <img src="{{asset('/blog/img/bg-img/53.jpg')}}" alt="">
                             </div>
                             <div class="reviwer-content">
                                 <div class="reviwer-title-rating d-flex align-items-center justify-content-between">

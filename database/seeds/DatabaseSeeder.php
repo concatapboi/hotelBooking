@@ -12,7 +12,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // $this->call(UsersTableSeeder::class);
+        //User
         factory(App\Models\User::class, 4)->create();
+
+        //Hotel manager
         DB::table('hotel_manager')->insert([
             'user_id' => 1,
         ]);
@@ -33,6 +36,54 @@ class DatabaseSeeder extends Seeder
             'address' => 'Mars Palace',
         ]);
 
+        //Admin
         factory(App\Models\Admin::class, 1)->create();
+
+        //Hotel type
+        DB::table('hotel_type')->insert([
+            'id' => 1,
+            'name' => 'Business Hotel',
+            'meta_name' => 'business-hotel',
+        ]);
+
+        DB::table('hotel_type')->insert([
+            'id' => 2,
+            'name' => 'Resort Hotel',
+            'meta_name' => 'resort-hotel',
+        ]);
+
+        DB::table('hotel_type')->insert([
+            'id' => 3,
+            'name' => 'Homestay',
+            'meta_name' => 'homestay',
+        ]);
+
+        DB::table('hotel_type')->insert([
+            'id' => 4,
+            'name' => 'Airport Hotel',
+            'meta_name' => 'airport-hotel',
+        ]);
+
+        DB::table('hotel_type')->insert([
+            'id' => 5,
+            'name' => 'Mini Hotel',
+            'meta_name' => 'mini-hotel',
+        ]);
+
+        DB::table('hotel_type')->insert([
+            'id' => 6,
+            'name' => 'Spa Hotel',
+            'meta_name' => 'spa-hotel',
+        ]);
+
+        DB::table('hotel_type')->insert([
+            'id' => 7,
+            'name' => 'Serviced Apartment',
+            'meta_name' => 'serviced-apartment',
+        ]);
+
+        //Hotel
+        factory(App\Models\Hotel::class, 3)->create();
+
     }
 }

@@ -35,3 +35,20 @@ $factory->define(App\Models\Admin::class, function (Faker $faker) {
         'remember_token' => Str::random(10),
     ];
 });
+
+$factory->define(App\Models\Hotel::class, function (Faker $faker) {
+  static $no =1;
+    return [
+        'verified' => 0,
+        'credit_card' => $faker->creditCardNumber,
+        'rank_point' => $no,
+        'name' => $faker->lastName,
+        'meta_name' => 'hotel',
+        'tax_code' => 'IT98746784967'.$no++,
+        'review_point' => 0,
+        'fax_number' => '71937729'.$no,
+        'coin' => 1000000,
+        'hotel_type_id' => 1,
+        'hotel_manager_id' => 1,
+    ];
+});

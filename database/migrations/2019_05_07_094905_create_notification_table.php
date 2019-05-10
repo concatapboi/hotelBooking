@@ -16,7 +16,7 @@ class CreateNotificationTable extends Migration
         Schema::create('notification', function (Blueprint $table) {
             $table->integer('customer_id')->unsigned();
             $table->integer('review_id')->unsigned();
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->foreign('customer_id')
             ->references('user_id')->on('customer')

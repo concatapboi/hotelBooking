@@ -13,8 +13,7 @@
         <div class="top-header-area">
             <div class="container">
                 <div class="row">
-
-                    <div class="col-6">
+                  <div class="col-6">
                         <div class="top-header-content">
                             <a href="#"><i class="icon_phone"></i> <span>+12-34-567-890</span></a>
                             <a href="#"><i class="icon_mail"></i> <span>xxx@gmail.com</span></a>
@@ -48,7 +47,7 @@
                     <nav class="classy-navbar justify-content-between" id="robertoNav">
 
                         <!-- Logo -->
-                        <a class="nav-brand" href="{{action('PageController@index')}}"><img src="/blog/./img/core-img/logo.png" alt=""></a>
+                        <a class="nav-brand" href="{{route('home')}}"><img src="{{asset('/blog/./img/core-img/logo.png')}}" alt=""></a>
 
                         <!-- Navbar Toggler -->
                         <div class="classy-navbar-toggler">
