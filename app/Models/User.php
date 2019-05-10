@@ -43,8 +43,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getHotelManager(){
-     return $this->hasMany('App\Models\HotelManager','user_id','id');
+    public function HotelManager(){
+        return $this->hasMany('App\Models\HotelManager','user_id','id');
     }
     public function getCustomer(){
      return $this->hasMany('App\Models\Customer','user_id','id');

@@ -21,7 +21,7 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
         'email' => $faker->unique()->safeEmail,
         'phone_number' => $faker->tollFreePhoneNumber,
         'email_verified_at' => now(),
-        'password' => '$2y$12$KgenwKsWJNYfdVRm/qZnu.NTXu6s9aojQt5sVB9H7QpprpEjrBg86', // secret
+        'password' => '$2y$12$82PIBhK8MovKXkLUNkyb7Omctq6jR3F3ROkjtb0JcArXpllvX2bXO', // secret
         'remember_token' => Str::random(10),
     ];
 });
@@ -31,7 +31,7 @@ $factory->define(App\Models\Admin::class, function (Faker $faker) {
         'name' => 'Admin',
         'username' => 'admin',
         'email' => 'admin@gmail.com',
-        'password' => '$2y$12$KgenwKsWJNYfdVRm/qZnu.NTXu6s9aojQt5sVB9H7QpprpEjrBg86', // secret
+        'password' => '$2y$12$82PIBhK8MovKXkLUNkyb7Omctq6jR3F3ROkjtb0JcArXpllvX2bXO', // secret
         'remember_token' => Str::random(10),
     ];
 });

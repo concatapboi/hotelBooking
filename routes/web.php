@@ -113,3 +113,30 @@ Route::group(['prefix'=>''],function(){
 
 });
 //End routes Frontend
+//////////////////////////////////////////////////////
+
+Route::group(['prefix'=>'manager'],function(){
+
+	Route::get('login','Backend\AuthController@getLogin')->name('getLogin');
+	Route::post('login','Backend\AuthController@postLogin')->name('login');
+	Route::get('register','Backend\AuthController@getRegister')->name('getRegister');
+	Route::post('register','Backend\AuthController@postRegister')->name('register');
+	Route::get('logout','Backend\AuthController@postLogOut')->name('logout');
+	// Route::middleware(["auth.manager"])->group(function(){
+	// 	Route::get('/',"Backend\AuthController@index")->name("ManagerIndex");
+	// });
+	Route::group(["middleware" => ["auth.manager"]],function(){
+		Route::get('/',"Backend\HotelManagerController@index")->name("managerIndex");
+
+	});
+});
+Route::group(['prefix'=>'admin'],function(){
+	Route::get('logout','Backend\AuthController@postLogOutadmin')->name('logout');
+	Route::group(["middleware" => ["auth.admin"]],function(){
+		Route::get('/',"Backend\HotelManagerController@test")->name("adminIndex");
+
+	});
+	
+});
+
+///////////////////////////////////////////////////////////////////////
