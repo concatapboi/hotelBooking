@@ -1,7 +1,7 @@
-@extends('Frontend::layouts.master')
+@extends('Frontend.layouts.master')
 @section('content')
 	<!-- Breadcrumb Area Start -->
-    <div class="breadcrumb-area bg-img bg-overlay jarallax" style="background-image: url(/blog/img/bg-img/16.jpg);">
+    <div class="breadcrumb-area bg-img bg-overlay jarallax" style="background-image: url({{asset('/blog/img/bg-img/16.jpg')}});">
         <div class="container h-100">
             <div class="row h-100 align-items-center">
                 <div class="col-12">
@@ -9,7 +9,7 @@
                         <h2 class="page-title">Our Room</h2>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb justify-content-center">
-                                <li class="breadcrumb-item"><a href="{{action('PageController@index')}}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{action('Frontend\PageController@index')}}">Home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Room</li>
                             </ol>
                         </nav>
@@ -29,7 +29,7 @@
                     <div class="single-room-area d-flex align-items-center mb-50 wow fadeInUp" data-wow-delay="100ms">
                         <!-- Room Thumbnail -->
                         <div class="room-thumbnail">
-                            <img src="/blog/img/bg-img/43.jpg" alt="">
+                            <img src="{{asset('/blog/img/bg-img/43.jpg')}}" alt="">
                         </div>
                         <!-- Room Content -->
                         <div class="room-content">

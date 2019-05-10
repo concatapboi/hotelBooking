@@ -16,9 +16,9 @@ class CreateUserImageTable extends Migration
         Schema::create('user_image', function (Blueprint $table) {
             $table->increments('id');
             $table->string('image_link');
-            $table->tinyInteger('is_primary');
+            $table->tinyInteger('is_primary')->default(0);
             $table->string('name');
-            $table->integer('user_id')->unsigned()->index();
+            $table->integer('user_id')->unsigned();
             $table->timestamps();
             $table->foreign('user_id')
             ->references('id')->on('users')

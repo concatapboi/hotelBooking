@@ -17,7 +17,7 @@ class CreateReviewTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->string('content');
-            $table->integer('useful_point');
+            $table->integer('useful_point')->default(0);
             $table->integer('customer_id')->unsigned();
             $table->integer('hotel_id')->unsigned();
             $table->timestamps();

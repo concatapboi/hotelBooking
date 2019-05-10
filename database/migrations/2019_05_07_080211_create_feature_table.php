@@ -17,7 +17,7 @@ class CreateFeatureTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('meta_name');
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });
     }

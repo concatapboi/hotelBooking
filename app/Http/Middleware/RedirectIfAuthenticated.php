@@ -3,7 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
+use Auth;
+use App\Models\User;
 
 class RedirectIfAuthenticated
 {
@@ -15,12 +16,15 @@ class RedirectIfAuthenticated
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next, $guard = 'web')
     {
-        if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+        if (!Auth::check()) {
+            return redirect('/login.html');
         }
-
+        $id = Auth::user()->id;
+        if(!User::find($id)->isCustomer()){
+          return redirect('login.html');
+        }
         return $next($request);
     }
 }

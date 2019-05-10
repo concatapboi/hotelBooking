@@ -4,7 +4,7 @@
     <section class="welcome-area">
         <div class="welcome-slides owl-carousel">
             <!-- Single Welcome Slide -->
-            <div class="single-welcome-slide bg-img bg-overlay" style="background-image: url(/blog/img/bg-img/16.jpg);" data-img-url="img/bg-img/16.jpg">
+            <div class="single-welcome-slide bg-img bg-overlay" style="background-image: url({{asset('/blog/img/bg-img/16.jpg')}});" data-img-url="img/bg-img/16.jpg">
                 <!-- Welcome Content -->
                 <div class="welcome-content h-100">
                     <div class="container h-100">
@@ -23,7 +23,7 @@
             </div>
 
             <!-- Single Welcome Slide -->
-            <div class="single-welcome-slide bg-img bg-overlay" style="background-image: url(/blog/img/bg-img/17.jpg);" data-img-url="img/bg-img/17.jpg">
+            <div class="single-welcome-slide bg-img bg-overlay" style="background-image: url({{asset('/blog/img/bg-img/17.jpg')}});" data-img-url="img/bg-img/17.jpg">
                 <!-- Welcome Content -->
                 <div class="welcome-content h-100">
                     <div class="container h-100">
@@ -42,7 +42,7 @@
             </div>
 
             <!-- Single Welcome Slide -->
-            <div class="single-welcome-slide bg-img bg-overlay" style="background-image: url(img/bg-img/18.jpg);" data-img-url="img/bg-img/18.jpg">
+            <div class="single-welcome-slide bg-img bg-overlay" style="background-image: url({{asset('/blog/img/bg-img/18.jpg')}});" data-img-url="{{asset('/blog/img/bg-img/18.jpg')}}">
                 <!-- Welcome Content -->
                 <div class="welcome-content h-100">
                     <div class="container h-100">
@@ -124,15 +124,15 @@
                         <div class="row no-gutters">
                             <div class="col-6">
                                 <div class="single-thumb">
-                                    <img src="/blog/img/bg-img/13.jpg" alt="">
+                                    <img src="{{asset('/blog/img/bg-img/13.jpg')}}" alt="">
                                 </div>
                                 <div class="single-thumb">
-                                    <img src="/blog/img/bg-img/14.jpg" alt="">
+                                    <img src="{{asset('/blog/img/bg-img/14.jpg')}}" alt="">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="single-thumb">
-                                    <img src="/blog/img/bg-img/15.jpg" alt="">
+                                    <img src="{{asset('/blog/img/bg-img/15.jpg')}}" alt="">
                                 </div>
                             </div>
                         </div>
@@ -151,31 +151,31 @@
                     <div class="service-content d-flex align-items-center justify-content-between">
                         <!-- Single Service Area -->
                         <div class="single-service--area mb-100 wow fadeInUp" data-wow-delay="100ms">
-                            <img src="/blog/img/core-img/icon-1.png" alt="">
+                            <img src="{{asset('/blog/img/core-img/icon-1.png')}}" alt="">
                             <h5>Transportion</h5>
                         </div>
 
                         <!-- Single Service Area -->
                         <div class="single-service--area mb-100 wow fadeInUp" data-wow-delay="300ms">
-                            <img src="/blog/img/core-img/icon-2.png" alt="">
+                            <img src="{{asset('/blog/img/core-img/icon-2.png')}}" alt="">
                             <h5>Reiseservice</h5>
                         </div>
 
                         <!-- Single Service Area -->
                         <div class="single-service--area mb-100 wow fadeInUp" data-wow-delay="500ms">
-                            <img src="/blog/img/core-img/icon-3.png" alt="">
+                            <img src="{{asset('/blog/img/core-img/icon-3.png')}}" alt="">
                             <h5>Spa Relaxtion</h5>
                         </div>
 
                         <!-- Single Service Area -->
                         <div class="single-service--area mb-100 wow fadeInUp" data-wow-delay="700ms">
-                            <img src="/blog/img/core-img/icon-4.png" alt="">
+                            <img src="{{asset('/blog/img/core-img/icon-4.png')}}" alt="">
                             <h5>Restaurant</h5>
                         </div>
 
                         <!-- Single Service Area -->
                         <div class="single-service--area mb-100 wow fadeInUp" data-wow-delay="900ms">
-                            <img src="/blog/img/core-img/icon-1.png" alt="">
+                            <img src="{{asset('/blog/img/core-img/icon-1.png')}}" alt="">
                             <h5>Bar &amp; Drink</h5>
                         </div>
                     </div>
@@ -191,7 +191,7 @@
             <!-- Single Room Slide -->
             <div class="single-room-slide d-flex align-items-center">
                 <!-- Thumbnail -->
-                <div class="room-thumbnail h-100 bg-img" style="background-image: url(/blog/img/bg-img/16.jpg);"></div>
+                <div class="room-thumbnail h-100 bg-img" style="background-image: url({{asset('/blog/img/bg-img/16.jpg')}});"></div>
 
                 <!-- Content -->
                 <div class="room-content">
@@ -210,7 +210,7 @@
             <!-- Single Room Slide -->
             <div class="single-room-slide d-flex align-items-center">
                 <!-- Thumbnail -->
-                <div class="room-thumbnail h-100 bg-img" style="background-image: url(/blog/img/bg-img/17.jpg);"></div>
+                <div class="room-thumbnail h-100 bg-img" style="background-image: url({{asset('/blog/img/bg-img/17.jpg')}});"></div>
 
                 <!-- Content -->
                 <div class="room-content">
@@ -235,8 +235,8 @@
             <div class="row align-items-center">
                 <div class="col-12 col-md-6">
                     <div class="testimonial-thumbnail owl-carousel mb-100">
-                        <img src="/blog/img/bg-img/10.jpg" alt="">
-                        <img src="/blog/img/bg-img/11.jpg" alt="">
+                        <img src="{{asset('/blog/img/bg-img/10.jpg')}}" alt="">
+                        <img src="{{asset('/blog/img/bg-img/11.jpg')}}" alt="">
                     </div>
                 </div>
 
@@ -321,7 +321,7 @@
         <!-- Projects Slide -->
         <div class="projects-slides owl-carousel">
             <!-- Single Project Slide -->
-            <div class="single-project-slide active bg-img" style="background-image: url(/blog/img/bg-img/5.jpg);">
+            <div class="single-project-slide active bg-img" style="background-image: url({{asset('/blog/img/bg-img/5.jpg')}});">
                 <!-- Project Text -->
                 <div class="project-content">
                     <div class="text">
@@ -341,7 +341,7 @@
             </div>
 
             <!-- Single Project Slide -->
-            <div class="single-project-slide bg-img" style="background-image: url(/blog/img/bg-img/6.jpg);">
+            <div class="single-project-slide bg-img" style="background-image: url({{asset('/blog/img/bg-img/6.jpg')}});">
                 <!-- Project Text -->
                 <div class="project-content">
                     <div class="text">
@@ -361,7 +361,7 @@
             </div>
 
             <!-- Single Project Slide -->
-            <div class="single-project-slide bg-img" style="background-image: url(/blog/img/bg-img/7.jpg);">
+            <div class="single-project-slide bg-img" style="background-image: url({{asset('/blog/img/bg-img/7.jpg')}});">
                 <!-- Project Text -->
                 <div class="project-content">
                     <div class="text">
@@ -381,7 +381,7 @@
             </div>
 
             <!-- Single Project Slide -->
-            <div class="single-project-slide bg-img" style="background-image: url(/blog/img/bg-img/8.jpg);">
+            <div class="single-project-slide bg-img" style="background-image: url({{asset('/blog/img/bg-img/8.jpg')}});">
                 <!-- Project Text -->
                 <div class="project-content">
                     <div class="text">
@@ -401,7 +401,7 @@
             </div>
 
             <!-- Single Project Slide -->
-            <div class="single-project-slide bg-img" style="background-image: url(/blog/img/bg-img/9.jpg);">
+            <div class="single-project-slide bg-img" style="background-image: url({{asset('/blog/img/bg-img/9.jpg')}});">
                 <!-- Project Text -->
                 <div class="project-content">
                     <div class="text">
@@ -440,7 +440,7 @@
                 <!-- Single Post Area -->
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="single-post-area mb-100 wow fadeInUp" data-wow-delay="300ms">
-                        <a href="#" class="post-thumbnail"><img src="/blog/img/bg-img/2.jpg" alt=""></a>
+                        <a href="#" class="post-thumbnail"><img src="{{asset('/blog/img/bg-img/2.jpg')}}" alt=""></a>
                         <!-- Post Meta -->
                         <div class="post-meta">
                             <a href="#" class="post-date">Jan 02, 2019</a>
@@ -456,7 +456,7 @@
                 <!-- Single Post Area -->
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="single-post-area mb-100 wow fadeInUp" data-wow-delay="500ms">
-                        <a href="#" class="post-thumbnail"><img src="/blog/img/bg-img/3.jpg" alt=""></a>
+                        <a href="#" class="post-thumbnail"><img src="{{asset('/blog/img/bg-img/3.jpg')}}" alt=""></a>
                         <!-- Post Meta -->
                         <div class="post-meta">
                             <a href="#" class="post-date">Jan 02, 2019</a>
@@ -472,7 +472,7 @@
                 <!-- Single Post Area -->
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="single-post-area mb-100 wow fadeInUp" data-wow-delay="700ms">
-                        <a href="#" class="post-thumbnail"><img src="/blog/img/bg-img/4.jpg" alt=""></a>
+                        <a href="#" class="post-thumbnail"><img src="{{asset('/blog/img/bg-img/4.jpg')}}" alt=""></a>
                         <!-- Post Meta -->
                         <div class="post-meta">
                             <a href="#" class="post-date">Jan 02, 2019</a>

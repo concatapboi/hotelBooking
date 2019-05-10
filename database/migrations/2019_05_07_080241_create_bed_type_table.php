@@ -18,7 +18,7 @@ class CreateBedTypeTable extends Migration
             $table->string('name');
             $table->double('width');
             $table->double('length');
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });
     }

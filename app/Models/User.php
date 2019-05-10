@@ -46,10 +46,19 @@ class User extends Authenticatable
     public function getHotelManager(){
      return $this->hasMany('App\Models\HotelManager','user_id','id');
     }
+    public function getCustomer(){
+     return $this->hasMany('App\Models\Customer','user_id','id');
+    }
 
-    public function isHotelManager($id){
+    public function isHotelManager(){
       foreach ( $this->getHotelManager as $key => $value) {
-        if($value->user_id == $id)
+        return true;
+      }
+      return false;
+    }
+
+    public function isCustomer(){
+      foreach ( $this->getCustomer as $key => $value) {
         return true;
       }
       return false;

@@ -1,8 +1,8 @@
-@extends('Frontend::layouts.master')
+@extends('Frontend.layouts.master')
 @section('content')
 	<!-- Breadcrumb Area Start -->
     <!-- Breadcrumb Area Start -->
-    <div class="breadcrumb-area bg-img bg-overlay jarallax" style="background-image: url(/blog/img/bg-img/17.jpg);">
+    <div class="breadcrumb-area bg-img bg-overlay jarallax" style="background-image: url({{asset('/blog/img/bg-img/17.jpg')}});">
         <div class="container h-100">
             <div class="row h-100 align-items-center">
                 <div class="col-12">
@@ -10,7 +10,7 @@
                         <h2 class="page-title">Reberto</h2>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb justify-content-center">
-                                <li class="breadcrumb-item"><a href="{{action('PageController@index')}}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{action('Frontend\PageController@index')}}">Home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Roberto</li>
                             </ol>
                         </nav>
@@ -29,7 +29,7 @@
                 <div class="col-12 col-lg-8">
                     <!-- Post Thumbnail -->
                     <div class="post-thumbnail mb-50">
-                        <img src="/blog/img/bg-img/39.jpg" alt="">
+                        <img src="{{asset('/blog/img/bg-img/39.jpg')}}" alt="">
                     </div>
                     <!-- Blog Details Text -->
                     <div class="blog-details-text">
@@ -44,7 +44,7 @@
                         <!-- Blockquote -->
                         <blockquote class="roberto-blockquote d-flex">
                             <div class="icon">
-                                <img src="/blog/img/core-img/quote.png" alt="">
+                                <img src="{{asset('/blog/img/core-img/quote.png')}}" alt="">
                             </div>
                             <div class="text">
                                 <h5>“Before you took that first cruise, your thoughts about cruise ships and cruise vacations consisted of flashbacks to Love Boat re-runs. Cruising was all about sunny, tropical destinations like Bermuda”</h5>
@@ -98,7 +98,7 @@
                                         <div class="comment-content d-flex">
                                             <!-- Comment Author -->
                                             <div class="comment-author">
-                                                <img src="/blog/img/bg-img/41.jpg" alt="author">
+                                                <img src="{{asset('/blog/img/bg-img/41.jpg')}}" alt="author">
                                             </div>
                                             <!-- Comment Meta -->
                                             <div class="comment-meta">
@@ -119,7 +119,7 @@
                                 <div class="comment-content d-flex">
                                     <!-- Comment Author -->
                                     <div class="comment-author">
-                                        <img src="/blog/img/bg-img/42.jpg" alt="author">
+                                        <img src="{{asset('/blog/img/bg-img/42.jpg')}}" alt="author">
                                     </div>
                                     <!-- Comment Meta -->
                                     <div class="comment-meta">
@@ -158,14 +158,29 @@
                         <!-- Newsletter -->
                         <div class="single-widget-area mb-100">
                             <div class="newsletter-form">
-                                <h5>Newsletter</h5>
+                                <h5>{{$hotel->name}}</h5>
                                 <p>Subscribe our newsletter gor get notification new updates.</p>
-
-                                <form action="{{action('PageController@alert')}}" method="post" enctype="multipart/form-data">
+                                @if(!Auth::check())
+                                <form action="{{route('hotel-following',$hotel->id)}}" method="post" enctype="multipart/form-data">
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
                                     <input type="hidden" name="userID" value="1">
-                                    <button type="submit" class="btn roberto-btn w-100">Subscribe</button>
+                                    <button type="submit" class="btn roberto-btn w-100">Follow</button>
                                 </form>
+                                @elseif(Auth::user()->id )
+                                    @if($followed)
+                                    <form action="{{route('hotel-unfollowing',$hotel->id)}}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                        <input type="hidden" name="userID" value="1">
+                                    <button type="submit" class="btn roberto-btn w-100">Unfollow</button>
+                                    </form>
+                                    @else
+                                    <form action="{{route('hotel-following',$hotel->id)}}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                        <input type="hidden" name="userID" value="1">
+                                    <button type="submit" class="btn roberto-btn w-100">Follow</button>
+                                    </form>
+                                    @endif
+                                @endif
                             </div>
                         </div>
 
@@ -205,12 +220,12 @@
                             <h4 class="widget-title mb-30">Instagram</h4>
                             <!-- Instagram Feeds -->
                             <ul class="instagram-feeds">
-                                <li><a href="#"><img src="/blog/img/bg-img/33.jpg" alt=""></a></li>
-                                <li><a href="#"><img src="/blog/img/bg-img/34.jpg" alt=""></a></li>
-                                <li><a href="#"><img src="/blog/img/bg-img/35.jpg" alt=""></a></li>
-                                <li><a href="#"><img src="/blog/img/bg-img/36.jpg" alt=""></a></li>
-                                <li><a href="#"><img src="/blog/img/bg-img/37.jpg" alt=""></a></li>
-                                <li><a href="#"><img src="/blog/img/bg-img/38.jpg" alt=""></a></li>
+                                <li><a href="#"><img src="{{asset('/blog/img/bg-img/33.jpg')}}" alt=""></a></li>
+                                <li><a href="#"><img src="{{asset('/blog/img/bg-img/34.jpg')}}" alt=""></a></li>
+                                <li><a href="#"><img src="{{asset('/blog/img/bg-img/35.jpg')}}" alt=""></a></li>
+                                <li><a href="#"><img src="{{asset('/blog/img/bg-img/36.jpg')}}" alt=""></a></li>
+                                <li><a href="#"><img src="{{asset('/blog/img/bg-img/37.jpg')}}" alt=""></a></li>
+                                <li><a href="#"><img src="{{asset('/blog/img/bg-img/38.jpg')}}" alt=""></a></li>
                             </ul>
                         </div>
 
