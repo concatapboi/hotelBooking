@@ -1,6 +1,7 @@
 <?php
 
 //Start routes Frontend
+Route::get('/{any}', 'PageController@index')->where('any', '.*');
 Route::group(['prefix'=>''],function(){
 
 	Route::get('/',[
@@ -138,5 +139,7 @@ Route::group(['prefix'=>'admin'],function(){
 	});
 	
 });
+
+
 
 ///////////////////////////////////////////////////////////////////////
