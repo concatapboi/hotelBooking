@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class HotelManager extends Model
 {
-  protected $table = 'hotel_manager';
+	protected $table = 'hotel_manager';
 
-  protected $fillable =[
-    'user_id',
-  ];
+	protected $primaryKey = "user_id";
 
-  public function ofUser(){
-     return $this->belongTo('App\Models\User');
-   }
+	protected $fillable =[
+	  'user_id',
+	];
+
+	public function User(){
+		return $this->belongsTo('App\Models\User');
+	}
 }

@@ -41,6 +41,7 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             'bindings',
         ],
+        'auth.manager' => [\App\Http\Middleware\ManagerRedirectedIfAuthenticated::class,]
     ];
 
     /**
@@ -60,6 +61,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'auth.manager' => \App\Http\Middleware\ManagerRedirectedIfAuthenticated::class,
+        'auth.admin' => \App\Http\Middleware\AdminRedirectedIfAuthenticated::class,
     ];
 
     /**
