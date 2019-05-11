@@ -1,9 +1,11 @@
-<!-- Required meta tags-->
+<head>
+    <!-- Required meta tags-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="au theme template">
     <meta name="author" content="Hau Nguyen">
     <meta name="keywords" content="au theme template">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Title Page-->
     <title>Dashboard</title>
@@ -28,3 +30,5 @@
 
     <!-- Main CSS-->
     <link href="{{asset('CoolAdmin/css/theme.css')}}" rel="stylesheet" media="all">
+
+</head>

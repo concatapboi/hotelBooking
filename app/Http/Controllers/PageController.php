@@ -9,17 +9,15 @@ class PageController extends Controller
     public function index() {
 	    return view('web')->with(['err'=>false]);
 	}
-
-	public function managerIndex() {
-	    dd('manager');
+	public function adminIndex()
+	{
+		return view('backend.admin');
 	}
-
-	public function adminIndex() {
-	   dd('admin');
+	public function managerIndex()
+	{
+		return view('backend.manager');
 	}
-
 	public function redirect() {
 	    return view('web')->with(['err'=>true]);
 	}
-	
 }
