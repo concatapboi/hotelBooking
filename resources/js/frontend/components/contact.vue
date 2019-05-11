@@ -1,7 +1,7 @@
-@extends('Frontend.layouts.master')
-@section('content')
-	<!-- Breadcrumb Area Start -->
-    <div class="breadcrumb-area contact-breadcrumb bg-img bg-overlay jarallax" style="background-image: url({{asset('/blog/img/bg-img/18.jpg')}});">
+<template>
+<div class="container">
+    <!-- Breadcrumb Area Start -->
+    <div class="breadcrumb-area contact-breadcrumb bg-img bg-overlay jarallax" style="background-image: url('/blog/img/bg-img/18.jpg');">
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -9,7 +9,7 @@
                         <h2 class="page-title">Contact Us</h2>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb justify-content-center">
-                                <li class="breadcrumb-item"><a href="{{action('Frontend\PageController@index')}}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
                             </ol>
                         </nav>
@@ -98,4 +98,13 @@
         </div>
     </div>
     <!-- Contact Form Area End -->
-@stop
+</div>
+</template>
+
+<script>
+    export default {
+        mounted() {
+            console.log('Component mounted.')
+        }
+    }
+</script>

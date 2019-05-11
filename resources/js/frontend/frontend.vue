@@ -1,4 +1,6 @@
-    <header class="header-area">
+<template>
+<v-app>
+	<header class="header-area">
         <!-- Search Form -->
         <div class="search-form d-flex align-items-center">
             <div class="container">
@@ -47,7 +49,7 @@
                     <nav class="classy-navbar justify-content-between" id="robertoNav">
 
                         <!-- Logo -->
-                        <a class="nav-brand" href="{{route('home')}}"><img src="{{asset('/blog/./img/core-img/logo.png')}}" alt=""></a>
+                        <a class="nav-brand" href="#"><img src="/blog/./img/core-img/logo.png" alt=""></a>
 
                         <!-- Navbar Toggler -->
                         <div class="classy-navbar-toggler">
@@ -55,9 +57,41 @@
                         </div>
 
                         <!-- Menu -->
-                        @include('Frontend.layouts.menu')
+                                                <div class="classy-menu">
+                            <!-- Menu Close Button -->
+                            <div class="classycloseIcon">
+                                <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                            </div>
+                            <!-- Nav Start -->
+                            <div class="classynav">
+                                <ul id="nav">
+                                    <li class="active"><a href="#"><router-link :to="{name:'home'}">Home</router-link></a></li>									
+                                    <li><a href="#"><router-link :to="{name:'about'}">About</router-link></a></li>
+                                    <li><a href="#"><router-link :to="{name:'about'}">About</router-link></a></li>
+                                    <li><a href="#"><router-link :to="{name:'contact'}">Contact</router-link></a></li>
+                                </ul>
+
+                                <!-- Search -->
+                                <div class="search-btn ml-4">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </div>
+
+                                <!-- Book Now -->
+                                <div class="book-now-btn ml-3 ml-lg-5">
+                                    <a href="#" data-toggle="modal" data-target="#login-modal">Login<i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                            <!-- Nav End -->
+                        </div>
+
                     </nav>
                 </div>
             </div>
         </div>
     </header>
+	<router-view></router-view>
+</v-app>
+</template>
+<script>
+	export default {};
+</script>

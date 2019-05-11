@@ -7,7 +7,7 @@
                     <div class="col-12 col-sm-6 col-lg-3">
                         <div class="single-footer-widget mb-80">
                             <!-- Footer Logo -->
-                            <a href="{{action('Frontend\PageController@index')}}" class="footer-logo"><img src="{{asset('blog/img/core-img/logo2.png')}}" alt=""></a>
+                            <a href="#" class="footer-logo"><img src="blog/img/core-img/logo2.png" alt=""></a>
 
                             <h4>+12-34-567-890</h4>
                             <span>xxx@gmail.com</span>
@@ -37,11 +37,11 @@
 
                             <!-- Footer Nav -->
                             <ul class="footer-nav">
-                                <li><a href="{{action('Frontend\PageController@index')}}"><i class="fa fa-caret-right" aria-hidden="true"></i> Home</a></li>
+                                <li><a href="/home"><i class="fa fa-caret-right" aria-hidden="true"></i> Home</a></li>
                                 <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Our Rooms</a></li>
-                                <li><a href="{{action('Frontend\PageController@blog')}}"><i class="fa fa-caret-right" aria-hidden="true"></i>Blog</a></li>
-                                <li><a href="{{action('Frontend\PageController@about')}}"><i class="fa fa-caret-right" aria-hidden="true"></i>About Us</a></li>
-                                <li><a href="{{action('Frontend\PageController@contact')}}"><i class="fa fa-caret-right" aria-hidden="true"></i>Contact</a></li>
+                                <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Blog</a></li>
+                                <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>About Us</a></li>
+                                <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Contact</a></li>
                             </ul>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                             <span>Subscribe our newsletter gor get notification about new updates.</span>
 
                             <!-- Newsletter Form -->
-                            <form action="{{action('Frontend\PageController@index')}}" class="nl-form">
+                            <form action="#" class="nl-form">
                                 <input type="email" class="form-control" placeholder="Enter your email...">
                                 <button type="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
                             </form>
@@ -84,7 +84,7 @@
         <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
           <h4>Login or Register</h4>
-          <form action="{{action('Frontend\PageController@postLogin')}}" method="post" enctype="multipart/form-data">
+          <form action="#" method="post" enctype="multipart/form-data">
             <input type="hidden" name="_token" value="{{csrf_token()}}">
             <table class="table">
                 <tr>
@@ -99,7 +99,7 @@
                     <td colspan="2"><button class="btn roberto-btn" type="submit">Login</button></td>
                 </tr>
                 <tr>
-                    <td colspan="2">Don't have an account?&nbsp <a href="{{action('Frontend\PageController@register')}}"><span class="text-danger">Register now!</span></a></td>
+                    <td colspan="2">Don't have an account?&nbsp <a href="#"><span class="text-danger">Register now!</span></a></td>
                 </tr>
             </table>
           </form>

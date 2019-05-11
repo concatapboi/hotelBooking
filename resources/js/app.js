@@ -11,8 +11,8 @@ require('./bootstrap');
 import Vue  from 'vue';
 import Vuetify  from 'vuetify';
 
-import Routes  from '@/js/routes.js';
-import App  from '@/js/Appp';
+import Routes  from './frontend/routes.js';
+import App  from './frontend/frontend';
 
 Vue.use(Vuetify);
 

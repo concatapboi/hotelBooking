@@ -1,7 +1,7 @@
-@extends('Frontend.layouts.master')
-@section('content')
-	<!-- Breadcrumb Area Start -->
-    <div class="breadcrumb-area bg-img bg-overlay jarallax" style="background-image: url({{asset('/blog/img/bg-img/16.jpg')}});">
+<template>
+<div class="container">
+    <!-- Breadcrumb Area Start -->
+    <div class="breadcrumb-area bg-img bg-overlay jarallax" style="background-image: url('/blog/img/bg-img/16.jpg');">
         <div class="container h-100">
             <div class="row h-100 align-items-center">
                 <div class="col-12">
@@ -9,7 +9,7 @@
                         <h2 class="page-title">About Us</h2>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb justify-content-center">
-                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item"><a href="#"><router-link :to="{name:'home'}">Home</router-link></a></li>
                                 <li class="breadcrumb-item active" aria-current="page">About Us</li>
                             </ol>
                         </nav>
@@ -26,7 +26,7 @@
             <div class="row align-items-center">
                 <div class="col-12 col-lg-6">
                     <div class="about-thumbnail pr-lg-5 mb-100 wow fadeInUp" data-wow-delay="100ms">
-                        <img src="{{asset('/blog/img/bg-img/19.jpg')}}" alt="">
+                        <img src="/blog/img/bg-img/19.jpg" alt="">
                     </div>
                 </div>
                 <div class="col-12 col-lg-6">
@@ -47,7 +47,7 @@
     <!-- About Us Area End -->
 
     <!-- Video Area Start -->
-    <div class="roberto--video--area bg-img bg-overlay jarallax section-padding-0-100" style="background-image: url({{asset('/blog/img/bg-img/20.jpg')}});">
+    <div class="roberto--video--area bg-img bg-overlay jarallax section-padding-0-100" style="background-image: url(/blog/img/bg-img/20.jpg);">
         <div class="container h-100">
             <div class="row h-100 align-items-center justify-content-center">
                 <div class="col-12 col-md-6">
@@ -82,7 +82,7 @@
                 <!-- Single Service Area -->
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="single-service-area mb-100 wow fadeInUp" data-wow-delay="300ms">
-                        <img src="{{asset('/blog/img/bg-img/21.jpg')}}" alt="">
+                        <img src="/blog/img/bg-img/21.jpg" alt="">
                         <div class="service-title d-flex align-items-center justify-content-center">
                             <h5>Restaurant &amp; Bar</h5>
                         </div>
@@ -91,7 +91,7 @@
                 <!-- Single Service Area -->
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="single-service-area mb-100 wow fadeInUp" data-wow-delay="500ms">
-                        <img src="{{asset('/blog/img/bg-img/22.jpg')}}" alt="">
+                        <img src="/blog/img/bg-img/22.jpg" alt="">
                         <div class="service-title d-flex align-items-center justify-content-center">
                             <h5>Spa &amp; Fitness</h5>
                         </div>
@@ -100,7 +100,7 @@
                 <!-- Single Service Area -->
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="single-service-area mb-100 wow fadeInUp" data-wow-delay="700ms">
-                        <img src="{{asset('/blog/img/bg-img/23.jpg')}}" alt="">
+                        <img src="/blog/img/bg-img/23.jpg" alt="">
                         <div class="service-title d-flex align-items-center justify-content-center">
                             <h5>Pool &amp; Party</h5>
                         </div>
@@ -109,5 +109,14 @@
             </div>
         </div>
     </section>
-    <!-- Service Area End -->
-@stop
+    <!-- Service Area End -->   
+</div>
+</template>
+
+<script>
+    export default {
+        mounted() {
+            console.log('Component mounted.')
+        }
+    }
+</script>
