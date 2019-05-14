@@ -21,5 +21,6 @@ mix.webpackConfig({
  */
 
 mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css')
-   .js('resources/js/backend.js', 'public/js');
+   .js('resources/js/backend.js', 'public/js')
+   .js('resources/js/managerlogin.js', 'public/js')
+   .sass('resources/sass/app.scss', 'public/css').sourceMaps();

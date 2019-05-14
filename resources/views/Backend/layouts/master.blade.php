@@ -3,7 +3,7 @@
 
 @include('backend.layouts.header')
 
-<body class="animsition">
+<body class="animsitions">
     <div class="page-wrapper">
         <!-- HEADER MOBILE-->
         <header class="header-mobile d-block d-lg-none">
@@ -955,7 +955,7 @@
     </div>
 
    @include('backend.layouts.footer')
-
+    
 </body>
 
 </html>
