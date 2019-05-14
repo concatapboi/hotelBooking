@@ -86,6 +86,6 @@ class HotelManagerController extends Controller
 
     public function test()
     {
-        return view("Backend.Admin.Pages.index");
+        return Hotel::all();
     }
 }

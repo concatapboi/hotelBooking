@@ -5,11 +5,15 @@
 
 Route::group(['prefix' => '/manager'], function(){
     Route::get('/', 'PageController@managerIndex');
+    Route::get('/login', 'Backend\AuthController@managerLogin');
+    Route::get('/register', 'Backend\AuthController@managerLogin');
 	Route::get('/{string}', 'PageController@managerIndex')->where('string','.*');
 });
 
 Route::group(['prefix' => '/admin'], function(){
     Route::get('/', 'PageController@adminIndex');
+    Route::get('/login', 'Backend\AuthController@managerLogin');
+    Route::get('/register', 'Backend\AuthController@managerLogin');
 	Route::get('/{string}', 'PageController@adminIndex')->where('string','.*');
 });
 
