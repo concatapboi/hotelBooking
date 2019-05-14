@@ -17,7 +17,7 @@ Route::group(['prefix' => '/admin'], function(){
 	Route::get('/{string}', 'PageController@adminIndex')->where('string','.*');
 });
 
-Route::group(['prefix' => ''], function(){
+Route::group(['prefix' => ''], function(){    
     Route::get('/', 'PageController@index');
-	Route::get('/{string}', 'PageController@redirect')->where('string','.*');
+    Route::get('/{string}', 'PageController@index')->where('string','.*'); 
 });

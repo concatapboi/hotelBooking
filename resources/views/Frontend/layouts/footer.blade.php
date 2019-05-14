@@ -37,11 +37,11 @@
 
                             <!-- Footer Nav -->
                             <ul class="footer-nav">
-                                <li><a href="/home"><i class="fa fa-caret-right" aria-hidden="true"></i> Home</a></li>
-                                <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Our Rooms</a></li>
-                                <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Blog</a></li>
-                                <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>About Us</a></li>
-                                <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i>Contact</a></li>
+                                <li><a href="/"><i class="fa fa-caret-right" aria-hidden="true"></i> Home</a></li>
+                                <li><a href="/hotels.html"><i class="fa fa-caret-right" aria-hidden="true"></i>Our Hotels</a></li>
+                                <li><a href="/about.html"><i class="fa fa-caret-right" aria-hidden="true"></i>About Us</a></li>
+                                <li><a href="/contact.html"><i class="fa fa-caret-right" aria-hidden="true"></i>Contact</a></li>
+                                <li><a href="/policies.html"><i class="fa fa-caret-right" aria-hidden="true"></i>Policies</a></li>
                             </ul>
                         </div>
                     </div>

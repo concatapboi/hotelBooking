@@ -12,6 +12,8 @@ import err  from '@/js/frontend/components/err';
 import account  from '@/js/frontend/components/account';
 import user  from '@/js/frontend/components/user';
 import contact  from '@/js/frontend/components/contact';
+import searching  from '@/js/frontend/components/searching';
+import policy  from '@/js/frontend/components/policy';
 
 Vue.use(VueRouter);
 
@@ -34,7 +36,7 @@ const router = new VueRouter({
 			component: register
 		},
 		{
-			path: '/hotel.html',
+			path: '/hotels.html',
 			name: 'hotel',
 			component: hotel
 		},
@@ -69,9 +71,20 @@ const router = new VueRouter({
 			component: about
 		},
 		{
+			path: '/searching.html',
+			name: 'searching',
+			component: searching
+		},
+		{
 			path: '/error.html',
 			name: 'err',
 			component: err
+		}
+		,
+		{
+			path: '/policies.html',
+			name: 'policy',
+			component: policy
 		}
 	]
 });

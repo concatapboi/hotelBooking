@@ -49,7 +49,7 @@
                     <nav class="classy-navbar justify-content-between" id="robertoNav">
 
                         <!-- Logo -->
-                        <a class="nav-brand" href="#"><img src="/blog/./img/core-img/logo.png" alt=""></a>
+                        <router-link :to="{name:'home'}"><img src="/blog/./img/core-img/logo.png" alt=""></router-link>
 
                         <!-- Navbar Toggler -->
                         <div class="classy-navbar-toggler">
@@ -57,7 +57,7 @@
                         </div>
 
                         <!-- Menu -->
-                                                <div class="classy-menu">
+                        <div class="classy-menu">
                             <!-- Menu Close Button -->
                             <div class="classycloseIcon">
                                 <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
@@ -65,20 +65,14 @@
                             <!-- Nav Start -->
                             <div class="classynav">
                                 <ul id="nav">
-                                    <li class="active"><a href="#"><router-link :to="{name:'home'}">Home</router-link></a></li>									
-                                    <li><a href="#"><router-link :to="{name:'about'}">About</router-link></a></li>
-                                    <li><a href="#"><router-link :to="{name:'about'}">About</router-link></a></li>
-                                    <li><a href="#"><router-link :to="{name:'contact'}">Contact</router-link></a></li>
+                                    <li class="active"><router-link :to="{name:'home'}">Home</router-link></li>									
+                                    <li><router-link :to="{name:'about'}">About</router-link></li>
+                                    <li><router-link :to="{name:'contact'}">Contact</router-link></li>
+                                    <router-link :to="{name:'register'}">Register</router-link>
                                 </ul>
-
-                                <!-- Search -->
-                                <div class="search-btn ml-4">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                </div>
-
-                                <!-- Book Now -->
+                                <!-- Login Now -->
                                 <div class="book-now-btn ml-3 ml-lg-5">
-                                    <a href="#" data-toggle="modal" data-target="#login-modal">Login<i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+                                    <router-link :to="{name:'login'}">Login<i class="fa fa-long-arrow-right" aria-hidden="true"></i></router-link>
                                 </div>
                             </div>
                             <!-- Nav End -->

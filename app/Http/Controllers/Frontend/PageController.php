@@ -85,8 +85,10 @@ class PageController extends Controller{
     return view('Frontend.blog');
   }
 
-  public function singleBlog(){
-    return view('Frontend.single-blog');
+  public function getSingleHotel($id){
+    $data = array();
+    $data = Hotel::find(1);
+    return response()->json(['data' => $data]);
   }
 
   public function postRegister(Request $req)

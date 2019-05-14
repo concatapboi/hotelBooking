@@ -46,14 +46,13 @@
                                 <input type="number" name="children" value="0" min ="0" class="form-control">
                             </div>
                             <div class="col-12 col-md-3">
-                                <button type="submit" class="form-control btn roberto-btn w-100">Check Availability</button>
+                                <button type="button" class="form-control btn roberto-btn w-100"><router-link :to="{name:'searching'}">Check Availability</router-link></button>                              
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
         <div class="container mt-100">
             <div class="row align-items-center">
                 <div class="col-12 col-lg-6">
@@ -90,15 +89,22 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section>    
     <!-- About Us Area End -->
 </section>
 </template>
 
 <script>
     export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
+        data(){
+            return {
+
+            };
+        },
+        methods: {
+            click(){
+                alert('hello');
+            },
+        },
     }
 </script>
