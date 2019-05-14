@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class PageController extends Controller
 {
     public function index() {
-	    return view('web')->with(['err'=>false]);
+	    return view('web');
 	}
 	public function adminIndex()
 	{
@@ -18,6 +18,6 @@ class PageController extends Controller
 		return view('backend.manager');
 	}
 	public function redirect() {
-	    return view('web')->with(['err'=>true]);
+	    return redirect('/');
 	}
 }

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,7 @@ Route::group(['prefix' => '/manager'], function(){
     Route::post('login','Backend\AuthController@login');
     Route::post('register','Backend\AuthController@register');
 });
-// Route::middleware('auth:api')->group(function(){
-// 	Route::get('get','Backend\AuthController@test');
-// });
+
+Route::resource('/hotel', 'Frontend\HotelController');
+Route::resource('/user', 'Frontend\UserController');
+Route::post('/login','Frontend\AuthController@postLogin');
