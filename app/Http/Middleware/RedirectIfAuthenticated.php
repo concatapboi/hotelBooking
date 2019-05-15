@@ -23,7 +23,7 @@ class RedirectIfAuthenticated
         }
         $id = Auth::user()->id;
         if(!User::find($id)->isCustomer()){
-          return redirect('login.html');
+          return redirect('/login.html');
         }
         return $next($request);
     }

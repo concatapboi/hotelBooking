@@ -114,9 +114,9 @@ export default {
   },
   methods: {
     change: function() {
-      this.error ="";
-      this.usernameError="";  
-      this.passError="";
+      this.error = "";
+      this.usernameError = "";
+      this.passError = "";
     },
     onSubmit: function() {
       axios({
@@ -127,14 +127,16 @@ export default {
           password: this.password
         }
       }).then(res => {
-        console.log(res.data.errors);
-        if (res.data.status) this.$router.push({ name: "about" });
-        else {
+        console.log(res.data.status);
+        if (res.data.status) {
+          this.$router.push({ name: "home" });
+          return;
+        } else {
           this.error = "Username or password is incorrect!";
-          if(res.data.errors["username"])
+          if (res.data.errors["username"])
             this.usernameError = res.data.errors["username"][0];
-          if(res.data.errors["password"])
-          this.passError = res.data.errors["password"][0];
+          if (res.data.errors["password"])
+            this.passError = res.data.errors["password"][0];
           return;
         }
       });
