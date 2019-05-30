@@ -11,3 +11,5 @@ npm-debug.log
 yarn-error.log
 /composer.json
 /.phpintel
+/package-lock.json
+/package.json

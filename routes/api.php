@@ -23,7 +23,11 @@ Route::group(['prefix' => '/manager'], function(){
 });
 
 Route::resource('/hotel', 'Frontend\HotelController');
+Route::get('/get-top5-hotel', 'Frontend\HotelController@getTop5');
 Route::resource('/user', 'Frontend\UserController');
+Route::get('/get-top5-user', 'Frontend\UserController@getTop5');
+Route::get('/check-user', 'Frontend\UserController@checkUser');
+Route::resource('/image', 'Frontend\UserImageController');
 Route::post('/login','Frontend\AuthController@postLogin');
 Route::get('/getUserLogin','Frontend\AuthController@getUserLogin');
 Route::get('/getLogout','Frontend\AuthController@getLogout');
