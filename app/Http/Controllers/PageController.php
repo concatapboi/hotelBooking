@@ -8,7 +8,10 @@ use Auth;
 class PageController extends Controller
 {
     public function index() {
-	    return view('web',compact('user'));
+	    return view('web');
+	}
+    public function getCommunityPage() {
+	    return view('Frontend.community');
 	}
 	public function adminIndex()
 	{

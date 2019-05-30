@@ -84,6 +84,98 @@ class DatabaseSeeder extends Seeder
 
         //Hotel
         factory(App\Models\Hotel::class, 3)->create();
+        //User image
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/spider-man.png',
+            'name' => 'spider-man',
+            'is_primary' => 1,
+            'user_id' => 3
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/dog2.png',
+            'name' => 'spider-man',
+            'is_primary' => 0,
+            'user_id' => 3
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/rainbow.png',
+            'name' => 'spider-man',
+            'is_primary' => 0,
+            'user_id' => 3
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/cover/1.jpg',
+            'name' => 'spider-man',
+            'is_primary' => 2,
+            'user_id' => 3
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/cover/2.jpg',
+            'name' => 'spider-man',
+            'is_primary' => 2,
+            'user_id' => 3
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/face1.png',
+            'name' => 'spider-man',
+            'is_primary' => 1,
+            'user_id' => 4
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/candy.png',
+            'name' => 'spider-man',
+            'is_primary' => 0,
+            'user_id' => 4
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/dog1.png',
+            'name' => 'spider-man',
+            'is_primary' => 0,
+            'user_id' => 4
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/avatar1.png',
+            'name' => 'spider-man',
+            'is_primary' => 0,
+            'user_id' => 4
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/dinosaur.png',
+            'name' => 'spider-man',
+            'is_primary' => 0,
+            'user_id' => 4
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/face3.png',
+            'name' => 'spider-man',
+            'is_primary' => 0,
+            'user_id' => 4
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/cover/3.jpg',
+            'name' => 'spider-man',
+            'is_primary' => 2,
+            'user_id' => 4
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/cover/4.jpg',
+            'name' => 'spider-man',
+            'is_primary' => 2,
+            'user_id' => 4
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/cover/5.jpg',
+            'name' => 'spider-man',
+            'is_primary' => 2,
+            'user_id' => 4
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/cover/6.jpg',
+            'name' => 'spider-man',
+            'is_primary' => 2,
+            'user_id' => 4
+        ]);
+        
 
     }
 }

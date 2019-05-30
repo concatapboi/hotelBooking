@@ -9,7 +9,6 @@ import register  from '@/js/frontend/components/register';
 import hotel  from '@/js/frontend/components/hotel';
 import singleHotel  from '@/js/frontend/components/singleHotel';
 import err  from '@/js/frontend/components/err';
-import account  from '@/js/frontend/components/account';
 import user  from '@/js/frontend/components/user';
 import contact  from '@/js/frontend/components/contact';
 import searching  from '@/js/frontend/components/searching';
@@ -49,11 +48,6 @@ const router = new VueRouter({
 			path: '/user.html',
 			name: 'user',
 			component: user
-		},
-		{
-			path: '/account.html',
-			name: 'account',
-			component: account
 		},
 		{
 			path: '/booking.html',

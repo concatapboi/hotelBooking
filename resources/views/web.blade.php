@@ -15,15 +15,15 @@
       <link rel="icon" href="{{asset('blog/img/core-img/favicon.png')}}">
 
       <!-- Stylesheet -->
-      <link rel="stylesheet" href="{{asset('blog/style.css')}}">        <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <!-- Styles -->
+      
+      <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
+      <link rel="stylesheet" href="{{asset('blog/style.css')}}">
+      <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">  
+      <!-- Styles -->
     </head>
     <body>
       
-    <div id="preloader">
-  		<div class="loader"></div>
-      </div>
+    
       <div id="app"></div>
                             
       <!-- Call To Action Area Start -->
@@ -154,6 +154,7 @@
 
       <!-- **** All JS Files ***** -->
       <!-- jQuery 2.2.4 -->
+      <script src="{{asset('js/app.js')}}"></script>
       <script src="{{asset('blog/js/jquery.min.js')}}"></script>
       <!-- Popper -->
       <script src="{{asset('blog/js/popper.min.js')}}"></script>
@@ -164,6 +165,6 @@
       <!-- Active -->
       <script src="{{asset('blog/js/default-assets/active.js')}}"></script>
 
-      <script src="{{asset('js/app.js')}}"></script>
+      
     </body>
 </html>

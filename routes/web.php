@@ -17,7 +17,14 @@ Route::group(['prefix' => '/admin'], function(){
 	Route::get('/{string}', 'PageController@adminIndex')->where('string','.*');
 });
 
+Route::group(['prefix' => '/community'], function(){    
+    Route::get('/', 'PageController@getCommunityPage');
+    Route::get('/{string}', 'PageController@getCommunityPage')->where('string','.*'); 
+});
+
 Route::group(['prefix' => ''], function(){    
     Route::get('/', 'PageController@index');
     Route::get('/{string}', 'PageController@index')->where('string','.*'); 
 });
+
+

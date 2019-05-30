@@ -2,5 +2,6 @@
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
     "/js/backend.js": "/js/backend.js",
+    "/js/community.js": "/js/community.js",
     "/js/managerlogin.js": "/js/managerlogin.js"
 }

@@ -10,9 +10,9 @@ require('./bootstrap');
 // window.Vue = require('vue');
 import Vue  from 'vue';
 import Vuetify  from 'vuetify';
-
+import 'vuetify/dist/vuetify.min.css'
 import Routes  from '@/js/frontend/routes.js';
-import App  from '@/js/frontend/frontend';
+import App  from '@/js/frontend/app';
 
 
 Vue.use(Vuetify);
