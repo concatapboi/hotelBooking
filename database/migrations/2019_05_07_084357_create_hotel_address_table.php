@@ -14,15 +14,17 @@ class CreateHotelAddressTable extends Migration
     public function up()
     {
         Schema::create('hotel_address', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('ward_id')->unsigned();
             $table->integer('hotel_id')->unsigned();
+            $table->string('address');
             $table->timestamps();
             $table->foreign('ward_id')
-            ->references('id')->on('ward')
-            ->onDelete('cascade');
+                ->references('id')->on('ward')
+                ->onDelete('cascade');
             $table->foreign('hotel_id')
-            ->references('id')->on('hotel')
-            ->onDelete('cascade');
+                ->references('id')->on('hotel')
+                ->onDelete('cascade');
         });
     }
 

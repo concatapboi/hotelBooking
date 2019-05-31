@@ -23,7 +23,6 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
         'email_verified_at' => now(),
         'password' => '$2y$12$82PIBhK8MovKXkLUNkyb7Omctq6jR3F3ROkjtb0JcArXpllvX2bXO', // secret
         'remember_token' => Str::random(10),
-        'api_token' => Str::random(60),
     ];
 });
 
@@ -44,10 +43,13 @@ $factory->define(App\Models\Hotel::class, function (Faker $faker) {
         'credit_card' => $faker->creditCardNumber,
         'rank_point' => $no,
         'name' => $faker->lastName,
+        'description' => $faker->text($maxNbChars = 200),
+        'stars_num' => rand(0,5),
         'meta_name' => 'hotel',
         'tax_code' => 'IT98746784967'.$no++,
         'review_point' => 0,
         'fax_number' => '71937729'.$no,
+        'phone_number' => $faker->phoneNumber,
         'coin' => 1000000,
         'hotel_type_id' => 1,
         'hotel_manager_id' => 1,

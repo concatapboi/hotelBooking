@@ -17,4 +17,7 @@ class HotelManager extends Model
 	public function User(){
 		return $this->belongsTo('App\Models\User');
 	}
+	public function Hotel(){
+		return $this->hasMany('App\Models\Hotel','hotel_manager_id','user_id');
+	}
 }

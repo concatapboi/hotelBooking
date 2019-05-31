@@ -17,9 +17,19 @@ use App\Http\Controllers\Controller;
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->all();
 // });
-Route::group(['prefix' => '/manager'], function(){
-    Route::post('login','Backend\AuthController@login');
-    Route::post('register','Backend\AuthController@register');
+Route::group(['prefix' => '/manager'], function () {
+    Route::post('login', 'Backend\AuthController@login');
+    Route::post('register', 'Backend\AuthController@register');
+    Route::resource('hotel', 'Backend\HotelController');
+    Route::resource('hotel-type', 'Backend\HotelTypeController');
+    Route::get('hotel-address', 'Backend\AddressController@getAddress');
+    Route::post('country', 'Backend\AddressController@postCountries');
+    Route::get('province', 'Backend\AddressController@getProvince');
+    Route::get('district', 'Backend\AddressController@getDistrict');
+    Route::get('ward', 'Backend\AddressController@getWard');
+    Route::middleware('auth:api')->group(function () {
+        // Route::resource('hotel','Backend\HotelController');
+    });
 });
 
 Route::resource('/hotel', 'Frontend\HotelController');
@@ -28,8 +38,8 @@ Route::resource('/user', 'Frontend\UserController');
 Route::get('/get-top5-user', 'Frontend\UserController@getTop5');
 Route::get('/check-user', 'Frontend\UserController@checkUser');
 Route::resource('/image', 'Frontend\UserImageController');
-Route::post('/login','Frontend\AuthController@postLogin');
-Route::get('/getUserLogin','Frontend\AuthController@getUserLogin');
-Route::get('/getLogout','Frontend\AuthController@getLogout');
-Route::get('/check','Frontend\AuthController@check');
-Route::post('/register','Frontend\AuthController@postRegister');
+Route::post('/login', 'Frontend\AuthController@postLogin');
+Route::get('/getUserLogin', 'Frontend\AuthController@getUserLogin');
+Route::get('/getLogout', 'Frontend\AuthController@getLogout');
+Route::get('/check', 'Frontend\AuthController@check');
+Route::post('/register', 'Frontend\AuthController@postRegister');

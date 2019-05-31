@@ -73,7 +73,7 @@ export default {
       password_confirmation: "",
       password_confirmationError: "",
       show: false,
-      email: "",
+      email: ""
     };
   },
   methods: {
@@ -99,15 +99,15 @@ export default {
           if (response.data.status == true) {
             window.location.href = "/manager/home";
           } else {
-            if(response.data.errors.username)
-            this.usernameError = response.data.errors.username[0];
-            if(response.data.errors.email)
-            this.emailError = response.data.errors.email[0];
-            if(response.data.errors.password)
-            this.passwordError = response.data.errors.password[0];
-            if(response.data.errors.password_confirmation)
-            this.password_confirmationError =
-              response.data.errors.password_confirmation[0];
+            if (response.data.errors.username)
+              this.usernameError = response.data.errors.username[0];
+            if (response.data.errors.email)
+              this.emailError = response.data.errors.email[0];
+            if (response.data.errors.password)
+              this.passwordError = response.data.errors.password[0];
+            if (response.data.errors.password_confirmation)
+              this.password_confirmationError =
+                response.data.errors.password_confirmation[0];
             console.log(response.data.errors);
           }
         })

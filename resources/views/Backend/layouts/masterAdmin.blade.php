@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    @include('Backend.layouts.header')
+@include('backend.layouts.header')
 
-</head>
-
-<body class="animsition">
+<body class="animsitions">
     <div class="page-wrapper">
         <!-- HEADER MOBILE-->
         <header class="header-mobile d-block d-lg-none">
@@ -29,10 +26,10 @@
                     <ul class="navbar-mobile__list list-unstyled">
                         <li class="has-sub">
                             <a class="js-arrow" href="#">
-                                <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                                <i class="fas fa-tachometer-alt"></i>Hotels</a>
                             <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
                                 <li>
-                                    <a href="index.html">Dashboard 1</a>
+                                    <a href="index.html">Your hotels</a>
                                 </li>
                                 <li>
                                     <a href="index2.html">Dashboard 2</a>
@@ -137,10 +134,10 @@
                     <ul class="list-unstyled navbar__list">
                         <li class="active has-sub">
                             <a class="js-arrow" href="#">
-                                <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                                <i class="fas fa-tachometer-alt"></i>Hotels</a>
                             <ul class="list-unstyled navbar__sub-list js-sub-list">
                                 <li>
-                                    <a href="index.html">Dashboard 1</a>
+                                    <a href="index.html">Your hotels</a>
                                 </li>
                                 <li>
                                     <a href="index2.html">Dashboard 2</a>
@@ -957,7 +954,7 @@
 
     </div>
 
-   @include('Backend.layouts.footer')
+    @include('backend.layouts.footer')
 
 </body>
 
