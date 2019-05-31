@@ -56,17 +56,21 @@ export default {
           email: this.email,
           password: this.password
         }
-      }).then(response => {
-        console.log(response.data);
-        if (response.data.status == true) {
-          if (response.data.role == "admin")
-            window.location.href = "/admin/home";
-          else window.location.href = "/manager/home";
-        } else {
-          this.messages = response.data.messages;
-          this.show = true;
-        }
-      });
+      })
+        .then(response => {
+          console.log(response.data);
+          if (response.data.status == true) {
+            if (response.data.role == "admin")
+              window.location.href = "/admin/home";
+            else window.location.href = "/manager/home";
+          } else {
+            this.messages = response.data.messages;
+            this.show = true;
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
     }
     //},
     // mounted () {

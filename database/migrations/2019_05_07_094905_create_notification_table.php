@@ -14,15 +14,13 @@ class CreateNotificationTable extends Migration
     public function up()
     {
         Schema::create('notification', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('customer_id')->unsigned();
-            $table->integer('review_id')->unsigned();
-            $table->tinyInteger('status')->default(1);
+            $table->string('content');
+            $table->string('link');
             $table->timestamps();
             $table->foreign('customer_id')
             ->references('user_id')->on('customer')
-            ->onDelete('cascade');
-            $table->foreign('review_id')
-            ->references('id')->on('review')
             ->onDelete('cascade');
         });
     }

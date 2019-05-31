@@ -8,14 +8,25 @@
 require('./bootstrap');
 
 // window.Vue = require('vue');
-import Vue  from 'vue';
-import Vuetify  from 'vuetify';
+import Vue from 'vue';
+import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css'
+import Routes from '@/js/backend/routes.js';
+import App from '@/js/backend/backend';
+import colors from 'vuetify/es5/util/colors';
+import VeeValidate from 'vee-validate';
 
-import Routes  from '@/js/backend/routes.js';
-import App  from '@/js/backend/backend';
-
-
-Vue.use(Vuetify);
+Vue.use(VeeValidate,{
+    events: 'change'
+});
+Vue.use(Vuetify, {
+    theme: {
+        primary: '#1cc3b2', // #colors.red.darken1
+        secondary: colors.red.lighten4, // #FFCDD2
+        accent: colors.indigo.base // #3F51B5
+    },
+    // iconfont: 'mdi',
+});
 
 /**
  * The following block of code may be used to automatically register your
@@ -38,8 +49,8 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
-    router : Routes,
-    render : h => h(App),
+    router: Routes,
+    render: h => h(App),
 });
 
 export default app;

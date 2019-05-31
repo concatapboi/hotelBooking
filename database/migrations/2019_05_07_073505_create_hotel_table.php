@@ -17,7 +17,10 @@ class CreateHotelTable extends Migration
             $table->increments('id');
             $table->tinyInteger('verified')->default(0);
             $table->string('credit_card');
-            $table->integer('rank_point');
+            $table->string('description');
+            $table->integer('rank_point')->default(0);
+            $table->integer('stars_num')->default(0);
+            $table->string('phone_number');
             $table->string('name');
             $table->string('meta_name');
             $table->string('tax_code');

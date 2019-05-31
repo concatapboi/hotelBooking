@@ -3,11 +3,11 @@
 
 <head>
     <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
-    <link rel="stylesheet" href="{{asset("css/app.css")}}">
+    <link href="{{asset("")}}">
+    <link rel="stylesheet" href="{{asset("blog/css/bootstrap.min.css")}}">
     {{-- <link rel="stylesheet" href="../node_modules/vuetify/src/stylus/main"> --}}
     {{-- <script src="../node_modules/vuetify/src/stylus/main"> --}}
     @include('Backend.layouts.header')
-
 
 </head>
 
@@ -16,7 +16,7 @@
     </div>
 
     @include('Backend.layouts.footer')
-<script src="{{asset("js/managerLogin.js")}}"></script>
+    <script src="{{asset("js/managerLogin.js")}}"></script>
 </body>
 
 </html>

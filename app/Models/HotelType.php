@@ -12,4 +12,7 @@ class HotelType extends Model
     'name',
     'meta_name',
   ];
+  public function Hotel(){
+		return $this->hasMany('App\Models\Hotel','hotel_manager_id','id');
+	}
 }

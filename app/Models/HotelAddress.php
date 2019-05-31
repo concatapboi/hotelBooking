@@ -11,5 +11,6 @@ class HotelAddress extends Model
   protected $fillable =[
     'ward_id',
     'hotel_id',
+    'address',
   ];
 }
