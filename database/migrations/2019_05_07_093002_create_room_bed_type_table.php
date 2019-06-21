@@ -16,6 +16,7 @@ class CreateRoomBedTypeTable extends Migration
         Schema::create('room_bed_type', function (Blueprint $table) {
             $table->integer('bed_type_id')->unsigned();
             $table->integer('room_id')->unsigned();
+            $table->integer('amount');
             $table->timestamps();
             $table->foreign('bed_type_id')
             ->references('id')->on('bed_type')

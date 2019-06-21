@@ -16,6 +16,7 @@ class Hotel extends Model
     'stars_num',
     'name',
     'meta_name',
+    'child_age',
     'tax_code',
     'review_point',
     'fax_number',
@@ -32,5 +33,8 @@ class Hotel extends Model
   }
   public function Address(){
 		return $this->belongsTo('App\Models\HotelAddress','id','hotel_id');
+  }
+  public function Room(){
+		return $this->hasMany('App\Models\Room','hotel_id','id');
 	}
 }

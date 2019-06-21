@@ -18,7 +18,6 @@ class CreateRoomTypeTable extends Migration
             $table->string('name');
             $table->tinyInteger('status')->default(0);
             $table->string('description');
-            $table->integer('amount')->default(0);
             $table->timestamps();
         });
     }

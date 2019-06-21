@@ -15,7 +15,6 @@ class CreateRoomModeTable extends Migration
     {
         Schema::create('room_mode', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('price');
             $table->string('name');
             $table->tinyInteger('status')->default(0);
             $table->timestamps();

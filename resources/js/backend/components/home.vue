@@ -1,30 +1,30 @@
 <template>
   <div>
     <v-layout justify-space-around>
-      <v-card width="23%" class="cyan lighten-3" height="150px">
+      <v-card flat width="23%" class="red" height="150px">
         <v-card-title>
           <v-icon class="m-2">event_note</v-icon>
           <h2>Orders</h2>
         </v-card-title>
         <v-card-text>12</v-card-text>
       </v-card>
-      <v-card width="23%" class="yellow accent-3" height="150px">
+      <v-card flat width="23%" class="orange" height="150px">
         <v-card-title>
           <v-icon class="m-2">airline_seat_individual_suite</v-icon>
           <h2>Rooms</h2>
         </v-card-title>
         <v-card-text>12</v-card-text>
       </v-card>
-      <v-card width="23%" class="pink accent-2 white--text" height="150px">
+      <v-card flat width="23%" class="yellow" height="150px">
         <v-card-title>
-          <v-icon class="white--text m-2">loyalty</v-icon>
+          <v-icon class="m-2">loyalty</v-icon>
           <h2>Promotion</h2>
         </v-card-title>
         <v-card-text>12</v-card-text>
       </v-card>
-      <v-card width="23%" class="indigo darken-1 white--text" height="150px">
+      <v-card flat width="23%" class="green" height="150px">
         <v-card-title>
-          <v-icon class="white--text m-2">stars</v-icon>
+          <v-icon class="m-2">stars</v-icon>
           <h2>ETC</h2>
         </v-card-title>
         <v-card-text>12</v-card-text>
@@ -34,7 +34,7 @@
       <v-spacer></v-spacer>
       <v-dialog max-width="75%" scrollable v-model="dialog">
         <template v-slot:activator="{ on }">
-          <v-btn class="primary" v-on="on" @click="addNewTitle;">New hotel</v-btn>
+          <v-btn class="primary" flat v-on="on" @click="addNewTitle;">New hotel</v-btn>
         </template>
         <v-layout row>
           <v-flex>
@@ -43,8 +43,10 @@
                 <h1>{{formTitle}}</h1>
               </v-card-title>
               <v-divider></v-divider>
+
               <v-card-text height="100px">
                 <v-form ref="formNewHotel">
+                  <h3>General information</h3>
                   <v-layout row>
                     <v-text-field
                       v-validate="'required|min:10'"
@@ -187,6 +189,11 @@
                       outline
                     ></v-text-field>
                   </v-layout>
+                  <v-divider></v-divider>
+                  <h3>Images</h3>
+                  
+                  <v-divider></v-divider>
+                  <h3>Policies</h3>
                 </v-form>
               </v-card-text>
               <v-card-actions>
@@ -218,112 +225,114 @@
       </v-snackbar>
     </v-layout>
     <v-layout class="m-5">
-      <v-expansion-panel v-model="panelIndex" focusable>
-        <h1>Yours hotels</h1>
-        <v-expansion-panel-content v-for="(hotel,i) in arrayHotel" :key="i">
-          <template v-slot:header>
-            <div>
-              <v-layout>
-                <v-flex xs10>
-                  <h3>Hotel {{hotel.name}}</h3>
-                </v-flex>
-                <v-flex xs2 class="text-right">
-                  <v-btn icon @click.stop="editHotel(arrayHotel[i].id)">
-                    <v-icon color="primary">create</v-icon>
-                  </v-btn>
-                  <v-btn icon @click.stop="deleteHotel(arrayHotel[i].id)">
-                    <v-icon color="red">delete</v-icon>
-                  </v-btn>
-                  <v-dialog max-width="20%" v-model="confirmDialog">
-                    <v-card>
-                      <v-card-title>Confirmation</v-card-title>
-                      <v-card-text>{{confirmDialogText}}</v-card-text>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="primary" flat @click.stop="deleteHotelConfirm()">Confirm</v-btn>
-                        <v-btn color="red" flat @click="cancel">Cancel</v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-                </v-flex>
-              </v-layout>
-            </div>
-          </template>
-          <v-card>
-            <v-card-text class="grey lighten-3">
-              <v-container>
-                <v-parallax
-                  dark
-                  height="100px"
-                  src="https://pix6.agoda.net/hotelImages/10953/-1/62732aec5194871b6ee397fedbb3bf62.jpg?s=1024x768"
-                >
-                  <v-layout align-start justify-end column>
-                    <v-flex align-self-end class="m-4">
-                      <v-avatar class="yellow" size="54">
-                        <v-avatar class="primary" size="50">
-                          <h3 class="mt-2">{{hotel.review_point}}</h3>
-                          <!-- <v-img
+      <v-card dark flat color="blue-grey darken-4" class="p-2">
+        <v-expansion-panel class="elevation-0" v-model="panelIndex" focusable>
+          <h1>Yours hotels</h1>
+          <v-expansion-panel-content class="primary" v-for="(hotel,i) in arrayHotel" :key="i">
+            <template v-slot:header>
+              <div>
+                <v-layout>
+                  <v-flex xs10>
+                    <h3 class="black--text">Hotel {{hotel.name}}</h3>
+                  </v-flex>
+                  <v-flex xs2 class="text-right">
+                    <v-btn icon @click.stop="editHotel(arrayHotel[i].id)">
+                      <v-icon color="orange">create</v-icon>
+                    </v-btn>
+                    <v-btn icon @click.stop="deleteHotel(arrayHotel[i].id)">
+                      <v-icon color="red">delete</v-icon>
+                    </v-btn>
+                    <v-dialog max-width="20%" v-model="confirmDialog">
+                      <v-card>
+                        <v-card-title>Confirmation</v-card-title>
+                        <v-card-text>{{confirmDialogText}}</v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="primary" flat @click.stop="deleteHotelConfirm()">Confirm</v-btn>
+                          <v-btn color="red" flat @click="cancel">Cancel</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
+                  </v-flex>
+                </v-layout>
+              </div>
+            </template>
+            <v-card>
+              <v-card-text class="grey lighten-3 black--text">
+                <v-container>
+                  <v-parallax
+                    dark
+                    height="100px"
+                    src="https://pix6.agoda.net/hotelImages/10953/-1/62732aec5194871b6ee397fedbb3bf62.jpg?s=1024x768"
+                  >
+                    <v-layout align-start justify-end column>
+                      <v-flex align-self-end class="m-4">
+                        <v-avatar class="yellow" size="54">
+                          <v-avatar class="primary" size="50">
+                            <h3 class="mt-2">{{hotel.review_point}}</h3>
+                            <!-- <v-img
                           src="https://www.sccpre.cat/png/big/87/870692_glow-circle-png.png"
                         >
                           <h3 class="mt-3">{{hotel.review_point}}</h3>
-                          </v-img>-->
+                            </v-img>-->
+                          </v-avatar>
                         </v-avatar>
-                      </v-avatar>
+                      </v-flex>
+                      <h1 class="ml-2">{{hotel.name}}</h1>
+                      <v-rating
+                        background-color="orange lighten-3"
+                        color="orange"
+                        readonly
+                        v-model="hotel_stars_num"
+                      ></v-rating>
+                      <div class="mb-3">
+                        <v-icon color="pink">room</v-icon>Tp HCM
+                      </div>
+                    </v-layout>
+                  </v-parallax>
+                  <v-divider></v-divider>
+                  <v-layout row>
+                    <v-flex xs3 offset-xs1>
+                      <h5>Hotel Type</h5>
                     </v-flex>
-                    <h1 class="ml-2">{{hotel.name}}</h1>
-                    <v-rating
-                      background-color="orange lighten-3"
-                      color="orange"
-                      readonly
-                      v-model="hotel_stars_num"
-                    ></v-rating>
-                    <div class="mb-3">
-                      <v-icon color="pink">room</v-icon>Tp HCM
-                    </div>
+                    <v-flex xs8>{{hotel.hotel_type}}</v-flex>
                   </v-layout>
-                </v-parallax>
-                <v-divider></v-divider>
-                <v-layout row>
-                  <v-flex xs3 offset-xs1>
-                    <h5>Hotel Type</h5>
-                  </v-flex>
-                  <v-flex xs8>{{hotel.hotel_type}}</v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs3 offset-xs1>
-                    <h5>Hotel Description</h5>
-                  </v-flex>
-                  <v-flex xs8>{{hotel.description}}</v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs3 offset-xs1>
-                    <h5>Hotel Tax code</h5>
-                  </v-flex>
-                  <v-flex xs8>{{hotel.tax_code}}</v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs3 offset-xs1>
-                    <h5>Review point</h5>
-                  </v-flex>
-                  <v-flex xs8>{{hotel.review_point}}</v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs3 offset-xs1>
-                    <h5>Fax number</h5>
-                  </v-flex>
-                  <v-flex xs8>{{hotel.fax_number}}</v-flex>
-                </v-layout>
-                <v-layout row>
-                  <v-flex xs3 offset-xs1>
-                    <h5>Coin</h5>
-                  </v-flex>
-                  <v-flex xs8>{{hotel.coin}}</v-flex>
-                </v-layout>
-              </v-container>
-            </v-card-text>
-          </v-card>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
+                  <v-layout row>
+                    <v-flex xs3 offset-xs1>
+                      <h5>Hotel Description</h5>
+                    </v-flex>
+                    <v-flex xs8>{{hotel.description}}</v-flex>
+                  </v-layout>
+                  <v-layout row>
+                    <v-flex xs3 offset-xs1>
+                      <h5>Hotel Tax code</h5>
+                    </v-flex>
+                    <v-flex xs8>{{hotel.tax_code}}</v-flex>
+                  </v-layout>
+                  <v-layout row>
+                    <v-flex xs3 offset-xs1>
+                      <h5>Review point</h5>
+                    </v-flex>
+                    <v-flex xs8>{{hotel.review_point}}</v-flex>
+                  </v-layout>
+                  <v-layout row>
+                    <v-flex xs3 offset-xs1>
+                      <h5>Fax number</h5>
+                    </v-flex>
+                    <v-flex xs8>{{hotel.fax_number}}</v-flex>
+                  </v-layout>
+                  <v-layout row>
+                    <v-flex xs3 offset-xs1>
+                      <h5>Coin</h5>
+                    </v-flex>
+                    <v-flex xs8>{{hotel.coin}}</v-flex>
+                  </v-layout>
+                </v-container>
+              </v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-card>
     </v-layout>
   </div>
 </template>
@@ -341,6 +350,12 @@ export default {
     },
     arrayProvince: {
       type: Array
+    },
+    arrayService: {
+      type: Array
+    },
+    api_token :{
+      type : String
     }
   },
   data: function() {
@@ -379,12 +394,12 @@ export default {
   },
   watch: {
     panelIndex: function() {
-      var hotel = this.arrayHotel[this.panelIndex];
-      this.hotel_stars_num = hotel.stars_num;
-      // this.snackbar = true;
-      // this.snackbarText = "Now working with hotel " + hotel.name;
-      // this.snackbarTimeout = 1000;
-      this.$emit("chooseHotel", hotel.id);
+      if (this.panelIndex !== null) {
+        var hotel = this.arrayHotel[this.panelIndex];
+        // if (hotel !== null) {
+        this.hotel_stars_num = hotel.stars_num;
+        this.$emit("chooseHotel", hotel.id);
+      }
     }
   },
   computed: {
@@ -417,7 +432,8 @@ export default {
               credit_card: this.newHotelData.credit_card,
               phone: this.newHotelData.phone,
               fax_number: this.newHotelData.fax_number,
-              tax_code: this.newHotelData.tax_code
+              tax_code: this.newHotelData.tax_code,
+              arrayService: this.arrayServiceChoose,
             }
           })
             .then(response => {

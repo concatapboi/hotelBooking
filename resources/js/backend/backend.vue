@@ -1,6 +1,6 @@
 <template>
-  <v-app>
-    <v-navigation-drawer clipped app fixed class="primary" dark v-model="drawer">
+  <v-app v-show="loaded">
+    <v-navigation-drawer clipped app fixed class="text--black" light v-model="drawer">
       <v-list>
         <v-list-tile class="style-link" :to="{name:'home'}">
           <v-list-tile-action>
@@ -21,16 +21,28 @@
             </v-list-tile>
           </template>
           <v-list-tile class="style-link" :to="{name:'room'}">
-            <v-list-tile-title>Gerneral information</v-list-tile-title>
+            <v-list-tile-title>Rooms</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile class="style-link" :to="{name:'room-facility'}">
+            <v-list-tile-title>Room facility</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
+        <v-list-tile class="style-link" :to="{name:'service'}">
+          <v-list-tile-action>
+            <v-icon>{{items[2].icon}}</v-icon>
+          </v-list-tile-action>
+
+          <v-list-tile-content>
+            <v-list-tile-title>{{items[2].title}}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app fixed clipped-left>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer">
+    <v-toolbar color="#0e2737" app fixed clipped-left flat class="white--text">
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" class="teal accent-4">
         <v-icon>dehaze</v-icon>
       </v-toolbar-side-icon>
-      <v-toolbar-title>Cool admin</v-toolbar-title>
+      <v-toolbar-title class="white--text">Cool admin</v-toolbar-title>
       <v-spacer></v-spacer>
       <!-- <div>Currently working with
       <v-btn dark depressed round small>
@@ -41,17 +53,17 @@
       <div v-if="hotelName === ''"></div>
       <div v-else>
         Currently working with
-        <v-btn dark depressed round small>{{hotelName}}</v-btn>
+        <v-btn @click="logout" dark depressed round small>{{hotelName}}</v-btn>
       </div>
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat>do sth</v-btn>
-        <v-avatar class="mt-2">
+        <!-- <v-btn flat>do sth</v-btn> -->
+        <v-avatar class="mt-2" @click="logout">
           <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
         </v-avatar>
       </v-toolbar-items>
     </v-toolbar>
 
-    <v-content>
+    <v-content class="grey lighten-4">
       <v-container fluid>
         <!-- <router-view :is="currentComponent" v-bind="currentProperties"></router-view> -->
         <router-view
@@ -59,6 +71,8 @@
           v-bind:arrayHotel="arrayHotel"
           v-bind:arrayHotelType="arrayHotelType"
           v-bind:arrayProvince="arrayProvince"
+          v-bind:arrayService="arrayService"
+          v-bind:api_token="api_token"
           v-on:changeArrayHotel="update($event)"
           v-on:chooseHotel="chooseHotel($event)"
         ></router-view>
@@ -67,13 +81,15 @@
   </v-app>
 </template>
 <script>
+import { setTimeout } from 'timers';
 export default {
   data: function() {
     return {
+      loaded : false,
       items: [
         { icon: "home", title: "Home" },
         { icon: "business", title: "Your Rooms" },
-        { icon: "info", title: "About" }
+        { icon: "grade", title: "Service" }
       ],
       drawer: null,
       userID: 1,
@@ -82,6 +98,7 @@ export default {
       arrayProvince: [],
       arrayDistrict: [],
       arrayWard: [],
+      arrayService: [],
       formTitle: "",
       districtDisabled: true,
       wardDisabled: true,
@@ -93,7 +110,8 @@ export default {
       hotelName: "",
       hotel_stars_num: 2,
       currentProperties: "",
-      showMenu: false
+      showMenu: false,
+      api_token: ""
     };
   },
   watch: {
@@ -104,26 +122,51 @@ export default {
           arrayHotelType: this.arrayHotelType,
           arrayProvince: this.arrayProvince
         };
-      } else if (to.name == "room") {
+      } else if (to.name == "room" || to.name == "service") {
         this.currentProperties = {
           hotelId: this.hotelId
         };
       }
+    },
+    api_token: function() {
+      console.log(this.api_token);
     }
   },
+  beforeCreate(){
+    // this.api_token = localStorage.getItem("api_token");
+    // // console.log(this.api_token);
+    // if (this.api_token == null) {
+    //   document.location.href = "login";
+    //   // window.location.replace("http://localhost:8000/manager/login");
+    // } else{
+    //   this.loaded = true;
+    //   // alert(this.loaded);
+    // }
+  },
   created() {
+    this.api_token = localStorage.getItem("api_token");
+    // console.log(this.api_token);
+    if (this.api_token == null) {
+      document.location.href = "login";
+      // window.location.replace("http://localhost:8000/manager/login");
+    } else{
+      this.loaded = true;
+      // alert(this.loaded);
+    }
     this.initialize();
   },
   methods: {
     initialize() {
       var _this = this;
+
       axios
         .get("http://localhost:8000/api/manager/hotel", {
-          params: {
-            api_token: 123
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
+          console.log(response);
           _this.arrayHotel = response.data.data;
         })
         .catch(function(error) {
@@ -131,8 +174,8 @@ export default {
         });
       axios
         .get("http://localhost:8000/api/manager/hotel-type", {
-          params: {
-            api_token: 123
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
@@ -143,10 +186,22 @@ export default {
           console.log(error);
         });
       axios
-        .get("http://localhost:8000/api/manager/province", {})
+        .get("http://localhost:8000/api/manager/province")
         .then(response => {
           var arrayProvince = response.data.data;
           _this.arrayProvince = arrayProvince;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+      axios
+        .get("http://localhost:8000/api/manager/service", {
+          params: {
+            api_token: this.api_token
+          }
+        })
+        .then(response => {
+          _this.arrayService = response.data.data;
         })
         .catch(function(error) {
           console.log(error);
@@ -170,6 +225,24 @@ export default {
       if (this.hotelId != -1) {
         this.showMenu = true;
       }
+    },
+    logout: function() {
+      axios({
+        method: "post",
+        url: "http://localhost:8000/api/manager/logout",
+        headers: {
+            Authorization: "Bearer " + this.api_token
+          }
+      })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      localStorage.removeItem("api_token");
+      this.api_token = null;
+      location.href = "login";
     }
   }
 };

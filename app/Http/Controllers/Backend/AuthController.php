@@ -11,6 +11,9 @@ use Auth;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\HotelManager;
+use JWTAuth;
+use Response;
+use App\Models\Admin;
 
 class AuthController extends Controller
 {
@@ -18,36 +21,67 @@ class AuthController extends Controller
 	{
 		$email = $request->email;
 		$password = $request->password;
-		$arr = [
-			'email' => $email,
+		$field = filter_var($email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+		$credentials = [
+			$field => $email,
 			'password' => $password,
 		];
-		if (filter_var($email, FILTER_VALIDATE_EMAIL) != false) {
-			Auth::guard('admin')->attempt(['email' => $email, 'password' => $password]);
-			Auth::guard('manager')->attempt(['email' => $email, 'password' => $password]);
+		$err = [
+			'status' => false,
+			'error' => 'invalid.credentials',
+			'messages' => 'Invalid Credentials.'
+		];
+		if (!($token = JWTAuth::attempt($credentials))) {
+
+			return response()->json($err);
 		} else {
-			Auth::guard('admin')->attempt(['username' => $email, 'password' => $password]);
-			Auth::guard('manager')->attempt(['username' => $email, 'password' => $password]);
+			$user = Auth::user();
+			// dd($user->isHotelManager());
+			if ($user->isCustomer() == false) {
+				if ($user->isHotelManager() == true) {
+					$role = "manager";
+				} else {
+					$role = "admin";
+				}
+				return response()->json(
+					[
+						'role' => $role,
+						'token' => $token,
+						'status' => true
+					]
+				);
+			} else {
+				return response()->json($err);
+			}
 		}
-		if (Auth::guard("admin")->check()) {
-			return response()->json([
-				"status" => true,
-				"data" => Auth::guard('admin')->user(),
-				"role" => "admin",
-				"messages" => "login succesfully",
-			]);
-		} else if (Auth::guard("manager")->check()) {
-			return response()->json([
-				"status" => true,
-				"data" => Auth::guard('manager')->user(),
-				"role" => "manager",
-				"messages" => "login succesfully",
-			]);
-		}
-		return response()->json([
-			"status" => false,
-			"messages" => "please check your credential again",
-		]);;
+
+
+		// if (filter_var($email, FILTER_VALIDATE_EMAIL) != false) {
+		// 	Auth::guard('admin')->attempt(['email' => $email, 'password' => $password]);
+		// 	Auth::guard('manager')->attempt(['email' => $email, 'password' => $password]);
+		// } else {
+		// 	Auth::guard('admin')->attempt(['username' => $email, 'password' => $password]);
+		// 	Auth::guard('manager')->attempt(['username' => $email, 'password' => $password]);
+		// }
+		// if (Auth::guard("admin")->check()) {
+		// 	return response()->json([
+		// 		"status" => true,
+		// 		"data" => Auth::guard('admin')->user(),
+		// 		"role" => "admin",
+		// 		"messages" => "login succesfully",
+		// 	]);
+		// } else if (Auth::guard("manager")->check()) {
+		// 	return response()->json([
+		// 		"status" => true,
+		// 		"data" => Auth::guard('manager')->user(),
+		// 		"role" => "manager",
+		// 		"messages" => "login succesfully",
+		// 	]);
+		// }
+		// return response()->json([
+		// 	"status" => false,
+		// 	"messages" => "please check your credential again",
+		// ]);;
 	}
 
 	public function register(Request $request)
@@ -67,7 +101,7 @@ class AuthController extends Controller
 			'password' => 'required|confirmed|min:8',
 			'password_confirmation' => 'required'
 		]);
-		
+
 		if ($validator->fails()) {
 			return response()->json([
 				"status" => false,
@@ -100,5 +134,13 @@ class AuthController extends Controller
 	public function managerLogin()
 	{
 		return view("Backend.ManagerLogin");
+	}
+	public function logout()
+	{
+		JWTAuth::invalidate();
+		return response([
+			'status' => 'success',
+			'msg' => 'Logged out Successfully.'
+		]);
 	}
 }
