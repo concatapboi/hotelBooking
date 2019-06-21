@@ -1,0 +1,64 @@
+a {
+    color: #000 !important;
+    text-decoration: none;
+}
+  
+a:hover {
+    color: #00bfa5 !important;
+    text-decoration: none;
+}
+
+.search-input {
+  height: 30px;
+  border: 1px solid #f5f6fa;
+  border-radius: 2px;
+  text-align: center;
+  margin: 0 5px;  
+  color: #fff;
+}
+
+.top-search{
+  top:90px;
+  position: fixed;
+  height: 40px;
+  left:0;
+  right:0;
+  background-color: #0e2737;
+  z-index: 1;
+}
+
+.right-search, .container-search{
+  margin-top: 39px;
+}
+
+.right-search{
+  overflow: auto;
+  right:68%;
+  position: fixed;
+  height: 72%;
+  left:5px;
+}
+
+.search-item{
+  border: 1px solid #7f8c8d;
+  margin: 5px;
+  padding: 10px;
+  background-color: #dcdde1;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+}
+.search-room-content{
+  margin-bottom: 5px !important;
+  background-color: #ffffff;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+}
+
+.hotel-tab{
+  margin: 0 !important;
+  margin-top: 5px !important;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+}
+.hotel-info-item{
+  margin-bottom: 5px !important;
+  margin-left: 2px !important;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+}

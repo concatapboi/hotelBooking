@@ -15,7 +15,6 @@ import VeeValidate from 'vee-validate';
 import Routes from '@/js/frontend/community/routes.js';
 import App from '@/js/frontend/community/app';
 
-
 Vue.use(Vuetify);
 Vue.use(VeeValidate);
 /**

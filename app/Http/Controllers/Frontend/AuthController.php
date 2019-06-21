@@ -17,16 +17,15 @@ class AuthController extends Controller
 
     public function postLogin(Request $req)
     {
-
         $validateData = Validator::make(
             $req->all(),
             [
-                'username' => 'required|min:3',
+                'username' => 'required|min:4',
                 'password' => 'required|min:4'
             ],
             [
                 'username.required' => 'Username is empty!',
-                'username.min' => 'Username must be more than 2 charaters!',
+                'username.min' => 'Username must be more than 3 charaters!',
                 'password.required' => 'Password is empty!',
                 'password.min' => 'Password must be more than 3 charaters!'
             ]
@@ -42,7 +41,6 @@ class AuthController extends Controller
 
         $arr = array('username' => $req->username, 'password' => $req->password);
         if (Auth::attempt($arr)) {
-
             $status = User::find(Auth::user()->id)->isCustomer();
         }
         return response()->json([
