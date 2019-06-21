@@ -22,29 +22,49 @@
               <span>Lock comment</span>
             </v-tooltip>
           </template>
-          <v-card :color="color.header" width="800px" min-height="120px" class="pa-1" flat tile>
-            <v-card-title class="white--text">
-              <v-avatar size="70px" flat color="white">
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <img :src="item.customer.avatar" v-on="on">
-                  </template>
-                  <span>{{item.customer.name }}</span>
-                </v-tooltip>
+          <v-card light min-height="120px" class="pa-1" flat tile width="800px">
+            <v-card-title>
+              <v-avatar size="72px" color="black" flat>
+                <v-avatar size="70px" color="white">
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <img :src="item.customer.avatar" v-on="on">
+                    </template>
+                    <span>{{item.customer.name }}</span>
+                  </v-tooltip>
+                </v-avatar>
               </v-avatar>
               <span class="title pl-3 font-weight-light">{{item.customer.name}}</span>
               <v-spacer></v-spacer>
-              <v-tooltip top>
+              <v-menu bottom right>
                 <template v-slot:activator="{ on }">
-                  <v-icon medium :color="color.grey" v-on="on" v-on:click="hide(index)">close</v-icon>
+                  <v-btn fab icon v-on="on">
+                    <v-icon color="black">more_vert</v-icon>
+                  </v-btn>
                 </template>
-                <span>Hide</span>
-              </v-tooltip>
+                <v-list dark>
+                  <v-list-tile>
+                    <v-list-tile-title>Hide</v-list-tile-title>
+                  </v-list-tile>
+                  <v-list-tile>
+                    <v-list-tile-title>Off notification</v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
             </v-card-title>
+            <v-divider class="m-0 p-0"></v-divider>
             <v-card-text>
-              <span class="headline white--text">" {{item.review.title}} "</span>
+              <span class="headline">" {{item.review.title}} "</span>
               <v-layout>
-                <v-card flat tile tag="div" class="radius">
+                <v-card
+                  flat
+                  tile
+                  tag="div"
+                  width="100%"
+                  class="radius"
+                  color="grey lighten-2"
+                  light
+                >
                   <v-card-text class="font-weight-bold font-italic">{{item.review.content}}</v-card-text>
                 </v-card>
               </v-layout>
@@ -72,7 +92,7 @@
                 </template>
                 <span>like</span>
               </v-tooltip>
-              <span class="white--text subheading">{{item.review.likes}}</span>
+              <span class="grey--text subheading">{{item.review.likes}}</span>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-icon
@@ -94,10 +114,12 @@
                 </template>
                 <span>comment</span>
               </v-tooltip>
-              <span class="white--text subheading">{{item.review.comments.amount}}</span>
+              <span class="grey--text subheading">{{item.review.comments.amount}}</span>
             </v-card-actions>
+            <v-divider v-show="item.review.comments.amount>0 && item.model" class="pa-0 ma-0"></v-divider>
             <v-layout class="row wrap" justify-center v-if="item.model">
               <v-card
+                light
                 flat
                 tile
                 width="790px"
@@ -106,33 +128,45 @@
                 :key="i"
               >
                 <v-card-title>
-                  <v-avatar size="40px" flat color="white">
-                    <img :src="value.customer.avatar">
+                  <v-avatar size="42px" color="black" flat>
+                    <v-avatar size="40px" flat color="white">
+                      <img :src="value.customer.avatar">
+                    </v-avatar>
                   </v-avatar>
                   <span class="pl-3">{{value.customer.name}}</span>
                 </v-card-title>
-                <v-card-text>{{value.content}}</v-card-text>
+                <v-card-text>
+                  <v-layout>
+                    <v-card flat tile tag="div" color="grey lighten-2" width="100%" class="radius">
+                      <v-card-text
+                        class="font-weight-bold font-italic black--text"
+                      >{{value.content}}</v-card-text>
+                    </v-card>
+                  </v-layout>
+                </v-card-text>
+                <v-divider class="pa-0 ma-0"></v-divider>
               </v-card>
               <v-card flat tile width="790px" v-show="item.review.comments.state">
-                <v-layout align-center>
-                  <v-flex class="md10">
-                    <v-text-field
-                      label="New comment"
-                      full-width
-                      flat
-                      :color="color.comment"
-                      class="wrap"
-                    ></v-text-field>
+                <v-layout row wrap align-center>
+                  <v-flex md10 class="pl-3">
+                    <v-card-title>
+                      <v-textarea
+                        outline
+                        auto-grow
+                        rows="2"
+                        color="teal"
+                        label="New comment"
+                        clear-icon="$vuetify.icons.clear"
+                        clearable
+                      ></v-textarea>
+                    </v-card-title>
                   </v-flex>
                   <v-flex>
-                    <div class="enterButton text-lg-center radius">
-                      <v-tooltip top>
-                        <template v-slot:activator="{ on }">
-                          <v-icon large :color="color.header" class="pt-2" v-on="on">check</v-icon>
-                        </template>
-                        <span>Send text</span>
-                      </v-tooltip>
-                    </div>
+                    <v-card-actions>
+                      <v-btn large depressed dark color="teal">
+                        <span>Send</span>
+                      </v-btn>
+                    </v-card-actions>
                   </v-flex>
                 </v-layout>
               </v-card>
@@ -150,59 +184,130 @@
       </v-layout>
     </v-flex>
     <v-flex shrink md4>
-      <v-expansion-panel dark class="elevation-0" expand v-model="expand">        
-          <v-expansion-panel-content class="mb-3" v-for="(panel,index) in panels" :key="index">
-            <template v-slot:actions>
-              <v-icon>expand_more</v-icon>
-            </template>
-            <template v-slot:header>
-              <div class="title my-3 text-uppercase">{{panel.header}}</div>
-            </template>
-            <v-list two-line subheader>
-              <v-subheader inset class="ma-0 caption">
-                based on &nbsp;
-                <span class="font-weight-bold">system recommend</span>
-              </v-subheader>
-              <v-divider class="ma-0"></v-divider>
-              <v-list-tile v-for="(item,i) in panel.items" :key="i">
-                <v-list-tile-avatar class="ma-2">
-                  <v-icon large :color="stars.top1" v-if="index===0 && i===0">star</v-icon>
-                  <v-icon large :color="stars.top2" v-else-if="index===0 && i===1">star</v-icon>
-                  <v-icon large :color="stars.top3" v-else-if="index===0 && i===2">star</v-icon>
-                  <v-icon large :color="stars.none" v-else-if="index===0 && i===3">star</v-icon>
-                  <v-avatar size="50px" flat color="white" v-show="index===1">
-                    <img src="http://localhost:8000/img/spider-man.png" alt>
-                  </v-avatar>
-                </v-list-tile-avatar>
-                <v-list-tile-content>
-                  <v-list-tile-title>{{item.name}}</v-list-tile-title>
-                  <v-list-tile-sub-title v-show="index===0">{{panel.description}}</v-list-tile-sub-title>
-                  <v-list-tile-sub-title v-show="index===0">
-                    <v-icon small color="pink">room</v-icon>&nbsp; tp Ho Chi Minh
-                  </v-list-tile-sub-title>
-                  <v-list-tile-sub-title v-show="index===1">{{item.username}}</v-list-tile-sub-title>
-                </v-list-tile-content>
-                <v-list-tile-action>
-                  <v-btn fab icon>
-                    <v-icon
-                      medium
-                      :color="color.follow"
-                      v-if="index===0"
-                      v-on:click="followHotel"
-                    >control_point</v-icon>
-                    <v-icon medium :color="color.follow" v-else v-on:click="followUser">person_add</v-icon>
-                  </v-btn>
-                </v-list-tile-action>
-              </v-list-tile>
-            </v-list>
-          </v-expansion-panel-content>        
+      <v-expansion-panel light class="elevation-0" expand v-model="expand">
+        <v-expansion-panel-content class="mb-3">
+          <template v-slot:actions>
+            <v-icon>expand_more</v-icon>
+          </template>
+          <template v-slot:header>
+            <div class="title my-3 text-uppercase">top 5 hotels</div>
+          </template>
+          <v-list two-line subheader>
+            <v-subheader inset class="ma-0 caption">
+              based on &nbsp;
+              <span class="font-weight-bold">system recommend</span>
+            </v-subheader>
+            <v-divider class="ma-0"></v-divider>
+            <v-list-tile v-for="(item,i) in top5Hotel" :key="i" v-on:click=";">
+              <v-list-tile-avatar class="ma-2">
+                <v-icon large :color="stars.top1" v-if=" i===0">star</v-icon>
+                <v-icon large :color="stars.top2" v-else-if="i===1">star</v-icon>
+                <v-icon large :color="stars.top3" v-else-if=" i===2">star</v-icon>
+                <v-icon large :color="stars.none" v-else-if="i===3">star</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-tooltip color="black" left max-width="300px">
+                  <template v-slot:activator="{ on }">
+                    <v-list-tile-title v-on="on">{{item.hotel.name}}</v-list-tile-title>
+                    <v-list-tile-sub-title v-on="on">
+                      <v-icon small color="pink">room</v-icon>&nbsp; tp Ho Chi Minh
+                    </v-list-tile-sub-title>
+                  </template>
+                  <v-badge overlap left color="red">
+                    <template v-slot:badge>
+                      <i class="fas fa-info"></i>
+                    </template>
+                    <v-card color="black" dark class="radius">
+                      <v-card-title>
+                        <v-rating
+                          v-model="item.hotel.stars_num"
+                          color="#fff200"
+                          background-color="grey darken-1"
+                          empty-icon="$vuetify.icons.ratingFull"
+                          half-incrementss
+                          readonly
+                          small
+                        ></v-rating>
+                        <span>{{item.hotel.description}}</span>
+                      </v-card-title>
+                    </v-card>
+                  </v-badge>
+                </v-tooltip>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-btn
+                  depressed
+                  color="grey lighten-2"
+                  v-on:click="followHotel(item.hotel)"
+                  v-if="!item.follow"
+                >
+                  <i class="fas fa-plus mx-2"></i>
+                  <span class="caption mr-1">follow</span>
+                </v-btn>
+                <v-btn depressed color="teal" v-on:click="unfollowHotel(item.hotel)" v-else>
+                  <i class="fas fa-check mx-2 white--text"></i>
+                  <span class="white--text caption mr-1">following</span>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list>
+        </v-expansion-panel-content>
+        <v-expansion-panel-content class="mb-3">
+          <template v-slot:actions>
+            <v-icon>expand_more</v-icon>
+          </template>
+          <template v-slot:header>
+            <div class="title my-3 text-uppercase">top 5 users</div>
+          </template>
+          <v-list two-line subheader>
+            <v-subheader inset class="ma-0 caption">
+              based on &nbsp;
+              <span class="font-weight-bold">system recommend</span>
+            </v-subheader>
+            <v-divider class="ma-0"></v-divider>
+            <v-list-tile v-for="(item,i) in top5User" :key="i" v-on:click=";">
+              <v-list-tile-avatar class="ma-2">
+                <v-avatar size="52px" flat color="black">
+                  <router-link :to="{name:'user',params:{id:item.user.id}}">
+                    <v-avatar size="50px" flat color="white">
+                      <img :src="item.avatar.image_link" alt>
+                    </v-avatar>
+                  </router-link>
+                </v-avatar>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <router-link :to="{name:'user',params:{id:item.user.id}}">
+                  <v-list-tile-title>{{item.user.name}}</v-list-tile-title>
+                </router-link>
+                <v-list-tile-title class="text-caption">{{item.user.username}}</v-list-tile-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+                <v-btn
+                  depressed
+                  color="grey lighten-2"
+                  v-on:click="followUser(item.user)"
+                  v-if="!item.follow"
+                >
+                  <i class="fas fa-plus mx-2"></i>
+                  <span class="caption mr-1">follow</span>
+                </v-btn>
+                <v-btn depressed color="teal" v-on:click="unfollowUser(item.user)" v-else>
+                  <i class="fas fa-check mx-2 white--text"></i>
+                  <span class="white--text caption mr-1">following</span>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-list>
+        </v-expansion-panel-content>
       </v-expansion-panel>
-    </v-flex>    
+    </v-flex>
   </v-layout>
 </template>
 
 <script>
 export default {
+  props: ["user"],
+  mounted() {},
   data() {
     return {
       expand: [true, true, true],
@@ -210,8 +315,7 @@ export default {
         {
           review: {
             title: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-            content:
-              "Illum velit nesciunt amet. Explicabo voluptatibus amet officia quam, necessitatibus mollitia iure neque? Obcaecati, ratione quis a atque sed temporibus? Ullam, consequatur.",
+            content: "Illum velit nesciunt amet.",
             usefulPoint: 1,
             createdAt: "2019-05-14 15:08:24",
             likes: 0,
@@ -445,22 +549,10 @@ export default {
         news: "#1B1464",
         follow: "#2d98da"
       },
-      panels: [
-        {
-          header: "top hotel",
-          description:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum molestias adipisci ex similique eaque optio ipsa atque tempora, placeat et minima obcaecati non architecto reprehenderit voluptatum aspernatur, magni debitis eum.",
-          items: []
-        },
-        {
-          header: "suggesions",
-          description:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum molestias adipisci ex similique eaque optio ipsa atque tempora, placeat et minima obcaecati non architecto reprehenderit voluptatum aspernatur, magni debitis eum.",
-          items: []
-        }
-      ],
-      avatar:{
-        link:null,
+      top5Hotel: [],
+      top5User: [],
+      avatar: {
+        link: null
       },
       stars: {
         top1: "#fed330",
@@ -476,32 +568,127 @@ export default {
   },
   methods: {
     getTop5Hotel: function() {
+      console.log(this.user.id);
       axios({
         method: "get",
-        url: "http://localhost:8000/api/get-top5-hotel"
+        url: "http://localhost:8000/api/get-top5-hotel",
+        params: {
+          id: this.user.id
+        }
       }).then(res => {
         console.log(res.data.top5);
-        this.panels[0].items = res.data.top5;
+        this.top5Hotel = res.data.top5;
         return;
       });
     },
     getTop5User: function() {
       axios({
         method: "get",
-        url: "http://localhost:8000/api/get-top5-user"
+        url: "http://localhost:8000/api/get-top5-user",
+        params: {
+          id: this.user.id
+        }
       }).then(res => {
         console.log(res.data.user);
-        this.panels[1].items = res.data.user;
+        this.top5User = res.data.user;
         return;
       });
     },
-    followUser: function() {
-      this.$emit("loadSnackbar", "Follow User!");
-      return;
+    followUser: function(value) {
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/following",
+        params: {
+          type: 0,
+          id: this.user.id,
+          followed: value.id
+        }
+      }).then(res => {
+        console.log(res.data.data);
+        if (res.data.data == null) {
+          this.$emit("loadSnackbar", "Something wrong!");
+          return;
+        }
+        this.$emit("loadSnackbar", "Following " + value.name);
+        for (var i = 0; i < this.top5User.length; i++) {
+          if (this.top5User[i].user.id === value.id) {
+            this.top5User[i].follow = true;
+          }
+        }
+        return;
+      });
     },
-    followHotel: function() {
-      this.$emit("loadSnackbar", "Follow Hotel!");
-      return;
+    unfollowUser: function(value) {
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/un-following",
+        params: {
+          type: 0,
+          id: this.user.id,
+          followed: value.id
+        }
+      }).then(res => {
+        console.log(res.data.data);
+        if (res.data.data == null) {
+          this.$emit("loadSnackbar", "Something wrong!");
+          return;
+        }
+        this.$emit("loadSnackbar", "Unfollowing " + value.name);
+        for (var i = 0; i < this.top5User.length; i++) {
+          if (this.top5User[i].user.id === value.id) {
+            this.top5User[i].follow = false;
+          }
+        }
+        return;
+      });
+    },
+    followHotel: function(value) {
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/following",
+        params: {
+          type: 1,
+          id: this.user.id,
+          followed: value.id
+        }
+      }).then(res => {
+        console.log(res.data.data);
+        if (res.data.data == null) {
+          this.$emit("loadSnackbar", "Something wrong!");
+          return;
+        }
+        this.$emit("loadSnackbar", "Following " + value.name);
+        for (var i = 0; i < this.top5Hotel.length; i++) {
+          if (this.top5Hotel[i].hotel.id === value.id) {
+            this.top5Hotel[i].follow = true;
+          }
+        }
+        return;
+      });
+    },
+    unfollowHotel: function(value) {
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/un-following",
+        params: {
+          type: 1,
+          id: this.user.id,
+          followed: value.id
+        }
+      }).then(res => {
+        console.log(res.data.data);
+        if (res.data.data == null) {
+          this.$emit("loadSnackbar", "Something wrong!");
+          return;
+        }
+        this.$emit("loadSnackbar", "Unfollowing " + value.name);
+        for (var i = 0; i < this.top5Hotel.length; i++) {
+          if (this.top5Hotel[i].hotel.id === value.id) {
+            this.top5Hotel[i].follow = false;
+          }
+        }
+        return;
+      });
     },
     hide: function(index) {
       this.snackbar.state = !this.snackbar.state;
@@ -513,16 +700,29 @@ export default {
 };
 </script>
 <style scoped>
-.enterButton {
-  width: 90px;
-  height: 60px;
-  background-color: #1cc3b2;
-  cursor: pointer;
-}
-.radius {
-  border-bottom-left-radius: 20%;
+a {
+  text-decoration-line: none !important;
+  color: #000;
 }
 .pointer {
   cursor: pointer;
+}
+.follow-color {
+  color: #dfe4ea;
+}
+.unfollow-color {
+  color: #2d98da;
+}
+.v-tooltip__content {
+  opacity: 1 !important;
+  padding: 4px !important;
+  border-bottom-left-radius: 20%;
+  box-shadow: none !important;
+}
+.v-menu__content {
+  box-shadow: none !important;
+}
+.radius {
+    border-bottom-left-radius: 20%;
 }
 </style>

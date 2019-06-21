@@ -10,12 +10,14 @@ require('./bootstrap');
 // window.Vue = require('vue');
 import Vue  from 'vue';
 import Vuetify  from 'vuetify';
-import 'vuetify/dist/vuetify.min.css'
+import 'vuetify/dist/vuetify.min.css';
+import VeeValidate from 'vee-validate';
 import Routes  from '@/js/frontend/routes.js';
 import App  from '@/js/frontend/app';
 
 
 Vue.use(Vuetify);
+Vue.use(VeeValidate);
 
 /**
  * The following block of code may be used to automatically register your

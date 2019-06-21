@@ -8,7 +8,9 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-avatar size="70px" tile flat color="white" v-on="on">
-                  <img :src="user.avatar.image_link" :alt="user.user.name">
+                  <router-link style="width:70px" :to="{name:'account'}">
+                    <img :src="user.avatar.image_link" :alt="user.user.name">
+                  </router-link>
                 </v-avatar>
               </template>
               <span>{{user.user.name}}</span>
@@ -20,7 +22,7 @@
       </v-img>
       <v-list dense class="grey lighten-4">
         <template>
-          <v-list-tile v-on:click="communityPage">
+          <v-list-tile :to="{name:'home'}">
             <v-list-tile-action>
               <v-icon :color="drawer.iconColor">{{drawer.communityIcon}}</v-icon>
             </v-list-tile-action>
@@ -31,7 +33,7 @@
         </template>
         <v-divider></v-divider>
         <template>
-          <v-list-tile v-on:click="accountPage">
+          <v-list-tile :to="{name:'account'}">
             <v-list-tile-action>
               <v-icon :color="drawer.iconColor">{{drawer.accountIcon}}</v-icon>
             </v-list-tile-action>
@@ -149,7 +151,7 @@
     </v-navigation-drawer>
     <v-toolbar :color="drawer.color" app fixed clipped-right clipped-left flat>
       <v-toolbar-side-icon v-on:click="drawer.state = !drawer.state" class="teal accent-4"></v-toolbar-side-icon>
-      <a class="title ml-3 mr-5 white--text text-uppercase" href="/">website</a>
+      <a class="title ml-3 mr-5 white--text text-uppercase" href="/" target="_blank">website</a>
       <v-text-field
         solo
         label="who's you want to find?"
@@ -167,15 +169,30 @@
         </v-avatar>
       </v-badge>
     </v-toolbar>
+    <div id="top"></div>
     <v-content>
-      <v-container fluid fill-height class="grey lighten-4">
+      <v-container fluid fill-height class="grey lighten-2">
         <router-view
-          :hello="hello"
+          :user="user"
+          :followDialog="followDialog"
           v-on:helloEdited="event"
           v-on:loadUser="getUser"
           :snackbar="snackbar"
           v-on:loadSnackbar="eventSnackbar"
         ></router-view>
+        <v-btn
+          href="#top"
+          color="#0e2737"
+          dark
+          fixed
+          bottom
+          right
+          fab
+          depressed
+          class="mr-5 mb-3 top"
+        >
+          <v-icon color="white">arrow_upward</v-icon>
+        </v-btn>
       </v-container>
     </v-content>
     <v-snackbar
@@ -189,18 +206,19 @@
     >
       {{snackbar.content}}
       <v-icon v-on:click="snackbar.state = !snackbar.state" large color="black">close</v-icon>
-    </v-snackbar>
+    </v-snackbar>    
   </v-app>
 </template>
 
 <script>
 export default {
   data() {
-    return {
+    return {      
+      button: false,
       snackbar: {
         state: false,
         content: "",
-        timeout: 1000
+        timeout: 36000
       },
       hello: "hello",
       year: new Date().getFullYear(),
@@ -291,11 +309,16 @@ export default {
 .v-navigation-drawer__border {
   display: none;
 }
-a {
-  cursor: pointer;
-  text-decoration-line: none !important;
+.v-tooltip__content {
+  opacity: 1 !important;
+  padding: 4px !important;
+  border-bottom-left-radius: 20%;
+  box-shadow: none !important;
 }
-a:hover {
-  color: #00bfa5 !important;
+.radius {
+  border-bottom-left-radius: 20%;
+}
+.v-menu__content {
+  box-shadow: none !important;
 }
 </style>

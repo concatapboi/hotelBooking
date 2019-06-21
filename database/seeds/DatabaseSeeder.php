@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(UsersTableSeeder::class);
         //User
-        factory(App\Models\User::class, 4)->create();
+        factory(App\Models\User::class, 10)->create();
 
         //Hotel manager
         DB::table('hotel_manager')->insert([
@@ -27,15 +27,52 @@ class DatabaseSeeder extends Seeder
         DB::table('customer')->insert([
             'user_id' => 3,
             'coin' => 0,
-            'address' => 'Moon Palace',
+            'address' => 'Hà Nội',
         ]);
 
         DB::table('customer')->insert([
             'user_id' => 4,
             'coin' => 0,
-            'address' => 'Mars Palace',
+            'address' => 'Đà Nẵng',
         ]);
 
+        DB::table('customer')->insert([
+            'user_id' => 5,
+            'coin' => 0,
+            'address' => 'Kiên Giang',
+        ]);
+
+        DB::table('customer')->insert([
+            'user_id' => 6,
+            'coin' => 0,
+            'address' => 'Sóc Trăng',
+        ]);
+
+        DB::table('customer')->insert([
+            'user_id' => 7,
+            'coin' => 0,
+            'address' => 'Cà Mau',
+        ]);
+
+        DB::table('customer')->insert([
+            'user_id' => 8,
+            'coin' => 0,
+            'address' => 'Thừa Thiên Huế',
+        ]);
+
+        DB::table('customer')->insert([
+            'user_id' => 9,
+            'coin' => 0,
+            'address' => 'Thành phố Hồ Chí Minh',
+        ]);
+
+        DB::table('customer')->insert([
+            'user_id' => 10,
+            'coin' => 0,
+            'address' => 'Long An',
+        ]);
+
+        
         //Admin
         factory(App\Models\Admin::class, 1)->create();
 
@@ -83,7 +120,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         //Hotel
-        factory(App\Models\Hotel::class, 3)->create();
+        factory(App\Models\Hotel::class, 20)->create();
         //User image
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/spider-man.png',
@@ -93,87 +130,99 @@ class DatabaseSeeder extends Seeder
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/dog2.png',
-            'name' => 'spider-man',
-            'is_primary' => 0,
-            'user_id' => 3
+            'name' => 'dog2',
+            'is_primary' => 1,
+            'user_id' => 4
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/rainbow.png',
-            'name' => 'spider-man',
-            'is_primary' => 0,
-            'user_id' => 3
+            'name' => 'rainbow',
+            'is_primary' => 1,
+            'user_id' => 5
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/cover/1.jpg',
-            'name' => 'spider-man',
+            'name' => 'cover1',
             'is_primary' => 2,
             'user_id' => 3
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/cover/2.jpg',
-            'name' => 'spider-man',
+            'name' => 'cover2',
             'is_primary' => 2,
-            'user_id' => 3
+            'user_id' => 4
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/face1.png',
-            'name' => 'spider-man',
+            'name' => 'face1',
             'is_primary' => 1,
-            'user_id' => 4
+            'user_id' => 6
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/candy.png',
-            'name' => 'spider-man',
-            'is_primary' => 0,
-            'user_id' => 4
+            'name' => 'candy',
+            'is_primary' => 1,
+            'user_id' => 7
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/dog1.png',
-            'name' => 'spider-man',
-            'is_primary' => 0,
-            'user_id' => 4
+            'name' => 'dog1',
+            'is_primary' => 1,
+            'user_id' => 8
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/avatar1.png',
-            'name' => 'spider-man',
-            'is_primary' => 0,
-            'user_id' => 4
+            'name' => 'avatar1',
+            'is_primary' => 1,
+            'user_id' => 9
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/dinosaur.png',
-            'name' => 'spider-man',
-            'is_primary' => 0,
-            'user_id' => 4
+            'name' => 'dinosaur',
+            'is_primary' => 1,
+            'user_id' => 10
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/face3.png',
-            'name' => 'spider-man',
+            'name' => 'face3',
             'is_primary' => 0,
             'user_id' => 4
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/cover/3.jpg',
-            'name' => 'spider-man',
+            'name' => 'cover3',
             'is_primary' => 2,
-            'user_id' => 4
+            'user_id' => 5
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/cover/4.jpg',
-            'name' => 'spider-man',
+            'name' => 'cover4',
             'is_primary' => 2,
-            'user_id' => 4
+            'user_id' => 6
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/cover/5.jpg',
-            'name' => 'spider-man',
+            'name' => 'cover5',
             'is_primary' => 2,
-            'user_id' => 4
+            'user_id' => 7
         ]);
         DB::table('user_image')->insert([
             'image_link'=>'http://localhost:8000/img/cover/6.jpg',
-            'name' => 'spider-man',
+            'name' => 'cover6',
             'is_primary' => 2,
-            'user_id' => 4
+            'user_id' => 8
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/cover/6.jpg',
+            'name' => 'cover6',
+            'is_primary' => 2,
+            'user_id' => 9
+        ]);
+        DB::table('user_image')->insert([
+            'image_link'=>'http://localhost:8000/img/cover/6.jpg',
+            'name' => 'cover6',
+            'is_primary' => 2,
+            'user_id' => 10
         ]);
         
 

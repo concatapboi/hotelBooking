@@ -22,7 +22,7 @@ const router = new VueRouter({
 			component: account
 		},
 		{
-			path: '/community/user',
+			path: '/community/user/:id',
 			name: 'user',
 			component: user
 		},
