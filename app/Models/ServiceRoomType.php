@@ -11,5 +11,6 @@ class ServiceRoomType extends Model
   protected $fillable =[
     'service_id',
     'room_type_id',
+    'hotel_id',
   ];
 }

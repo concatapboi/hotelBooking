@@ -44,7 +44,8 @@ export default {
       messages: "",
       show: false,
       email: "",
-      password: ""
+      password: "",
+      api_token: ""
     };
   },
   methods: {
@@ -52,7 +53,7 @@ export default {
       axios({
         method: "post",
         url: "http://localhost:8000/api/manager/login",
-        params: {
+        data: {
           email: this.email,
           password: this.password
         }
@@ -60,38 +61,27 @@ export default {
         .then(response => {
           console.log(response.data);
           if (response.data.status == true) {
-            if (response.data.role == "admin")
-              window.location.href = "/admin/home";
-            else window.location.href = "/manager/home";
+            this.show = false;
+            localStorage.api_token = response.data.token;
+            this.api_token = localStorage.getItem("api_token");
+            if(response.data.role == "manager"){
+              document.location.href = "home";
+
+            }else if(response.data.role == "admin"){
+              document.location.href = "home";
+
+            }
+            console.log(this.api_token);
           } else {
-            this.messages = response.data.messages;
             this.show = true;
+            this.messages = response.data.messages;
+            console.log(this.messages);
           }
         })
         .catch(error => {
           console.log(error.response);
         });
     }
-    //},
-    // mounted () {
-    // axios
-    //   .get('http://localhost:8000/api/user')
-    //   .then(response => {
-    //     this.info = response.data
-    //   })
-    //   .catch(error => {
-    //     console.log(error)
-    //     this.errored = true
-    //   })
-    //   .finally(() => this.loading = false);
-
-    //   axios({
-    // 	  method: 'post',
-    // 	  url: 'http://localhost:8000/api/login',
-    // 	  params: {
-    // 		  name : "thang",
-    // 	  }
-    // 	});
   }
 };
 </script>

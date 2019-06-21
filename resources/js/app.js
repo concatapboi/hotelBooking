@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -8,12 +7,12 @@
 require('./bootstrap');
 
 // window.Vue = require('vue');
-import Vue  from 'vue';
-import Vuetify  from 'vuetify';
+import Vue from 'vue';
+import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
 import VeeValidate from 'vee-validate';
-import Routes  from '@/js/frontend/routes.js';
-import App  from '@/js/frontend/app';
+import Routes from '@/js/frontend/routes.js';
+import App from '@/js/frontend/app';
 
 
 Vue.use(Vuetify);
@@ -39,8 +38,8 @@ Vue.use(VeeValidate);
 
 const app = new Vue({
     el: '#app',
-    router : Routes,
-    render : h => h(App),
+    router: Routes,
+    render: h => h(App),
 });
 
 export default app;

@@ -21,14 +21,28 @@ Route::group(['prefix' => '/manager'], function () {
     Route::post('login', 'Backend\AuthController@login');
     Route::post('register', 'Backend\AuthController@register');
     Route::resource('hotel', 'Backend\HotelController');
+    Route::resource('room', 'Backend\RoomController');
     Route::resource('hotel-type', 'Backend\HotelTypeController');
+    Route::resource('service', 'Backend\ServiceController');
+    Route::post('add-service', 'Backend\HotelController@addService');
+    Route::delete('remove-service-room', 'Backend\HotelController@removeServiceRoom');
+    Route::post('add-all-service', 'Backend\HotelController@addAllRoom');
+    Route::post('add-service-room', 'Backend\HotelController@addServiceRoom');
     Route::get('hotel-address', 'Backend\AddressController@getAddress');
     Route::post('country', 'Backend\AddressController@postCountries');
     Route::get('province', 'Backend\AddressController@getProvince');
     Route::get('district', 'Backend\AddressController@getDistrict');
     Route::get('ward', 'Backend\AddressController@getWard');
-    Route::middleware('auth:api')->group(function () {
-        // Route::resource('hotel','Backend\HotelController');
+    Route::Resource('room-mode', 'Backend\RoomModeController');
+    Route::Resource('room-type', 'Backend\RoomTypeController');
+    Route::get('room-types', 'Backend\HotelController@getAllRoomType');
+    Route::Resource('bed-type', 'Backend\BedTypeController');
+    // Route::middleware('auth:api')->group(function () {
+    //     Route::resource('hotel','Backend\HotelController');
+    // });
+    Route::group(['middleware' => 'jwt.auth'], function(){
+        Route::post('logout', 'Backend\AuthController@logout');
+        Route::resource('hotel','Backend\HotelController');
     });
 });
 

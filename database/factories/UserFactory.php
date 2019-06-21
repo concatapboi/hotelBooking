@@ -43,15 +43,33 @@ $factory->define(App\Models\Hotel::class, function (Faker $faker) {
         'credit_card' => $faker->creditCardNumber,
         'rank_point' => $no,
         'name' => $faker->lastName,
-        'description' => $faker->text($maxNbChars = 100),
+        'description' => $faker->text($maxNbChars = 200),
         'stars_num' => rand(0,5),
         'meta_name' => 'hotel',
+        'owner' => $faker->lastName,
+        'email' => $faker->email,
+        'child_age' => '13',
         'tax_code' => 'IT98746784967'.$no++,
-        'review_point' => rand(0,1000),
+        'review_point' => 0,
         'fax_number' => '71937729'.$no,
         'phone_number' => $faker->phoneNumber,
-        'coin' => rand(1000,100000),
-        'hotel_type_id' => rand(1,7),
+        'coin' => 1000000,
+        'hotel_type_id' => 1,
         'hotel_manager_id' => 1,
     ];
 });
+$factory->define(App\Models\Room::class, function (Faker $faker) {
+      return [
+          'room_name' => $faker->lastName,
+          'description' => $faker->sentence($nbWords = 6, $variableNbWords = true),
+          'price' => $faker->randomNumber(2),
+          'max_adult_amount' => $faker->randomDigit,
+          'max_child_amount' => $faker->randomDigit,
+          'free_child_amount' => $faker->randomDigit,
+          'room_size' => $faker->randomDigit,
+          'amount' => $faker->randomDigit,
+          'room_mode_id' => $faker->numberBetween(1,4),
+          'room_type_id' => 1,
+          'hotel_id' => 1,
+      ];
+  });

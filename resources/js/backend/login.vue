@@ -46,14 +46,14 @@ export default {
         }
       }).then(response => {
         console.log(response.data);
-        if (response.data.status == true) {
-          if (response.data.role == "admin")
-            window.location.href = "/admin/home";
-          else window.location.href = "/manager/home";
-        } else {
-          this.messages = response.data.messages;
-          this.show = true;
-        }
+        // if (response.data.status == true) {
+        //   if (response.data.role == "admin")
+        //     window.location.href = "/admin/home";
+        //   else window.location.href = "/manager/home";
+        // } else {
+        //   this.messages = response.data.messages;
+        //   this.show = true;
+        // }
       });
     }
     //},

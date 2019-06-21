@@ -11,5 +11,6 @@ class RoomBedType extends Model
   protected $fillable =[
     'bed_type_id',
     'room_id',
+    'amount',
   ];
 }
