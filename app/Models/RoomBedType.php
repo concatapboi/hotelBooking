@@ -13,4 +13,8 @@ class RoomBedType extends Model
     'room_id',
     'amount',
   ];
+  
+  public function BedType(){
+		return $this->belongsTo('App\Models\BedType','bed_type_id','id');
+  }
 }

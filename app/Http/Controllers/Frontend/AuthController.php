@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\UserImage;
 use App\Models\Customer;
 use Auth;
+use JWTAuth;
 use Validator;
 use Hash;
 use Session;
@@ -30,40 +32,48 @@ class AuthController extends Controller
                 'password.min' => 'Password must be more than 3 charaters!'
             ]
         );
-
-        $status = false;
         if ($validateData->fails()) {
             return response()->json([
-                'status' => $status,
+                'token' =>"",
+                'status' => false,
                 'errors' => $validateData->errors(),
             ]);
         }
-
         $arr = array('username' => $req->username, 'password' => $req->password);
-        if (Auth::attempt($arr)) {
-            $status = User::find(Auth::user()->id)->isCustomer();
+        if (!($token = JWTAuth::attempt($arr))) {
+            return response()->json([
+                'token' =>"",
+                'status' => false,
+                'errors' => array("username" => "", "password" => ""),
+            ]);
+        } else {
+            $user = Auth::user();
+            if ($user->isCustomer()) {
+                return response()->json(
+                    [
+                        'token' =>$token,
+                        'status' => true,
+                        'errors' => array("username" => "", "password" => ""),
+                    ]
+                );
+            }
         }
-        return response()->json([
-            'status' => $status,
-            'errors' => array("username" => "", "password" => ""),
-        ]);
     }
 
     public function getUserLogin()
     {
-        $status = Auth::check();
-        $user = null;
-        if (Auth::check()) {
-            $user = Auth::user();
-        }
-        return response()->json(['status' => $status, 'user' => $user]);
+        $user = Auth::user();
+        $avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
+        $array = ['user'=>$user,'avatar'=>$avatar];
+        return response()->json([
+            'user' => $array,
+        ]);
     }
 
-    public function getLogout()
+    public function postLogout()
     {
-        $status = true;
-        if (Auth::check()) Auth::logout();
-        return response()->json(['status' => $status]);
+        JWTAuth::invalidate();
+        return response()->json(['status' => true]);
     }
 
     public function check()
@@ -104,7 +114,7 @@ class AuthController extends Controller
         $user->name = $req->name;
         $user->password = Hash::make($req->password);
         $user->email = $req->email;
-        $user->phone_number = $req->phone;        
+        $user->phone_number = $req->phone;
         $user->api_token = Str::random(60);
         $user->remember_token = Str::random(10);
         $user->save();

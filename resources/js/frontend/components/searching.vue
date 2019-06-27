@@ -134,27 +134,70 @@
     <v-flex md8>
       <div class="container-search">
         <v-card light flat tile>
-          <v-layout
-            class="search-item"
-            v-for="(hotel,index) in data"
-            :key="index"
-            v-on:click="detailOf(hotel)"
-          >
+          <v-layout class="search-item" v-for="(hotel,index) in data" :key="index">
             <v-flex xs3>
-              <v-img :aspect-ratio="4/3" src="/blog/img/slider/default.png"></v-img>
+              <!-- <router-link tag="a" :to="{name:'hotel',params:{id:hotel.id}}" target="_blank"> -->
+              <router-link
+                tag="a"
+                :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
+                target="_blank"
+              >
+                <v-img :aspect-ratio="4/3" src="/blog/img/slider/default.png"></v-img>
+              </router-link>
             </v-flex>
             <v-flex xs9>
-              <v-card-title primary-title>
-                <div>
-                  <div class="headline">{{hotel.item.name}}</div>
-                  <div>{{hotel.item.description}}</div>
-                </div>
+              <v-card-title>
+                <v-card flat tile width="100%">
+                  <v-list two-line class="grey lighten-2">
+                    <v-list-tile>
+                      <v-list-tile-content>
+                        <div>
+                          <router-link
+                            class="headline"
+                            tag="a"
+                            :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
+                            target="_blank"
+                          >{{hotel.name}}</router-link>
+                          <v-tooltip right>
+                            <template v-slot:activator="{ on }">
+                              <i
+                                class="blue--text fas fa-check-circle"
+                                v-on="on"
+                                v-show="hotel.verified!=0"
+                              ></i>
+                            </template>
+                            <span>verified</span>
+                          </v-tooltip>
+                        </div>
+                        <v-list-tile-title>{{hotel.description}}</v-list-tile-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile>
+                      <div>
+                        <div>
+                          Price:
+                          <span>{{hotel.minPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
+                        </div>
+                      </div>
+                    </v-list-tile>
+                  </v-list>
+                </v-card>
+                <!-- <div>
+                  <router-link
+                    class="headline"
+                    tag="a"
+                    :to="{name:'hotel',params:{id:hotel.id}}"
+                    target="_blank"
+                  >{{hotel.name}}</router-link>
+                  <div>{{hotel.description}}</div>
+                </div>-->
               </v-card-title>
             </v-flex>
           </v-layout>
         </v-card>
       </div>
     </v-flex>
+<<<<<<< Updated upstream
     <v-dialog
       v-model="dialog.state"
       fullscreen
@@ -350,12 +393,17 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+=======
+>>>>>>> Stashed changes
   </v-layout>
 </template>
 
 <script>
 export default {
   props: {
+    login: {
+      type: Object
+    },
     place: {
       type: String
     },
@@ -374,20 +422,12 @@ export default {
   },
   data() {
     return {
-      expand: [true],
+      expand: [true, true],
       mn: {
         menu1: false,
         menu2: false
       },
       data: [],
-      dialog: {
-        state: false,
-        data: {
-          item: [],
-          type: [],
-          followers: 0
-        }
-      },
       placeVal: "",
       checkInVal: "",
       checkInFormattedVal: "",
@@ -415,9 +455,14 @@ export default {
     checkOut: "setSearchValue"
   },
   methods: {
+<<<<<<< Updated upstream
     chooseStar: function(i) {
       this.stars[i] = !this.stars[i];
       console.log(this.stars);
+=======
+    loginDialog: function() {
+      this.$emit("loadLoginDialog", true);
+>>>>>>> Stashed changes
     },
     loadSearchData: function() {
       this.$emit("loadSearchData", {
@@ -446,6 +491,7 @@ export default {
           return;
         }
       });
+<<<<<<< Updated upstream
     },
     getDisctrict: function() {
       axios
@@ -467,6 +513,8 @@ export default {
       this.dialog.state = true;
       this.dialog.data = val;
       console.log(this.dialog.data.item.name);
+=======
+>>>>>>> Stashed changes
     }
   }
 };

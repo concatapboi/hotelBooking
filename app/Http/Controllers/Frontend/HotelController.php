@@ -7,26 +7,31 @@ use Illuminate\Http\Request;
 use App\Models\Hotel;
 use App\Models\HotelType;
 use App\Models\HotelFollowing;
+use App\Models\Room;
+use App\Models\RoomType;
+use App\Models\RoomMode;
+use App\Models\RoomBedType;
+use App\Models\BedType;
+use App\Models\Feature;
+use App\Models\ServiceRoomType;
+use App\Models\Service;
 
 class HotelController extends Controller
 {
     //get hotels
     public function index()
     {
-        $status = true;
-        $data = array();
+        $status = false;
         $hotels = Hotel::all();
-        if (empty($hotels)) $status = false;
-        else{
-            foreach($hotels as $hotel){
-                $tam = array();
-                $tam['item'] = $hotel;
-                $tam['type'] = HotelType::find($hotel->hotel_type_id);
-                $tam['followers'] = HotelFollowing::where('hotel_id')->count();
-                $data[] = $tam;
+        if ($hotels->count()>0) {
+            $status = true;
+            foreach ($hotels as $h) {
+                $h->Address;
+                $h->maxPrice=$h->maxPrice();
+                $h->minPrice=$h->minPrice();
             }
         }
-        return response()->json(['status' => $status, 'data' => $data]);
+        return response()->json(['status' => $status, 'data' => $hotels]);
     }
 
     //get top 5
@@ -58,7 +63,36 @@ class HotelController extends Controller
     //get hotels/{hotels}
     public function show($id)
     {
-        return;
+        $status = false;
+        $hotel = null;
+        if($id>0){
+            $hotel = Hotel::find($id);
+            if($hotel !=null){
+                $status = true;                
+                $hotel->Address;
+                $hotel->HotelType;
+                foreach($hotel->Room as $r){
+                    $r->RoomMode;
+                    $tempRoomType = $r->RoomType;
+                    foreach($r->RoomBedType as $rBT){
+                        $rBT->BedType;
+                    }
+                    foreach($r->Feature as $f){
+                        $f->Feature;
+                    };
+                    $tempRoomType->ServiceRoomTypeByHotel($hotel->id);
+                    
+                    $servicesRoomType = ServiceRoomType::where('room_type_id',$tempRoomType->id)->where('hotel_id',$hotel->id)->get();
+                    $teampService = null;
+                    foreach($servicesRoomType as $sRT){
+                         $teampService[]=$sRT->Service;
+                    }            
+                    $r->service = $teampService;
+                    $r->bookingAmount =1;
+                }                
+            }            
+        }
+        return response()->json(['status' => $status, 'data' => $hotel]);
     }
 
     //hotels/{hotels}/edit

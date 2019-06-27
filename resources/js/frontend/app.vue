@@ -54,30 +54,37 @@
                 <span class="title text-uppercase black--text">join us</span>
                 <i class="fas fa-arrow-right mx-3 black--text"></i>
               </v-btn>
-              <v-menu bottom right nudge-top="-62px" v-if="login.check">
+              <v-menu bottom right nudge-top="-42px" v-if="login.check">
                 <template v-slot:activator="{ on }">
                   <v-avatar size="42px" tile color="black" v-on="on">
                     <v-avatar size="40px" tile color="white">
-                      <img src="http://localhost:8000/img/dinosaur.png" alt>
+                      <img :src="login.user.avatar.image_link" alt>
                     </v-avatar>
                   </v-avatar>
                 </template>
                 <v-list light class="grey lighten-4">
-                  <v-list-tile href="/community">
+                  <v-list-tile>
+                    <div>
+                      Hi!&nbsp;
+                      <span class="font-italic">{{login.user.user.name}}</span>
+                    </div>
+                  </v-list-tile>
+                  <v-divider></v-divider>
+                  <v-list-tile tag="a" href="/community" target="_blank">
                     <v-list-tile-action>
-                      <i class="fab fa-battle-net teal--text"></i>
+                      <i class="fab fa-battle-net teal--text fa-lg"></i>
                     </v-list-tile-action>
                     <v-list-tile-content>Community</v-list-tile-content>
                   </v-list-tile>
-                  <v-list-tile href="/community/account">
+                  <v-list-tile tag="a" href="/community/account" target="_blank">
                     <v-list-tile-action>
-                      <i class="fas fa-user-circle teal--text"></i>
+                      <i class="fas fa-user-circle teal--text fa-lg"></i>
                     </v-list-tile-action>
                     <v-list-tile-content>Account</v-list-tile-content>
                   </v-list-tile>
                   <v-divider></v-divider>
                   <v-list-tile>
-                    <v-btn dark depressed color="teal" large @click="login.check = false">
+                    <v-btn dark depressed color="teal" large @click="logOut">
                       <i class="fas fa-sign-out-alt mx-2"></i>Logout
                     </v-btn>
                   </v-list-tile>
@@ -91,7 +98,11 @@
     <div id="top"></div>
     <v-content class="pa-0" style="margin-top:93px;">
       <v-container fluid class="white my-0 py-0">
+        <transition name="moveInUp">
         <router-view
+          :loginDialog="dialog"
+          v-on:loadLoginDialog="eventDialog"
+          :login="login"
           :snackbar="snackbar"
           v-on:loadSnackbar="eventSnackbar"
           :place="place"
@@ -101,6 +112,7 @@
           :checkOutFormatted="checkOutFormatted"
           v-on:loadSearchData="eventSearch"
         ></router-view>
+        </transition>
         <v-btn
           href="#top"
           color="#0e2737"
@@ -291,7 +303,6 @@
                 v-model="register.address"
                 label="Address"
               ></v-textarea>
-              
             </v-flex>
             <v-flex class="text-md-center">
               <v-btn color="teal" v-on:click="submitRegister" dark depressed>Register</v-btn>
@@ -344,9 +355,18 @@ export default {
       },
       login: {
         check: false,
+        token: "",
         username: "",
         password: "",
-        value: false
+        value: false,
+        user: {
+          user: {
+            name: ""
+          },
+          avatar: {
+            image_link: ""
+          }
+        }
       },
       dialog: false,
       registerDialog: false,
@@ -383,7 +403,7 @@ export default {
           }
         }
       },
-      place: "",
+      place: "Hồ Chí Minh",
       now: new Date(),
       checkIn: new Date().toISOString().substr(0, 10),
       checkInFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
@@ -394,7 +414,8 @@ export default {
     };
   },
   created() {
-    this.getMemberCount();
+    // localStorage.removeItem('login_token');
+    this.getLogin();
     window.setInterval(() => {
       this.time =
         new Date().getHours() +
@@ -406,6 +427,7 @@ export default {
   },
   watch: {
     // call again the method if dialog changes
+    $route: "getLogin",
     dialog: function() {
       this.$refs.form.reset();
       this.$validator.reset();
@@ -422,7 +444,7 @@ export default {
       }
     },
     checkOut: function(val) {
-      if (val < this.getNextDate(this.checkIn, 1)) {
+      if (val <= this.checkIn) {
         this.checkOut = this.getNextDate(this.checkIn, 1);
         this.checkOutFormatted = this.formatDate(this.checkOut);
       } else this.checkOutFormatted = this.formatDate(this.checkOut);
@@ -432,15 +454,39 @@ export default {
     this.$validator.localize("en", this.dictionary);
   },
   methods: {
-    getMemberCount: function() {
-      axios({
-        method: "get",
-        url: "http://localhost:8000/api/member-count",
-        params: {}
-      }).then(res => {
-        this.memberCount = res.data;
-        return;
-      });
+    getLogin: function() {
+      this.login.token = localStorage.getItem("login_token");
+      if (this.login.token != null) {
+        axios({
+          method: "get",
+          url: "http://localhost:8000/api/getUserLogin",
+          headers: {
+            Authorization: "Bearer " + this.login.token
+          }
+        })
+          .then(res => {
+            console.log(res.data.user);
+            this.login.user = res.data.user;
+            this.login.check = true;
+          })
+          .catch(error => {
+            if (error.response.status == 401) {
+              localStorage.removeItem("login_token");
+              this.login.token = localStorage.getItem("login_token");
+              this.login.check = false;
+              this.login.user = {
+                user: [],
+                avatar: []
+              };
+            }
+          });
+      } else {
+        this.login.check = false;
+        this.login.user = {
+          user: [],
+          avatar: []
+        };
+      }
     },
     eventSnackbar: function(val) {
       this.snackbar.state = !this.snackbar.state;
@@ -456,12 +502,11 @@ export default {
           axios({
             method: "post",
             url: "http://localhost:8000/api/login",
-            params: {
+            data: {
               username: this.login.username,
               password: this.login.password
             }
           }).then(res => {
-            console.log(res.data.status);
             if (!res.data.status) {
               this.eventSnackbar("Something wrong!");
               this.login.password = "";
@@ -471,10 +516,33 @@ export default {
             this.eventSnackbar("Login successfully!");
             this.dialog = false;
             this.login.check = true;
+            this.login.username = "";
+            this.login.password = "";
+            localStorage.login_token = res.data.token;
+            this.getLogin();
             return;
           });
         }
       });
+    },
+    logOut: function() {
+      this.getLogin();
+      if (this.login.check) {
+        axios({
+          method: "post",
+          url: "http://localhost:8000/api/logout",
+          headers: {
+            Authorization: "Bearer " + this.login.token
+          }
+        }).then(res => {
+          if (res.data.status) {
+            this.login.check = false;
+            this.login.token = "";
+            this.login.user = [];
+            localStorage.removeItem("login_token");
+          }
+        });
+      }
     },
     submitRegister: function() {
       this.$validator.validateAll("form2").then(valid => {
@@ -483,20 +551,20 @@ export default {
             method: "post",
             url: "http://localhost:8000/api/register",
             params: {
-              username : this.register.username,
-              email : this.register.email,
-              password : this.register.password,
-              name : this.register.name,
-              phone : this.register.phone,
-              address : this.register.address,
+              username: this.register.username,
+              email: this.register.email,
+              password: this.register.password,
+              name: this.register.name,
+              phone: this.register.phone,
+              address: this.register.address
             }
           }).then(res => {
             console.log(res.data.status);
-            if(res.data.status){
+            if (res.data.status) {
               this.registerDialog = false;
               this.eventSnackbar("Register sucessfully!");
               this.login.check = true;
-            }else{
+            } else {
               this.eventSnackbar("Something wrong!");
             }
           });
@@ -510,19 +578,45 @@ export default {
     },
     getNextDate: function(date, number) {
       const [year, month, day] = date.split("-");
-      number = new Date(year + "-" + month + "-" + day).getDate() + number;
-      number = number + "";
-      date = new Date(
-        `${year}-${month.padStart(2, "0")}-${number.padStart(2, "0")}`
-      )
-        .toISOString()
-        .substr(0, 10);
-      return date;
+      var newDate;
+      if (day == 31) {
+        var dayTemp = 1;
+        var monthTemp = month;
+        var yearTemp = year;
+        if (monthTemp == 12) {
+          monthTemp = 1;
+          yearTemp = year + 1;
+        } else monthTemp = month + 1;
+        dayTemp = dayTemp + "";
+        monthTemp = monthTemp + "";
+        yearTemp = yearTemp + "";
+        newDate = new Date(
+          `${yearTemp}-${monthTemp.padStart(2, "0")}-${dayTemp.padStart(
+            2,
+            "0"
+          )}`
+        )
+          .toISOString()
+          .substr(0, 10);
+      } else {
+        var tempDate;
+        tempDate = new Date(year + "-" + month + "-" + day).getDate() + number;
+        tempDate = tempDate + "";
+        newDate = new Date(
+          `${year}-${month.padStart(2, "0")}-${tempDate.padStart(2, "0")}`
+        )
+          .toISOString()
+          .substr(0, 10);
+      }
+      return newDate;
     },
     eventSearch: function(data) {
-      this.place = data.place;
+      this.place = data.place.trim();
       this.checkIn = data.checkIn;
       this.checkOut = data.checkOut;
+    },
+    eventDialog: function(val) {
+      this.dialog = val;
     }
   }
 };

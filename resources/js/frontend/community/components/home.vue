@@ -203,12 +203,14 @@
                 <v-icon large :color="stars.top1" v-if=" i===0">star</v-icon>
                 <v-icon large :color="stars.top2" v-else-if="i===1">star</v-icon>
                 <v-icon large :color="stars.top3" v-else-if=" i===2">star</v-icon>
-                <v-icon large :color="stars.none" v-else-if="i===3">star</v-icon>
+                <v-icon large :color="stars.none" v-else>star</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content>
                 <v-tooltip color="black" left max-width="300px">
                   <template v-slot:activator="{ on }">
-                    <v-list-tile-title v-on="on">{{item.hotel.name}}</v-list-tile-title>
+                    <v-list-tile-title v-on="on" >
+                      <a :href="'hotel/'+item.hotel.id" target="_blank">{{item.hotel.name}}</a>
+                    </v-list-tile-title>
                     <v-list-tile-sub-title v-on="on">
                       <v-icon small color="pink">room</v-icon>&nbsp; tp Ho Chi Minh
                     </v-list-tile-sub-title>
@@ -723,6 +725,6 @@ a {
   box-shadow: none !important;
 }
 .radius {
-    border-bottom-left-radius: 20%;
+  border-bottom-left-radius: 20%;
 }
 </style>

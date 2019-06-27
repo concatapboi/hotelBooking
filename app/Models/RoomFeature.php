@@ -12,4 +12,8 @@ class RoomFeature extends Model
     'feature_id',
     'room_id',
   ];
+
+  public function Feature(){
+		return $this->belongsTo('App\Models\Feature','feature_id','id');
+  }
 }
