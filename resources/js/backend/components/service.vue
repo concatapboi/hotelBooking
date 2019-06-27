@@ -72,9 +72,6 @@
 <script>
 export default {
   props: {
-    hotelId: {
-      type: Number
-    },
     api_token :{
       type : String
     }
@@ -88,7 +85,8 @@ export default {
       arrayRoomType: [],
       choosenRoom: [],
       radioGroup: [],
-      firsttime: false
+      firsttime: false,
+      hotelId: this.$route.query.hotelId,
     };
   },
   created() {
@@ -116,8 +114,10 @@ export default {
       axios
         .get("http://localhost:8000/api/manager/service", {
           params: {
-            api_token: 123,
             hotelId: this.hotelId
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
@@ -133,8 +133,10 @@ export default {
       axios
         .get("http://localhost:8000/api/manager/room-types", {
           params: {
-            api_token: 123,
             hotelId: this.hotelId
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
@@ -143,7 +145,7 @@ export default {
           console.log(this.arrayRoomType);
         })
         .catch(function(error) {
-          console.log(error);
+          console.log(error.response);
         });
     },
     chooseService: function(index, serviceId) {
@@ -155,12 +157,14 @@ export default {
         axios({
           method: "post",
           url: "http://localhost:8000/api/manager/add-service",
-          params: {
+          data: {
             hotelId: this.hotelId,
-            api_token: 123,
             serviceId: serviceId,
             chosenRoom: this.services[index].room.chosenRoom,
             radio: this.services[index].room.radio
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
           .then(response => {
@@ -177,10 +181,12 @@ export default {
       axios({
           method: "post",
           url: "http://localhost:8000/api/manager/add-all-room",
-          params: {
+          data: {
             hotelId: this.hotelId,
-            api_token: 123,
             serviceId: serviceId,
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
           .then(response => {
@@ -195,11 +201,13 @@ export default {
       axios({
           method: "post",
           url: "http://localhost:8000/api/manager/add-service-room",
-          params: {
+          data: {
             hotelId: this.hotelId,
-            api_token: 123,
             serviceId: serviceId,
             chosenRoom: this.services[index].room.chosenRoom,
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
           .then(response => {
@@ -213,10 +221,12 @@ export default {
       axios({
           method: "delete",
           url: "http://localhost:8000/api/manager/remove-service-room",
-          params: {
+          data: {
             hotelId: this.hotelId,
-            api_token: 123,
             serviceId: serviceId,
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
           .then(response => {

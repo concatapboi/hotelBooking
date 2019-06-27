@@ -67,7 +67,67 @@
     <v-flex md4>
       <div class="right-search">
         <v-card dark flat>
-          <v-card-title>lore</v-card-title>
+          <v-card-text>
+            <v-card flat>
+              <v-card-title>
+                <h5>Star rating</h5>
+              </v-card-title>
+              <v-card-text>
+                <v-layout row v-for="i in number" :key="i" justify-center align-center>
+                  <v-flex md1 offset-md1 class="pt-3">
+                    <v-checkbox
+                      class="custom-checkbox"
+                      type="checkbox"
+                      v-model="stars[i]"
+                      height="1"
+                    ></v-checkbox>
+                  </v-flex>
+                  <v-flex md10>
+                    <div @click="chooseStar(i)">
+                      <span>
+                        <v-icon
+                          class="pb-1 ml-2"
+                          color="yellow"
+                          v-for="(index) in number+1-i"
+                          :key="index"
+                        >star</v-icon>
+                      </span>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+            <v-divider></v-divider>
+            <v-card flat>
+              <v-card-title>
+                <h5>Location</h5>
+              </v-card-title>
+              <v-card-text>
+                <v-layout row v-for="i in number" :key="i" justify-center align-center>
+                  <v-flex md1 offset-md1 class="pt-3">
+                    <v-checkbox
+                      class="custom-checkbox"
+                      type="checkbox"
+                      v-model="stars[i]"
+                      height="1"
+                    ></v-checkbox>
+                  </v-flex>
+                  <v-flex md10>
+                    <div @click="chooseStar(i)">
+                      <span>district x</span>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+            <!-- <v-layout wrap>
+                <v-flex md12>
+                  <h4>Stars</h4>
+                </v-flex>
+                <v-flex md12>asd</v-flex>
+              </v-layout>
+            <v-divider></v-divider>-->
+          </v-card-text>
         </v-card>
       </div>
     </v-flex>
@@ -261,7 +321,7 @@
                         :key="index"
                       >
                         <template v-slot:header>
-                          <v-layout  v-on:click="detailOf(hotel)">
+                          <v-layout v-on:click="detailOf(hotel)">
                             <v-flex xs3>
                               <v-img :aspect-ratio="4/3" src="/blog/img/slider/default.png"></v-img>
                             </v-flex>
@@ -332,12 +392,21 @@ export default {
       checkInVal: "",
       checkInFormattedVal: "",
       checkOutVal: "",
-      checkOutFormattedVal: ""
+      checkOutFormattedVal: "",
+      number: 5,
+      stars: {
+        1: false,
+        2: false,
+        3: false,
+        4: false,
+        5: false
+      }
     };
   },
   created() {
     this.setSearchValue();
     this.getData();
+    this.getDisctrict();
   },
   watch: {
     checkInVal: "loadSearchData",
@@ -346,6 +415,10 @@ export default {
     checkOut: "setSearchValue"
   },
   methods: {
+    chooseStar: function(i) {
+      this.stars[i] = !this.stars[i];
+      console.log(this.stars);
+    },
     loadSearchData: function() {
       this.$emit("loadSearchData", {
         place: this.placeVal,
@@ -373,6 +446,22 @@ export default {
           return;
         }
       });
+    },
+    getDisctrict: function() {
+      axios
+        .get("http://localhost:8000/api/district",{
+          params : {
+            province : this.placeVal,
+          }
+        })
+        .then(response => {
+          // if (response.data.status == true) {
+          console.log(response);
+          // }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
     detailOf: function(val) {
       this.dialog.state = true;
@@ -405,5 +494,9 @@ export default {
   padding-bottom: 0 !important;
   padding-right: 0 !important;
   padding-left: 0 !important;
+}
+.custom-checkbox {
+  margin-top: 0px;
+  padding-top: 0px;
 }
 </style>

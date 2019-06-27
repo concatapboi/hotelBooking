@@ -15,6 +15,7 @@ class Hotel extends Model
     'description',
     'stars_num',
     'name',
+    'email',
     'meta_name',
     'child_age',
     'tax_code',
@@ -36,5 +37,8 @@ class Hotel extends Model
   }
   public function Room(){
 		return $this->hasMany('App\Models\Room','hotel_id','id');
+  }
+  public function Image(){
+		return $this->hasMany('App\Models\HotelImage','hotel_id','id');
 	}
 }

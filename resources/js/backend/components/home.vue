@@ -181,6 +181,7 @@
                   <v-layout row>
                     <v-text-field
                       label="Tax code"
+                      class="pr-3"
                       v-validate="'required'"
                       :error-messages="errors.collect('tax_code')"
                       data-vv-name="tax_code"
@@ -188,10 +189,65 @@
                       required
                       outline
                     ></v-text-field>
+                    <v-text-field
+                      label="email"
+                      class="pl-3"
+                      v-validate="'required'"
+                      :error-messages="errors.collect('email')"
+                      data-vv-name="email"
+                      v-model="newHotelData.email"
+                      required
+                      outline
+                    ></v-text-field>
                   </v-layout>
                   <v-divider></v-divider>
                   <h3>Images</h3>
-                  
+                  <v-layout row wrap align-space-between justify-start>
+                    <!-- <v-flex style="height : 200px;" v-if="images" md3> -->
+                    <v-flex v-for="(image,i) in images" :key="i" md3>
+                      <div class="img-box" v-if="image.is_primary == 1" id="primaryBox">
+                        <div class="ribbon text-center">
+                          <h5>PRIMARY</h5>
+                        </div>
+                        <div class="deleteImage">
+                          <i
+                            @click="deleteImage(i)"
+                            class="fas fa-minus-square red--text white fa-lg"
+                          ></i>
+                        </div>
+                        <img
+                          @click="choosePrimary(i)"
+                          class="primaryImage"
+                          width="200px"
+                          :src="image.image_link"
+                          height="200px"
+                        >
+                      </div>
+                      <div class="img-box" v-else>
+                        <div class="deleteImage">
+                          <i
+                            @click="deleteImage(i)"
+                            class="fas fa-minus-square red--text white fa-lg"
+                          ></i>
+                        </div>
+                        <img
+                          @click="choosePrimary(i)"
+                          class="img"
+                          width="200px"
+                          :src="image.image_link"
+                          height="200px"
+                        >
+                      </div>
+                    </v-flex>
+                    <v-flex md3 class="justify-center">
+                      <div class="add-image">
+                        <label for="file" class="fileLabel" v-ripple="{ class: `primary--text` }">
+                          <v-icon color="primary">add</v-icon>
+                        </label>
+                        <input type="file" id="file" multiple ref="images" @change="addImage">
+                      </div>
+                    </v-flex>
+                  </v-layout>
                   <v-divider></v-divider>
                   <h3>Policies</h3>
                 </v-form>
@@ -226,9 +282,14 @@
     </v-layout>
     <v-layout class="m-5">
       <v-card dark flat color="blue-grey darken-4" class="p-2">
-        <v-expansion-panel class="elevation-0" v-model="panelIndex" focusable>
+        <v-expansion-panel class="elevation-0" v-model="panel" focusable expand>
           <h1>Yours hotels</h1>
-          <v-expansion-panel-content class="primary" v-for="(hotel,i) in arrayHotel" :key="i">
+          <v-expansion-panel-content
+            hide-actions
+            class="primary"
+            v-for="(hotel,i) in arrayHotel"
+            :key="i"
+          >
             <template v-slot:header>
               <div>
                 <v-layout>
@@ -345,6 +406,9 @@ export default {
     arrayHotel: {
       type: Array
     },
+    hotelPanel: {
+      type: Array
+    },
     arrayHotelType: {
       type: Array
     },
@@ -354,14 +418,15 @@ export default {
     arrayService: {
       type: Array
     },
-    api_token :{
-      type : String
+    api_token: {
+      type: String
     }
   },
   data: function() {
     return {
       newHotelData: {
         name: "",
+        email: "",
         description: "",
         rating: 3,
         district: "",
@@ -385,20 +450,57 @@ export default {
       snackbarText: "hihi",
       snackbarTimeout: 5000,
       dialog: false,
-      panelIndex: -9,
       hotel_stars_num: 2,
       confirmDialog: false,
       selectedId: 0,
-      confirmDialogText: ""
+      confirmDialogText: "",
+      panel: [],
+      firstTime: true,
+      images: [],
+      primaryImage: 0,
+      hotel_id: 0
     };
   },
+  created() {
+    this.panel = this.hotelPanel;
+  },
   watch: {
-    panelIndex: function() {
-      if (this.panelIndex !== null) {
-        var hotel = this.arrayHotel[this.panelIndex];
-        // if (hotel !== null) {
-        this.hotel_stars_num = hotel.stars_num;
-        this.$emit("chooseHotel", hotel.id);
+    // panelIndex: function() {
+    //   if (this.panelIndex !== null) {
+    //     var hotel = this.arrayHotel[this.panelIndex];
+    //     // if (hotel !== null) {
+    //     this.hotel_stars_num = hotel.stars_num;
+    //     this.$emit("chooseHotel", hotel.id);
+    //   }
+    // }
+    hotelPanel: function() {
+      this.panel = this.hotelPanel;
+    },
+    panel: function(oldPanel, newPanel) {
+      var index = 0;
+      if (this.firstTime == false) {
+        for (var i = 0; i < this.panel.length; i++) {
+          if (oldPanel[i] != newPanel[i]) {
+            index = i;
+          }
+        }
+
+        for (var i = 0; i < this.panel.length; i++) {
+          this.panel[i] = false;
+        }
+        this.panel[index] = true;
+        this.hotel_id = this.arrayHotel[index].id;
+        this.hotel_stars_num = this.arrayHotel[index].stars_num;
+        this.$emit("chooseHotel", this.hotel_id);
+        this.$emit("panelIndex", index);
+        // localStorage.hotelId = hotelId;
+      } else {
+        this.firstTime = false;
+      }
+    },
+    dialog: function() {
+      if (this.dialog == false) {
+        this.images = [];
       }
     }
   },
@@ -419,8 +521,9 @@ export default {
           axios({
             method: "post",
             url: "http://localhost:8000/api/manager/hotel",
-            params: {
+            data: {
               name: this.newHotelData.name,
+              email: this.newHotelData.email,
               hotelType: this.defaultHotelType,
               hotel_manager_id: this.userID,
               stars_num: this.newHotelData.rating,
@@ -433,11 +536,15 @@ export default {
               phone: this.newHotelData.phone,
               fax_number: this.newHotelData.fax_number,
               tax_code: this.newHotelData.tax_code,
-              arrayService: this.arrayServiceChoose,
+              // arrayService: this.arrayServiceChoose,
+              images: this.images,
+              primaryId: this.primaryImage
+            },
+            headers: {
+              Authorization: "Bearer " + this.api_token
             }
           })
             .then(response => {
-              console.log(response);
               if (response.data.status == false) {
                 alert("can't create new hotel with this info");
               } else {
@@ -471,10 +578,39 @@ export default {
               this.$emit("changeArrayHotel", _this.arrayHotel);
             })
             .catch(error => {
-              console.log(error);
+              console.log(error.response);
             });
         }
       });
+    },
+    addImage(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[files.length - 1]);
+    },
+    createImage(file) {
+      let reader = new FileReader();
+      var _this = this;
+      reader.onload = e => {
+        var temp = {};
+        temp.image_link = e.target.result;
+        temp.is_primary = 0;
+        if (_this.images.length < 1) {
+          temp.is_primary = 1;
+        }
+        _this.images.push(temp);
+      };
+      reader.readAsDataURL(file);
+      console.log(this.images);
+    },
+    choosePrimary(index) {
+      for (var i = 0; i < this.images.length; i++) {
+        this.images[i].is_primary = 0;
+        if (i == index) {
+          this.images[i].is_primary = 1;
+        }
+      }
+      console.log(this.primaryImage);
     },
     cancel() {
       this.errors.clear();
@@ -494,10 +630,16 @@ export default {
         .get("http://localhost:8000/api/manager/district", {
           params: {
             provinceId: _this.defaultProvince
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
-          _this.arrayDistrict = response.data;
+          if (response.status == 401) {
+            this.logout;
+          }
+          _this.arrayDistrict = response.data.data;
         })
         .catch(function(error) {
           console.log(error);
@@ -513,11 +655,16 @@ export default {
         .get("http://localhost:8000/api/manager/ward", {
           params: {
             districtId: _this.defaultDistrict
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
+          if (response.status == 401) {
+            this.logout;
+          }
           _this.arrayWard = response.data.data;
-          console.log(response);
         })
         .catch(function(error) {
           console.log(error);
@@ -526,15 +673,16 @@ export default {
     },
     updateHotel: function() {
       var _this = this;
-      console.log(this.selectedId);
+      console.log(this.images);
       this.$validator.validate().then(valid => {
         if (!valid) {
         } else {
           axios({
             method: "put",
             url: "http://localhost:8000/api/manager/hotel/" + this.selectedId,
-            params: {
+            data: {
               name: this.newHotelData.name,
+              email: this.newHotelData.email,
               hotelType: this.defaultHotelType,
               hotel_manager_id: this.userID,
               stars_num: this.newHotelData.rating,
@@ -546,10 +694,18 @@ export default {
               credit_card: this.newHotelData.credit_card,
               phone: this.newHotelData.phone,
               fax_number: this.newHotelData.fax_number,
-              tax_code: this.newHotelData.tax_code
+              tax_code: this.newHotelData.tax_code,
+              images: this.images,
+              primaryId: this.primaryImage
+            },
+            headers: {
+              Authorization: "Bearer " + this.api_token
             }
           })
             .then(response => {
+              if (response.status == 401) {
+                this.logout;
+              }
               console.log(response);
               console.log(this.defaultWard);
               if (response.data.status == false) {
@@ -589,7 +745,7 @@ export default {
               this.$emit("changeArrayHotel", _this.arrayHotel);
             })
             .catch(error => {
-              console.log(error);
+              console.log(error.response);
             });
         }
       });
@@ -609,6 +765,8 @@ export default {
       for (var i = 0; i < _this.arrayHotel.length; i++) {
         if (_this.arrayHotel[i].id == this.selectedId) {
           hotel = _this.arrayHotel[i];
+          this.images = _this.arrayHotel[i].images;
+          console.log(hotel);
           for (var j = 0; j < _this.arrayHotelType.length; j++) {
             if (hotel.hotel_type == _this.arrayHotelType[j].name) {
               _this.defaultHotelType = _this.arrayHotelType[j].id;
@@ -622,25 +780,36 @@ export default {
       axios
         .get("http://localhost:8000/api/manager/hotel-address", {
           params: {
-            api_token: 123,
             hotel_id: hotel.id
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
+          if (response.status == 401) {
+            this.logout;
+          }
           address = response.data.data;
-          console.log(response.data);
           for (var p = 0; p < _this.arrayProvince.length; p++) {
             if (response.data.data.province_id == _this.arrayProvince[p].id) {
               _this.defaultProvince = _this.arrayProvince[p].id;
-              console.log(this.defaultProvince9);
+              console.log(this.defaultProvince);
               return axios
                 .get("http://localhost:8000/api/manager/district", {
                   params: {
                     provinceId: _this.defaultProvince
+                  },
+                  headers: {
+                    Authorization: "Bearer " + this.api_token
                   }
                 })
                 .then(response => {
-                  _this.arrayDistrict = response.data;
+                  if (response.status == 401) {
+                    this.logout;
+                  }
+                  console.log(response);
+                  _this.arrayDistrict = response.data.data;
                   for (var d = 0; d < _this.arrayDistrict.length; d++) {
                     if (address.district_id == _this.arrayDistrict[d].id) {
                       _this.defaultDistrict = _this.arrayDistrict[d].id;
@@ -649,9 +818,15 @@ export default {
                         .get("http://localhost:8000/api/manager/ward", {
                           params: {
                             districtId: _this.defaultDistrict
+                          },
+                          headers: {
+                            Authorization: "Bearer " + this.api_token
                           }
                         })
                         .then(response => {
+                          if (response.status == 401) {
+                            this.logout;
+                          }
                           _this.arrayWard = response.data.data;
                           for (var d = 0; d < _this.arrayWard.length; d++) {
                             if (address.ward_id == _this.arrayWard[d].id) {
@@ -685,12 +860,16 @@ export default {
       this.selectedId = hotelId;
       this.confirmDialogText =
         "Are you really want to delete this " + hotelId + " ?";
+      alert("xoa");
     },
     deleteHotelConfirm: function() {
       var _this = this;
       axios
         .delete("http://localhost:8000/api/manager/hotel/" + this.selectedId)
         .then(response => {
+          if (response.status == 401) {
+            this.logout;
+          }
           console.log(response);
           if (response.data.status == true) {
             for (var i = 0; i < _this.arrayHotel.length; i++) {
@@ -704,7 +883,90 @@ export default {
           console.log(error);
         });
       this.confirmDialog = false;
+    },
+    logout: function() {
+      axios({
+        method: "post",
+        url: "http://localhost:8000/api/manager/logout",
+        headers: {
+          Authorization: "Bearer " + this.api_token
+        }
+      })
+        .then(response => {
+          if (response.status == 401) {
+            this.logout;
+          }
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      localStorage.removeItem("api_token");
+      this.api_token = null;
+      location.href = "login";
+    },
+    deleteImage: function(i) {
+      this.images.splice(i, 1);
     }
   }
 };
 </script>
+<style scoped>
+.primaryImage {
+  border: 4px solid teal;
+  padding: 2px;
+}
+#primaryBox {
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.img-box {
+  position: relative;
+  height: 200px;
+  margin-bottom: 10px;
+}
+.img-box > .img {
+  border: 1px solid black;
+}
+.ribbon {
+  position: absolute;
+  background-color: teal;
+  height: 20px;
+  padding: auto;
+  width: 200px;
+  top: 6px;
+  left: 0px;
+  color: white;
+}
+.deleteImage {
+  position: absolute;
+  padding: auto;
+  top: 6px;
+  left: 180px;
+  color: white;
+}
+#file {
+  display: none;
+}
+.fileLabel {
+  padding-top: 2px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  margin-top: 75px;
+  margin-left: 40%;
+  border-radius: 50px;
+}
+.add-image {
+  height: 200px;
+  width: 200px;
+  border: 4px dashed green;
+}
+.img {
+  height: 200px;
+  width: 200px;
+  margin-bottom: 20px;
+}
+</style>
+

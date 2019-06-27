@@ -46,7 +46,7 @@ $factory->define(App\Models\Hotel::class, function (Faker $faker) {
         'description' => $faker->text($maxNbChars = 200),
         'stars_num' => rand(0,5),
         'meta_name' => 'hotel',
-        'owner' => $faker->lastName,
+        // 'owner' => $faker->lastName,
         'email' => $faker->email,
         'child_age' => '13',
         'tax_code' => 'IT98746784967'.$no++,
@@ -56,6 +56,8 @@ $factory->define(App\Models\Hotel::class, function (Faker $faker) {
         'coin' => 1000000,
         'hotel_type_id' => 1,
         'hotel_manager_id' => 1,
+        'ward_id' => 1,
+        'address' => $faker->address,
     ];
 });
 $factory->define(App\Models\Room::class, function (Faker $faker) {

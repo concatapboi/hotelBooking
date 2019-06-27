@@ -18,6 +18,7 @@ class RoomTypeController extends Controller
      */
     public function index(Request $request)
     {
+        // return $request->hotelId;
         $roomModeId = $request->roomModeId;
         $hotel = Hotel::find($request->hotelId)->first();
         $arrayRoomType = RoomType::all()->toArray();

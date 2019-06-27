@@ -143,18 +143,18 @@ class RoomController extends Controller
      */
     public function destroy($id)
     {
-        // $room = Room::find($id);
-        // if ($room != null) {
-        //     $room->delete();
-        //     return response()->json([
-        //         "status" => true,
-        //         "messages" => "room deleted!!!"
-        //     ]);
-        // } else {
-        //     return response()->json([
-        //         "status" => false,
-        //         "messages" => "cant find room with this id"
-        //     ]);
-        // }
+        $room = Room::find($id);
+        if ($room != null) {
+            $room->delete();
+            return response()->json([
+                "status" => true,
+                "messages" => "room deleted!!!"
+            ]);
+        } else {
+            return response()->json([
+                "status" => false,
+                "messages" => "cant find room with this id"
+            ]);
+        }
     }
 }

@@ -377,20 +377,23 @@
 <script>
 export default {
   props: {
-    hotelId: {
-      type: Number
-    },
+    // hotelId: {
+    //   type: Number
+    // },
     arrayService: {
       type: Array
     },
-    api_token :{
-      type : String
+    api_token: {
+      type: String
     }
   },
   watch: {
     panelIndex: function() {
       // console.log(this.panelIndex);
-    }
+    },
+    // hotelId: function() {
+    //   this.hotelId = localStorage.getItem("hotelId");
+    // }
   },
   data: function() {
     return {
@@ -469,6 +472,7 @@ export default {
       roomIndex: 0,
       roomId: 0,
       roomType: 0,
+      hotelId: this.$route.query.hotelId,
     };
   },
   created() {
@@ -480,19 +484,23 @@ export default {
   methods: {
     chooseRoomMode: function() {
       this.roomTypeDisable = false;
+      console.log(this.hotelId);
       axios
         .get("http://localhost:8000/api/manager/room-type", {
           params: {
-            api_token: 123,
             hotelId: this.hotelId,
             roomModeId: this.defaultRoomMode
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
           this.arrayRoomType = response.data.data;
+          console.log(response);
         })
         .catch(function(error) {
-          console.log(error);
+          console.log(error.response);
         });
       this.showAmount = false;
       if (this.defaultRoomMode == 2) {
@@ -501,7 +509,7 @@ export default {
         this.room.max_adult_amount = 2;
         this.showAmount = true;
       }
-      console.log(this.defaultRoomMode);
+      // console.log(this.defaultRoomMode);
     },
     chooseMaxChildAmount: function() {
       this.showFreeAmount = false;
@@ -515,14 +523,17 @@ export default {
     },
     addNewTitle: function() {
       this.formTitle = "New Room";
+      this.$refs.formNewRoom.reset();
     },
     initialize: function() {
       this.chooseRoomMode();
       axios
         .get("http://localhost:8000/api/manager/room", {
           params: {
-            api_token: 123,
-            hotelId: 1
+            hotelId: this.hotelId
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
@@ -533,32 +544,32 @@ export default {
           console.log(this.arrayRoom);
         })
         .catch(function(error) {
-          console.log(error);
+          console.log(error.response);
         });
       axios
         .get("http://localhost:8000/api/manager/room-mode", {
-          params: {
-            api_token: 123
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
           this.arrayRoomMode = response.data;
         })
         .catch(function(error) {
-          console.log(error);
+          console.log(error.response);
         });
 
       axios
         .get("http://localhost:8000/api/manager/bed-type", {
-          params: {
-            api_token: 123
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
           this.arrayBedType = response.data;
         })
         .catch(function(error) {
-          console.log(error);
+          console.log(error.response);
         });
     },
     addBed: function() {
@@ -579,7 +590,7 @@ export default {
           axios({
             method: "post",
             url: "http://localhost:8000/api/manager/room",
-            params: {
+            data: {
               hotel_id: this.hotelId,
               room_name: this.room.room_name,
               description: this.room.description,
@@ -591,6 +602,9 @@ export default {
               room_mode_id: this.defaultRoomMode,
               room_type_id: this.defaultRoomType,
               bed: this.bed
+            },
+            headers: {
+              Authorization: "Bearer " + this.api_token
             }
           })
             .then(response => {
@@ -598,7 +612,7 @@ export default {
               console.log(response);
             })
             .catch(error => {
-              console.log(error);
+              console.log(error.response);
             });
         }
       });
@@ -616,9 +630,11 @@ export default {
       axios({
         method: "delete",
         url: "http://localhost:8000/api/manager/room/" + this.roomId,
-        params: {
-          hotelId: this.hotelId,
-          api_token: 123
+        data: {
+          hotelId: this.hotelId
+        },
+        headers: {
+          Authorization: "Bearer " + this.api_token
         }
       })
         .then(response => {
@@ -637,7 +653,7 @@ export default {
           }
         })
         .catch(error => {
-          console.log(error);
+          console.log(error.response);
         });
     },
     showEdit: function(roomType, roomId) {
@@ -647,8 +663,10 @@ export default {
       axios
         .get("http://localhost:8000/api/manager/room/" + roomId, {
           params: {
-            api_token: 123,
-            hotelId: 1
+            hotelId: this.hotelId
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
           }
         })
         .then(response => {
@@ -672,14 +690,14 @@ export default {
           }
         })
         .catch(function(error) {
-          console.log(error);
+          console.log(error.response);
         });
     },
-    editRoom: function(roomType,roomId) {
+    editRoom: function(roomType, roomId) {
       axios({
         method: "put",
         url: "http://localhost:8000/api/manager/room/" + roomId,
-        params: {
+        data: {
           hotel_id: this.hotelId,
           room_name: this.room.room_name,
           description: this.room.description,
@@ -691,17 +709,20 @@ export default {
           room_mode_id: this.defaultRoomMode,
           room_type_id: this.defaultRoomType,
           bed: this.bed
+        },
+        headers: {
+          Authorization: "Bearer " + this.api_token
         }
       })
         .then(response => {
           for (let [key, value] of Object.entries(this.arrayRoom)) {
-            console.log(key)
-            console.log(value)
-            console.log(roomType)
+            console.log(key);
+            console.log(value);
+            console.log(roomType);
           }
         })
         .catch(error => {
-          console.log(error);
+          console.log(error.response);
         });
     }
   }
