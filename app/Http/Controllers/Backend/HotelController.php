@@ -11,11 +11,16 @@ use App\Models\Room;
 use App\Models\HotelType;
 use App\Models\User;
 use App\Models\HotelAddress;
+use App\Models\HotelImage;
 use App\Models\ServiceRoomType;
 use Validator;
 use App\Models\RoomType;
 use Hash;
+use Carbon\Carbon;
 use Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
+use Intervention\Image\ImageManagerStatic as Image;
 
 
 class HotelController extends Controller
@@ -29,12 +34,15 @@ class HotelController extends Controller
     {
         $arrayHotelRaw = Auth::user()->HotelManager->first()->Hotel;
         $arrayHotel = [];
+        $panel = [];
         foreach ($arrayHotelRaw as $key => $hotel) {
+            $panel[] = false;
             $arrayHotel[] = new HotelResource($hotel);
         }
         return response()->json([
             "status" => true,
             "data" => $arrayHotel,
+            "panel" => $panel,
         ]);
     }
 
@@ -56,12 +64,9 @@ class HotelController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->arrayService != null) {
-            dd($request->arrayService);
-        }
-        dd(1);
         $data = [
             "name" => $request->name,
+            "email" => $request->email,
             "meta_name" => preg_replace("/\s+/", "-", trim($request->name)),
             "hotel_type_id" => $request->hotelType,
             "hotel_manager_id" => $request->hotel_manager_id,
@@ -78,6 +83,7 @@ class HotelController extends Controller
         ];
         $validator = Validator::make($data, [
             'name' => 'required|unique:hotel',
+            'email' => 'required',
             'hotel_type_id' => 'required|exists:hotel_type,id',
             'description' => 'required',
             'province' => 'required|exists:province,id',
@@ -101,7 +107,22 @@ class HotelController extends Controller
             "ward_id" => $request->ward,
             "address" => $request->address,
         ]);
-
+        $images = $request->images;
+        $length = sizeof($images);
+        // $primaryId = $request->primaryId;
+        for ($i = 0; $i < $length; $i++) {
+            $name = time() . str_random(10);
+            $image = Image::make($images[$i]["image_link"])->resize(200, 200)->save(public_path("images/hotel/" . $name));
+            $primary = 0;
+            if ($images[$i]["is_primary"] == 1) {
+                $primary = 1;
+            }
+            HotelImage::create([
+                "image_link" => $image->filename,
+                "is_primary" => $primary,
+                "hotel_id" => $hotel->id,
+            ]);
+        }
         return response()->json([
             "status" => true,
             "id" => $hotel->id,
@@ -153,7 +174,6 @@ class HotelController extends Controller
             "credit_card" => $request->credit_card,
             "phone_number" => $request->phone,
             "fax_number" => $request->fax_number,
-            // "stars_num" => $request->stars_num,
             "tax_code" => $request->tax_code,
             "stars_num" => $request->stars_num,
         ];
@@ -185,7 +205,49 @@ class HotelController extends Controller
             "ward_id" => $request->ward,
             "address" => $request->address,
         ]);
+        $images = $request->images;
+        $length = sizeof($images);
+        $primaryId = $request->primaryId;
+        $temp = [];
+        for ($i = 0; $i < $length; $i++) {
+            //hình cũ
+            if (strpos($images[$i]["image_link"], 'data:image') === false) {
+                $explode = explode("/", $images[$i]["image_link"]);
+                $imageName = ($explode[5]);
+                $temp[] = $imageName;
+            }
+        }
+        $oldImage = HotelImage::where("hotel_id", $hotel->id)
+            ->whereNotIn("image_link", $temp)
+            ->delete();
+        for ($i = 0; $i < $length; $i++) {
+            //hình mới
+            if (strpos($images[$i]["image_link"], 'data:image') !== false) {
+                $name = time() . str_random(10);
+                $image = Image::make($images[$i]["image_link"])
+                    ->resize(200, 200)
+                    ->save(public_path("images/hotel/" . $name));
 
+                $a = HotelImage::create([
+                    "image_link" => $image->filename,
+                    "is_primary" => 0,
+                    "hotel_id" => $hotel->id,
+                ]);
+                $temp[] = $a->image_link;
+            }
+        }
+        HotelImage::where("hotel_id", $hotel->id)
+            ->where("is_primary", 1)
+            ->update(["is_primary" => 0]);
+        for ($i = 0; $i < $length; $i++) {
+            if ($images[$i]["is_primary"] == 1) {
+                $explode = explode("/", $images[$i]["image_link"]);
+                $imageName = ($explode[5]);
+                HotelImage::where("hotel_id", $hotel->id)
+                    ->where("image_link", $imageName)
+                    ->update(["is_primary" => 1]);
+            }
+        }
         return $hotel;
         return response()->json([
             "status" => true,

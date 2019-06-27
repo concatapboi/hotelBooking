@@ -11,7 +11,6 @@ class HotelImage extends Model
   protected $fillable =[
     'image_link',
     'is_primary',
-    'name',
     'hotel_id',
   ];
 }

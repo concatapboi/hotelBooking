@@ -13,3 +13,6 @@ yarn-error.log
 /.phpintel
 /package-lock.json
 /package.json
+/public/images
+composer.lock
+composer.json

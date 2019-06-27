@@ -13,19 +13,19 @@ class CreateHotelAddressTable extends Migration
      */
     public function up()
     {
-        Schema::create('hotel_address', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('ward_id')->unsigned();
-            $table->integer('hotel_id')->unsigned();
-            $table->string('address');
-            $table->timestamps();
-            $table->foreign('ward_id')
-                ->references('id')->on('ward')
-                ->onDelete('cascade');
-            $table->foreign('hotel_id')
-                ->references('id')->on('hotel')
-                ->onDelete('cascade');
-        });
+        // Schema::create('hotel_address', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->integer('ward_id')->unsigned();
+        //     $table->integer('hotel_id')->unsigned();
+        //     $table->string('address');
+        //     $table->timestamps();
+        //     $table->foreign('ward_id')
+        //         ->references('id')->on('ward')
+        //         ->onDelete('cascade');
+        //     $table->foreign('hotel_id')
+        //         ->references('id')->on('hotel')
+        //         ->onDelete('cascade');
+        // });
     }
 
     /**
@@ -35,6 +35,6 @@ class CreateHotelAddressTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hotel_address');
+        // Schema::dropIfExists('hotel_address');
     }
 }

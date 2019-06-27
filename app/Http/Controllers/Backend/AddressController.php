@@ -56,7 +56,7 @@ class AddressController extends Controller
     public function getDistrict(Request $request)
     {
         $arrayDistrict = District::where('province_id',$request->provinceId)->get();
-        return $arrayDistrict;
+        // return $arrayDistrict;
         $arrayData = [];
         foreach($arrayDistrict as $district){
             $data = new ProvinceResource($district);
@@ -101,6 +101,23 @@ class AddressController extends Controller
                 "district_id" => $district->id,
                 "ward_id" => $ward->id,
             ],
+        ]);
+    }
+    public function getDistrictByPronvinceName(Request $request)
+    {
+        $provinceName = $request->province;
+        $provinceId = Province::where("name",$provinceName)->first();
+        dd($provinceId);
+        $arrayDistrict = District::where('province_id',$request->provinceId)->get();
+        // return $arrayDistrict;
+        $arrayData = [];
+        foreach($arrayDistrict as $district){
+            $data = new ProvinceResource($district);
+            array_push($arrayData,$data);
+        }
+        return response()->json([
+            "status" => true,
+            "data" =>  $arrayData,
         ]);
     }
 }

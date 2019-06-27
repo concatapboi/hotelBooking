@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\HotelImageResource;
 
 class HotelResource extends JsonResource
 {
@@ -14,6 +15,10 @@ class HotelResource extends JsonResource
      */
     public function toArray($request)
     {
+        $arrayImage = [];
+        foreach($this->Image as $image){
+            $arrayImage[] = new HotelImageResource($image);
+        }
         $arrayData = [
             "id" => $this->id,
             "name" => $this->name,
@@ -28,6 +33,7 @@ class HotelResource extends JsonResource
             "stars_num" => $this->stars_num,
             "address" => $this->address,
             "phone_number" => $this->phone_number,
+            "images" => $arrayImage,
         ];
         return $arrayData;
     }

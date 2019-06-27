@@ -18,7 +18,7 @@ class CreateHotelTable extends Migration
             $table->tinyInteger('verified')->default(0);
             $table->string('credit_card');
             $table->string('email');
-            $table->string('owner');
+            $table->string('address');
             $table->text('description');
             $table->integer('rank_point')->default(0);
             $table->integer('stars_num')->default(0);
@@ -30,6 +30,7 @@ class CreateHotelTable extends Migration
             $table->double('review_point')->default(0);
             $table->string('fax_number');
             $table->integer('coin')->default(0);
+            $table->integer('ward_id')->unsigned();
             $table->integer('hotel_type_id')->unsigned();
             $table->integer('hotel_manager_id')->unsigned();
             $table->timestamps();

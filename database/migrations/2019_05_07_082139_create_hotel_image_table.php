@@ -17,7 +17,6 @@ class CreateHotelImageTable extends Migration
             $table->increments('id');
             $table->string('image_link');
             $table->tinyInteger('is_primary')->default(0);
-            $table->string('name');
             $table->integer('hotel_id')->unsigned();
             $table->timestamps();
             $table->foreign('hotel_id')
