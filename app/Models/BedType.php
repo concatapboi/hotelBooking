@@ -14,4 +14,8 @@ class BedType extends Model
     'length',
     'status',
   ];
+
+  public function RoomBedType(){
+		return $this->hasMany('App\Models\RoomBedType','bed_type_id','id');
+  }
 }

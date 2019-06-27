@@ -13,4 +13,8 @@ class ServiceRoomType extends Model
     'room_type_id',
     'hotel_id',
   ];
+
+  public function Service(){
+		return $this->belongsTo('App\Models\Service','service_id','id');
+  }
 }

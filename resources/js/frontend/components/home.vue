@@ -154,6 +154,8 @@ export default {
   },
   computed: {},
   watch: {
+    placeVal:"loadSearchData",
+    checkIn: "setSearchValue",
     checkInVal: "loadSearchData",
     checkIn: "setSearchValue",
     checkOutVal: "loadSearchData",
@@ -178,7 +180,7 @@ export default {
       });
     },
     search: function() {
-      this.$router.push({ name: "searching" });
+      this.$router.push({ path: "searching" , query:{place:this.place.replace(/\s/g,'-'), check_in:this.checkIn, check_out:this.checkOut}});
     },
     setSearchValue: function() {
       this.placeVal = this.place;

@@ -35,7 +35,7 @@ const router = new VueRouter({
 			component: register
 		},
 		{
-			path: '/hotels.html',
+			path: '/hotel/:id',
 			name: 'hotel',
 			component: hotel
 		},
@@ -65,7 +65,7 @@ const router = new VueRouter({
 			component: about
 		},
 		{
-			path: '/searching.html',
+			path: '/searching',
 			name: 'searching',
 			component: searching
 		},

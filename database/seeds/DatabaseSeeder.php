@@ -12,116 +12,99 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // $this->call(UsersTableSeeder::class);
-        //User
+        //User: 10
         factory(App\Models\User::class, 10)->create();
 
-        //Hotel manager
+        //Hotel manager: 2
         DB::table('hotel_manager')->insert([
             'user_id' => 1,
         ]);
-
         DB::table('hotel_manager')->insert([
             'user_id' => 2,
         ]);
-
+        //Customer: 8
         DB::table('customer')->insert([
             'user_id' => 3,
             'coin' => 0,
             'address' => 'Hà Nội',
         ]);
-
         DB::table('customer')->insert([
             'user_id' => 4,
             'coin' => 0,
             'address' => 'Đà Nẵng',
         ]);
-
         DB::table('customer')->insert([
             'user_id' => 5,
             'coin' => 0,
             'address' => 'Kiên Giang',
         ]);
-
         DB::table('customer')->insert([
             'user_id' => 6,
             'coin' => 0,
             'address' => 'Sóc Trăng',
         ]);
-
         DB::table('customer')->insert([
             'user_id' => 7,
             'coin' => 0,
             'address' => 'Cà Mau',
         ]);
-
         DB::table('customer')->insert([
             'user_id' => 8,
             'coin' => 0,
             'address' => 'Thừa Thiên Huế',
         ]);
-
         DB::table('customer')->insert([
             'user_id' => 9,
             'coin' => 0,
             'address' => 'Thành phố Hồ Chí Minh',
         ]);
-
         DB::table('customer')->insert([
             'user_id' => 10,
             'coin' => 0,
             'address' => 'Long An',
         ]);
 
-
-        //Admin
+        //Admin:1 
         factory(App\Models\Admin::class, 1)->create();
 
-        //Hotel type
+        //Hotel type: 7
         DB::table('hotel_type')->insert([
             'id' => 1,
             'name' => 'Business Hotel',
             'meta_name' => 'business-hotel',
         ]);
-
         DB::table('hotel_type')->insert([
             'id' => 2,
             'name' => 'Resort Hotel',
             'meta_name' => 'resort-hotel',
         ]);
-
         DB::table('hotel_type')->insert([
             'id' => 3,
             'name' => 'Homestay',
             'meta_name' => 'homestay',
         ]);
-
         DB::table('hotel_type')->insert([
             'id' => 4,
             'name' => 'Airport Hotel',
             'meta_name' => 'airport-hotel',
         ]);
-
         DB::table('hotel_type')->insert([
             'id' => 5,
             'name' => 'Mini Hotel',
             'meta_name' => 'mini-hotel',
         ]);
-
         DB::table('hotel_type')->insert([
             'id' => 6,
             'name' => 'Spa Hotel',
             'meta_name' => 'spa-hotel',
         ]);
-
         DB::table('hotel_type')->insert([
             'id' => 7,
             'name' => 'Serviced Apartment',
             'meta_name' => 'serviced-apartment',
         ]);
 
-        //Hotel
-        factory(App\Models\Hotel::class, 20)->create();
-        //User image
+        //User image: 17
         DB::table('user_image')->insert([
             'image_link' => 'http://localhost:8000/img/spider-man.png',
             'name' => 'spider-man',
@@ -224,7 +207,8 @@ class DatabaseSeeder extends Seeder
             'is_primary' => 2,
             'user_id' => 10
         ]);
-        //Room Mode
+
+        //Room Mode: 4
         DB::table('room_mode')->insert([
             'name' => 'Solo traveler',
             'status' => 1,
@@ -241,7 +225,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Group travelers',
             'status' => 1,
         ]);
-        //Room type
+
+        //Room type: 4
         DB::table('room_type')->insert([
             'name' => 'Standard',
             'description' => 'Standard',
@@ -262,7 +247,8 @@ class DatabaseSeeder extends Seeder
             'description' => 'Suite',
             'status' => 1,
         ]);
-        //Bed Type
+
+        //Bed Type: 5
         DB::table('bed_type')->insert([
             'name' => 'Single bed',
             'width' => '120',
@@ -293,8 +279,8 @@ class DatabaseSeeder extends Seeder
             'length' => '190',
             'status' => 1,
         ]);
-        factory(App\Models\Room::class, 3)->create();
-        //Room services
+
+        //Room services: 5
         DB::table('service')->insert([
             'name' => 'Free Wi-Fi',
             'meta_name' => 'free-wifi',
@@ -325,6 +311,8 @@ class DatabaseSeeder extends Seeder
             'icon' => 'concierge-bell',
             'status' => true,
         ]);
+
+        //Feature: 4
         DB::table('feature')->insert([
             'name' => 'Televison',
             'meta_name' => 'tv',
@@ -345,5 +333,51 @@ class DatabaseSeeder extends Seeder
             'meta_name' => 'hair-dryer',
             'status' => true,
         ]);
+
+        //Hotel: 5
+        factory(App\Models\Hotel::class, 5)->create();
+
+        //Room: 40
+        for ($h = 1; $h <= 5; $h++) {
+            for ($rT = 1; $rT <= 4; $rT++) {
+                factory(App\Models\Room::class, 2)->create([
+                    'hotel_id' => $h,
+                    'room_type_id' => $rT
+                ]);
+                $noS = rand(3, 5);
+                for ($s = 1; $s <= $noS; $s++) {
+                    factory(App\Models\ServiceRoomType::class)->create([
+                        'room_type_id' => $rT,
+                        'hotel_id' => $h
+                    ]);
+                }
+            }
+        }
+        //RoomBedType:
+        for ($r = 1; $r <= 40; $r++) {
+            $noB = rand(1, 2);
+            for ($rBT = 1; $rBT <= $noB; $rBT++) {
+                factory(App\Models\RoomBedType::class)->create([
+                    'room_id' => $r
+                ]);
+            }
+        }
+        // RoomFeature
+        for ($r = 1; $r <= 40; $r++) {
+            $noRF = rand(1, 4);
+            for ($rF = 1; $rF <= $noRF; $rF++) {
+                factory(App\Models\RoomFeature::class)->create([
+                    'room_id' => $r
+                ]);
+            }
+        }
+
+        //RoomBedType:
+        // factory(App\Models\RoomBedType::class, 2)->create([]);
+        //RoomFeature: 20
+        // factory(App\Models\RoomFeature::class, 3)->create();
+
+        //ServiceRoomType: 20
+        // factory(App\Models\ServiceRoomType::class, 3)->create();
     }
 }

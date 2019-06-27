@@ -13,11 +13,12 @@ use Faker\Generator as Faker;
 | model instances for testing / seeding your application's database.
 |
 */
+
 $factory->define(App\Models\User::class, function (Faker $faker) {
-    static $number =1;
+    static $number = 1;
     return [
         'name' => $faker->name,
-        'username' => 'user'.$number++,
+        'username' => 'user' . $number++,
         'email' => $faker->unique()->safeEmail,
         'phone_number' => $faker->tollFreePhoneNumber,
         'email_verified_at' => now(),
@@ -37,41 +38,68 @@ $factory->define(App\Models\Admin::class, function (Faker $faker) {
 });
 
 $factory->define(App\Models\Hotel::class, function (Faker $faker) {
-  static $no =1;
+    static $no = 1;
     return [
-        'verified' => 0,
+        'verified' => rand(0, 1),
         'credit_card' => $faker->creditCardNumber,
         'rank_point' => $no,
         'name' => $faker->lastName,
-        'description' => $faker->text($maxNbChars = 200),
-        'stars_num' => rand(0,5),
+        'description' => $faker->text($maxNbChars = 1200),
+        'stars_num' => rand(0, 5),
         'meta_name' => 'hotel',
-        // 'owner' => $faker->lastName,
         'email' => $faker->email,
         'child_age' => '13',
-        'tax_code' => 'IT98746784967'.$no++,
+        'tax_code' => 'IT98746784967' . $no++,
         'review_point' => 0,
-        'fax_number' => '71937729'.$no,
+        'fax_number' => '71937729' . $no,
         'phone_number' => $faker->phoneNumber,
         'coin' => 1000000,
-        'hotel_type_id' => 1,
+        'hotel_type_id' => rand(1, 7),
         'hotel_manager_id' => 1,
         'ward_id' => 1,
         'address' => $faker->address,
     ];
 });
 $factory->define(App\Models\Room::class, function (Faker $faker) {
-      return [
-          'room_name' => $faker->lastName,
-          'description' => $faker->sentence($nbWords = 6, $variableNbWords = true),
-          'price' => $faker->randomNumber(2),
-          'max_adult_amount' => $faker->randomDigit,
-          'max_child_amount' => $faker->randomDigit,
-          'free_child_amount' => $faker->randomDigit,
-          'room_size' => $faker->randomDigit,
-          'amount' => $faker->randomDigit,
-          'room_mode_id' => $faker->numberBetween(1,4),
-          'room_type_id' => 1,
-          'hotel_id' => 1,
-      ];
-  });
+    static $no = 1;
+    if ($no > 4) $no = 1;
+    return [
+        'room_name' => $faker->lastName,
+        'description' => $faker->sentence($nbWords = 6, $variableNbWords = true),
+        'price' => rand(5, 100000),
+        'max_adult_amount' => $faker->randomDigit,
+        'max_child_amount' => $faker->randomDigit,
+        'free_child_amount' => $faker->randomDigit,
+        'room_size' => $faker->randomDigit,
+        'amount' => rand(1,10),
+        'room_mode_id' => $no++,
+        'room_type_id' => 1,
+        'hotel_id' => rand(1, 5),
+    ];
+});
+$factory->define(App\Models\RoomBedType::class, function (Faker $faker) {
+    static $no = 1, $noB = 1;
+    if ($noB > 5) $noB = 1;
+    return [
+        'bed_type_id' => $noB++,
+        'room_id' => $no++,
+        'amount' => rand(1, 2)
+    ];
+});
+$factory->define(App\Models\RoomFeature::class, function (Faker $faker) {
+    static $no = 1, $noF = 1;
+    if ($noF > 4) $noF = 1;
+    return [
+        'feature_id' => $noF++,
+        'room_id' => $no++
+    ];
+});
+$factory->define(App\Models\ServiceRoomType::class, function (Faker $faker) {
+    static $no = 1;
+    if ($no > 5) $no = 1;
+    return [
+        'service_id' => $no++,
+        'room_type_id' => 1,
+        'hotel_id' => 1
+    ];
+});

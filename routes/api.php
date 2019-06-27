@@ -24,7 +24,6 @@ Route::group(['prefix' => '/manager'], function () {
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::post('logout', 'Backend\AuthController@logout');
         Route::resource('hotel', 'Backend\HotelController');
-        Route::resource('hotel', 'Backend\HotelController');
         Route::resource('room', 'Backend\RoomController');
         Route::resource('hotel-type', 'Backend\HotelTypeController');
         Route::resource('service', 'Backend\ServiceController');
