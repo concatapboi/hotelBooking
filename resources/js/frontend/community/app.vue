@@ -174,7 +174,6 @@
       <v-container fluid fill-height class="grey lighten-2">
         <router-view
           :user="user"
-          :followDialog="followDialog"
           v-on:helloEdited="event"
           v-on:loadUser="getUser"
           :snackbar="snackbar"
@@ -206,7 +205,20 @@
     >
       {{snackbar.content}}
       <v-icon v-on:click="snackbar.state = !snackbar.state" large color="black">close</v-icon>
-    </v-snackbar>    
+    </v-snackbar> 
+    <v-dialog
+    fullscreen
+    v-model="login.dialog">
+    <div class="commu-login">
+      <v-layout fill-height row wrap justify-center align-center>
+        <v-flex md10>
+          <v-card light flat tile>
+            <v-card-text>ABC</v-card-text>
+          </v-card>
+        </v-flex>
+      </v-layout>
+    </div>
+    </v-dialog>   
   </v-app>
 </template>
 
@@ -214,6 +226,22 @@
 export default {
   data() {
     return {      
+      login: {
+        dialog: true,
+        check: false,
+        token: "",
+        username: "",
+        password: "",
+        value: false,
+        user: {
+          user: {
+            name: ""
+          },
+          avatar: {
+            image_link: ""
+          }
+        }
+      },
       button: false,
       snackbar: {
         state: false,
@@ -255,11 +283,13 @@ export default {
     };
   },
   created() {
+    this.getLogin();
     this.getUser();
   },
   watch: {
     // call again the method if the route changes
-    $route: "getUser"
+    $route: "getUser",
+    $route: "getLogin"
   },
   methods: {
     accountPage: function() {
@@ -300,7 +330,43 @@ export default {
     eventSnackbar: function(val) {
       this.snackbar.state = !this.snackbar.state;
       this.snackbar.content = val + "";
-    }
+    },
+    getLogin: function() {
+      this.login.token = localStorage.getItem("login_token");
+      if (this.login.token != null) {
+        axios({
+          method: "get",
+          url: "http://localhost:8000/api/getUserLogin",
+          headers: {
+            Authorization: "Bearer " + this.login.token
+          }
+        })
+          .then(res => {
+            console.log(res.data.user);
+            this.login.user = res.data.user;
+            this.login.check = true;
+            this.login.dialog = false;
+          })
+          .catch(error => {
+            if (error.response.status == 401) {
+              localStorage.removeItem("login_token");
+              this.login.token = localStorage.getItem("login_token");
+              this.login.check = false;
+              this.login.dialog = true;
+              this.login.user = {
+                user: [],
+                avatar: []
+              };
+            }
+          });
+      } else {
+        this.login.check = false;
+        this.login.user = {
+          user: [],
+          avatar: []
+        };
+      }
+    },
   }
 };
 </script>

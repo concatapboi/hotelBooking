@@ -372,12 +372,25 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        //RoomBedType:
-        // factory(App\Models\RoomBedType::class, 2)->create([]);
-        //RoomFeature: 20
-        // factory(App\Models\RoomFeature::class, 3)->create();
+        //Booking status
+        factory(App\Models\BookingStatus::class)->create([]);
+        factory(App\Models\BookingStatus::class)->create([
+            'name'=>'Wait for pay'
+        ]);
+        factory(App\Models\BookingStatus::class)->create([
+            'name'=>'On ready'
+        ]);
+        factory(App\Models\BookingStatus::class)->create([
+            'name'=>'Done'
+        ]);
+        factory(App\Models\BookingStatus::class)->create([
+            'name'=>'Cancel'
+        ]);
 
-        //ServiceRoomType: 20
-        // factory(App\Models\ServiceRoomType::class, 3)->create();
+        //Booking status
+        factory(App\Models\PaymentMethod::class)->create([]);
+        factory(App\Models\PaymentMethod::class)->create([
+            'name'=>'Online'
+        ]);
     }
 }
