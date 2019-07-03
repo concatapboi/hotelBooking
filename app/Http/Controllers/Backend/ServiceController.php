@@ -132,4 +132,16 @@ class ServiceController extends Controller
     {
         //
     }
+    public function getAllService()
+    {
+        $services = Service::all();
+        $data = [];
+        foreach($services as $service){
+            $data[] = new ServiceResource($service);
+        }
+        return response()->json([
+            "status" => true,
+            "data" => $data,
+        ]);
+    }
 }

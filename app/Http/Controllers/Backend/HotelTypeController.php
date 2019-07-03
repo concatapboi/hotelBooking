@@ -94,4 +94,18 @@ class HotelTypeController extends Controller
     {
         //
     }
+    public function getAllHotelType()
+    {
+        $arrayHotelType = HotelType::all();
+        $arrayData = [];
+        foreach($arrayHotelType as $hotelType){
+            $data = new HotelTypeResource($hotelType);
+            // $data = $hotelType->name;
+            array_push($arrayData,$data);
+        }
+        return response()->json([
+            "status" => true,
+            "data" =>  $arrayData,
+        ]);
+    }
 }

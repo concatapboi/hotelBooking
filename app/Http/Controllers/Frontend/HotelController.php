@@ -26,7 +26,6 @@ class HotelController extends Controller
         if ($hotels->count()>0) {
             $status = true;
             foreach ($hotels as $h) {
-                $h->Address;
                 $h->maxPrice=$h->maxPrice();
                 $h->minPrice=$h->minPrice();
             }
@@ -69,7 +68,6 @@ class HotelController extends Controller
             $hotel = Hotel::find($id);
             if($hotel !=null){
                 $status = true;                
-                $hotel->Address;
                 $hotel->HotelType;
                 foreach($hotel->Room as $r){
                     $r->RoomMode;

@@ -615,7 +615,10 @@ export default {
       this.checkIn = data.checkIn;
       this.checkOut = data.checkOut;
     },
-    eventDialog: function(val) {
+    eventDialog: function(val,num) {
+      if(num==0){
+        this.registerDialog = val;
+      }else
       this.dialog = val;
     }
   }

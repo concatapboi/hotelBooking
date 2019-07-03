@@ -10,16 +10,36 @@ class Booking extends Model
 
   protected $fillable =[
     'hotel_name',
-    'total_price',
     'contact_name',
-    'contatc_email',
-    'conact_phone',
+    'room_price',
+    'room_amount',
+    'check_in',
+    'check_out',
+    'contact_email',
+    'contact_phone',
     'contact_address',
     'special_request',
     'fax_number',
     'customer_id',
-    'hotel_id',
     'payment_method_id',
     'status_id',
+    'room_id',
   ];
+
+  public function Hotel()
+  {
+    return $this->belongsTo('App\Models\Hotel', 'hotel_id', 'id');
+  }
+  public function Status()
+  {
+    return $this->belongsTo('App\Models\BookingStatus', 'status_id', 'id');
+  }
+  public function PaymentMethod()
+  {
+    return $this->belongsTo('App\Models\PaymentMethod', 'payment_method_id', 'id');
+  }
+  public function Customer()
+  {
+    return $this->belongsTo('App\Models\Customer', 'customer_id', 'user_id');
+  }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\HotelImageResource;
+use App\Http\Resources\RoomResource;
 
 class HotelResource extends JsonResource
 {
@@ -19,6 +20,15 @@ class HotelResource extends JsonResource
         foreach($this->Image as $image){
             $arrayImage[] = new HotelImageResource($image);
         }
+        // $arrayRoom = [];
+        // foreach($this->Room as $room){
+        //     // $id = $room->id;
+        //     // $arrayRoom[$room->id] = new RoomResource($room);
+        //     $temp = [];
+        //     $temp["id"] = $room->id;
+        //     $temp["amount"] = $room->amount;
+        //     $arrayRoom[] = $temp;
+        // }
         $arrayData = [
             "id" => $this->id,
             "name" => $this->name,
@@ -34,6 +44,9 @@ class HotelResource extends JsonResource
             "address" => $this->address,
             "phone_number" => $this->phone_number,
             "images" => $arrayImage,
+            "minPrice" => $this->minPrice(),
+            "maxPrice" => $this->maxPrice(),
+            "ward" => $this->ward_id,
         ];
         return $arrayData;
     }

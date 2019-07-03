@@ -59,7 +59,7 @@
             <v-btn flat @click="$refs.checkOut.save(checkOutVal)">OK</v-btn>
           </v-date-picker>
         </v-menu>
-        <v-btn color="teal" dark icon depressed style="width:30px; height:30px;" v-on:click=";">
+        <v-btn color="teal" dark icon depressed style="width:30px; height:30px;" v-on:click="getData()">
           <v-icon small>search</v-icon>
         </v-btn>
       </v-layout>
@@ -71,6 +71,7 @@
             <v-card flat>
               <v-card-title>
                 <h5>Star rating</h5>
+                {{starsSeleted}}
               </v-card-title>
               <v-card-text>
                 <v-layout row v-for="i in number" :key="i" justify-center align-center>
@@ -78,7 +79,8 @@
                     <v-checkbox
                       class="custom-checkbox"
                       type="checkbox"
-                      v-model="stars[i]"
+                      v-model="starsSeleted"
+                      :value="number+1-i"
                       height="1"
                     ></v-checkbox>
                   </v-flex>
@@ -98,45 +100,168 @@
               </v-card-text>
             </v-card>
             <v-divider></v-divider>
+
             <v-card flat>
               <v-card-title>
-                <h5>Location</h5>
+                <h5>Service</h5>
+                {{serviceSeleted}}
               </v-card-title>
               <v-card-text>
-                <v-layout row v-for="i in number" :key="i" justify-center align-center>
+                <v-layout
+                  row
+                  v-for="(service,i) in arrayService"
+                  :key="i"
+                  justify-center
+                  align-center
+                >
                   <v-flex md1 offset-md1 class="pt-3">
                     <v-checkbox
                       class="custom-checkbox"
                       type="checkbox"
-                      v-model="stars[i]"
+                      v-model="serviceSeleted"
+                      :value="service.id"
                       height="1"
                     ></v-checkbox>
                   </v-flex>
                   <v-flex md10>
-                    <div @click="chooseStar(i)">
-                      <span>district x</span>
+                    <div @click="chooseService(service.id)">
+                      <span>
+                        <i class="m-2 fas" :class="icon = 'fa-'+service.icon"></i>
+                        {{service.name}}
+                      </span>
                     </div>
                   </v-flex>
                 </v-layout>
               </v-card-text>
             </v-card>
-            <!-- <v-layout wrap>
-                <v-flex md12>
-                  <h4>Stars</h4>
-                </v-flex>
-                <v-flex md12>asd</v-flex>
-              </v-layout>
-            <v-divider></v-divider>-->
+            <v-divider></v-divider>
+            <v-card flat>
+              <v-card-title>
+                <h5>Price</h5>
+              </v-card-title>
+              <v-card-text>
+                <v-layout row justify-center align-center>
+                  <v-flex md12>
+                    <v-range-slider
+                      thumb-label="always"
+                      always-dirty
+                      v-model="price"
+                      :max="priceMax"
+                      :min="priceMin"
+                      :step="10"
+                    ></v-range-slider>
+                  </v-flex>
+                  <!-- <v-flex md3 offset-md1>Min : {{priceMin}} -- Max : {{priceMax}}</v-flex> -->
+                </v-layout>
+              </v-card-text>
+            </v-card>
+            <v-divider></v-divider>
+            <v-card flat>
+              <v-card-title>
+                <h5>Location</h5>
+                {{districtSeleted}}
+              </v-card-title>
+              <v-card-text>
+                <v-layout
+                  row
+                  v-for="(district,i) in arrayDistrict"
+                  :key="i"
+                  justify-center
+                  align-center
+                >
+                  <v-flex md1 offset-md1 class="pt-3">
+                    <v-checkbox
+                      class="custom-checkbox"
+                      type="checkbox"
+                      v-model="districtSeleted"
+                      :value="district.id"
+                      height="1"
+                    ></v-checkbox>
+                  </v-flex>
+                  <v-flex md10>
+                    <div @click="chooseDistrict(district.id)">
+                      <span>{{district.name}}</span>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+            <v-divider></v-divider>
+            <v-card flat>
+              <v-card-title>
+                <h5>Hotel Type</h5>
+                {{hotelTypeSeleted}}
+              </v-card-title>
+              <v-card-text>
+                <v-layout
+                  row
+                  v-for="(hotelType,i) in arrayHotelType"
+                  :key="i"
+                  justify-center
+                  align-center
+                >
+                  <v-flex md1 offset-md1 class="pt-3">
+                    <v-checkbox
+                      class="custom-checkbox"
+                      type="checkbox"
+                      v-model="hotelTypeSeleted"
+                      :value="hotelType.id"
+                      height="1"
+                    ></v-checkbox>
+                  </v-flex>
+                  <v-flex md10>
+                    <div @click="chooseDistrict(district.id)">
+                      <span>{{hotelType.name}}</span>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+            <v-divider></v-divider>
+            <v-card flat>
+              <v-card-title>
+                <h5>Room Type</h5>
+                {{RoomTypeSeleted}}
+              </v-card-title>
+              <v-card-text>
+                <v-layout
+                  row
+                  v-for="(roomType,i) in arrayRoomType"
+                  :key="i"
+                  justify-center
+                  align-center
+                >
+                  <v-flex md1 offset-md1 class="pt-3">
+                    <v-checkbox
+                      class="custom-checkbox"
+                      type="checkbox"
+                      v-model="RoomTypeSeleted"
+                      :value="roomType.id"
+                      height="1"
+                    ></v-checkbox>
+                  </v-flex>
+                  <v-flex md10>
+                    <div @click="(roomType.id)">
+                      <span>{{roomType.name}}</span>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+            </v-card>
+            <v-divider></v-divider>
           </v-card-text>
         </v-card>
       </div>
     </v-flex>
     <v-flex md8>
       <div class="container-search">
+        <div v-if="loading" class="text-center">
+          <v-progress-circular :size="70" :width="7" color="blue" indeterminate></v-progress-circular>
+        </div>
+        <div v-else></div>
         <v-card light flat tile>
           <v-layout class="search-item" v-for="(hotel,index) in data" :key="index">
             <v-flex xs3>
-              <!-- <router-link tag="a" :to="{name:'hotel',params:{id:hotel.id}}" target="_blank"> -->
               <router-link
                 tag="a"
                 :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
@@ -146,43 +271,43 @@
               </router-link>
             </v-flex>
             <v-flex xs9>
-              <v-card-title>
-                <v-card flat tile width="100%">
-                  <v-list two-line class="grey lighten-2">
-                    <v-list-tile>
-                      <v-list-tile-content>
+              <router-link
+                tag="a"
+                :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
+                target="_blank"
+              >
+                <v-card-title>
+                  <v-card flat tile width="100%">
+                    <v-list two-line class="grey lighten-2">
+                      <v-list-tile>
+                        <v-list-tile-content>
+                          <div>
+                            <span class="headline">{{hotel.name}}</span>
+                            <v-tooltip right>
+                              <template v-slot:activator="{ on }">
+                                <i
+                                  class="blue--text fas fa-check-circle"
+                                  v-on="on"
+                                  v-show="hotel.verified!=0"
+                                ></i>
+                              </template>
+                              <span>verified</span>
+                            </v-tooltip>
+                          </div>
+                          <v-list-tile-title>{{hotel.description}}</v-list-tile-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile>
                         <div>
-                          <router-link
-                            class="headline"
-                            tag="a"
-                            :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
-                            target="_blank"
-                          >{{hotel.name}}</router-link>
-                          <v-tooltip right>
-                            <template v-slot:activator="{ on }">
-                              <i
-                                class="blue--text fas fa-check-circle"
-                                v-on="on"
-                                v-show="hotel.verified!=0"
-                              ></i>
-                            </template>
-                            <span>verified</span>
-                          </v-tooltip>
+                          <div>
+                            Price:
+                            <!-- <span>{{hotel.minPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span> -->
+                          </div>
                         </div>
-                        <v-list-tile-title>{{hotel.description}}</v-list-tile-title>
-                      </v-list-tile-content>
-                    </v-list-tile>
-                    <v-list-tile>
-                      <div>
-                        <div>
-                          Price:
-                          <span>{{hotel.minPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
-                        </div>
-                      </div>
-                    </v-list-tile>
-                  </v-list>
-                </v-card>
-                <!-- <div>
+                      </v-list-tile>
+                    </v-list>
+                  </v-card>
+                  <!-- <div>
                   <router-link
                     class="headline"
                     tag="a"
@@ -190,211 +315,14 @@
                     target="_blank"
                   >{{hotel.name}}</router-link>
                   <div>{{hotel.description}}</div>
-                </div>-->
-              </v-card-title>
+                  </div>-->
+                </v-card-title>
+              </router-link>
             </v-flex>
           </v-layout>
         </v-card>
       </div>
     </v-flex>
-<<<<<<< Updated upstream
-    <v-dialog
-      v-model="dialog.state"
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-      scrollable
-    >
-      <v-card tile light>
-        <v-toolbar card flat dark color="teal">
-          <v-btn icon dark v-on:click="dialog.state = false">
-            <v-icon>close</v-icon>
-          </v-btn>
-          <v-toolbar-title class="text-uppercase">{{dialog.data.item.name}}</v-toolbar-title>
-          <v-spacer></v-spacer>
-        </v-toolbar>
-        <v-card-text class="py-0">
-          <v-layout row wrap>
-            <v-flex md3 class="px-3">
-              <v-img :aspect-ratio="4/3" src="/blog/img/slider/default.png" class="my-2">
-                <v-layout row wrap justify-center align-center fill-height>
-                  <v-flex md10>
-                    <v-rating
-                      v-model="dialog.data.item.stars_num"
-                      color="#fff200"
-                      background-color="grey darken-1"
-                      empty-icon="$vuetify.icons.ratingFull"
-                      half-incrementss
-                      readonly
-                      small
-                    ></v-rating>
-                  </v-flex>
-                </v-layout>
-              </v-img>
-              <v-layout row wrap class="hotel-info-item" align-center>
-                <v-flex md1>
-                  <i class="fas fa-thumbs-up teal--text fa-lg"></i>
-                </v-flex>
-                <v-flex md4>
-                  <span class="font-weight-black">Review Points:</span>
-                </v-flex>
-                <v-flex md7 class="pl-2">
-                  <span class="font-weight-black">{{dialog.data.item.review_point}}</span>
-                </v-flex>
-              </v-layout>
-              <v-layout row wrap class="hotel-info-item" align-center>
-                <v-flex md1>
-                  <i class="fas fa-phone teal--text fa-lg"></i>
-                </v-flex>
-                <v-flex md4>
-                  <span class="font-weight-black">Phone Number:</span>
-                </v-flex>
-                <v-flex md7 class="pl-2">
-                  <span class="font-weight-black">{{dialog.data.item.phone_number}}</span>
-                </v-flex>
-              </v-layout>
-              <v-layout row wrap class="hotel-info-item" align-center>
-                <v-flex md1>
-                  <i class="fas fa-envelope teal--text fa-lg"></i>
-                </v-flex>
-                <v-flex md4>
-                  <span class="font-weight-black">Email:</span>
-                </v-flex>
-                <v-flex md7 class="pl-2">
-                  <span class="font-weight-black">xxx@gmail.com</span>
-                </v-flex>
-              </v-layout>
-              <v-layout row wrap class="hotel-info-item" align-center>
-                <v-flex md1>
-                  <i class="fas fa-fax teal--text fa-lg"></i>
-                </v-flex>
-                <v-flex md4>
-                  <span class="font-weight-black">Fax Number:</span>
-                </v-flex>
-                <v-flex md7 class="pl-2">
-                  <span class="font-weight-black">{{dialog.data.item.fax_number}}</span>
-                </v-flex>
-              </v-layout>
-              <v-layout row wrap class="hotel-info-item" align-center>
-                <v-flex md1>
-                  <i class="fas fa-dollar-sign teal--text fa-lg"></i>
-                </v-flex>
-                <v-flex md4>
-                  <span class="font-weight-black">Tax Code:</span>
-                </v-flex>
-                <v-flex md7 class="pl-2">
-                  <span class="font-weight-black">{{dialog.data.item.tax_code}}</span>
-                </v-flex>
-              </v-layout>
-              <v-layout row wrap class="hotel-info-item" align-center>
-                <v-flex md1>
-                  <i class="fas fa-map-marker-alt teal--text fa-lg"></i>
-                </v-flex>
-                <v-flex md4>
-                  <span class="font-weight-black">Address:</span>
-                </v-flex>
-                <v-flex md7 class="pl-2">
-                  <span class="font-weight-black">tp Ho Chi Minh</span>
-                </v-flex>
-              </v-layout>
-              <v-btn depressed dark>follow</v-btn>
-            </v-flex>
-            <v-flex md9 class="pa-3">
-              <v-tabs centered grow color="grey lighten-2" light class="ma-1">
-                <v-tabs-slider color="black"></v-tabs-slider>
-                <v-tab href="#tab-1">rooms</v-tab>
-                <v-tab href="#tab-2">description</v-tab>
-                <v-tab href="#tab-3">map</v-tab>
-                <v-tab-item value="tab-2">
-                  <v-card light flat tile>
-                    <v-layout row wrap class="hotel-tab">
-                      <v-flex md12>
-                        <v-card-title>
-                          <div>
-                            <div
-                              class="subheading font-weight-bold"
-                            >{{dialog.data.item.description}}</div>
-                            <div>
-                              CEO:
-                              <span class="font-italic">Nguyen Tran Hoang Thang</span>
-                            </div>
-                          </div>
-                        </v-card-title>
-                        <v-card-actions>
-                          <a href="https://www.instagram.com/" target="_blank">
-                            <i class="fab fa-instagram fa-4x black--text mr-3"></i>
-                          </a>
-                          <a href="https://www.facebook.com/" target="_blank">
-                            <i class="fab fa-facebook-f fa-4x black--text mr-3"></i>
-                          </a>
-                          <a href="https://www.youtube.com/" target="_blank">
-                            <i class="fab fa-youtube fa-4x black--text mr-3"></i>
-                          </a>
-                          <a href="https://www.twitter.com/" target="_blank">
-                            <i class="fab fa-twitter fa-4x black--text mr-3"></i>
-                          </a>
-                          <a href="https://plus.google.com/" target="_blank">
-                            <i class="fab fa-google-plus-g fa-4x black--text mr-3"></i>
-                          </a>
-                        </v-card-actions>
-                      </v-flex>
-                      <v-flex md3 class="pa-1" v-for="(item,i) in 7" :key="i">
-                        <v-img :aspect-ratio="1/1" src="/blog/img/slider/default.png"></v-img>
-                      </v-flex>
-                    </v-layout>
-                  </v-card>
-                </v-tab-item>
-                <v-tab-item value="tab-3">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.9551334403727!2d106.67572371411624!3d10.7379414628408!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f62a90e5dbd%3A0x674d5126513db295!2zxJDhuqFpIEjhu41jIEPDtG5nIE5naOG7hyBTw6BpIEfDsm4!5e0!3m2!1svi!2s!4v1560999432503!5m2!1svi!2s"
-                    width="100%"
-                    height="500"
-                    frameborder="0"
-                    style="border:0"
-                    allowfullscreen
-                  ></iframe>
-                </v-tab-item>
-                <v-tab-item value="tab-1">
-                  <v-card light flat tile style="overflow:auto; height:490px;">
-                    <v-expansion-panel class="elevation-0" expand v-model="expand">
-                      <v-expansion-panel-content
-                        class="search-room-content"
-                        hide-actions
-                        v-for="(hotel,index) in data"
-                        :key="index"
-                      >
-                        <template v-slot:header>
-                          <v-layout v-on:click="detailOf(hotel)">
-                            <v-flex xs3>
-                              <v-img :aspect-ratio="4/3" src="/blog/img/slider/default.png"></v-img>
-                            </v-flex>
-                            <v-flex xs9>
-                              <v-card-title primary-title>
-                                <div>
-                                  <div class="headline">{{hotel.item.name}}</div>
-                                  <div>{{hotel.item.description}}</div>
-                                </div>
-                              </v-card-title>
-                            </v-flex>
-                          </v-layout>
-                        </template>
-                        <v-layout row wrap>
-                          <v-card dark>
-                            <v-card-title>ABC</v-card-title>
-                          </v-card>
-                        </v-layout>
-                      </v-expansion-panel-content>
-                    </v-expansion-panel>
-                  </v-card>
-                </v-tab-item>
-              </v-tabs>
-            </v-flex>
-          </v-layout>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-=======
->>>>>>> Stashed changes
   </v-layout>
 </template>
 
@@ -433,6 +361,18 @@ export default {
       checkInFormattedVal: "",
       checkOutVal: "",
       checkOutFormattedVal: "",
+      arrayDistrict: [],
+      arrayService: [],
+      arrayHotelType: [],
+      arrayRoomType: [],
+      districtSeleted: [],
+      serviceSeleted: [],
+      hotelTypeSeleted: [],
+      RoomTypeSeleted: [],
+      starsSeleted: [],
+      price: [400, 100000],
+      priceMin: 10,
+      priceMax: 100000,
       number: 5,
       stars: {
         1: false,
@@ -440,29 +380,39 @@ export default {
         3: false,
         4: false,
         5: false
-      }
+      },
+      arrayHotel: [],
+      loading: false
     };
   },
   created() {
     this.setSearchValue();
+    this.initialize();
     this.getData();
-    this.getDisctrict();
   },
   watch: {
+    placeVal: "loadSearchData",
     checkInVal: "loadSearchData",
     checkIn: "setSearchValue",
     checkOutVal: "loadSearchData",
-    checkOut: "setSearchValue"
+    checkOut: "setSearchValue",
+    starsSeleted: "getData",
+    districtSeleted: "getData",
+    serviceSeleted: "getData",
+    hotelTypeSeleted: "getData",
+    price: "getData",
+    RoomTypeSeleted: "getData",
+    
   },
   methods: {
-<<<<<<< Updated upstream
     chooseStar: function(i) {
       this.stars[i] = !this.stars[i];
-      console.log(this.stars);
-=======
-    loginDialog: function() {
-      this.$emit("loadLoginDialog", true);
->>>>>>> Stashed changes
+    },
+    chooseDistrict: function(i) {
+      this.arrayDistrict[i] = !this.arrayDistrict[i];
+    },
+    chooseService: function(i) {
+      this.arrayService[i] = !this.arrayService[i];
     },
     loadSearchData: function() {
       this.$emit("loadSearchData", {
@@ -481,41 +431,113 @@ export default {
       this.checkOutFormattedVal = this.checkOutFormatted;
     },
     getData: function() {
+      this.loading = true;
       axios({
         method: "get",
-        url: "http://localhost:8000/api/hotel",
-        params: {}
-      }).then(res => {
-        if (res.data.status) {
-          this.data = res.data.data;
-          return;
+        url: "http://localhost:8000/api/manager/searching",
+        params: {
+          place: this.placeVal,
+          checkIn: this.checkIn,
+          checkOut: this.checkOut,
+          stars: this.starsSeleted,
+          service: this.serviceSeleted,
+          district: this.districtSeleted,
+          hotelType: this.hotelTypeSeleted,
+          price: this.price,
+          roomType: this.RoomTypeSeleted,
         }
-      });
-<<<<<<< Updated upstream
+      })
+        .then(response => {
+          this.loading = false;
+          console.log(response);
+          this.data = response.data;
+        })
+        .catch(error => {
+          this.loading = false;
+          console.log(error.response);
+        });
+    },
+    initialize: function() {
+      this.getService();
+      this.getDisctrict();
+      this.getPrice();
+      this.getHotelType();
+      this.getRoomType();
     },
     getDisctrict: function() {
       axios
-        .get("http://localhost:8000/api/district",{
-          params : {
-            province : this.placeVal,
+        .get("http://localhost:8000/api/district", {
+          params: {
+            province: this.placeVal
           }
         })
         .then(response => {
-          // if (response.data.status == true) {
           console.log(response);
-          // }
+          this.arrayDistrict = response.data.data;
         })
         .catch(function(error) {
           console.log(error);
         });
     },
-    detailOf: function(val) {
-      this.dialog.state = true;
-      this.dialog.data = val;
-      console.log(this.dialog.data.item.name);
-=======
->>>>>>> Stashed changes
-    }
+    getService: function() {
+      axios
+        .get("http://localhost:8000/api/service", {
+          params: {
+            province: this.placeVal
+          }
+        })
+        .then(response => {
+          console.log(response);
+          this.arrayService = response.data.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getPrice: function() {},
+    getHotelType: function() {
+      axios
+        .get("http://localhost:8000/api/hotel-type", {
+          params: {
+            province: this.placeVal
+          }
+        })
+        .then(response => {
+          console.log(response);
+          this.arrayHotelType = response.data.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    getRoomType: function() {
+      axios
+        .get("http://localhost:8000/api/room-type", {
+        })
+        .then(response => {
+          console.log(response);
+          this.arrayRoomType = response.data.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    // search: function() {
+    //   axios
+    //     .get("http://localhost:8000/api/hotel-type", {
+    //       params: {
+    //         province: this.placeVal
+    //       }
+    //     })
+    //     .then(response => {
+    //       this.loading = false;
+    //       console.log(response);
+    //     })
+    //     .catch(function(error) {
+    //       this.loading = false;
+    //       console.log(error);
+    //     });
+    // }
   }
 };
 </script>
