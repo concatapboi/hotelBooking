@@ -9,7 +9,6 @@ use App\Models\Province;
 use App\Models\District;
 use App\Models\Ward;
 use App\Models\Hotel;
-use App\Models\HotelAddress;
 
 class AddressController extends Controller
 {
@@ -89,8 +88,7 @@ class AddressController extends Controller
                 "message" => "can't find hotel with this id"
             ]);
         }
-        $address = HotelAddress::where("hotel_id",$hotel->id)->first();
-        $wardId = $address->ward_id;
+        $wardId = $hotel->ward_id;
         $ward = Ward::find($wardId);
         $district = District::where("id",$ward->district_id)->first();
         $province = Province::where("id",$district->province_id)->first();
@@ -106,9 +104,8 @@ class AddressController extends Controller
     public function getDistrictByPronvinceName(Request $request)
     {
         $provinceName = $request->province;
-        $provinceId = Province::where("name",$provinceName)->first();
-        dd($provinceId);
-        $arrayDistrict = District::where('province_id',$request->provinceId)->get();
+        $provinceId = Province::where("name",$provinceName)->first()->id;
+        $arrayDistrict = District::where('province_id',$provinceId)->get();
         // return $arrayDistrict;
         $arrayData = [];
         foreach($arrayDistrict as $district){

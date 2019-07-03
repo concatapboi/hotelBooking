@@ -12,4 +12,8 @@ class Ward extends Model
     'name',
     'district_id',
   ];
+  public function Hotel()
+  {
+    return $this->hasMany("App\Models\Hotel","ward_id","id");
+  }
 }

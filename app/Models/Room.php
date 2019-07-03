@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,7 +9,7 @@ class Room extends Model
 {
   protected $table = 'room';
 
-  protected $fillable =[
+  protected $fillable = [
     'status',
     'room_name',
     'description',
@@ -21,19 +22,53 @@ class Room extends Model
     'room_type_id',
     'hotel_id',
   ];
-  public function Hotel(){
-		return $this->belongsTo('App\Models\Hotel','hotel_id','id');
+  public function Hotel()
+  {
+    return $this->belongsTo('App\Models\Hotel', 'hotel_id', 'id');
   }
-  public function RoomType(){
-		return $this->belongsTo('App\Models\RoomType','room_type_id','id');
+  public function RoomType()
+  {
+    return $this->belongsTo('App\Models\RoomType', 'room_type_id', 'id');
   }
-  public function RoomMode(){
-		return $this->belongsTo('App\Models\RoomMode','room_mode_id','id');
+  public function RoomMode()
+  {
+    return $this->belongsTo('App\Models\RoomMode', 'room_mode_id', 'id');
   }
-  public function RoomBedType(){
-		return $this->hasMany('App\Models\RoomBedType','room_id','id');
+  public function RoomBedType()
+  {
+    return $this->hasMany('App\Models\RoomBedType', 'room_id', 'id');
   }
-  public function Feature(){
-		return $this->hasMany('App\Models\RoomFeature','room_id','id');
+  public function Feature()
+  {
+    return $this->hasMany('App\Models\RoomFeature', 'room_id', 'id');
+  }
+  public function availableRoomAmount($check_in, $check_out)
+  {
+    $number = $this->amount;
+    // return $number;
+    $bookings = Booking::where("room_id", $this->id)->get();
+    if (sizeOf($bookings) <= 0) {
+      return $number;
+    }
+    foreach ($bookings as $booking) {
+      $bookingCheckinExplode = explode("-", $booking->check_in);
+      $bookingCheckoutExplode = explode("-", $booking->check_out);
+      $bookingCheckIn = Carbon::createMidnightDate($bookingCheckinExplode[0], $bookingCheckinExplode[1], $bookingCheckinExplode[2]);
+      $bookingCheckOut = Carbon::createMidnightDate($bookingCheckoutExplode[0], $bookingCheckoutExplode[1], $bookingCheckoutExplode[2]);
+      if($check_in->lessThan($bookingCheckIn)){
+        if($check_out<=$bookingCheckIn){
+          // duoc dat phong
+        }else{
+          $number-= $booking->room_amount;
+        }
+      }else{
+        if($check_in->greaterThanOrEqualTo($bookingCheckOut)){
+          // duoc dat phong
+        }else{
+          $number-= $booking->room_amount;
+        }
+      }
+    }
+    return $number;
   }
 }

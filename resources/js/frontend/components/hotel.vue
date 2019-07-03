@@ -129,7 +129,7 @@
           <span class="font-weight-black" style="word-wrap: break-word;">tp Ho Chi Minh</span>
         </v-flex>
       </v-layout>
-      <v-btn depressed dark>follow</v-btn>
+      <v-btn depressed dark v-on:click="followHotel(data.id)">follow</v-btn>
     </v-flex>
     <v-flex md9 class="detail-container">
       <v-tabs centered grow color="grey lighten-2" light class="ma-1">
@@ -176,6 +176,10 @@
                     <div>
                       Room Type:&nbsp;
                       <span class="font-weight-bold">{{room.room_type.name}}</span>
+                    </div>
+                    <div>
+                      Room Size:&nbsp;
+                      <span class="font-weight-bold">{{room.room_size}}&nbsp;m2</span>
                     </div>
                     <div>
                       Amount:&nbsp;
@@ -231,7 +235,7 @@
                 </v-card-title>
               </v-flex>
               <v-flex md2 class="pt-5 pl-1">
-                <v-btn depressed dark large color="teal" @click.stop="getBooking(room, index)">Book</v-btn>
+                <v-btn depressed dark large color="teal" @click.stop="openDialog(room)">Book</v-btn>
                 <div class="red--text">
                   Availability :&nbsp;
                   <span class="font-weight-bold">{{room.amount}}</span>&nbsp;room(s)
@@ -311,35 +315,299 @@
       </v-tabs>
     </v-flex>
     <v-dialog
-            v-model="bookingDialog"
-            fullscreen
-            hide-overlay
-            transition="dialog-bottom-transition"
-            scrollable
-          >
-            <v-card tile class="grey lighten-4">
-              <v-toolbar card flat dark>
-                <v-btn icon dark v-on:click="bookingDialog =false">
-                  <v-icon>close</v-icon>
-                </v-btn>
-                <v-toolbar-title class="text-uppercase">booking</v-toolbar-title>
-              </v-toolbar>
-              <div class="booking-content">
-                <v-layout row wrap justify-center align-center>
-                  <v-flex md5>
-                    <v-card dark>
-                      <v-card-text>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempora maiores, veritatis cumque ipsam, voluptates nostrum alias, facilis consectetur odit a obcaecati deserunt in totam. Fuga non atque quibusdam odit vero?</v-card-text>
-                    </v-card>
-                  </v-flex>
-                </v-layout>
-              </div>
-            </v-card>
+      v-model="bookingDialog.state"
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+      scrollable
+    >
+      <v-card tile light>
+        <v-toolbar card flat dark>
+          <v-btn icon dark v-on:click="bookingDialog.state =false">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-toolbar-title class="text-uppercase">booking</v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
+          <v-layout row wrap justify-center class="pa-0 ma-0">
+            <v-flex md3>
+              <v-layout row wrap class="ml-1 pa-2 grey lighten-2">
+                <v-flex md12>
+                  <v-layout row wrap class="pa-0 ma-0">
+                    <v-flex md12>
+                      <div class="font-italic text-md-center">Room information</div>
+                      <v-divider></v-divider>
+                    </v-flex>
+                    <v-flex md2>
+                      <v-img :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
+                    </v-flex>
+                    <v-flex md10 class="pa-3">
+                      <div>{{data.name}} - {{data.hotel_type.name}}</div>
+                    </v-flex>
+                  </v-layout>
+                  <v-divider></v-divider>
+                </v-flex>
+                <v-flex md6 class="service-item">
+                  <div>
+                    <span>Services</span>
+                  </div>
+                  <v-divider></v-divider>
+                  <div v-for="(service,i) in bookingDialog.room.service" :key="i">
+                    <i :class="'fas fa-'+service.icon"></i>&nbsp;
+                    <span>{{service.name}}</span>
+                  </div>
+                </v-flex>
+                <v-flex md6 class="feature-item">
+                  <div>
+                    <span>Feature</span>
+                  </div>
+                  <v-divider></v-divider>
+                  <div v-for="(feature,i) in bookingDialog.room.feature" :key="i">
+                    <span>{{feature.feature.name}}</span>
+                  </div>
+                </v-flex>
+                <v-flex md12>
+                  <v-divider></v-divider>
+                </v-flex>
+                <v-flex md4>
+                  <span>Check-in:</span>
+                </v-flex>
+                <v-flex md8>
+                  <span>{{checkInFormattedVal}}</span>
+                </v-flex>
+                <v-flex md4>
+                  <span>Check-out:</span>
+                </v-flex>
+                <v-flex md8>
+                  <span>{{checkOutFormattedVal}}</span>
+                </v-flex>
+                <v-flex md12>
+                  <v-divider></v-divider>
+                </v-flex>
+                <v-flex md4>
+                  <span>Kind Of Room:</span>
+                </v-flex>
+                <v-flex md8>
+                  <span>{{bookingDialog.room.room_type.name}}</span>
+                </v-flex>
+                <v-flex md4>
+                  <span>Bed(s):</span>
+                </v-flex>
+                <v-flex md8>
+                  <div
+                    v-for="(bed,i) in bookingDialog.room.room_bed_type"
+                    :key="i"
+                  >{{bed.amount}}x{{bed.bed_type.name}}</div>
+                </v-flex>
+                <v-flex md12>
+                  <v-divider></v-divider>
+                </v-flex>
+                <v-flex md4>
+                  <span>Amount Of Room:</span>
+                </v-flex>
+                <v-flex md8>
+                  <span>{{bookingDialog.room.bookingAmount}}</span>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+            <v-spacer></v-spacer>
+            <v-flex md9>
+              <v-layout row wrap class="py-0 my-0 px-5 mx-5">
+                <v-flex md12>
+                  <div>
+                    <span class="headline">Booking</span>
+                  </div>
+                  <v-card v-show="!login.check" flat tile dark color="#2f3542">
+                    <v-layout row wrap class="pa-0 ma-0">
+                      <v-flex md2>
+                        <v-img :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
+                      </v-flex>
+                      <v-flex md10>
+                        <v-card-title>
+                          <div>
+                            <div>Sign in now and enjoy membership privileges!</div>
+                            <div>
+                              <span>
+                                <a href="#" class="blue--text" @click="getLogin(1)">Login</a>
+                              </span>&nbsp;||&nbsp;
+                              <span>
+                                <a href="#" class="blue--text" @click="getLogin(0)"> Register</a>
+                              </span>
+                            </div>
+                          </div>
+                        </v-card-title>
+                      </v-flex>
+                    </v-layout>
+                  </v-card>
+                </v-flex>
+                <v-window v-model="bookingDialog.step">
+                  <v-window-item :value="1">
+                    <v-flex md12>
+                      <div>
+                        <v-divider dark></v-divider>
+                        <span class="headline">Your Booking' information</span>
+                      </div>
+                      <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
+                        <v-flex md12>
+                          <div>
+                            Contact name:
+                            <span class="red--text">*</span>
+                          </div>
+                          <v-text-field
+                            class="ma-2"
+                            color="teal"
+                            outline
+                            hint="*Enter the name as shown on ID card / passport (no sign)"
+                            persistent-hint
+                          ></v-text-field>
+                        </v-flex>
+                        <v-flex md6>
+                          <div>
+                            Contact phone-number:
+                            <span class="red--text">*</span>
+                          </div>
+                          <v-text-field class="ma-2" color="teal" outline></v-text-field>
+                        </v-flex>
+                        <v-flex md6>
+                          <div>
+                            Contact email:
+                            <span class="red--text">*</span>
+                          </div>
+                          <v-text-field
+                            class="ma-2"
+                            color="teal"
+                            outline
+                            hint="*Ex: email@example.com"
+                            persistent-hint
+                          ></v-text-field>
+                        </v-flex>
+                        <v-flex md6>
+                          <div>
+                            Contact address:
+                            <span class="red--text">*</span>
+                          </div>
+                          <v-textarea
+                            class="ma-2"
+                            color="teal"
+                            outline
+                            auto-grow
+                            rows="2"
+                            hint="*Ex: Da Kao ward, district 1, Ho Chi Minh city"
+                            persistent-hint
+                          ></v-textarea>
+                        </v-flex>
+                        <v-flex md6>
+                          <div>Special request:</div>
+                          <v-textarea class="ma-2" color="teal" outline auto-grow rows="3"></v-textarea>
+                        </v-flex>
+                      </v-layout>
+                      <div>
+                        <v-divider dark></v-divider>
+                        <span class="headline">Price details</span>
+                      </div>
+                      <v-layout row wrap class="grey lighten-2 pa-3 pl-5 ma-0">
+                        <v-flex md12>
+                          <h2 class="font-weight-bold">{{data.name}}</h2>
+                        </v-flex>
+                        <v-flex md8>
+                          <span>({{bookingDialog.room.bookingAmount}}x)&nbsp;{{bookingDialog.room.room_type.name}}&nbsp;{{bookingDialog.room.room_mode.name}}</span>
+                        </v-flex>
+                        <v-flex
+                          md4
+                        >{{bookingDialog.roomTotalPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+                        <v-flex md12>
+                          <v-divider></v-divider>
+                        </v-flex>
+                        <v-flex md8>
+                          <span>Total price</span>
+                        </v-flex>
+                        <v-flex
+                          md4
+                        >{{bookingDialog.totalPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-window-item>
+
+                  <v-window-item :value="2">
+                    <v-flex md12>
+                      <div>
+                        <v-divider dark></v-divider>
+                        <span class="headline">Payment methods!</span>
+                      </div>
+                      <v-layout row wrap class="pa-0 ma-0"></v-layout>
+                    </v-flex>
+                  </v-window-item>
+                  <v-window-item :value="3">
+                    <v-flex md12>
+                      <div>
+                        <v-divider dark></v-divider>
+                        <span class="headline">Your booking application!</span>
+                      </div>
+                      <v-layout row wrap class="pa-0 ma-0"></v-layout>
+                    </v-flex>
+                  </v-window-item>
+                </v-window>
+                <v-flex md12>
+                  <v-layout row wrap class="pa-5 ma-0" align-center>
+                    <v-flex md6 class="text-md-left">
+                      <div>
+                        <v-btn
+                          dark
+                          color="#1dd1a1"
+                          large
+                          depressed
+                          :disabled="bookingDialog.step === 1"
+                          @click="bookingDialog.step--"
+                        >
+                          <i class="fa-lg fas fa-long-arrow-alt-left"></i>&nbsp;back
+                        </v-btn>
+                      </div>
+                    </v-flex>
+                    <v-flex md6 class="text-md-right">
+                      <div>
+                        <span
+                          class="red--text"
+                        >By clicking this button, you acknowledge that you have read and agree to Website's Terms &amp; Conditions and Privacy Policy.</span>
+                      </div>
+                      <div>
+                        <v-btn
+                          dark
+                          color="#1dd1a1"
+                          large
+                          depressed
+                          v-show="bookingDialog.step !== 3"
+                          @click="bookingDialog.step++"
+                        >
+                          next&nbsp;
+                          <i class="fa-lg fas fa-long-arrow-alt-right"></i>
+                        </v-btn>
+                        <v-btn
+                          class="booking-btn"
+                          dark
+                          large
+                          depressed
+                          v-show="bookingDialog.step === 3"
+                        >
+                          <h1>booking</h1>
+                        </v-btn>
+                      </div>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+      </v-card>
     </v-dialog>
   </v-layout>
 </template>
 
 <script>
 export default {
+  $_veeValidate: {
+    validator: "new"
+  },
   props: {
     login: {
       type: Object
@@ -362,7 +630,44 @@ export default {
   },
   data() {
     return {
-      bookingDialog: true,
+      bookingDialog: {
+        roomTotalPrice: 0,
+        totalPrice: 0,
+        step: 1,
+        state: false,
+        room: {
+          id: "",
+          bookingAmount: 1,
+          service: {},
+          fearure: {},
+          room_bed_type: {},
+          room_type: {
+            name: ""
+          },
+          room_mode: {
+            name: ""
+          }
+        },
+        dictionary: {
+          attributes: {
+            email: "Email Address"
+          },
+          custom: {
+            name: {
+              required: () => "Contact name can not be empty"
+            },
+            email: {
+              required: () => "Contact email can not be empty"
+            },
+            phone: {
+              required: () => "Contact phone-number can not be empty"
+            },
+            address: {
+              required: () => "Contact address can not be empty"
+            }
+          }
+        }
+      },
       id: this.$route.params.id,
       data: {
         room: [],
@@ -370,7 +675,7 @@ export default {
           name: ""
         }
       },
-      bookingAmount: {},
+      // bookingAmount: {},
       mn: {
         menu1: false,
         menu2: false
@@ -386,6 +691,9 @@ export default {
       // checkOut: this.$route.query.check_out,
       // checkOutFormatted: this.formatDate(this.$route.query.check_out),
     };
+  },
+  mounted() {
+    this.$validator.localize("en", this.bookingDialog.dictionary);
   },
   created() {
     console.log(Object.keys(this.$route.query).length);
@@ -417,10 +725,9 @@ export default {
       }).then(res => {
         if (res.data.status) {
           this.data = res.data.data;
-          console.log(res.data.data.length);
-          for (var i = 0; i < res.data.data.room.length; i++) {
-            this.bookingAmount[i] = 2;
-          }
+          // for (var i = 0; i < res.data.data.room.length; i++) {
+          //   this.bookingAmount[i] = 2;
+          // }
           return;
         }
       });
@@ -444,15 +751,29 @@ export default {
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
+    openDialog: function(room) {
+      this.bookingDialog.room = room;
+      this.bookingDialog.state = true;
+      this.bookingDialog.roomTotalPrice = room.bookingAmount * room.price;
+      this.bookingDialog.totalPrice = room.bookingAmount * room.price;
+    },
+    getLogin: function(val){
+      this.$emit("loadLoginDialog", true,val);
+    },
     getBooking: function(room, index) {
-      if(!this.login.check){
-        this.$emit("loadLoginDialog",true);
+      if (!this.login.check) {
+        this.getLogin(1);
         return;
       }
-      alert('login r');
+      alert("login r");
     },
-    test: function(val) {
-      alert(val);
+    followHotel: function(id) {
+      if (!this.login.check) {
+        this.getLogin(1);
+        return;
+      } else {
+        alert("login r");
+      }
     }
   }
 };

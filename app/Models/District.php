@@ -12,4 +12,8 @@ class District extends Model
     'name',
     'province_id',
   ];
+  public function Ward()
+  {
+    return $this->hasMany("App\Models\Ward","district_id","id");
+  }
 }

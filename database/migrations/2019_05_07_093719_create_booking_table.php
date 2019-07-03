@@ -16,23 +16,26 @@ class CreateBookingTable extends Migration
         Schema::create('booking', function (Blueprint $table) {
             $table->increments('id');
             $table->string('hotel_name');
-            $table->integer('total_price');
+            $table->integer('room_price');
+            $table->integer('room_amount');
             $table->string('contact_name');
             $table->string('contact_email');
             $table->string('contact_phone');
             $table->string('contact_address');
             $table->string('special_request');
             $table->string('fax_number');
+            $table->date('check_in');
+            $table->date('check_out');
+            $table->integer('room_id')->unsigned();
             $table->integer('customer_id')->unsigned();
-            $table->integer('hotel_id')->unsigned();
             $table->integer('status_id')->unsigned();
             $table->integer('payment_method_id')->unsigned();
             $table->timestamps();
+            $table->foreign('room_id')
+            ->references('id')->on('room')
+            ->onDelete('cascade');
             $table->foreign('customer_id')
             ->references('user_id')->on('customer')
-            ->onDelete('cascade');
-            $table->foreign('hotel_id')
-            ->references('id')->on('hotel')
             ->onDelete('cascade');
             $table->foreign('status_id')
             ->references('id')->on('booking_status')

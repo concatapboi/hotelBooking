@@ -105,7 +105,7 @@ class RoomTypeController extends Controller
     }
     public function getAllRoomType()
     {
-        
+        $roomTypes = RoomType::all();
         $result = [];
         foreach ($roomTypes as $roomType) {
             $result[] = new RoomTypeResource($roomType);

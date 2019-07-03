@@ -871,13 +871,13 @@ export default {
             this.logout;
           }
           console.log(response);
-          if (response.data.status == true) {
-            for (var i = 0; i < _this.arrayHotel.length; i++) {
-              if (_this.arrayHotel[i].id == this.selectedId) {
-                _this.arrayHotel.splice(i, 1);
-              }
-            }
-          }
+          // if (response.data.status == true) {
+          //   for (var i = 0; i < _this.arrayHotel.length; i++) {
+          //     if (_this.arrayHotel[i].id == this.selectedId) {
+          //       _this.arrayHotel.splice(i, 1);
+          //     }
+          //   }
+          // }
         })
         .catch(error => {
           console.log(error);
