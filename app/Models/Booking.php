@@ -26,10 +26,6 @@ class Booking extends Model
     'room_id',
   ];
 
-  public function Hotel()
-  {
-    return $this->belongsTo('App\Models\Hotel', 'hotel_id', 'id');
-  }
   public function Status()
   {
     return $this->belongsTo('App\Models\BookingStatus', 'status_id', 'id');

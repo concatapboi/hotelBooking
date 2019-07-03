@@ -67,10 +67,10 @@ $factory->define(App\Models\Room::class, function (Faker $faker) {
         'room_name' => $faker->lastName,
         'description' => $faker->sentence($nbWords = 6, $variableNbWords = true),
         'price' => rand(5, 100000),
-        'max_adult_amount' => $faker->randomDigit,
+        'max_adult_amount' => rand(2,5),
         'max_child_amount' => $faker->randomDigit,
         'free_child_amount' => $faker->randomDigit,
-        'room_size' => $faker->randomDigit,
+        'room_size' => rand(50,200),
         'amount' => rand(1,10),
         'room_mode_id' => $no++,
         'room_type_id' => 1,
@@ -101,5 +101,15 @@ $factory->define(App\Models\ServiceRoomType::class, function (Faker $faker) {
         'service_id' => $no++,
         'room_type_id' => 1,
         'hotel_id' => 1
+    ];
+});
+$factory->define(App\Models\BookingStatus::class, function (Faker $faker) {
+    return [
+        'name'=> 'Wait for confirmation'
+    ];
+});
+$factory->define(App\Models\PaymentMethod::class, function (Faker $faker) {
+    return [
+        'name' => 'Offline'
     ];
 });

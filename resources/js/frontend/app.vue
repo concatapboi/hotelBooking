@@ -82,6 +82,12 @@
                     </v-list-tile-action>
                     <v-list-tile-content>Account</v-list-tile-content>
                   </v-list-tile>
+                  <v-list-tile tag="a" href="/community/account" target="_blank">
+                    <v-list-tile-action>
+                      <i class="fas fa-bold teal--text fa-lg"></i>
+                    </v-list-tile-action>
+                    <v-list-tile-content>Booking List</v-list-tile-content>
+                  </v-list-tile>
                   <v-divider></v-divider>
                   <v-list-tile>
                     <v-btn dark depressed color="teal" large @click="logOut">
@@ -100,6 +106,7 @@
       <v-container fluid class="white my-0 py-0">
         <transition name="moveInUp">
         <router-view
+          :paymentMethods="paymentMethods"
           :loginDialog="dialog"
           v-on:loadLoginDialog="eventDialog"
           :login="login"
@@ -342,6 +349,7 @@ export default {
         ":" +
         new Date().getSeconds(),
       memberCount: 0,
+      paymentMethods:[],
       register: {
         username: "",
         email: "",
@@ -361,7 +369,12 @@ export default {
         value: false,
         user: {
           user: {
-            name: ""
+            name: "",
+            customer:{
+            },
+            avatar:{
+              image_link:"",
+            }
           },
           avatar: {
             image_link: ""
@@ -395,8 +408,8 @@ export default {
       dictionary: {
         custom: {
           username: {
-            required: () => "Email can not be empty",
-            min: "Password can not be under 4 characters"
+            required: () => "Username can not be empty",
+            min: "Username can not be under 4 characters"
           },
           password: {
             min: "Password can not be under 4 characters"
@@ -416,6 +429,7 @@ export default {
   created() {
     // localStorage.removeItem('login_token');
     this.getLogin();
+    this.getData();
     window.setInterval(() => {
       this.time =
         new Date().getHours() +
@@ -454,6 +468,17 @@ export default {
     this.$validator.localize("en", this.dictionary);
   },
   methods: {
+    getData: function(){
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/payment-method/",
+      }).then(res => {
+        if (res.data.status) {
+          this.paymentMethods = res.data.data;
+          return;
+        }
+      });
+    },
     getLogin: function() {
       this.login.token = localStorage.getItem("login_token");
       if (this.login.token != null) {
@@ -475,7 +500,10 @@ export default {
               this.login.token = localStorage.getItem("login_token");
               this.login.check = false;
               this.login.user = {
-                user: [],
+                user: {
+                  customer:{},
+                  avatar:{}
+                },
                 avatar: []
               };
             }
@@ -483,7 +511,10 @@ export default {
       } else {
         this.login.check = false;
         this.login.user = {
-          user: [],
+          user: {
+            customer:{},
+            avatar:{}
+          },
           avatar: []
         };
       }
@@ -538,7 +569,12 @@ export default {
           if (res.data.status) {
             this.login.check = false;
             this.login.token = "";
-            this.login.user = [];
+            this.login.user = {
+              user:{
+                customer:[]
+              },
+              avatar:[]
+            };
             localStorage.removeItem("login_token");
           }
         });
