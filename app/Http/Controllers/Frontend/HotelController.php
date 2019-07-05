@@ -70,7 +70,7 @@ class HotelController extends Controller
             if ($hotel != null) {
                 $status = true;
                 $hotel->hotel_type = $hotel->HotelTypeResource();
-                $hotel->service = $hotel->Service();
+                $hotel->service = $hotel->ServiceResource();
                 $hotel->followed = false;
                 if ($req->userID != null) {
                     if (HotelFollowing::where('customer_id', $req->userID)->where('hotel_id', $hotel->id)->first() != null)

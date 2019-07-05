@@ -476,6 +476,7 @@ export default {
     };
   },
   created() {
+    this.$emit("chooseHotel", this.hotelId);
     this.initialize();
   },
   mounted() {

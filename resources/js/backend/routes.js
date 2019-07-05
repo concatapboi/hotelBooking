@@ -7,6 +7,7 @@ import about from '@/js/backend/components/about';
 import room from '@/js/backend/components/room';
 import room_facility from '@/js/backend/components/room-facility';
 import service from '@/js/backend/components/service';
+import order from '@/js/backend/components/order';
 
 Vue.use(VueRouter);
 
@@ -43,6 +44,11 @@ const router = new VueRouter({
             name: 'login',
             component: login,
             props: true,
+        },
+        {
+            path: '/manager/order',
+            name: 'order',
+            component: order,
         },
     ]
 });

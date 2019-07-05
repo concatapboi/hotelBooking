@@ -11,7 +11,8 @@
             <v-list-tile-title>{{items[0].title}}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-group v-show="showMenu" no-action>
+        <!-- <v-list-group v-show="showMenu" no-action> -->
+        <v-list-group no-action>
           <template v-slot:activator>
             <v-list-tile>
               <v-list-tile-action>
@@ -23,7 +24,7 @@
           <v-list-tile class="style-link" :to="{name:'room',query :{hotelId : hotelId}}">
             <v-list-tile-title>Rooms</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile class="style-link" :to="{name:'room-facility'}">
+          <v-list-tile class="style-link" :to="{name:'room-facility',query :{hotelId : hotelId}}">
             <v-list-tile-title>Room facility</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
@@ -34,6 +35,15 @@
 
           <v-list-tile-content>
             <v-list-tile-title>{{items[2].title}}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile class="style-link" :to="{name:'order',query :{hotelId : hotelId}}">
+          <v-list-tile-action>
+            <v-icon>{{items[3].icon}}</v-icon>
+          </v-list-tile-action>
+
+          <v-list-tile-content>
+            <v-list-tile-title>{{items[3].title}}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -91,7 +101,8 @@ export default {
       items: [
         { icon: "home", title: "Home" },
         { icon: "business", title: "Your Rooms" },
-        { icon: "grade", title: "Service" }
+        { icon: "grade", title: "Service" },
+        { icon: "grade", title: "Order" },
       ],
       drawer: null,
       userID: 1,

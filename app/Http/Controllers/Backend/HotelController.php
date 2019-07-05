@@ -109,7 +109,7 @@ class HotelController extends Controller
         $length = sizeof($images);
         for ($i = 0; $i < $length; $i++) {
             $name = time() . str_random(10);
-            $image = Image::make($images[$i]["image_link"])->resize(200, 200)->save(public_path("images/hotel/" . $name));
+            $image = Image::make($images[$i]["image_link"])->resize(800, 300)->save(public_path("images/hotel/" . $name));
             $primary = 0;
             if ($images[$i]["is_primary"] == 1) {
                 $primary = 1;
@@ -200,7 +200,9 @@ class HotelController extends Controller
         $images = $request->images;
         $length = sizeof($images);
         $primaryId = $request->primaryId;
+        $nameForPrimary = 0;
         $temp = [];
+        // return $images[1]["is_primary"];
         for ($i = 0; $i < $length; $i++) {
             //hình cũ
             if (strpos($images[$i]["image_link"], 'data:image') === false) {
@@ -219,27 +221,36 @@ class HotelController extends Controller
                 $image = Image::make($images[$i]["image_link"])
                     ->resize(200, 200)
                     ->save(public_path("images/hotel/" . $name));
-
+                if ($images[$i]["is_primary"] == 1) {
+                    $oldImages = HotelImage::where("hotel_id", $hotel->id)
+                        ->whereIn("image_link", $temp)->get();
+                    foreach($oldImages as $oldImage){
+                        $oldImage->update(["is_primary"=>0]);
+                    }
+                }
                 $a = HotelImage::create([
                     "image_link" => $image->filename,
-                    "is_primary" => 0,
+                    "is_primary" => $images[$i]["is_primary"],
                     "hotel_id" => $hotel->id,
                 ]);
                 $temp[] = $a->image_link;
             }
         }
-        HotelImage::where("hotel_id", $hotel->id)
-            ->where("is_primary", 1)
-            ->update(["is_primary" => 0]);
-        for ($i = 0; $i < $length; $i++) {
-            if ($images[$i]["is_primary"] == 1) {
-                $explode = explode("/", $images[$i]["image_link"]);
-                $imageName = ($explode[5]);
-                HotelImage::where("hotel_id", $hotel->id)
-                    ->where("image_link", $imageName)
-                    ->update(["is_primary" => 1]);
-            }
-        }
+        // HotelImage::where("hotel_id", $hotel->id)
+        //     ->where("is_primary", 1)
+        //     ->update(["is_primary" => 0]);
+        // for ($i = 0; $i < $length; $i++) {
+        //     if ($images[$i]["is_primary"] == 1) {
+        //         // if (strpos($images[$i]["image_link"], 'data:image') === false) {
+        //         $explode = explode("/", $images[$i]["image_link"]);
+        //         $imageName = ($explode[5]);
+        //         // }
+        //         // ------------------------------------ do primary co 2 truong hop la cu~ muoi nen lam lai.
+        //         HotelImage::where("hotel_id", $hotel->id)
+        //             ->where("image_link", $imageName)
+        //             ->update(["is_primary" => 1]);
+        //     }
+        // }
         return $hotel;
         return response()->json([
             "status" => true,
@@ -277,33 +288,6 @@ class HotelController extends Controller
         $choice = $request->radio;
         $service = $request->serviceId;
         $this->addAllRoom($request);
-        // if ($hotel != null) {
-        //     $roomTypes = [];
-        //     $rooms = Room::where("hotel_id", $request->hotelId)->get();
-        //     $temp = [];
-        //     foreach ($rooms as $room) {
-        //         $temp[$room->room_type_id] = $room->room_type_id;
-        //     }
-        //     // dd($temp);
-        //     if ($choice === "all") {
-        //         foreach ($temp as $roomType) {
-        //             $roomTypes[] = $roomType;
-        //         }
-        //     } else if ($choice === "some") {
-        //         $roomTypes = $request->chosenRoom;
-        //     }
-        //     foreach ($roomTypes as $roomTypeId) {
-        //         ServiceRoomType::updateOrCreate(
-        //             [
-        //                 "service_id" => $request->serviceId,
-        //                 "room_type_id" => $roomTypeId,
-        //                 "hotel_id" => $hotel->id,
-        //             ]
-        //         );
-        //     }
-        // } else {
-        //     return ("ko dc");
-        // }
     }
     public function removeServiceRoom(Request $request)
     {

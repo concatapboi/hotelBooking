@@ -26,12 +26,20 @@ Route::group(['prefix' => '/manager'], function () {
         Route::post('logout', 'Backend\AuthController@logout');
         Route::resource('hotel', 'Backend\HotelController');
         Route::resource('room', 'Backend\RoomController');
+        Route::get('all-room', 'Backend\RoomController@getAllRoomByHotelId');
         Route::resource('hotel-type', 'Backend\HotelTypeController');
         Route::resource('service', 'Backend\ServiceController');
         Route::post('add-service', 'Backend\HotelController@addService');
         Route::delete('remove-service-room', 'Backend\HotelController@removeServiceRoom');
         Route::post('add-all-service', 'Backend\HotelController@addAllRoom');
         Route::post('add-service-room', 'Backend\HotelController@addServiceRoom');
+        Route::post('add-feature', 'Backend\FeatureController@addFeature');
+        Route::delete('remove-feature-room', 'Backend\FeatureController@removeFeatureRoom');
+        Route::post('add-all-feature', 'Backend\FeatureController@addAllRoom');
+        Route::post('add-feature-room', 'Backend\FeatureController@addFeatureRoom');
+        Route::resource('feature', 'Backend\FeatureController');
+        Route::resource('booking', 'Backend\BookingController');
+        Route::get('all-booking', 'Backend\BookingController@getBookingWithHotelId');
         Route::get('hotel-address', 'Backend\AddressController@getAddress');
         Route::get('province', 'Backend\AddressController@getProvince');
         Route::get('district', 'Backend\AddressController@getDistrict');
@@ -44,7 +52,6 @@ Route::group(['prefix' => '/manager'], function () {
 });
 
 Route::resource('/hotel', 'Frontend\HotelController');
-Route::resource('/payment-method', 'Frontend\PaymentMethodController');
 Route::get('/get-top5-hotel', 'Frontend\HotelController@getTop5');
 Route::resource('/user', 'Frontend\UserController');
 Route::get('/get-top5-user', 'Frontend\UserController@getTop5');
@@ -65,5 +72,4 @@ Route::get('room-type', 'Backend\RoomTypeController@getAllRoomType');
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('/logout', 'Frontend\AuthController@postLogout');
     Route::get('/getUserLogin', 'Frontend\AuthController@getUserLogin');
-    Route::resource('/booking', 'Frontend\BookingController');
 });

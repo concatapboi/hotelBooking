@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\HotelTypeResource;
+use App\Models\Booking;
+use App\Http\Resources\BookingResource;
+
 
 class Hotel extends Model
 {
@@ -47,7 +50,7 @@ class Hotel extends Model
   {
     return $this->hasMany('App\Models\Room', 'hotel_id', 'id')->orderBy('price');
   }
-  public function Service()
+  public function ServiceResource()
   {
     $serviceRoomType = ServiceRoomType::select('service_id')->where('hotel_id', $this->id)->distinct()->get()->sortBy('service_id');
     $services = array();
@@ -55,6 +58,10 @@ class Hotel extends Model
       $services[] = $s->ServiceResource();
     }
     return  $services;
+  }
+  public function Service()
+  {
+    return $this->hasMany('App\Models\ServiceRoomType', 'hotel_id', 'id');
   }
   public function maxPrice()
   {
@@ -80,5 +87,17 @@ class Hotel extends Model
   public function Image()
   {
     return $this->hasMany('App\Models\HotelImage', 'hotel_id', 'id');
+  }
+  public function Booking()
+  {
+    $data = [];
+    foreach ($this->Room as $room) {
+      $bookings = Booking::where("room_id", $room->id)->get();
+      if (sizeOf($bookings) > 0) {
+        foreach($bookings as $booking)
+        $data[] = new BookingResource($booking);
+      }
+    }
+    return $data;
   }
 }

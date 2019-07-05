@@ -221,7 +221,7 @@
                           width="200px"
                           :src="image.image_link"
                           height="200px"
-                        >
+                        />
                       </div>
                       <div class="img-box" v-else>
                         <div class="deleteImage">
@@ -236,7 +236,7 @@
                           width="200px"
                           :src="image.image_link"
                           height="200px"
-                        >
+                        />
                       </div>
                     </v-flex>
                     <v-flex md3 class="justify-center">
@@ -244,7 +244,7 @@
                         <label for="file" class="fileLabel" v-ripple="{ class: `primary--text` }">
                           <v-icon color="primary">add</v-icon>
                         </label>
-                        <input type="file" id="file" multiple ref="images" @change="addImage">
+                        <input type="file" id="file" multiple ref="images" @change="addImage" />
                       </div>
                     </v-flex>
                   </v-layout>
@@ -321,36 +321,34 @@
             <v-card>
               <v-card-text class="grey lighten-3 black--text">
                 <v-container>
-                  <v-parallax
-                    dark
-                    height="100px"
-                    src="https://pix6.agoda.net/hotelImages/10953/-1/62732aec5194871b6ee397fedbb3bf62.jpg?s=1024x768"
-                  >
-                    <v-layout align-start justify-end column>
-                      <v-flex align-self-end class="m-4">
-                        <v-avatar class="yellow" size="54">
-                          <v-avatar class="primary" size="50">
-                            <h3 class="mt-2">{{hotel.review_point}}</h3>
-                            <!-- <v-img
-                          src="https://www.sccpre.cat/png/big/87/870692_glow-circle-png.png"
-                        >
-                          <h3 class="mt-3">{{hotel.review_point}}</h3>
-                            </v-img>-->
+                  <span v-for="(image,index) in hotel.images" :key="index">
+                    <v-parallax
+                      v-if="image.is_primary == 1"
+                      dark
+                      height="100px"
+                      :src="image.image_link"
+                    >
+                      <v-layout align-start justify-end column>
+                        <v-flex align-self-end class="m-4">
+                          <v-avatar class="yellow" size="54">
+                            <v-avatar class="primary" size="50">
+                              <h3 class="mt-2">{{hotel.review_point}}</h3>
+                            </v-avatar>
                           </v-avatar>
-                        </v-avatar>
-                      </v-flex>
-                      <h1 class="ml-2">{{hotel.name}}</h1>
-                      <v-rating
-                        background-color="orange lighten-3"
-                        color="orange"
-                        readonly
-                        v-model="hotel_stars_num"
-                      ></v-rating>
-                      <div class="mb-3">
-                        <v-icon color="pink">room</v-icon>Tp HCM
-                      </div>
-                    </v-layout>
-                  </v-parallax>
+                        </v-flex>
+                        <h1 class="ml-2">{{hotel.name}}</h1>
+                        <v-rating
+                          background-color="orange lighten-3"
+                          color="orange"
+                          readonly
+                          v-model="hotel_stars_num"
+                        ></v-rating>
+                        <div class="mb-3">
+                          <v-icon color="pink">room</v-icon>Tp HCM
+                        </div>
+                      </v-layout>
+                    </v-parallax>
+                  </span>
                   <v-divider></v-divider>
                   <v-layout row>
                     <v-flex xs3 offset-xs1>
@@ -398,6 +396,7 @@
   </div>
 </template>
 <script>
+import { constants } from "crypto";
 export default {
   $_veeValidate: {
     validator: "new"
@@ -594,14 +593,18 @@ export default {
       reader.onload = e => {
         var temp = {};
         temp.image_link = e.target.result;
-        temp.is_primary = 0;
-        if (_this.images.length < 1) {
+        console.log(_this.images.length);
+        if (_this.images.length == 0) {
           temp.is_primary = 1;
+          this.primaryImage = 1;
+          
+        } else {
+          temp.is_primary = 0;
         }
         _this.images.push(temp);
       };
       reader.readAsDataURL(file);
-      console.log(this.images);
+      console.log(this.primaryImage);
     },
     choosePrimary(index) {
       for (var i = 0; i < this.images.length; i++) {
@@ -610,6 +613,7 @@ export default {
           this.images[i].is_primary = 1;
         }
       }
+      console.log(index);
       console.log(this.primaryImage);
     },
     cancel() {
@@ -754,6 +758,7 @@ export default {
       console.log(this.newHotelData);
     },
     editHotel: function(hotelId) {
+      console.log(this.images);
       this.districtDisabled = false;
       this.wardDisabled = false;
       this.dialog = true;
@@ -766,7 +771,6 @@ export default {
         if (_this.arrayHotel[i].id == this.selectedId) {
           hotel = _this.arrayHotel[i];
           this.images = _this.arrayHotel[i].images;
-          console.log(hotel);
           for (var j = 0; j < _this.arrayHotelType.length; j++) {
             if (hotel.hotel_type == _this.arrayHotelType[j].name) {
               _this.defaultHotelType = _this.arrayHotelType[j].id;
@@ -794,7 +798,6 @@ export default {
           for (var p = 0; p < _this.arrayProvince.length; p++) {
             if (response.data.data.province_id == _this.arrayProvince[p].id) {
               _this.defaultProvince = _this.arrayProvince[p].id;
-              console.log(this.defaultProvince);
               return axios
                 .get("http://localhost:8000/api/manager/district", {
                   params: {
@@ -808,12 +811,10 @@ export default {
                   if (response.status == 401) {
                     this.logout;
                   }
-                  console.log(response);
                   _this.arrayDistrict = response.data.data;
                   for (var d = 0; d < _this.arrayDistrict.length; d++) {
                     if (address.district_id == _this.arrayDistrict[d].id) {
                       _this.defaultDistrict = _this.arrayDistrict[d].id;
-                      console.log(this.defaultDistrict);
                       return axios
                         .get("http://localhost:8000/api/manager/ward", {
                           params: {
@@ -835,21 +836,22 @@ export default {
                           }
                         })
                         .catch(function(error) {
-                          console.log(error);
+                          console.log(error.response);
                         });
                     }
                   }
                 })
                 .catch(function(error) {
-                  console.log(error);
+                  console.log(error.response);
                 });
             }
           }
         })
         .catch(function(error) {
-          console.log(error);
+          console.log(error.response);
         });
-      this.newHotelData.address = hotel.address.address;
+      this.newHotelData.address = hotel.address;
+      this.newHotelData.email = hotel.email;
       this.newHotelData.credit_card = hotel.credit_card;
       this.newHotelData.phone = hotel.phone_number;
       this.newHotelData.fax_number = hotel.fax_number;

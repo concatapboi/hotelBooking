@@ -36,8 +36,7 @@ class AuthController extends Controller
 			return response()->json($err);
 		} else {
 			$user = Auth::user();
-			// dd($user->isHotelManager());
-			if ($user->isCustomer() == false) {
+			if ($user->getCustomer === null) {
 				if ($user->isHotelManager() == true) {
 					$role = "manager";
 				} else {
