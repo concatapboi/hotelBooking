@@ -28,7 +28,8 @@ class BookingController extends Controller
     public function store(Request $req)
     {
         $status = false;
-        $mess="";
+        $mess = "";
+        $booking = null;
         $b = $req->booking;
         // return $b['email'];
         $validateData = Validator::make(
@@ -41,13 +42,13 @@ class BookingController extends Controller
                 'address' => 'required',
             ]
         );
-        if (!$validateData->fails()) {            
+        if (!$validateData->fails()) {
             $room = Room::find($b['roomId']);
-            if(!$room || $room->amount < $b['roomAmount']) $status = false;
-            else{
+            if (!$room || $room->amount < $b['roomAmount']) $status = false;
+            else {
                 $status = true;
                 $mess = 'Sucessfully!';
-                Booking::create([
+                $booking = Booking::create([
                     'hotel_name' => $room->Hotel->name,
                     'room_price' => $room->price,
                     'room_amount' => $b['roomAmount'],
@@ -64,9 +65,13 @@ class BookingController extends Controller
                     'payment_method_id' => $b['payment'],
                     'status_id' => 1,
                 ]);
+                $booking->Status;
+                $booking->PaymentMethod;
+                $booking->Room->RoomMode;
+                $booking->Room->RoomType;
             }
-        }else return response()->json(['status'=>$status,'mess'=>$validateData->errors()]);
-        return response()->json(['status'=>$status,'mess'=>$mess]);
+        } else return response()->json(['status' => $status, 'mess' => $validateData->errors()]);
+        return response()->json(['status' => $status, 'mess' => $mess, 'booking' =>$booking]);
     }
 
     //get booking/{booking}
@@ -80,9 +85,19 @@ class BookingController extends Controller
     }
 
     //put/patch booking/{booking}
-    public function update($id)
+    public function update(Request $req,$id)
     {
-        return;
+        $status = false;
+        $b = Booking::find($id);
+        if($b!=null){
+            if($req->action == "cancel"){
+                if($b->Status->id <3){
+                    $b->update(['status_id' => 5]);
+                    $status = true;
+                }
+            }
+        }
+        return response()->json(['status' =>$status]);
     }
 
     //delete booking/{booking}

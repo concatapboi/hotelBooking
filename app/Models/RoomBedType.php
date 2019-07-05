@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Resources\BedTypeResource;
 
 class RoomBedType extends Model
 {
@@ -16,5 +17,9 @@ class RoomBedType extends Model
   
   public function BedType(){
 		return $this->belongsTo('App\Models\BedType','bed_type_id','id');
+  }
+
+  public function BedTypeResource(){
+		return new BedTypeResource(BedType::find($this->bed_type_id));
   }
 }

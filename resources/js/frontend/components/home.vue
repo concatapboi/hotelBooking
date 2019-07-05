@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex shrink md12>
-      <v-img :aspect-ratio="16/5" :src="'/blog/img/slider/'+slider+'.png'">
+      <v-img :aspect-ratio="16/5" src="/blog/img/slider/slider.png">
         <v-layout row wrap justify-center align-center fill-height>
           <v-flex md8 class="pa-1 black">
             <v-form ref="form">
@@ -144,7 +144,7 @@ export default {
   },
   data() {
     return {
-      slider: 1,
+      // slider: 1,
       placeVal: "",
       checkInVal: "",
       checkInFormattedVal: "",
@@ -162,11 +162,11 @@ export default {
     checkOut: "setSearchValue",
   },
   created() {
-    window.setInterval(() => {
-      if (this.slider == 5) {
-        this.slider = 1;
-      } else this.slider++;
-    }, 5000);
+    // window.setInterval(() => {
+    //   if (this.slider == 5) {
+    //     this.slider = 1;
+    //   } else this.slider++;
+    // }, 5000);
     this.setSearchValue();
   },
   methods: {

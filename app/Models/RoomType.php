@@ -23,11 +23,5 @@ class RoomType extends Model
   }
   public function ServiceRoomTypeByHotel($id){
     return ServiceRoomType::where('room_type_id',$this->id)->where('hotel_id',$id)->get();
-    foreach($this->hasMany('App\Models\ServiceRoomType','room_type_id','id') as $sRT){      
-      if($sRT->hotel_id==3)
-      $arr[] = $sRT;
-    }
-    // return $this->hasMany('App\Models\ServiceRoomType','room_type_id','id');
-    // return $arr;
   }
 }

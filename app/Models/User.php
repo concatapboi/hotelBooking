@@ -49,7 +49,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany('App\Models\HotelManager','user_id','id');
     }
     public function getCustomer(){
-     return $this->hasMany('App\Models\Customer','user_id','id');
+     return $this->belongsTo('App\Models\Customer','id','user_id');
+    }
+
+    public function Booking(){
+     return $this->hasMany('App\Models\Booking','customer_id','id');
     }
 
     public function isHotelManager(){

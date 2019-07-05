@@ -129,7 +129,8 @@
           <span class="font-weight-black" style="word-wrap: break-word;">tp Ho Chi Minh</span>
         </v-flex>
       </v-layout>
-      <v-btn depressed dark v-on:click="followHotel(data.id)">follow</v-btn>
+      <v-btn v-if="data.followed == false" depressed dark v-on:click="followHotel(data,1)">follow</v-btn>
+      <v-btn v-else depressed dark v-on:click="followHotel(data,0)">unfollow</v-btn>
     </v-flex>
     <v-flex md9 class="detail-container">
       <v-tabs centered grow color="grey lighten-2" light class="ma-1">
@@ -274,9 +275,23 @@
                 </div>
                 <v-img :aspect-ratio="16/4" src="/blog/img/slider/default.png"></v-img>
                 <v-card-title>
-                  <div>
-                    <div class="subheading">{{data.description}}</div>
-                  </div>
+                  <v-layout class="pa-0 ma-2">
+                    <v-flex md12>
+                      <div><span>Description</span></div>
+                      <div><span style="word-wrap: break-word;">{{data.description}}</span></div>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout class="pa-0 ma-2">
+                    <v-flex md12>
+                      <div><span>Location Info</span></div>
+                      <div><span style="word-wrap: break-word;">Hotel Address Detail</span></div>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout class="pa-0 ma-2">
+                    <v-flex md12>
+                      <div><span>Services</span></div>
+                    </v-flex>
+                  </v-layout>
                 </v-card-title>
                 <v-card-actions>
                   <a href="https://www.instagram.com/" target="_blank">
@@ -342,7 +357,7 @@
         <v-card-text>
           <v-layout row wrap justify-center class="pa-0 ma-0">
             <v-flex md3>
-              <v-layout row wrap class="ml-1 pa-2 grey lighten-2">
+              <v-layout row wrap class="ml-1 pa-2 orange lighten-3">
                 <v-flex md12>
                   <v-layout row wrap class="pa-0 ma-0">
                     <v-flex md12>
@@ -658,22 +673,27 @@
                                 <v-flex md6 class="pa-2">
                                   <div>
                                     <div>
-                                      <span class="font-weight-bold">Check-In:</span>
+                                      <span class="font-weight-bold">Check-Out:</span>
                                     </div>
                                     <div>
-                                      <span>{{checkInFormattedVal}}</span>
+                                      <span>{{checkOutFormattedVal}}</span>
                                     </div>
                                   </div>
                                 </v-flex>
-                                <v-flex md6 class="pa-2">
-                                  <div>
-                                    <div>
-                                      <span class="font-weight-bold">Guest Name:</span>
-                                    </div>
-                                    <div>
-                                      <span>{{bookingDialog.booking.name}}</span>
-                                    </div>
-                                  </div>
+                                <v-flex md12 class="pl-2">
+                                  <span class="font-weight-bold">Guess Information</span>
+                                </v-flex>
+                                <v-flex md12 class="pl-2">
+                                  <v-layout row wrap class="pa-0 ma-0">
+                                    <v-flex md3>Name</v-flex>
+                                    <v-flex md9>{{bookingDialog.booking.name}}</v-flex>
+                                    <v-flex md3>Email</v-flex>
+                                    <v-flex md9>{{bookingDialog.booking.email}}</v-flex>
+                                    <v-flex md3>Mobile -number</v-flex>
+                                    <v-flex md9>{{bookingDialog.booking.phone}}</v-flex>
+                                    <v-flex md3>Address</v-flex>
+                                    <v-flex md9>{{bookingDialog.booking.address}}</v-flex>
+                                  </v-layout>
                                 </v-flex>
                                 <v-spacer></v-spacer>
                               </v-layout>
@@ -711,9 +731,6 @@
                         <span class="font-weight-black title">Price Details</span>
                       </div>
                       <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
-                        <v-flex md12>
-                          <span class="subheading">{{bookingDialog.room.room_name}}</span>
-                        </v-flex>
                         <v-flex md12>
                           <v-divider></v-divider>
                         </v-flex>
@@ -812,6 +829,9 @@ export default {
     login: {
       type: Object
     },
+    loginCheck: {
+      type: Boolean
+    },
     paymentMethods: {
       type: Array
     },
@@ -833,6 +853,7 @@ export default {
   },
   data() {
     return {
+      userLogin: {},
       bookingDialog: {
         payment: 1,
         accept: false,
@@ -882,6 +903,7 @@ export default {
       },
       id: this.$route.params.id,
       data: {
+        followed: false,
         name: "",
         room: [],
         hotel_type: {
@@ -910,7 +932,6 @@ export default {
   },
   created() {
     // console.log(Object.keys(this.$route.query).length);
-    console.log(this.login);
     if (Object.keys(this.$route.query).length != 0) {
       this.placeVal = this.$route.query.place.replace(/\-/g, " ");
       this.checkInVal = this.$route.query.check_in;
@@ -920,22 +941,63 @@ export default {
     } else {
       this.setSearchValue();
     }
-    this.getHotelDetail();
+    this.load();
   },
   watch: {
-    $route: "getHotelDetail",
+    $route: "load",
+    // login: {
+    //         handler: function(newValue) {
+    //         },
+    //         deep: true
+    // },
+    loginCheck: "load",
     checkInVal: "loadSearchData",
     checkOutVal: "loadSearchData"
   },
   methods: {
+    load: function() {
+      console.log(localStorage.getItem("login_token"));
+      if (localStorage.getItem("login_token") != null) {
+        axios({
+          method: "get",
+          url: "http://localhost:8000/api/getUserLogin",
+          headers: {
+            Authorization: "Bearer " + this.login.token
+          }
+        })
+          .then(res => {
+            console.log(res.data.user);
+            this.userLogin = res.data.user;
+            console.log(this.userLogin.id);
+            this.getHotelDetail();
+          })
+          .catch(error => {
+            console.log(error.response);
+            if (error.response.status == 401) {
+              localStorage.removeItem("login_token");
+              this.userLogin = {};
+              this.$emit("loadLogin");
+            }
+          });
+      } else {
+        this.$emit("loadLogin");
+        this.userLogin = {};
+        this.getHotelDetail();
+      }
+    },
     getHotelDetail: function() {
+      console.log(this.userLogin);
       axios({
         method: "get",
         url: "http://localhost:8000/api/hotel/" + this.id,
         params: {
-          id: this.id
+          id: this.id,
+          userID: this.userLogin.id,
+          check_in: this.checkInVal,
+          check_out: this.checkInOut,
         }
       }).then(res => {
+        console.log(res.data.data);
         if (res.data.status) {
           this.data = res.data.data;
           return;
@@ -972,10 +1034,10 @@ export default {
         // console.log(element.name);
       });
       if (this.login.check) {
-        this.bookingDialog.booking.name = this.login.user.user.name;
-        this.bookingDialog.booking.email = this.login.user.user.email;
-        this.bookingDialog.booking.phone = this.login.user.user.phone_number;
-        this.bookingDialog.booking.address = this.login.user.user.customer.address;
+        this.bookingDialog.booking.name = this.login.user.name;
+        this.bookingDialog.booking.email = this.login.user.email;
+        this.bookingDialog.booking.phone = this.login.user.phone_number;
+        this.bookingDialog.booking.address = this.login.user.get_customer.address;
       } else {
         this.$validator.reset();
         this.bookingDialog.booking.name = "";
@@ -1031,7 +1093,10 @@ export default {
           console.log(res.data);
           console.log(res.data.mess);
           if (res.data.status == true) {
+            console.log(res.data.booking);
             this.bookingDialog.state = false;
+            this.$emit("loadLogin");
+            this.$emit("loadBookingDetail", res.data.booking, 1);
           } else {
             console.log(res.data.mess);
           }
@@ -1045,12 +1110,43 @@ export default {
           }
         });
     },
-    followHotel: function(id) {
-      if (!this.login.check) {
-        this.getLogin(1);
-        return;
-      } else {
-        alert("login r");
+    followHotel: function(value, cmd) {
+        if (cmd == 1) {
+          axios({
+            method: "get",
+            url: "http://localhost:8000/api/following",
+            params: {
+              type: 1,
+              id: this.userLogin.id,
+              followed: value.id
+            }
+          }).then(res => {
+            console.log(res.data.data);
+            if (res.data.data == null) {
+              this.$emit("loadSnackbar", "Something wrong!");
+              return;
+            }
+            this.$emit("loadSnackbar", "Following " + value.name);
+            this.data.followed = true;
+          });
+        } else {
+          axios({
+            method: "get",
+            url: "http://localhost:8000/api/un-following",
+            params: {
+              type: 1,
+              id: this.userLogin.id,
+              followed: value.id
+            }
+          }).then(res => {
+            console.log(res.data.data);
+            if (res.data.data == null) {
+              this.$emit("loadSnackbar", "Something wrong!");
+              return;
+            }
+            this.$emit("loadSnackbar", "Unfollowing " + value.name);
+            this.data.followed = false;
+          });
       }
     }
   }

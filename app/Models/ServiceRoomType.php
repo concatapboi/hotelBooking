@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Resources\ServiceResource;
 
 class ServiceRoomType extends Model
 {
@@ -16,5 +17,8 @@ class ServiceRoomType extends Model
 
   public function Service(){
 		return $this->belongsTo('App\Models\Service','service_id','id');
+  }
+  public function ServiceResource(){
+		return new ServiceResource(Service::find($this->service_id));
   }
 }

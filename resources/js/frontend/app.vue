@@ -37,7 +37,7 @@
               <router-link :to="{name:'home'}">
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
-                    <img src="/blog/./img/core-img/logo.png" v-on="on">
+                    <img src="/blog/./img/core-img/logo.png" v-on="on" />
                   </template>
                   <span>home</span>
                 </v-tooltip>
@@ -58,7 +58,7 @@
                 <template v-slot:activator="{ on }">
                   <v-avatar size="42px" tile color="black" v-on="on">
                     <v-avatar size="40px" tile color="white">
-                      <img :src="login.user.avatar.image_link" alt>
+                      <img :src="login.user.avatar.image_link" alt />
                     </v-avatar>
                   </v-avatar>
                 </template>
@@ -66,7 +66,7 @@
                   <v-list-tile>
                     <div>
                       Hi!&nbsp;
-                      <span class="font-italic">{{login.user.user.name}}</span>
+                      <span class="font-italic">{{login.user.name}}</span>
                     </div>
                   </v-list-tile>
                   <v-divider></v-divider>
@@ -82,7 +82,7 @@
                     </v-list-tile-action>
                     <v-list-tile-content>Account</v-list-tile-content>
                   </v-list-tile>
-                  <v-list-tile tag="a" href="/community/account" target="_blank">
+                  <v-list-tile tag="a" @click="openBookingListDialog">
                     <v-list-tile-action>
                       <i class="fas fa-bold teal--text fa-lg"></i>
                     </v-list-tile-action>
@@ -105,20 +105,23 @@
     <v-content class="pa-0" style="margin-top:93px;">
       <v-container fluid class="white my-0 py-0">
         <transition name="moveInUp">
-        <router-view
-          :paymentMethods="paymentMethods"
-          :loginDialog="dialog"
-          v-on:loadLoginDialog="eventDialog"
-          :login="login"
-          :snackbar="snackbar"
-          v-on:loadSnackbar="eventSnackbar"
-          :place="place"
-          :checkIn="checkIn"
-          :checkOut="checkOut"
-          :checkInFormatted="checkInFormatted"
-          :checkOutFormatted="checkOutFormatted"
-          v-on:loadSearchData="eventSearch"
-        ></router-view>
+          <router-view
+            :paymentMethods="paymentMethods"
+            :loginDialog="dialog"
+            v-on:loadLoginDialog="eventDialog"
+            :login="login"
+            :loginCheck="loginCheck"
+            :snackbar="snackbar"
+            v-on:loadSnackbar="eventSnackbar"
+            :place="place"
+            :checkIn="checkIn"
+            :checkOut="checkOut"
+            :checkInFormatted="checkInFormatted"
+            :checkOutFormatted="checkOutFormatted"
+            v-on:loadSearchData="eventSearch"
+            v-on:loadLogin="getLogin"
+            v-on:loadBookingDetail="bookingAction"
+          ></router-view>
         </transition>
         <v-btn
           href="#top"
@@ -320,6 +323,194 @@
         </v-form>
       </v-layout>
     </v-dialog>
+    <v-dialog v-model="bookingList.dialog" width="700px" persistent>
+      <v-card flat tile light height="470px">
+        <v-card-text>
+          <v-btn depressed color="red" dark v-on:click="bookingList.dialog = false">
+            <span class="text-uppercase">close</span>
+          </v-btn>
+          <v-card light flat width="100%" height="370px" style="overflow:auto">
+            <v-data-table
+              :rows-per-page-items='[5,10,15,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
+              :headers="tblHeaders"
+              :items="login.user.booking"
+              class="elevation-0 border"
+            >
+              <template v-slot:items="b">
+                <td>
+                  <a href="#"><span style="word-wrap: break-word;">{{ b.item.id }}</span></a>
+                </td>
+                <td>
+                  <a href="#"><span
+                    style="word-wrap: break-word;"
+                  >{{ (b.item.room_amount*b.item.room_price).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span></a>
+                </td>
+                <td>
+                  <a href="#"><span style="word-wrap: break-word;">{{ b.item.status.name}}</span></a>
+                </td>
+                <td>
+                  <v-btn depressed color="teal" dark small @click="bookingAction(b.item,1)">detail</v-btn>
+                  <v-btn
+                    :disabled="b.item.status.id != 1"
+                    depressed
+                    color="orange"
+                    small
+                    @click="bookingAction(b.item,0)"
+                  >cancel</v-btn>
+                </td>
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="bookingList.detail.dialog" width="700px">
+      <v-card flat tile light>
+        <v-layout class="pa-4 ma-0" row wrap>
+          <v-flex md12>
+            <div>
+              <span
+                class="font-weight-black title"
+              >Booking ID:&nbsp;{{bookingList.detail.booking.id}}</span>
+            </div>
+            <v-divider></v-divider>
+            <div>
+              <span class="font-weight-black title">Your Information</span>
+            </div>
+            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
+              <v-flex md3>
+                <v-img :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
+              </v-flex>
+              <v-flex md9>
+                <v-layout row wrap class="pa-0 pl-4 ma-0">
+                  <v-flex md12>
+                    <h2>{{bookingList.detail.booking.hotel_name}}</h2>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-divider class="pa-0 ma-0"></v-divider>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-layout row wrap class="pa-0 ma-0">
+                      <v-flex md6 class="pa-2">
+                        <div>
+                          <div>
+                            <span class="font-weight-bold">Check-In:</span>
+                          </div>
+                          <div>
+                            <span>{{formatDate(bookingList.detail.booking.check_in)}}</span>
+                          </div>
+                        </div>
+                      </v-flex>
+                      <v-flex md6 class="pa-2">
+                        <div>
+                          <div>
+                            <span class="font-weight-bold">Check-Out:</span>
+                          </div>
+                          <div>
+                            <span>{{formatDate(bookingList.detail.booking.check_out)}}</span>
+                          </div>
+                        </div>
+                      </v-flex>
+                      <v-flex md12 class="pl-2">
+                        <span class="font-weight-bold">Guess Information</span>
+                      </v-flex>
+                      <v-flex md12 class="pl-2">
+                        <v-layout row wrap class="pa-0 ma-0">
+                          <v-flex md3>Name</v-flex>
+                          <v-flex md9>{{bookingList.detail.booking.contact_name}}</v-flex>
+                          <v-flex md3>Email</v-flex>
+                          <v-flex md9>{{bookingList.detail.booking.contact_email}}</v-flex>
+                          <v-flex md3>Mobile-number</v-flex>
+                          <v-flex md9>{{bookingList.detail.booking.contact_phone}}</v-flex>
+                          <v-flex md3>Address</v-flex>
+                          <v-flex md9>{{bookingList.detail.booking.contact_address}}</v-flex>
+                        </v-layout>
+                      </v-flex>
+                      <v-spacer></v-spacer>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-divider></v-divider>
+                  </v-flex>
+                  <v-flex md12>
+                    <span class="font-weight-bold">Room Details:</span>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-layout row wrap class="pa-0 ma-0">
+                      <v-flex md3>Room Type:</v-flex>
+                      <v-flex
+                        md9
+                      >{{bookingList.detail.booking.room.room_mode.name}}&nbsp;{{bookingList.detail.booking.room.room_type.name}}</v-flex>
+                      <v-flex md3>No. Of Rooms:</v-flex>
+                      <v-flex md9>{{bookingList.detail.booking.room_amount}}</v-flex>
+                      <v-flex md3>Special Request:</v-flex>
+                      <v-flex md9>{{bookingList.detail.booking.special_request}}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+            </v-layout>
+            <div>
+              <v-divider dark></v-divider>
+              <span class="font-weight-black title">Status</span>
+            </div>
+            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
+              <div>
+                <div>
+                  <span
+                    class="font-weight-black red--text font-italic"
+                  >{{bookingList.detail.booking.status.name}}</span>
+                </div>
+                <div>
+                  <v-btn
+                    :disabled="bookingList.detail.booking.status.id != 1"
+                    @click="bookingAction(bookingList.detail.booking,0)"
+                    small
+                    depressed
+                    color="orange"
+                  >cancel</v-btn>
+                </div>
+              </div>
+            </v-layout>
+            <div>
+              <v-divider dark></v-divider>
+              <span class="font-weight-black title">Cancellation Policy</span>
+            </div>
+            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
+              <span>Id soluta temporibus sint molestias sapiente dolore beatae ratione velit blanditiis maxime sunt.</span>
+            </v-layout>
+            <div>
+              <v-divider dark></v-divider>
+              <span class="font-weight-black title">Price Details</span>
+            </div>
+            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
+              <v-flex md12>
+                <v-divider></v-divider>
+              </v-flex>
+              <v-flex md8>
+                <span>{{bookingList.detail.booking.room.room_type.name}}&nbsp;{{bookingList.detail.booking.room.room_mode.name}}</span>
+              </v-flex>
+              <v-flex
+                md4
+              >{{bookingList.detail.booking.room.price.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+              <v-flex md8>
+                <span>Amount</span>
+              </v-flex>
+              <v-flex md4>{{bookingList.detail.booking.room_amount}}</v-flex>
+              <v-flex md12>
+                <v-divider></v-divider>
+              </v-flex>
+              <v-flex md8>
+                <span>Total price</span>
+              </v-flex>
+              <v-flex
+                md4
+              >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+            </v-layout>
+          </v-flex>
+        </v-layout>
+      </v-card>
+    </v-dialog>
     <v-snackbar
       v-model="snackbar.state"
       multi-line="multi-line"
@@ -342,6 +533,27 @@ export default {
   props: [],
   data() {
     return {
+      loginCheck:false,
+      tblHeaders: [
+        { text: "ID", value: 0, sortable: false },
+        { text: "Total", value: 0, sortable: false },
+        { text: "Status", value: "", sortable: false },
+        { text: "Action", value: 0, sortable: false }
+      ],
+      bookingList: {
+        dialog: false,
+        detail: {
+          dialog: false,
+          booking: {
+            status: {},
+            room: {
+              price: 0,
+              room_mode: {},
+              room_type: {}
+            }
+          }
+        }
+      },
       time:
         new Date().getHours() +
         ":" +
@@ -349,7 +561,7 @@ export default {
         ":" +
         new Date().getSeconds(),
       memberCount: 0,
-      paymentMethods:[],
+      paymentMethods: [],
       register: {
         username: "",
         email: "",
@@ -368,17 +580,8 @@ export default {
         password: "",
         value: false,
         user: {
-          user: {
-            name: "",
-            customer:{
-            },
-            avatar:{
-              image_link:"",
-            }
-          },
-          avatar: {
-            image_link: ""
-          }
+          avatar: {},
+          booking: []
         }
       },
       dialog: false,
@@ -468,10 +671,10 @@ export default {
     this.$validator.localize("en", this.dictionary);
   },
   methods: {
-    getData: function(){
+    getData: function() {
       axios({
         method: "get",
-        url: "http://localhost:8000/api/payment-method/",
+        url: "http://localhost:8000/api/payment-method/"
       }).then(res => {
         if (res.data.status) {
           this.paymentMethods = res.data.data;
@@ -493,29 +696,27 @@ export default {
             console.log(res.data.user);
             this.login.user = res.data.user;
             this.login.check = true;
+            this.loginCheck = true;
           })
           .catch(error => {
+            console.log(error.response);
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");
               this.login.token = localStorage.getItem("login_token");
               this.login.check = false;
+              this.loginCheck = false;
               this.login.user = {
-                user: {
-                  customer:{},
-                  avatar:{}
-                },
-                avatar: []
+                avatar: {},
+                booking: []
               };
             }
           });
       } else {
         this.login.check = false;
+        this.loginCheck = false;
         this.login.user = {
-          user: {
-            customer:{},
-            avatar:{}
-          },
-          avatar: []
+          avatar: {},
+          booking: []
         };
       }
     },
@@ -568,12 +769,11 @@ export default {
         }).then(res => {
           if (res.data.status) {
             this.login.check = false;
+            this.loginCheck = false;
             this.login.token = "";
             this.login.user = {
-              user:{
-                customer:[]
-              },
-              avatar:[]
+              avatar: {},
+              booking: []
             };
             localStorage.removeItem("login_token");
           }
@@ -651,11 +851,53 @@ export default {
       this.checkIn = data.checkIn;
       this.checkOut = data.checkOut;
     },
-    eventDialog: function(val,num) {
-      if(num==0){
+    eventDialog: function(val, num) {
+      if (num == 0) {
         this.registerDialog = val;
-      }else
-      this.dialog = val;
+      } else this.dialog = val;
+    },
+    openBookingListDialog: function() {
+      this.getLogin();
+      if (this.login.token != null) {
+        this.bookingList.dialog = true;
+      }
+    },
+    bookingAction: function(booking, cmd) {
+      console.log(booking);
+      if (cmd == 1) {
+        this.bookingList.detail.booking = booking;
+        this.bookingList.detail.dialog = true;
+      } else {
+        axios({
+            method: "put",
+            url: "http://localhost:8000/api/booking/"+booking.id,
+            params: {
+              action: 'cancel'
+            },
+            headers: {
+            Authorization: "Bearer " + this.login.token
+            }
+          }).then(res=>{
+            console.log(res.data.status);
+            if(res.data.status){
+              this.eventSnackbar('Updated Successfully!');
+              this.getLogin();
+            }else{
+              this.eventSnackbar('Updated Fail!');
+            }
+          }).catch(error => {
+            console.log(error.response);
+            if (error.response.status == 401) {
+              localStorage.removeItem("login_token");
+              this.login.token = localStorage.getItem("login_token");
+              this.login.check = false;
+              this.login.user = {
+                avatar: {},
+                booking: []
+              };
+            }
+          });
+      }
     }
   }
 };

@@ -12,60 +12,33 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // $this->call(UsersTableSeeder::class);
-        //User: 10
-        factory(App\Models\User::class, 10)->create();
 
-        //Hotel manager: 2
-        DB::table('hotel_manager')->insert([
-            'user_id' => 1,
-        ]);
-        DB::table('hotel_manager')->insert([
-            'user_id' => 2,
-        ]);
-        //Customer: 8
-        DB::table('customer')->insert([
-            'user_id' => 3,
-            'coin' => 0,
-            'address' => 'Hà Nội',
-        ]);
-        DB::table('customer')->insert([
-            'user_id' => 4,
-            'coin' => 0,
-            'address' => 'Đà Nẵng',
-        ]);
-        DB::table('customer')->insert([
-            'user_id' => 5,
-            'coin' => 0,
-            'address' => 'Kiên Giang',
-        ]);
-        DB::table('customer')->insert([
-            'user_id' => 6,
-            'coin' => 0,
-            'address' => 'Sóc Trăng',
-        ]);
-        DB::table('customer')->insert([
-            'user_id' => 7,
-            'coin' => 0,
-            'address' => 'Cà Mau',
-        ]);
-        DB::table('customer')->insert([
-            'user_id' => 8,
-            'coin' => 0,
-            'address' => 'Thừa Thiên Huế',
-        ]);
-        DB::table('customer')->insert([
-            'user_id' => 9,
-            'coin' => 0,
-            'address' => 'Thành phố Hồ Chí Minh',
-        ]);
-        DB::table('customer')->insert([
-            'user_id' => 10,
-            'coin' => 0,
-            'address' => 'Long An',
-        ]);
+        //có thể thay đổi
+        static $userNum = 25, $mnNum = 5, $adNum = 3, $hotelNum = 15;
+
+        //không thể thay đổi
+        static $hotelType = 7, $roomMode = 4, $roomType = 6, $bedType = 5, $roomService = 5, $feature = 8, $bookingStatus = 5, $paymentMethod = 2;
+
+        //User:
+        factory(App\Models\User::class, $userNum)->create();
+
+        //Hotel manager:
+        for ($m = 1; $m <= $mnNum; $m++) {
+            DB::table('hotel_manager')->insert([
+                'user_id' => $m,
+            ]);
+        }
+        //Customer: 23
+        for ($cus = $mnNum + 1; $cus <= $userNum; $cus++) {
+            DB::table('customer')->insert([
+                'user_id' => $cus,
+                'coin' => rand(100, 100000),
+                'address' => 'Long An',
+            ]);
+        }
 
         //Admin:1 
-        factory(App\Models\Admin::class, 1)->create();
+        factory(App\Models\Admin::class, $adNum)->create();
 
         //Hotel type: 7
         DB::table('hotel_type')->insert([
@@ -104,109 +77,15 @@ class DatabaseSeeder extends Seeder
             'meta_name' => 'serviced-apartment',
         ]);
 
-        //User image: 17
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/spider-man.png',
-            'name' => 'spider-man',
-            'is_primary' => 1,
-            'user_id' => 3
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/dog2.png',
-            'name' => 'dog2',
-            'is_primary' => 1,
-            'user_id' => 4
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/rainbow.png',
-            'name' => 'rainbow',
-            'is_primary' => 1,
-            'user_id' => 5
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/cover/1.jpg',
-            'name' => 'cover1',
-            'is_primary' => 2,
-            'user_id' => 3
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/cover/2.jpg',
-            'name' => 'cover2',
-            'is_primary' => 2,
-            'user_id' => 4
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/face1.png',
-            'name' => 'face1',
-            'is_primary' => 1,
-            'user_id' => 6
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/candy.png',
-            'name' => 'candy',
-            'is_primary' => 1,
-            'user_id' => 7
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/dog1.png',
-            'name' => 'dog1',
-            'is_primary' => 1,
-            'user_id' => 8
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/avatar1.png',
-            'name' => 'avatar1',
-            'is_primary' => 1,
-            'user_id' => 9
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/dinosaur.png',
-            'name' => 'dinosaur',
-            'is_primary' => 1,
-            'user_id' => 10
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/face3.png',
-            'name' => 'face3',
-            'is_primary' => 0,
-            'user_id' => 4
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/cover/3.jpg',
-            'name' => 'cover3',
-            'is_primary' => 2,
-            'user_id' => 5
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/cover/4.jpg',
-            'name' => 'cover4',
-            'is_primary' => 2,
-            'user_id' => 6
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/cover/5.jpg',
-            'name' => 'cover5',
-            'is_primary' => 2,
-            'user_id' => 7
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/cover/6.jpg',
-            'name' => 'cover6',
-            'is_primary' => 2,
-            'user_id' => 8
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/cover/6.jpg',
-            'name' => 'cover6',
-            'is_primary' => 2,
-            'user_id' => 9
-        ]);
-        DB::table('user_image')->insert([
-            'image_link' => 'http://localhost:8000/img/cover/6.jpg',
-            'name' => 'cover6',
-            'is_primary' => 2,
-            'user_id' => 10
-        ]);
+        //User image:
+        for ($j = 1; $j <= $userNum; $j++) {
+            DB::table('user_image')->insert([
+                'image_link' => 'http://localhost:8000/img/dog2.png',
+                'name' => 'dog2',
+                'is_primary' => 1,
+                'user_id' => $j
+            ]);
+        }
 
         //Room Mode: 4
         DB::table('room_mode')->insert([
@@ -226,7 +105,7 @@ class DatabaseSeeder extends Seeder
             'status' => 1,
         ]);
 
-        //Room type: 4
+        //Room type: 6
         DB::table('room_type')->insert([
             'name' => 'Standard',
             'description' => 'Standard',
@@ -245,6 +124,16 @@ class DatabaseSeeder extends Seeder
         DB::table('room_type')->insert([
             'name' => 'Suite',
             'description' => 'Suite',
+            'status' => 1,
+        ]);
+        DB::table('room_type')->insert([
+            'name' => 'Economy ',
+            'description' => 'economy ',
+            'status' => 1,
+        ]);
+        DB::table('room_type')->insert([
+            'name' => 'Business  ',
+            'description' => 'business  ',
             'status' => 1,
         ]);
 
@@ -312,7 +201,7 @@ class DatabaseSeeder extends Seeder
             'status' => true,
         ]);
 
-        //Feature: 4
+        //Feature: 8
         DB::table('feature')->insert([
             'name' => 'Televison',
             'meta_name' => 'tv',
@@ -324,8 +213,8 @@ class DatabaseSeeder extends Seeder
             'status' => true,
         ]);
         DB::table('feature')->insert([
-            'name' => 'In-room safe',
-            'meta_name' => 'safe',
+            'name' => 'Safety Box',
+            'meta_name' => 'safety-box',
             'status' => true,
         ]);
         DB::table('feature')->insert([
@@ -333,18 +222,48 @@ class DatabaseSeeder extends Seeder
             'meta_name' => 'hair-dryer',
             'status' => true,
         ]);
+        DB::table('feature')->insert([
+            'name' => 'Radio',
+            'meta_name' => 'radio',
+            'status' => true,
+        ]);
+        DB::table('feature')->insert([
+            'name' => 'Balcony',
+            'meta_name' => 'balcony',
+            'status' => true,
+        ]);
+        DB::table('feature')->insert([
+            'name' => 'Refrigerator',
+            'meta_name' => 'refrigerator',
+            'status' => true,
+        ]);
+        DB::table('feature')->insert([
+            'name' => 'Writing Desks',
+            'meta_name' => 'writing-desks',
+            'status' => true,
+        ]);
 
-        //Hotel: 5
-        factory(App\Models\Hotel::class, 5)->create();
+        // //Coupon code
+        // factory(App\Models\CouponCode::class, $couponCode)->create();
 
-        //Room: 40
-        for ($h = 1; $h <= 5; $h++) {
-            for ($rT = 1; $rT <= 4; $rT++) {
-                factory(App\Models\Room::class, 2)->create([
+        //Hotel: 15
+        factory(App\Models\Hotel::class, $hotelNum)->create();
+
+        static $count = 0, $countCoup = 0;
+        for ($h = 1; $h <= $hotelNum; $h++) {
+            $couNo = rand(1, 5);
+            $countCoup += $couNo;
+            $rTNum = rand(2, $roomType);
+            for ($rT = 1; $rT <= $rTNum; $rT++) {
+                //Room
+                $rNum = rand(2, $roomMode);
+                $count += $rNum;
+                factory(App\Models\Room::class, $rNum)->create([
                     'hotel_id' => $h,
                     'room_type_id' => $rT
                 ]);
-                $noS = rand(3, 5);
+                //ServiceRoomType
+                $noS = rand(3, $roomService);
                 for ($s = 1; $s <= $noS; $s++) {
                     factory(App\Models\ServiceRoomType::class)->create([
                         'room_type_id' => $rT,
@@ -352,21 +271,35 @@ class DatabaseSeeder extends Seeder
                     ]);
                 }
             }
+            //CouponCode
+            for ($c = ($countCoup - $couNo + 1); $c <= $countCoup; $c++) {
+                factory(App\Models\CouponCode::class)->create();
+                factory(App\Models\ApplyCouponCodeHotel::class)->create([
+                    'coupon_code_id' => $c,
+                    'hotel_id' => $h
+                ]);
+                $apRT = rand(1, $rTNum);
+                for ($a = 1; $a <= $apRT; $a++) {
+                    factory(App\Models\ApplyCouponCodeRoomType::class)->create([
+                        'coupon_code_id' => $c,
+                        'room_type_id' => $a
+                    ]);
+                }
+            }
         }
-        //RoomBedType:
-        for ($r = 1; $r <= 40; $r++) {
-            $noB = rand(1, 2);
-            for ($rBT = 1; $rBT <= $noB; $rBT++) {
-                factory(App\Models\RoomBedType::class)->create([
+
+        for ($r = 1; $r <= $count; $r++) {
+            //RoomFeature
+            $noRF = rand(2, $feature);
+            for ($rF = 1; $rF <= $noRF; $rF++) {
+                factory(App\Models\RoomFeature::class)->create([
                     'room_id' => $r
                 ]);
             }
-        }
-        // RoomFeature
-        for ($r = 1; $r <= 40; $r++) {
-            $noRF = rand(1, 4);
-            for ($rF = 1; $rF <= $noRF; $rF++) {
-                factory(App\Models\RoomFeature::class)->create([
+            //RoomBedType
+            $noB = rand(1, 2);
+            for ($rB = 1; $rB <= $noB; $rB++) {
+                factory(App\Models\RoomBedType::class)->create([
                     'room_id' => $r
                 ]);
             }
@@ -375,22 +308,52 @@ class DatabaseSeeder extends Seeder
         //Booking status
         factory(App\Models\BookingStatus::class)->create([]);
         factory(App\Models\BookingStatus::class)->create([
-            'name'=>'Wait for pay'
+            'name' => 'Wait for pay'
         ]);
         factory(App\Models\BookingStatus::class)->create([
-            'name'=>'On ready'
+            'name' => 'On ready'
         ]);
         factory(App\Models\BookingStatus::class)->create([
-            'name'=>'Done'
+            'name' => 'Done'
         ]);
         factory(App\Models\BookingStatus::class)->create([
-            'name'=>'Cancel'
+            'name' => 'Cancel'
         ]);
 
-        //Booking status
+        //Booking method
         factory(App\Models\PaymentMethod::class)->create([]);
         factory(App\Models\PaymentMethod::class)->create([
-            'name'=>'Online'
+            'name' => 'Online'
         ]);
+
+        for ($uID = $mnNum + 1; $uID <= 10; $uID++) {
+            //Booking
+            $bNo = rand(1, 5);
+            for ($b = 1; $b <= $bNo; $b++) {
+                $m = rand(7, 9);
+                $d = rand(10, 25);
+                factory(App\Models\Booking::class)->create([
+                    'customer_id' => $uID,
+                    'check_in' => '2019-0' . $m . '-' . $d,
+                    'check_out' => '2019-0' . $m . '-' . ($d + 5),
+                    'room_id' => rand(1, $count),
+                ]);
+            }
+            //HotelFollowing
+            for ($f = 1; $f <= rand(2, 5); $f++) {
+                factory(App\Models\HotelFollowing::class)->create([
+                    'customer_id' => $uID,
+                    'hotel_id' => $f,
+                ]);
+            }
+
+            //CustomerFollowing
+            for ($cF = 11; $cF <= rand(11, 25); $cF++) {
+                factory(App\Models\CustomerFollowing::class)->create([
+                    'follower_id' => $uID,
+                    'followed_id' => $cF,
+                ]);
+            }
+        }
     }
 }
