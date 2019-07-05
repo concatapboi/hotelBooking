@@ -20,18 +20,10 @@ class HotelResource extends JsonResource
         foreach($this->Image as $image){
             $arrayImage[] = new HotelImageResource($image);
         }
-        // $arrayRoom = [];
-        // foreach($this->Room as $room){
-        //     // $id = $room->id;
-        //     // $arrayRoom[$room->id] = new RoomResource($room);
-        //     $temp = [];
-        //     $temp["id"] = $room->id;
-        //     $temp["amount"] = $room->amount;
-        //     $arrayRoom[] = $temp;
-        // }
         $arrayData = [
             "id" => $this->id,
             "name" => $this->name,
+            "email" => $this->email,
             "description" => $this->description,
             "meta_name" => $this->meta_name,
             "credit_card" => $this->credit_card,

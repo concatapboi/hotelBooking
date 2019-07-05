@@ -15,6 +15,9 @@ class RoomResource extends JsonResource
      */
     public function toArray($request)
     {
+        $roomType = $this->RoomType->name;
+        $roomMode = $this->RoomMode->name;
+        $full_name = $this->room_name."($roomType - $roomMode)";
         $arrayData = [
             "id" => $this->id,
             "room_name" => $this->room_name,
@@ -26,10 +29,11 @@ class RoomResource extends JsonResource
             "child_age" => $this->child_age,
             "room_size" => $this->room_size,
             "amount" => $this->amount,
-            "room_type" => $this->RoomType->name,
+            "room_type" => $roomType,
             "room_type_id" => $this->RoomType->id,
-            "room_mode" => $this->RoomMode->name,
+            "room_mode" => $roomMode,
             "room_mode_id" => $this->RoomMode->id,
+            "full_name" => $full_name,
         ];
         return $arrayData;
     }

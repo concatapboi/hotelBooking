@@ -90,6 +90,8 @@ export default {
     };
   },
   created() {
+    // this.hotelId =  this.$route.query.hotelId;
+    this.$emit("chooseHotel", this.hotelId);
     this.initialize();
   },
   watch: {

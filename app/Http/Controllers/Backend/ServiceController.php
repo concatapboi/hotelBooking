@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\ServiceRoomType;
 use App\Models\RoomType;
 use App\Models\Room;
+use App\Models\Hotel;
 use App\Http\Resources\ServiceResource;
 use App\Http\Resources\RoomTypeResource;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +66,7 @@ class ServiceController extends Controller
             "data" => $data,
             "panel" => $panel,
         ]);
+        
     }
 
     /**

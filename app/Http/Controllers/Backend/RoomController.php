@@ -157,4 +157,16 @@ class RoomController extends Controller
             ]);
         }
     }
+    public function getAllRoomByHotelId(Request $request)
+    {
+        $hotel = Hotel::find($request->hotelId);
+        $result = [];
+        foreach ($hotel->Room as $room) {
+            $result[] = new RoomResource($room);
+        }
+        return response()->json([
+            "status" => true,
+            "data" => $result,
+        ]);
+    }
 }
