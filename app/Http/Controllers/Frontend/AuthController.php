@@ -63,12 +63,17 @@ class AuthController extends Controller
     public function getUserLogin()
     {
         $user = Auth::user();
-        $user->customer = Customer::find($user->id);
+        $user->getCustomer;
         $avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
         $user->avatar = $avatar;
-        $array = ['user'=>$user,'avatar'=>$avatar];
+        foreach($user->Booking as $b){
+            $b->Status;
+            $b->PaymentMethod;
+            $b->Room->RoomMode;
+            $b->Room->RoomType;
+        };
         return response()->json([
-            'user' => $array,
+            'user' => $user,
         ]);
     }
 

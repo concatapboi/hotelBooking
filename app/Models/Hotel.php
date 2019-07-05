@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Resources\HotelTypeResource;
 
 class Hotel extends Model
 {
@@ -30,6 +31,10 @@ class Hotel extends Model
   {
     return $this->belongsTo('App\Models\HotelType', 'hotel_type_id', 'id');
   }
+  public function HotelTypeResource()
+  {
+    return new HotelTypeResource(HotelType::find($this->hotel_type_id));
+  }
   public function HotelManager()
   {
     return $this->belongsTo('App\Models\HotelManager', 'hotel_manager_id', 'user_id');
@@ -40,11 +45,16 @@ class Hotel extends Model
   }
   public function RoomByPrice()
   {
-    return $this->hasMany('App\Models\Room', 'hotel_id', 'id')->orderBy('price');;
+    return $this->hasMany('App\Models\Room', 'hotel_id', 'id')->orderBy('price');
   }
   public function Service()
   {
-    return $this->hasMany('App\Models\ServiceRoomType', 'hotel_id', 'id');
+    $serviceRoomType = ServiceRoomType::select('service_id')->where('hotel_id', $this->id)->distinct()->get()->sortBy('service_id');
+    $services = array();
+    foreach($serviceRoomType as $s){
+      $services[] = $s->ServiceResource();
+    }
+    return  $services;
   }
   public function maxPrice()
   {
@@ -63,10 +73,12 @@ class Hotel extends Model
     }
     return $min;
   }
-  public function Room(){
-		return $this->hasMany('App\Models\Room','hotel_id','id');
+  public function Room()
+  {
+    return $this->hasMany('App\Models\Room', 'hotel_id', 'id');
   }
-  public function Image(){
-		return $this->hasMany('App\Models\HotelImage','hotel_id','id');
-	}
+  public function Image()
+  {
+    return $this->hasMany('App\Models\HotelImage', 'hotel_id', 'id');
+  }
 }

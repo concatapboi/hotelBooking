@@ -15,6 +15,7 @@ use App\Models\BedType;
 use App\Models\Feature;
 use App\Models\ServiceRoomType;
 use App\Models\Service;
+use App\Http\Resources\ServiceResource;
 
 class HotelController extends Controller
 {
@@ -23,11 +24,11 @@ class HotelController extends Controller
     {
         $status = false;
         $hotels = Hotel::all();
-        if ($hotels->count()>0) {
+        if ($hotels->count() > 0) {
             $status = true;
             foreach ($hotels as $h) {
-                $h->maxPrice=$h->maxPrice();
-                $h->minPrice=$h->minPrice();
+                $h->maxPrice = $h->maxPrice();
+                $h->minPrice = $h->minPrice();
             }
         }
         return response()->json(['status' => $status, 'data' => $hotels]);
@@ -60,35 +61,38 @@ class HotelController extends Controller
     }
 
     //get hotels/{hotels}
-    public function show($id)
+    public function show(Request $req, $id)
     {
         $status = false;
         $hotel = null;
-        if($id>0){
+        if ($id > 0) {
             $hotel = Hotel::find($id);
-            if($hotel !=null){
-                $status = true;                
-                $hotel->HotelType;
-                foreach($hotel->Room as $r){
-                    $r->RoomMode;
-                    $tempRoomType = $r->RoomType;
-                    foreach($r->RoomBedType as $rBT){
-                        $rBT->BedType;
-                    }
-                    foreach($r->Feature as $f){
+            if ($hotel != null) {
+                $status = true;
+                $hotel->hotel_type = $hotel->HotelTypeResource();
+                $hotel->service = $hotel->Service();
+                $hotel->followed = false;
+                if ($req->userID != null) {
+                    if (HotelFollowing::where('customer_id', $req->userID)->where('hotel_id', $hotel->id)->first() != null)
+                        $hotel->followed = true;
+                }
+                foreach ($hotel->Room as $r) {
+                    $r->room_mode = $r->RoomModeResource();
+                    $r->room_type = $r->RoomTypeResource();
+                    $tempRoomType = $r->room_type;
+                    $r->room_bed_type = $r->RoomBedTypeResource();
+                    foreach ($r->Feature as $f) {
                         $f->Feature;
                     };
-                    $tempRoomType->ServiceRoomTypeByHotel($hotel->id);
-                    
-                    $servicesRoomType = ServiceRoomType::where('room_type_id',$tempRoomType->id)->where('hotel_id',$hotel->id)->get();
+                    $servicesRoomType = ServiceRoomType::where('room_type_id', $tempRoomType->id)->where('hotel_id', $hotel->id)->get();
                     $teampService = null;
-                    foreach($servicesRoomType as $sRT){
-                         $teampService[]=$sRT->Service;
-                    }            
+                    foreach ($servicesRoomType as $sRT) {
+                        $teampService[] = new ServiceResource($sRT->Service);
+                    }
                     $r->service = $teampService;
-                    $r->bookingAmount =1;
-                }                
-            }            
+                    $r->bookingAmount = 1;
+                }
+            }
         }
         return response()->json(['status' => $status, 'data' => $hotel]);
     }

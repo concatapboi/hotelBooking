@@ -28,10 +28,11 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
 });
 
 $factory->define(App\Models\Admin::class, function (Faker $faker) {
+    static $n =1;
     return [
-        'name' => 'Admin',
-        'username' => 'admin',
-        'email' => 'admin@gmail.com',
+        'name' => 'Admin'.$n,
+        'username' => 'admin'.$n,
+        'email' => 'admin'.$n++.'@gmail.com',
         'password' => '$2y$12$82PIBhK8MovKXkLUNkyb7Omctq6jR3F3ROkjtb0JcArXpllvX2bXO', // secret
         'remember_token' => Str::random(10),
     ];
@@ -61,19 +62,20 @@ $factory->define(App\Models\Hotel::class, function (Faker $faker) {
     ];
 });
 $factory->define(App\Models\Room::class, function (Faker $faker) {
-    static $no = 1;
+    static $no = 1, $n = 1;
     if ($no > 4) $no = 1;
+    if ($n > 6) $n = 1;
     return [
         'room_name' => $faker->lastName,
         'description' => $faker->sentence($nbWords = 6, $variableNbWords = true),
         'price' => rand(5, 100000),
-        'max_adult_amount' => rand(2,5),
+        'max_adult_amount' => rand(2, 5),
         'max_child_amount' => $faker->randomDigit,
         'free_child_amount' => $faker->randomDigit,
-        'room_size' => rand(50,200),
-        'amount' => rand(1,10),
+        'room_size' => rand(50, 200),
+        'amount' => rand(1, 10),
         'room_mode_id' => $no++,
-        'room_type_id' => 1,
+        'room_type_id' => $n++,
         'hotel_id' => rand(1, 5),
     ];
 });
@@ -87,10 +89,10 @@ $factory->define(App\Models\RoomBedType::class, function (Faker $faker) {
     ];
 });
 $factory->define(App\Models\RoomFeature::class, function (Faker $faker) {
-    static $no = 1, $noF = 1;
-    if ($noF > 4) $noF = 1;
+    static $no = 1, $fN = 1;
+    if ($fN > 8) $fN = 1;
     return [
-        'feature_id' => $noF++,
+        'feature_id' => $fN++,
         'room_id' => $no++
     ];
 });
@@ -105,11 +107,73 @@ $factory->define(App\Models\ServiceRoomType::class, function (Faker $faker) {
 });
 $factory->define(App\Models\BookingStatus::class, function (Faker $faker) {
     return [
-        'name'=> 'Wait for confirmation'
+        'name' => 'Wait for confirmation'
+    ];
+});
+$factory->define(App\Models\Booking::class, function (Faker $faker) {
+    static $no = 1,$c =6;
+    return [
+        'hotel_name' => 'Hotel',
+        'room_price' => rand(10,1000),
+        'room_amount' => 1,
+        'contact_name' => $faker->name,
+        'contact_email' => $faker->unique()->safeEmail,
+        'contact_phone' => $faker->phoneNumber,
+        'contact_address' => "Some where in Sai Gon",
+        'special_request' => "None",
+        'fax_number' => "71937729".$no,
+        'check_in' => "2020-03-21",
+        'check_out' => "2020-05-21",
+        'room_id' => $no++,
+        'customer_id' => $c++,
+        'status_id' => rand(1,5),
+        'payment_method_id' => rand(1,2),
     ];
 });
 $factory->define(App\Models\PaymentMethod::class, function (Faker $faker) {
     return [
         'name' => 'Offline'
+    ];
+});
+$factory->define(App\Models\HotelFollowing::class, function (Faker $faker) {
+    static $n =1;
+    return [
+        'customer_id' => $n,
+        'hotel_id' => $n++,
+    ];
+});
+$factory->define(App\Models\CustomerFollowing::class, function (Faker $faker) {
+    static $n =6;
+    return [
+        'follower_id' => $n,
+        'followed_id' => $n++,
+    ];
+});
+$factory->define(App\Models\CouponCode::class, function (Faker $faker) {
+    static $n =1;
+    $m = rand(7,9);
+    $d = rand(10,20);
+    return [
+        'code' => 'ABCD'.$n++,
+        'discout_value' => rand(5,45),
+        'title' => $faker->sentence($nbWords = 3, $variableNbWords = true),
+        'content' => $faker->sentence($nbWords = 6, $variableNbWords = true),
+        'start_at' => '2019-0'.$m.'-'.$d,
+        'end_at' =>'2019-'.($m+3).'-'.($d+10),
+        'apply_amount' => rand(50,140)
+    ];
+});
+$factory->define(App\Models\ApplyCouponCodeHotel::class, function (Faker $faker) {
+    static $n =1;
+    return [
+        'coupon_code_id' => $n,
+        'hotel_id' => $n++,
+    ];
+});
+$factory->define(App\Models\ApplyCouponCodeRoomType::class, function (Faker $faker) {
+    static $n =1;
+    return [
+        'coupon_code_id' => $n,
+        'room_type_id' => $n++,
     ];
 });

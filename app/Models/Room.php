@@ -4,6 +4,9 @@ namespace App\Models;
 use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Resources\RoomModeResource;
+use App\Http\Resources\RoomTypeResource;
+use App\Http\Resources\RoomBedTypeResource;
 
 class Room extends Model
 {
@@ -26,9 +29,17 @@ class Room extends Model
   {
     return $this->belongsTo('App\Models\Hotel', 'hotel_id', 'id');
   }
+  public function RoomTypeResource()
+  {
+    return new RoomTypeResource(RoomType::find($this->room_type_id));
+  }
   public function RoomType()
   {
     return $this->belongsTo('App\Models\RoomType', 'room_type_id', 'id');
+  }
+  public function RoomModeResource()
+  {
+    return new RoomModeResource(RoomMode::find($this->room_mode_id));
   }
   public function RoomMode()
   {
@@ -37,6 +48,15 @@ class Room extends Model
   public function RoomBedType()
   {
     return $this->hasMany('App\Models\RoomBedType', 'room_id', 'id');
+  }
+  public function RoomBedTypeResource()
+  {
+    $bedtype = array();
+    foreach($this->RoomBedType as $rBT){
+      $rBT->bed_type = $rBT->BedTypeResource();
+      $bedtype[] = $rBT;
+    }
+    return $bedtype;
   }
   public function Feature()
   {
