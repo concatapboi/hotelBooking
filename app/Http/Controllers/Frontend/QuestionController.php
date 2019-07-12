@@ -4,52 +4,55 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\UserImage;
+use App\Models\User;
+use App\Models\Hotel;
+use App\Models\Comment;
+use App\Models\Review;
+use App\Models\Quetsion;
+use Auth;
+use Validator;
+use Hash;
+use Session;
 
-class UserImageController extends Controller
+class QuestionController extends Controller
 {
-    //get image
+    //get question
     public function index()
     {
         return;
     }
 
-    //get image/create
+    //get question/create
     public function create()
     {
         return;
     }
 
-    //post image
+    //post question
     public function store()
     {
         return;
     }
 
-    //get image/{hotels}
+    //get question/{hotels}
     public function show($id)
     {
         return;
     }
 
-    //image/{image}/edit
+    //question/{question}/edit
     public function edit($id)
     {
         return;
     }
 
-    //put/patch image/{image}
+    //put/patch question/{question}
     public function update($id, Request $req)
     {
-        if (UserImage::find($id)) {
-            $img = UserImage::find($id);
-            $img->update(['image_link' => $req->link]);
-            return response()->json(['mess' => true]);
-        };
-        return response()->json(['mess' => false]);;
+        return ;
     }
 
-    //delete image/{image}
+    //delete question/{question}
     public function destroy($id)
     {
         return;

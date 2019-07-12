@@ -4,21 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Comment extends Model
+class CustomerReview extends Model
 {
-  protected $table = 'comment';
+  protected $table = 'customer_review';
 
   protected $fillable = [
+    'id',
     'customer_id',
     'review_id',
-    'content',
+    'status',
+    'like',
+    'useful',
   ];
 
   public function Customer()
   {
-    $user = User::find($this->customer_id);
-    $user->avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
-    return $user;
+    return $this->belongsTo('App\Models\User', 'customer_id', 'id');
   }
 
   public function Review()

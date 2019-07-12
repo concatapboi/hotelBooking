@@ -13,16 +13,18 @@ class Feature extends Model
     'meta_name',
     'status',
   ];
+
   public function Room()
   {
     return $this->belongsToMany("App\Models\Room", "room_feature", "feature_id", "room_id");
   }
+
   public function RoomByHotel($id)
   {
     $data = [];
     $rooms = $this->Room;
     foreach ($rooms as $room) {
-      if ($room->Hotel->id == $id) { 
+      if ($room->Hotel->id == $id) {
         $data[] = $room->id;
       }
     }

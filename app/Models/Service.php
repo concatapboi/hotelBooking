@@ -8,7 +8,7 @@ class Service extends Model
 {
   protected $table = 'service';
 
-  protected $fillable =[
+  protected $fillable = [
     'name',
     'meta_name',
     'icon',

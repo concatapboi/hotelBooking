@@ -8,14 +8,15 @@ class BedType extends Model
 {
   protected $table = 'bed_type';
 
-  protected $fillable =[
+  protected $fillable = [
     'name',
     'width',
     'length',
     'status',
   ];
 
-  public function RoomBedType(){
-		return $this->hasMany('App\Models\RoomBedType','bed_type_id','id');
+  public function RoomBedType()
+  {
+    return $this->hasMany('App\Models\RoomBedType', 'bed_type_id', 'id');
   }
 }

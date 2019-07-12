@@ -8,10 +8,15 @@ class UserImage extends Model
 {
   protected $table = 'user_image';
 
-  protected $fillable =[
+  protected $fillable = [
     'image_link',
     'is_primary',
     'name',
     'user_id',
   ];
+
+  public function User()
+  {
+    return $this->belongsTo('App\Models\User', 'user_id', 'id');
+  }
 }

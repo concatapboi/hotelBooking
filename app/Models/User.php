@@ -10,82 +10,167 @@ use App\Models\HotelManager;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+  use Notifiable;
 
-    protected $table = 'users';
+  protected $table = 'users';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name',
-        'username',
-        'email',
-        'password',
-        'phone_number'
-    ];
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array
+   */
+  protected $fillable = [
+    'name',
+    'username',
+    'email',
+    'password',
+    'phone_number'
+  ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+  /**
+   * The attributes that should be hidden for arrays.
+   *
+   * @var array
+   */
+  protected $hidden = [
+    'password', 'remember_token',
+  ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+  /**
+   * The attributes that should be cast to native types.
+   *
+   * @var array
+   */
+  protected $casts = [
+    'email_verified_at' => 'datetime',
+  ];
 
-    public function HotelManager(){
-        return $this->hasMany('App\Models\HotelManager','user_id','id');
+  public function HotelManager()
+  {
+    return $this->hasMany('App\Models\HotelManager', 'user_id', 'id');
+  }
+
+  public function getCustomer()
+  {
+    return $this->belongsTo('App\Models\Customer', 'id', 'user_id');
+  }
+
+  public function Customer()
+  {
+    return $this->belongsTo('App\Models\Customer', 'id', 'user_id');
+  }
+
+  public function Booking()
+  {
+    return $this->hasMany('App\Models\Booking', 'customer_id', 'id');
+  }
+
+  public function Followers()
+  {
+    $followers = CustomerFollowing::where('followed_id',$this->id)->get();
+    foreach($followers as $f){
+      $f->Follower;
+      $f->avatar = UserImage::where('user_id', $f->follower_id)->where('is_primary', 1)->first();
     }
-    public function getCustomer(){
-     return $this->belongsTo('App\Models\Customer','id','user_id');
-    }
+     return $followers;
+  }
 
-    public function Booking(){
-     return $this->hasMany('App\Models\Booking','customer_id','id');
+  public function Followings()
+  {
+    $followings = CustomerFollowing::where('follower_id',$this->id)->get();
+    foreach($followings as $f){
+      $f->Followed;
+      $f->avatar = UserImage::where('user_id', $f->followed_id)->where('is_primary', 1)->first();
     }
+     return $followings;
+  }
 
-    public function isHotelManager(){
-      foreach ( $this->HotelManager as $key => $value) {
-        return true;
-      }
-      return false;
-    }
+  public function HotelFollowings()
+  {
+    $followings = HotelFollowing::where('customer_id',$this->id)->get();
+    foreach($followings as $f){
+      $f->Customer;
+      $f->avatar = HotelImage::where('hotel_id', $f->hotel_id)->where('is_primary', 1)->first();
 
-    public function isCustomer(){
-      foreach ( $this->getCustomer as $key => $value) {
-        return true;
-      }
-      return false;
     }
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
+     return $followings;
+  }
 
+  public function isFollowing($id){
+    $customerFollowing = $this->customerFollowings();
+    foreach($customerFollowing as $c){
+      if($c->followed->id == $id) return true;
+    }
+    return false;
+  }
+  public function isFollowed($id){
+    $follower = $this->Followers();
+    foreach($follower as $f){
+      if($f->follower->id == $id) return true;
+    }
+    return false;
+  }
+  public function Question()
+  {
+    return $this->hasMany('App\Models\Question', 'customer_id', 'id');
+  }
+
+  public function Review()
+  {
+    return $this->hasMany('App\Models\Review', 'customer_id', 'id');
+  }
+
+  public function reViewList(){
+    $reviews = Review::where('customer_id',$this->id)->get();
+    foreach($reviews as $r){
+      $r->customer_review=$r->CustomerReview($this->id,$r->id);
+      $r->model = false;
+      foreach($r->Comment as $c){
+        $c->customer = $c->Customer();
+      };
+    }
+    return $reviews;
+  }
+
+  public function Comment()
+  {
+    return $this->hasMany('App\Models\Comment', 'customer_id', 'id');
+  }
+
+  public function Image()
+  {
+    return $this->hasMany('App\Models\UserImage', 'user_id', 'id');
+  }
+
+  public function isHotelManager()
+  {
+    foreach ($this->HotelManager as $key => $value) {
+      return true;
+    }
+    return false;
+  }
+
+  public function isCustomer()
+  {
+    if ($this->getCustomer != null) return true;
+    return false;
+  }
+  /**
+   * Get the identifier that will be stored in the subject claim of the JWT.
+   *
+   * @return mixed
+   */
+  public function getJWTIdentifier()
+  {
+    return $this->getKey();
+  }
+  /**
+   * Return a key value array, containing any custom claims to be added to the JWT.
+   *
+   * @return array
+   */
+  public function getJWTCustomClaims()
+  {
+    return [];
+  }
 }

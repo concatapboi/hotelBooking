@@ -8,9 +8,14 @@ class HotelImage extends Model
 {
   protected $table = 'hotel_image';
 
-  protected $fillable =[
+  protected $fillable = [
     'image_link',
     'is_primary',
     'hotel_id',
   ];
+
+  public function Hotel()
+  {
+    return $this->belongsTo('App\Models\Hotel', 'hotel_id', 'id');
+  }
 }

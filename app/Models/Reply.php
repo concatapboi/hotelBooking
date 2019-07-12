@@ -8,9 +8,13 @@ class Reply extends Model
 {
   protected $table = 'reply';
 
-  protected $fillable =[
+  protected $fillable = [
     'content',
     'question_id',
-    'hotel_id',
   ];
+
+  public function Question()
+  {
+    return $this->belongsTo('App\Models\Question', 'question_id', 'id');
+  }
 }

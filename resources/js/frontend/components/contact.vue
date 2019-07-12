@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex shrink md12>
-      <v-img :aspect-ratio="16/2" src="/blog/img/slider/default.png" class="pt-5">
+      <v-img :aspect-ratio="16/2" src="/blog/img/slider/slider.png" class="pt-5">
         <v-layout row wrap justify-center>
           <v-flex md10 class="text-md-center">
             <span class="title text-uppercase font-weight-black">contact us</span>

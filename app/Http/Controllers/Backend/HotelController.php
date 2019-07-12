@@ -528,10 +528,13 @@ class HotelController extends Controller
         $priceMax = $price[1];
         $temp = [];
         foreach ($array as $hotel) {
-            foreach ($hotel->Room as $room) {
-                if ($room->price > $priceMin && $room->price < $priceMax) {
-                    $temp[] = $hotel->id;
-                }
+            // foreach ($hotel->Room as $room) {
+            //     if ($room->price > $priceMin && $room->price < $priceMax) {
+            //         $temp[] = $hotel->id;
+            //     }
+            // }
+            if($hotel->minPrice() >= $priceMin && $hotel->maxPrice()<= $priceMax){
+                $temp[] = $hotel->id;
             }
         }
         $temp = array_unique($temp);
@@ -543,7 +546,28 @@ class HotelController extends Controller
                 }
             }
         }
-        return $data;
+        return $this->getSort($data);
+        // return $data;
+    }
+    public function getSort($arr){        
+        $tempArr = $arr;
+        if(sizeOf($arr) == 0) return $tempArr;
+        $number = 0;
+        do{
+            $min = $tempArr[$number]->minPrice();
+            $index = $number;
+            for($i = $number;$i<sizeOf($tempArr);$i++){
+                if($tempArr[$i]->minPrice()<$min){
+                     $min = $tempArr[$i]->minPrice();
+                     $index = $i;
+                }
+            }
+            $temp = $tempArr[$number];
+            $tempArr[$number] = $tempArr[$index];
+            $tempArr[$index] = $temp;
+            $number++;
+        }while($number<sizeOf($tempArr));
+        return $tempArr;
     }
     // public function remove_duplicate_hotel_in_array($array, $numberOfService)
     // {

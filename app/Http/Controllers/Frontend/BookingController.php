@@ -11,6 +11,7 @@ use JWTAuth;
 use Validator;
 use Hash;
 use Session;
+use App\Models\BookingStatus;
 
 class BookingController extends Controller
 {
@@ -66,12 +67,14 @@ class BookingController extends Controller
                     'status_id' => 1,
                 ]);
                 $booking->Status;
+                $booking->cancel_status = $booking->Hotel()->CancelableStatus();;
                 $booking->PaymentMethod;
                 $booking->Room->RoomMode;
                 $booking->Room->RoomType;
+                $booking->Room->Hotel->HotelType;
             }
         } else return response()->json(['status' => $status, 'mess' => $validateData->errors()]);
-        return response()->json(['status' => $status, 'mess' => $mess, 'booking' =>$booking]);
+        return response()->json(['status' => $status, 'mess' => $mess, 'booking' => $booking]);
     }
 
     //get booking/{booking}
@@ -85,19 +88,30 @@ class BookingController extends Controller
     }
 
     //put/patch booking/{booking}
-    public function update(Request $req,$id)
+    public function update(Request $req, $id)
     {
         $status = false;
         $b = Booking::find($id);
-        if($b!=null){
-            if($req->action == "cancel"){
-                if($b->Status->id <3){
-                    $b->update(['status_id' => 5]);
-                    $status = true;
-                }
+        if ($b != null) {
+            switch ($req->action) {
+                case 'cancel':
+                    if ($b->Status->id == 1 || $b->Status->id == 2) {
+                        $b->delete();
+                        $status = true;
+                    } else {
+                        $b->update(['status_id' => 5]);
+                        $status = true;
+                    }
+                    break;
+                case 'declined':
+                    break;
+                case 'accept':
+                    break;
+                case 'hotel-cancel':
+                    break;
             }
         }
-        return response()->json(['status' =>$status]);
+        return response()->json(['status' => $status]);
     }
 
     //delete booking/{booking}

@@ -16,14 +16,15 @@ class RedirectIfAuthenticated
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = 'web')
+    public function handle($request, Closure $next, $guard = 'api')
     {
+        dd(Auth::guard($guard)->check());
         if (!Auth::check()) {
             return redirect('/login.html');
         }
         $id = Auth::user()->id;
-        if(!User::find($id)->isCustomer()){
-          return redirect('/login.html');
+        if (!User::find($id)->getCustomer) {
+            return redirect('/login.html');
         }
         return $next($request);
     }

@@ -30,6 +30,8 @@ class CreateBookingTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->integer('status_id')->unsigned();
             $table->integer('payment_method_id')->unsigned();
+            $table->string('coupon_code')->default("");
+            $table->integer('discount_value')->default(0);
             $table->timestamps();
             $table->foreign('room_id')
             ->references('id')->on('room')

@@ -16,6 +16,7 @@ use App\Models\Feature;
 use App\Models\ServiceRoomType;
 use App\Models\Service;
 use App\Http\Resources\ServiceResource;
+use Carbon\Carbon;
 
 class HotelController extends Controller
 {
@@ -68,10 +69,12 @@ class HotelController extends Controller
         if ($id > 0) {
             $hotel = Hotel::find($id);
             if ($hotel != null) {
+                $hotel->question = $hotel->questionList();
                 $status = true;
                 $hotel->hotel_type = $hotel->HotelTypeResource();
                 $hotel->service = $hotel->ServiceResource();
                 $hotel->followed = false;
+                $hotel->review = $hotel->reviewList($req->userID);
                 if ($req->userID != null) {
                     if (HotelFollowing::where('customer_id', $req->userID)->where('hotel_id', $hotel->id)->first() != null)
                         $hotel->followed = true;
@@ -81,6 +84,11 @@ class HotelController extends Controller
                     $r->room_type = $r->RoomTypeResource();
                     $tempRoomType = $r->room_type;
                     $r->room_bed_type = $r->RoomBedTypeResource();
+                    $checkinExplode = explode("-", $req->check_in);
+                    $checkoutExplode = explode("-", $req->check_out);
+                    $checkIn = Carbon::createMidnightDate($checkinExplode[0], $checkinExplode[1], $checkinExplode[2]);
+                    $checkOut = Carbon::createMidnightDate($checkoutExplode[0], $checkoutExplode[1], $checkoutExplode[2]);
+                    $r->amount = $r->availableRoomAmount($checkIn, $checkOut);
                     foreach ($r->Feature as $f) {
                         $f->Feature;
                     };

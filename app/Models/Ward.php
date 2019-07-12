@@ -8,12 +8,17 @@ class Ward extends Model
 {
   protected $table = 'ward';
 
-  protected $fillable =[
+  protected $fillable = [
     'name',
     'district_id',
   ];
   public function Hotel()
   {
-    return $this->hasMany("App\Models\Hotel","ward_id","id");
+    return $this->hasMany("App\Models\Hotel", "ward_id", "id");
+  }
+
+  public function District()
+  {
+    return $this->belongsTo('App\Models\District', 'district_id', 'id');
   }
 }

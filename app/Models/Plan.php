@@ -8,7 +8,7 @@ class Plan extends Model
 {
   protected $table = 'plan';
 
-  protected $fillable =[
+  protected $fillable = [
     'name',
     'start_at',
     'end_at',
@@ -16,4 +16,14 @@ class Plan extends Model
     'customer_id',
     'province_id',
   ];
+
+  public function Customer()
+  {
+    return $this->belongsTo('App\Models\Customer', 'customer_id', 'user_id');
+  }
+
+  public function Province()
+  {
+    return $this->belongsTo('App\Models\Province', 'province_id', 'id');
+  }
 }

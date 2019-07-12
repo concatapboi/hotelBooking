@@ -46,6 +46,11 @@ return [
             'provider' => 'users',
         ],
 
+        'community' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+
         'manager' => [
             'driver' => 'session',
             'provider' => 'managers',

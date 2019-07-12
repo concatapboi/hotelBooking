@@ -1,14 +1,14 @@
 <template>
   <v-layout row wrap class="mx-3">
     <v-flex shrink md8>
-      <v-img :aspect-ratio="16/4" :src="cover.link" class="mr-2 radius mb-3">
+      <v-img :aspect-ratio="16/4" src="/blog/img/slider/default.png" class="mr-2 radius mb-3">
         <v-layout row wrap fill-height class="lightbox white--text mt-5 mb-1 pl-5">
           <v-spacer></v-spacer>
           <v-flex md9 shrink class="pl-5">
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-avatar size="90px" tile flat color="white" v-on="on">
-                  <img :src="avatar.link" alt>
+                  <img :src="user.avatar.image_link" alt />
                 </v-avatar>
               </template>
               <span>{{user.name}}</span>
@@ -26,7 +26,7 @@
               <span>Change pictures</span>
             </v-tooltip>
           </v-flex>
-          <v-dialog
+          <!-- <v-dialog
             v-model="dialog"
             fullscreen
             hide-overlay
@@ -231,24 +231,24 @@
                 </v-layout>
               </v-card-text>
             </v-card>
-          </v-dialog>
+          </v-dialog>-->
         </v-layout>
       </v-img>
-      <v-layout class="row wrap mx-3 mb-5" v-for="(item,index) in 4" :key="index">
+      <v-layout class="row wrap mx-3 mb-5" v-for="(item,index) in user.review" :key="index">
         <v-badge left overlap :color="color.badge">
           <template v-slot:badge>
-            <v-tooltip top>
+            <v-tooltip top v-if="item.can_comment == 1">
               <template v-slot:activator="{ on }">
                 <v-icon small color="white" v-on="on" class="pointer">lock_open</v-icon>
               </template>
               <span>Open comment</span>
             </v-tooltip>
-            <!-- <v-tooltip top v-else>
+            <v-tooltip top v-else>
               <template v-slot:activator="{ on }">
                 <v-icon small color="black" v-on="on" class="pointer">lock</v-icon>
               </template>
               <span>Lock comment</span>
-            </v-tooltip>-->
+            </v-tooltip>
           </template>
           <v-card light min-height="120px" class="pa-1" flat tile width="800px">
             <v-card-title>
@@ -260,17 +260,17 @@
                   </v-btn>
                 </template>
                 <v-list dark>
-                  <v-list-tile>
-                    <v-list-tile-title>Hide</v-list-tile-title>
-                  </v-list-tile>
-                  <v-list-tile>
+                  <v-list-tile v-if="item.customer_review.status ==1">
                     <v-list-tile-title>Off notification</v-list-tile-title>
+                  </v-list-tile>
+                  <v-list-tile v-else>
+                    <v-list-tile-title>Get notification</v-list-tile-title>
                   </v-list-tile>
                 </v-list>
               </v-menu>
 
               <v-card-text>
-                <span class="headline">" Lorem ipsum dolor sit amet consectetur adipisicing elit."</span>
+                <span class="headline">{{item.title}}</span>
                 <v-layout>
                   <v-card
                     flat
@@ -283,7 +283,7 @@
                   >
                     <v-card-text
                       class="font-weight-bold font-italic"
-                    >Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus suscipit consequuntur minima modi aspernatur doloribus, necessitatibus aut ex harum delectus soluta ipsa fuga sapiente dolore ratione consequatur animi nesciunt dolor.</v-card-text>
+                    >{{item.content}}</v-card-text>
                   </v-card>
                 </v-layout>
                 <span class="grey--text">&nbsp;21/12/2019</span>
@@ -297,21 +297,21 @@
                     class="ml-3 mr-1"
                     large
                     :color="color.heart"
-                    v-on:click="like =!like"
-                    v-if="!item.like"
+                    v-on:click=";"
+                    v-if="item.customer_review.like == 0"
                   >favorite_border</v-icon>
                   <v-icon
                     v-on="on"
                     class="ml-3 mr-1"
                     large
                     :color="color.heart"
-                    v-on:click="like =!like"
+                    v-on:click=";"
                     v-else
                   >favorite</v-icon>
                 </template>
                 <span>like</span>
               </v-tooltip>
-              <span class="grey--text subheading">0</span>
+              <span class="grey--text subheading">{{item.likes}}</span>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-icon
@@ -319,7 +319,7 @@
                     class="ml-3 mr-1"
                     large
                     :color="color.comment"
-                    v-on:click="model = !model"
+                    v-on:click="item.model = true"
                     v-if="!item.model"
                   >chat_bubble_outline</v-icon>
                   <v-icon
@@ -327,37 +327,37 @@
                     class="ml-3 mr-1"
                     large
                     :color="color.comment"
-                    v-on:click="model = !model"
+                    v-on:click="item.model = false"
                     v-else
                   >chat_bubble</v-icon>
                 </template>
                 <span>comment</span>
               </v-tooltip>
-              <span class="grey--text subheading">3</span>
+              <span class="grey--text subheading">{{item.comments}}</span>
             </v-card-actions>
-            <v-divider v-show="model"></v-divider>
-            <v-layout class="row wrap" justify-center v-if="model">
-              <v-card light flat tile width="790px" class="mb-1" v-for="(value,i) in 3" :key="i">
+            <v-divider v-show="item.model"></v-divider>
+            <v-layout class="row wrap" justify-center v-if="item.model">
+              <v-card light flat tile width="790px" class="mb-1" v-for="(value,i) in item.comment" :key="i">
                 <v-card-title>
                   <v-avatar size="42px" color="black" flat>
                     <v-avatar size="40px" flat color="white">
-                      <img :src="avatar.link">
+                      <img :src="value.customer.avatar.image_link" />
                     </v-avatar>
                   </v-avatar>
-                  <span class="pl-3">{{user.name}}</span>
+                  <span class="pl-3">{{value.customer.name}}</span>
                 </v-card-title>
                 <v-card-text>
                   <v-layout>
                     <v-card flat tile tag="div" color="grey lighten-2" width="100%" class="radius">
                       <v-card-text
                         class="font-weight-bold font-italic black--text"
-                      >Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui error dignissimos cum mollitia quam illo! Voluptas, perferendis quaerat, ea ipsam alias consequuntur architecto facilis, eveniet adipisci necessitatibus molestias quae nam?</v-card-text>
+                      >{{value.content}}</v-card-text>
                     </v-card>
                   </v-layout>
                 </v-card-text>
-                <v-divider></v-divider>
+                <v-divider v-show="item.can_comment === 1"></v-divider>
               </v-card>
-              <v-card flat tile width="790px">
+              <v-card flat tile width="790px" v-show="item.can_comment === 1">
                 <v-layout row wrap align-center>
                   <v-flex md10 class="pl-3">
                     <v-card-title>
@@ -461,7 +461,7 @@
                 <span class="font-weight-black">Coin:</span>
               </v-flex>
               <v-flex md8 class="pl-2">
-                <span class="font-weight-black">{{customer.coin}}</span>
+                <span class="font-weight-black">{{user.customer.coin}}</span>
               </v-flex>
             </v-layout>
             <v-layout row wrap class="mb-2 ml-1" align-center>
@@ -472,7 +472,7 @@
                 <span class="font-weight-black">Address:</span>
               </v-flex>
               <v-flex md8 class="pl-2">
-                <span class="font-weight-black">{{customer.address}}</span>
+                <span class="font-weight-black">{{user.customer.address}}</span>
               </v-flex>
             </v-layout>
           </v-container>
@@ -494,45 +494,33 @@
             <v-tab href="#tab-1">followers</v-tab>
             <v-tab href="#tab-2">following</v-tab>
             <v-tab-item value="tab-1">
-              <v-card
-                light
-                flat
-                v-for="(item,i) in 10"
-                :key="i"
-                v-show="i<4"                
-              >
+              <v-card light flat v-for="(item,i) in user.followers" :key="i" v-show="i<4">
                 <v-card-title>
-                  <router-link :to="{name:'user',params:{id:user.id}}">
-                  <v-avatar size="52px" flat color="black">
-                    <v-avatar size="50px" flat color="white">
-                      <img :src="avatar.link" :alt="user.name">
+                  <router-link :to="{name:'user',params:{id:item.follower.id}}">
+                    <v-avatar size="52px" flat color="black">
+                      <v-avatar size="50px" flat color="white">
+                        <img :src="item.avatar.image_link" :alt="item.follower.name" />
+                      </v-avatar>
                     </v-avatar>
-                  </v-avatar>
-                  <span class="pl-3 font-weight-bold">{{user.name}}</span>
+                    <span class="pl-3 font-weight-bold">{{item.follower.name}}</span>
                   </router-link>
                 </v-card-title>
-                <v-divider class="pa-0 ma-0" v-show="i<3"></v-divider>
+                <v-divider class="pa-0 ma-0" v-show="i<3 && i<(user.followers.length-1)"></v-divider>
               </v-card>
             </v-tab-item>
             <v-tab-item value="tab-2">
-              <v-card
-                light
-                flat
-                v-for="(item,i) in 10"
-                :key="i"
-                v-show="i<4"                
-              >
+              <v-card light flat v-for="(item,i) in user.customerFollowings" :key="i" v-show="i<4">
                 <v-card-title>
-                  <router-link :to="{name:'user',params:{id:user.id}}">
-                  <v-avatar size="52px" flat color="black">
-                    <v-avatar size="50px" flat color="white">
-                      <img :src="avatar.link" :alt="user.name">
+                  <router-link :to="{name:'user',params:{id:item.followed.id}}">
+                    <v-avatar size="52px" flat color="black">
+                      <v-avatar size="50px" flat color="white">
+                        <img :src="item.avatar.image_link" :alt="item.followed.name" />
+                      </v-avatar>
                     </v-avatar>
-                  </v-avatar>
-                  <span class="pl-3 font-weight-bold">{{user.name}}</span>
+                    <span class="pl-3 font-weight-bold">{{item.followed.name}}</span>
                   </router-link>
                 </v-card-title>
-                <v-divider class="pa-0 ma-0" v-show="i<3"></v-divider>
+                <v-divider class="pa-0 ma-0" v-show="i<3 && i<(user.customerFollowings.length-1)"></v-divider>
               </v-card>
             </v-tab-item>
           </v-tabs>
@@ -547,19 +535,7 @@
             <v-flex md12 pa-2>
               <v-text-field outline name="name" color="teal" v-model="form.name" label="Name"></v-text-field>
             </v-flex>
-            <v-flex md4 pa-2>
-              <v-text-field
-                outline
-                :error-messages="errors.collect('form1.email')"
-                data-vv-name="email"
-                name="email"
-                color="teal"
-                v-model="form.email"
-                label="Email"
-                v-validate="'required|email'"
-              ></v-text-field>
-            </v-flex>
-            <v-flex md8 pa-2>
+            <v-flex md12 pa-2>
               <v-text-field outline name="phone" color="teal" v-model="form.phone" label="Phone"></v-text-field>
             </v-flex>
             <v-flex md12 px-2>
@@ -701,12 +677,12 @@
             <v-tab href="#tab-2">following</v-tab>
             <v-tab-item value="tab-1">
               <v-card light flat width="100%" height="260px" style="overflow:auto">
-                <v-layout v-for="(item,i) in 10" :key="i">
+                <v-layout v-for="(item,i) in user.followers" :key="i">
                   <v-card-title style="width:100%">
-                    <router-link :to="{name:'user',params:{id:user.id}}">
+                    <router-link :to="{name:'user',params:{id:item.follower.id}}">
                     <v-avatar size="52px" flat color="black">
                       <v-avatar size="50px" flat color="white">
-                        <img :src="avatar.link" :alt="user.name">
+                        <img :src="item.avatar.image_link" :alt="item.follower.name">
                       </v-avatar>
                     </v-avatar>
                     </router-link>
@@ -720,8 +696,8 @@
                       <span>unfollowing</span>
                     </v-tooltip>
                     <v-card-text class="pa-0 ma-0 mt-2">
-                      <router-link :to="{name:'user',params:{id:user.id}}"><span class="font-weight-bold">{{user.name}}</span></router-link>
-                      <v-divider class="pa-0 ma-0 mt-3" v-show="i<9"></v-divider>
+                      <router-link :to="{name:'user',params:{id:item.follower.id}}"><span class="font-weight-bold">{{user.name}}</span></router-link>
+                      <v-divider class="pa-0 ma-0 mt-3" v-show="i<(user.followers.length-1)"></v-divider>
                     </v-card-text>
                   </v-card-title>
                 </v-layout>
@@ -729,13 +705,15 @@
             </v-tab-item>
             <v-tab-item value="tab-2">
               <v-card light flat width="100%" height="260px" style="overflow:auto">
-                <v-layout v-for="(item,i) in 10" :key="i">
+                <v-layout v-for="(item,i) in user.customerFollowings" :key="i">
                   <v-card-title style="width:100%">
+                    <router-link :to="{name:'user',params:{id:item.followed.id}}">
                     <v-avatar size="52px" flat color="black">
                       <v-avatar size="50px" flat color="white">
-                        <img :src="avatar.link" :alt="user.name">
+                        <img :src="item.avatar.image_link" :alt="item.followed.name">
                       </v-avatar>
                     </v-avatar>
+                    </router-link>
                     <v-spacer></v-spacer>
                     <v-tooltip top>
                       <template v-slot:activator="{ on }">
@@ -746,8 +724,10 @@
                       <span>unfollowing</span>
                     </v-tooltip>
                     <v-card-text class="pa-0 ma-0 mt-2">
-                      <span class="font-weight-bold">{{user.name}}</span>
-                      <v-divider class="pa-0 ma-0 mt-3" v-show="i<9"></v-divider>
+                      <router-link :to="{name:'user',params:{id:item.followed.id}}">
+                      <span class="font-weight-bold">{{item.followed.name}}</span>
+                      </router-link>
+                      <v-divider class="pa-0 ma-0 mt-3" v-show="i<(user.customerFollowings.length-1)"></v-divider>
                     </v-card-text>
                   </v-card-title>
                 </v-layout>
@@ -765,17 +745,22 @@ export default {
   $_veeValidate: {
     validator: "new"
   },
-  props: [],
+  props: {},
   data() {
     return {
       followDialog: false,
       value: false,
       value1: false,
-      user: [],
-      customer: [],
-      userFollowing: [],
-      hotelFollowing: [],
-      followers: [],
+      user: {
+        customer: {},
+        avatar: {},
+        booking: [],
+        customerFollowings: [],
+        hotelFollowings: [],
+        followers: [],
+        question: [],
+        review: [],
+      },
       form: {
         email: "",
         pass: "",
@@ -816,63 +801,11 @@ export default {
         fullComment: "#f5f6fa",
         check: "#fa8231"
       },
-      avatars: [
-        { link: "http://localhost:8000/img/dog3.png" },
-        { link: "http://localhost:8000/img/spider-man.png" },
-        { link: "http://localhost:8000/img/poop.png" },
-        { link: "http://localhost:8000/img/avatar1.png" },
-        { link: "http://localhost:8000/img/rocket.png" },
-        { link: "http://localhost:8000/img/snake.png" },
-        { link: "http://localhost:8000/img/fish.png" },
-        { link: "http://localhost:8000/img/face2.png" },
-        { link: "http://localhost:8000/img/dinosaur.png" }
-      ],
-      covers: [
-        {
-          id: 1,
-          link: "http://localhost:8000/img/cover/1.jpg"
-        },
-        {
-          id: 2,
-          link: "http://localhost:8000/img/cover/2.jpg"
-        },
-        {
-          id: 3,
-          link: "http://localhost:8000/img/cover/3.jpg"
-        },
-        {
-          id: 4,
-          link: "http://localhost:8000/img/cover/4.jpg"
-        },
-        {
-          id: 5,
-          link: "http://localhost:8000/img/cover/5.jpg"
-        },
-        {
-          id: 6,
-          link: "http://localhost:8000/img/cover/6.jpg"
-        }
-      ],
       dialog: false,
       formDialog: false,
       passDialog: {
         check: false,
         main: false
-      },
-      id: 4,
-      avatar: {
-        hide: true,
-        item: null,
-        link: null,
-        temp: null
-      },
-      cover: {
-        hide: true,
-        link: "http://localhost:8000/img/cover/5.jpg",
-        temp: "http://localhost:8000/img/cover/5.jpg"
-      },
-      album: {
-        hide: false
       }
     };
   },
@@ -882,13 +815,14 @@ export default {
   created() {
     this.getInfo();
   },
+  watch: {},
   methods: {
     openFormUserInfo: function() {
       this.formDialog = true;
       this.form.username = this.user.username;
       this.form.name = this.user.name;
       this.form.email = this.user.email;
-      this.form.address = this.customer.address;
+      this.form.address = this.user.customer.address;
       this.form.phone = this.user.phone_number;
     },
     clear: function() {
@@ -899,63 +833,53 @@ export default {
       this.$validator.validateAll("form1").then(valid => {
         if (valid) {
           axios({
-            method: "get",
-            url: "http://localhost:8000/api/check-user/",
+            method: "put",
+            url: "http://localhost:8000/api/user/" + this.user.id,
             params: {
-              id: this.id,
-              username: this.form.username,
-              email: this.form.email
+              id: this.user.id,
+              phone_number: this.form.phone,
+              address: this.form.address,
+              name: this.form.name
             }
           }).then(res => {
-            if (!res.data.status.flag) {
-              if (res.data.status.username) alert("Username is exist!");
-              if (res.data.status.email) alert("Email is exist!");
-              return;
-            }
-            axios({
-              method: "put",
-              url: "http://localhost:8000/api/user/" + this.id,
-              params: {
-                id: this.id,
-                email: this.form.email,
-                phone_number: this.form.phone,
-                address: this.form.address,
-                name: this.form.name
-              }
-            }).then(res => {
-              console.log(res.data.status);
+            console.log(res.data.status);
+            if(res.data.status == true){
               this.getInfo();
-              this.$emit("loadUser", true);
+              this.$emit("loadLogin");
               this.$emit("loadSnackbar", "Updated!");
               this.formDialog = false;
               return;
-            });
+            }else{
+              this.$emit("loadSnackbar", "Something wrong!");
+              this.$validator.reset();
+            }
           });
         }
       });
     },
     getInfo: function() {
-      axios({
-        method: "get",
-        url: "http://localhost:8000/api/user/" + this.id,
-        params: {
-          id: this.id
-        }
-      }).then(res => {
-        console.log(res.data.user.password);
-        if (!res.data.status) {
-          this.$router.push({ name: "login" });
-          return;
-        }
-        this.user = res.data.user;
-        this.customer = res.data.customer;
-        this.userFollowing = res.data.userFollowing;
-        this.hotelFollowing = res.data.hotelFollowing;
-        this.followers = res.data.followers;
-        this.avatar.item = res.data.avatar;
-        this.avatar.temp = this.avatar.link = res.data.avatar.image_link;
-        return;
-      });
+      if (localStorage.getItem("login_token") != null) {
+        axios({
+          method: "get",
+          url: "http://localhost:8000/api/getUser",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("login_token")
+          }
+        })
+          .then(res => {
+            this.user = res.data.user;
+            console.log(this.user);
+          })
+          .catch(error => {
+            console.log(error.response);
+            if (error.response.status == 401) {
+              localStorage.removeItem("login_token");
+              this.$router.push({ name: "login" });
+            }
+          });
+      } else {
+        this.$router.push({ name: "login" });
+      }
     },
     cancel: function() {
       this.dialog = false;
@@ -987,7 +911,7 @@ export default {
         method: "get",
         url: "http://localhost:8000/api/check-password",
         params: {
-          id: this.avatar.item.id,
+          id: this.user.id,
           password: this.form.pass
         }
       }).then(res => {
@@ -1011,19 +935,19 @@ export default {
             method: "get",
             url: "http://localhost:8000/api/update-password",
             params: {
-              id: this.id,
+              id: this.user.id,
               password: this.form.pass,
               newPassword: this.form.newPass
             }
           }).then(res => {
             console.log(res.data.status);
-            if (!res.data.status) {
+            if (res.data.status == false) {
               this.$emit("loadSnackbar", "Something wrong!");
               this.form.pass = this.form.rePass = "";
               return;
             }
             this.getInfo();
-            this.$emit("loadUser", true);
+            this.$emit("loadLogin");
             this.$emit("loadSnackbar", "Updated new password!");
             this.passDialog.main = false;
             return;

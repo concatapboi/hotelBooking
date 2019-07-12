@@ -107,7 +107,7 @@ $factory->define(App\Models\ServiceRoomType::class, function (Faker $faker) {
 });
 $factory->define(App\Models\BookingStatus::class, function (Faker $faker) {
     return [
-        'name' => 'Wait for confirmation'
+        'name' => 'Pending'
     ];
 });
 $factory->define(App\Models\Booking::class, function (Faker $faker) {
@@ -126,7 +126,7 @@ $factory->define(App\Models\Booking::class, function (Faker $faker) {
         'check_out' => "2020-05-21",
         'room_id' => $no++,
         'customer_id' => $c++,
-        'status_id' => rand(1,5),
+        'status_id' => rand(1,6),
         'payment_method_id' => rand(1,2),
     ];
 });
@@ -154,8 +154,9 @@ $factory->define(App\Models\CouponCode::class, function (Faker $faker) {
     $m = rand(7,9);
     $d = rand(10,20);
     return [
-        'code' => 'ABCD'.$n++,
-        'discout_value' => rand(5,45),
+        'code' => 'ABCD'.$n,
+        'discount_value' => rand(5,45),
+        'hotel_id' => $n++,
         'title' => $faker->sentence($nbWords = 3, $variableNbWords = true),
         'content' => $faker->sentence($nbWords = 6, $variableNbWords = true),
         'start_at' => '2019-0'.$m.'-'.$d,

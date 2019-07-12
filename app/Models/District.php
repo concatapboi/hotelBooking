@@ -8,12 +8,18 @@ class District extends Model
 {
   protected $table = 'district';
 
-  protected $fillable =[
+  protected $fillable = [
     'name',
     'province_id',
   ];
+
   public function Ward()
   {
-    return $this->hasMany("App\Models\Ward","district_id","id");
+    return $this->hasMany("App\Models\Ward", "district_id", "id");
+  }
+
+  public function Province()
+  {
+    return $this->belongsTo('App\Models\Province', 'province_id', 'id');
   }
 }

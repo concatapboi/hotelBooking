@@ -14,10 +14,12 @@ class CustomerReviewTable extends Migration
     public function up()
     {
         Schema::create('customer_review', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('customer_id')->unsigned();
             $table->integer('review_id')->unsigned();
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('like')->default(0);
+            $table->tinyInteger('useful')->default(0);
             $table->timestamps();
             $table->foreign('customer_id')
             ->references('user_id')->on('customer')

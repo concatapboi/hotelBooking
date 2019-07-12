@@ -34,22 +34,31 @@ class UserController extends Controller
     }
 
     //check user
-    public function checkUser(Request $req)
+    public function getUser(Request $req)
     {
-        $userArr = array();
-        $userArr = User::where('id', '<>', $req->id)->get();
-        $status = ['flag' => true, 'username' => false, 'email' => false];
-        foreach ($userArr as $value) {
-            if ($value->username == $req->username) {
-                $status['flag'] = false;
-                $status['username'] = true;
-            }
-            if ($value->email == $req->email) {
-                $status['flag'] = false;
-                $status['email'] = true;
-            }
+        $user = Auth::user();
+        $user->Customer;
+        $avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
+        $user->avatar = $avatar;
+        $user->followers = $user->Followers();
+        $user->customerFollowings = $user->Followings();
+        $user->hotelFollowings = $user->HotelFollowings();
+        $user->review = $user->reViewList();
+        foreach ($user->Booking as $b) {
+            $b->Status;
+            $b->cancel_status = $b->Hotel()->CancelableStatus();
+            $b->PaymentMethod;
+            $b->Room->RoomMode;
+            $b->Room->RoomType;
+            $b->Room->Hotel->HotelType;
         }
-        return response()->json(['status' => $status]);;
+        foreach ($user->Question as $q) {
+            $q->Reply;
+            $q->Hotel;
+        }
+        return response()->json([
+            'user' => $user
+        ]);
     }
 
     //check user password
@@ -116,61 +125,87 @@ class UserController extends Controller
     }
 
     //member count
-    public function getMemberCount(){
+    public function getMemberCount()
+    {
         $number = 0;
         $users = User::all();
-        foreach($users as $user){
-            if($user->isCustomer()) $number++;
+        foreach ($users as $user) {
+            if ($user->isCustomer()) $number++;
         }
         return response()->json(['data' => $number]);
     }
 
     //
-    public function show(Request $req,$id)
+    public function show($id)
     {
-        $status = false;
-        $user = null;
-        $customer = null;
-        $userFollowing = array();
-        $hotelFollowing = array();
-        $followers = array();
-        $avatar = null;
-        $follow = false;
-        if (User::find($id)) {
-            $user = User::find($id)->toArray();
-            if (User::find($id)->isCustomer()) {
-                $status = true;
-                $customer = Customer::where('user_id', $id)->first()->toArray();
-                $userFollowing['count'] = CustomerFollowing::where('follower_id', $id)->count();
-                foreach(CustomerFollowing::where('follower_id', $id)->get() as $key => $value){
-                    $tam = array();
-                    $tam['user'] = User::find($value->followed_id);
-                    $tam['avatar'] = UserImage::where('user_id', $value->followed_id)->where('is_primary', 1)->first();
-                    $userFollowing['users'][]= $tam;
-                }
-                $followers['count'] = CustomerFollowing::where('followed_id', $id)->count();
-                foreach(CustomerFollowing::where('followed_id', $id)->get() as $key => $value){
-                    $tam = array();
-                    $tam['user'] = User::find($value->follower_id);
-                    $tam['avatar'] = UserImage::where('user_id', $value->follower_id)->where('is_primary', 1)->first();
-                    $followers['users'][]= $tam;
-                }
-                $hotelFollowing['count'] = HotelFollowing::where('customer_id', $id)->count();
-                $avatar = UserImage::where('user_id', $id)->where('is_primary', 1)->first()->toArray();
-                if($req->user){
-                    if (CustomerFollowing::where('follower_id', $req->user)->where('followed_id', $id)->first() != null) $follow = true;            
-                }
-            }
+        // $loginUser = Auth::check();
+        // $user = User::find($id);
+        // $user->Customer;
+        // $avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
+        // $user->avatar = $avatar;
+        // $user->followers = $user->Followers();
+        // if (sizeOf($user->Followers()) > 0) {
+        //     foreach ($user->Followers() as $f) {
+        //         return response()->json([
+        //             'status' => false,
+        //             'user' => $loginUser,
+        //         ]);
+        //         if ($f->follower_id ==  Auth::user()->id) $user->follow = true;
+        //         else $user->follow = false;
+        //     }
+        // } else $user->follow = false;
+        // $user->customerFollowings = $user->Followings();
+        // $user->hotelFollowings = $user->HotelFollowings();
+        // if ($user->id == Auth::user()->id)
+        //     return response()->json([
+        //         'status' => false,
+        //         'user' => $user,
+        //     ]);
+        // return response()->json([
+        //     'status' => true,
+        //     'user' => $user,
+        // ]);
+    }
+
+    public function getUserInfo(Request $req)
+    {
+        $id = $req->id;
+        $user = User::find($id);
+        $user->Customer;
+        $avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
+        $user->avatar = $avatar;
+        $followers = $user->Followers();
+        $user->follow = false;
+        $user->review = $user->reViewList();
+        if (sizeOf($followers) > 0) {
+            foreach ($followers as $f) {
+                $f->isFollowing = $f->follower->isFollowed(Auth::user()->id);  
+                if ($f->follower_id ==  Auth::user()->id) {
+                    $user->follow = true;     
+                    $f->isFollowing =null;
+                }         
+            }            
         }
+        $user->followers = $followers;
+        $customerFollowings = $user->Followings();
+        if (sizeOf($customerFollowings) > 0) {
+            foreach ($customerFollowings as $c) {
+                $c->isFollowing = $c->followed->isFollowed(Auth::user()->id);  
+                if ($c->followed_id ==  Auth::user()->id) {  
+                    $c->isFollowing =null;
+                }         
+            }            
+        }
+        $user->customerFollowings = $customerFollowings;
+        $user->hotelFollowings = $user->HotelFollowings();
+        if ($user->id == Auth::user()->id)
+            return response()->json([
+                'status' => false,
+                'user' => $user,
+            ]);
         return response()->json([
-            'status' => $status,
+            'status' => true,
             'user' => $user,
-            'customer' => $customer,
-            'userFollowing' => $userFollowing,
-            'hotelFollowing' => $hotelFollowing,
-            'followers' => $followers,
-            'avatar' => $avatar,
-            'follow' => $follow
         ]);
     }
 
@@ -180,12 +215,11 @@ class UserController extends Controller
         if (User::find($id)) {
             $user = User::find($id);
             $user->update([
-                'email' => $req->email,
                 'name' => $req->name,
                 'phone_number' => $req->phone_number,
             ]);
             $customer = Customer::where('user_id', $id)->first()->update(['address' => $req->address]);
-            return response()->json(['status' => $req->phone_number]);
+            return response()->json(['status' => true]);
         }
         return response()->json(['status' => false]);
     }

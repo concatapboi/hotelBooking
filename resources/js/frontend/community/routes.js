@@ -5,6 +5,7 @@ import home  from '@/js/frontend/community/components/home';
 import account  from '@/js/frontend/community/components/account';
 import user  from '@/js/frontend/community/components/user';
 import news  from '@/js/frontend/community/components/news';
+import login  from '@/js/frontend/community/components/login';
 
 Vue.use(VueRouter);
 
@@ -15,6 +16,11 @@ const router = new VueRouter({
 			path: '/community/',
 			name: 'home',
 			component: home
+		},
+		{
+			path: '/community/login.html',
+			name: 'login',
+			component: login
 		},
 		{
 			path: '/community/account',
