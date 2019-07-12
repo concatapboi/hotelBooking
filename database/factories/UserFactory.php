@@ -44,7 +44,7 @@ $factory->define(App\Models\Hotel::class, function (Faker $faker) {
         'verified' => rand(0, 1),
         'credit_card' => $faker->creditCardNumber,
         'rank_point' => $no,
-        'name' => $faker->lastName,
+        'name' => $faker->company,
         'description' => $faker->text($maxNbChars = 1200),
         'stars_num' => rand(0, 5),
         'meta_name' => 'hotel',

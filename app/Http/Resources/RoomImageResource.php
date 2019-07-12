@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class HotelImageResource extends JsonResource
+class RoomImageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +15,7 @@ class HotelImageResource extends JsonResource
     public function toArray($request)
     {
         $arrayData = [
-            "image_link" => 'http://localhost:8000/images/hotel/'.$this->image_link,
+            "image_link" => 'http://localhost:8000/images/room/'.$this->image_link,
             "is_primary" => $this->is_primary,
             "id" => $this->id,
         ];

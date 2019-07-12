@@ -32,24 +32,32 @@
     </v-layout>
     <v-layout class="m-5">
       <v-spacer></v-spacer>
-      <v-dialog max-width="75%" scrollable v-model="dialog">
+      <v-dialog fullscreen scrollable v-model="dialog">
         <template v-slot:activator="{ on }">
-          <v-btn class="primary" flat v-on="on" @click="addNewTitle;">New hotel</v-btn>
+          <v-btn class="primary" flat v-on="on" @click="addNewTitle;images = [];">New hotel</v-btn>
         </template>
         <v-layout row>
           <v-flex>
-            <v-card width="100%" class="p-5">
-              <v-card-title class="text-xs-center">
+            <v-card width="100%" class="pa-0">
+              <v-toolbar card flat dark>
+                <v-toolbar-title class="text-uppercase">
+                  <span class="text-md-center"></span>
+                  {{formTitle}}
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon dark v-on:click="dialog =false">
+                  <v-icon>close</v-icon>
+                </v-btn>
+              </v-toolbar>
+              <!-- <v-card-title class="text-xs-center px-5">
                 <h1>{{formTitle}}</h1>
-              </v-card-title>
-              <v-divider></v-divider>
-
+              </v-card-title>-->
               <v-card-text height="100px">
-                <v-form ref="formNewHotel">
-                  <h3>General information</h3>
+                <v-form ref="formNewHotel" class="px-5">
+                  <h3 class="my-5">General information</h3>
                   <v-layout row>
                     <v-text-field
-                      v-validate="'required|min:10'"
+                      v-validate="'required'"
                       :error-messages="errors.collect('hotelName')"
                       data-vv-name="hotelName"
                       class="pr-3"
@@ -201,7 +209,7 @@
                     ></v-text-field>
                   </v-layout>
                   <v-divider></v-divider>
-                  <h3>Images</h3>
+                  <h3 class="my-5">Images</h3>
                   <v-layout row wrap align-space-between justify-start>
                     <!-- <v-flex style="height : 200px;" v-if="images" md3> -->
                     <v-flex v-for="(image,i) in images" :key="i" md3>
@@ -249,10 +257,116 @@
                     </v-flex>
                   </v-layout>
                   <v-divider></v-divider>
-                  <h3>Policies</h3>
+                  <h3 class="my-5">Policies</h3>
+                  <v-layout row>
+                    <v-flex offset-md1 md3>
+                      <v-menu
+                        ref="checkin"
+                        v-model="menuCheckin"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        :return-value.sync="newHotelData.checkin"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        max-width="290px"
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="newHotelData.checkin"
+                            label="Check-in"
+                            prepend-icon="access_time"
+                            readonly
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-time-picker
+                          v-if="menuCheckin"
+                          v-model="newHotelData.checkin"
+                          full-width
+                          format="24hr"
+                          @click:minute="$refs.checkin.save(newHotelData.checkin)"
+                        ></v-time-picker>
+                      </v-menu>
+                    </v-flex>
+                    <v-flex md3>
+                      <v-menu
+                        ref="checkout"
+                        v-model="menuCheckout"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        :return-value.sync="newHotelData.checkout"
+                        lazy
+                        transition="scale-transition"
+                        offset-y
+                        full-width
+                        max-width="290px"
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on }">
+                          <v-text-field
+                            v-model="newHotelData.checkout"
+                            label="Check-out"
+                            prepend-icon="access_time"
+                            readonly
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-time-picker
+                          v-if="menuCheckout"
+                          v-model="newHotelData.checkout"
+                          full-width
+                          format="24hr"
+                          @click:minute="$refs.checkout.save(newHotelData.checkout)"
+                        ></v-time-picker>
+                      </v-menu>
+                    </v-flex>
+                  </v-layout>
+
+                  <v-layout row>
+                    <v-flex offset-md1 md3>
+                      <v-checkbox
+                        label="Cancelable ?"
+                        v-model="newHotelData.cancelable"
+                        color="primary"
+                      ></v-checkbox>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout>
+                    <v-flex md3 offset-md1>
+                      <v-text-field
+                        suffix="day(s)"
+                        v-if="newHotelData.cancelable == true"
+                        label="Refund before"
+                        v-model="newHotelData.cancel_day"
+                        mask="###"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex md3 offset-md1>
+                      <v-text-field
+                        suffix="%"
+                        v-if="newHotelData.cancelable == true"
+                        label="Refund rate"
+                        v-model="newHotelData.refundRate"
+                        mask="##"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row>
+                    <v-flex offset-md1 md11>
+                      <v-textarea
+                        label="Detail Policy"
+                        v-model="newHotelData.detailPolicy"
+                        auto-grow
+                        box
+                      ></v-textarea>
+                    </v-flex>
+                  </v-layout>
                 </v-form>
               </v-card-text>
-              <v-card-actions>
+              <v-card-actions class="mt-5">
                 <v-spacer></v-spacer>
                 <v-btn
                   v-if="formTitle != 'Edit Hotel'"
@@ -280,15 +394,28 @@
         <h4>{{snackbarText}}</h4>
       </v-snackbar>
     </v-layout>
+    <v-dialog max-width="20%" v-model="confirmDialog">
+      <v-card>
+        <v-card-title>Confirmation</v-card-title>
+        <v-card-text>{{confirmDialogText}}</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" flat @click.stop="deleteHotelConfirm()">Confirm</v-btn>
+          <v-btn color="red" flat @click="cancel">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-layout class="m-5">
       <v-card dark flat color="blue-grey darken-4" class="p-2">
-        <v-expansion-panel class="elevation-0" v-model="panel" focusable expand>
+        <v-expansion-panel class="elevation-0" v-model="panel" expand>
+          <!-- focusable expand -->
           <h1>Yours hotels</h1>
           <v-expansion-panel-content
             hide-actions
             class="primary"
             v-for="(hotel,i) in arrayHotel"
             :key="i"
+            @input="onInput($event, i)"
           >
             <template v-slot:header>
               <div>
@@ -300,20 +427,9 @@
                     <v-btn icon @click.stop="editHotel(arrayHotel[i].id)">
                       <v-icon color="orange">create</v-icon>
                     </v-btn>
-                    <v-btn icon @click.stop="deleteHotel(arrayHotel[i].id)">
+                    <v-btn icon @click="deleteHotel(arrayHotel[i].id)">
                       <v-icon color="red">delete</v-icon>
                     </v-btn>
-                    <v-dialog max-width="20%" v-model="confirmDialog">
-                      <v-card>
-                        <v-card-title>Confirmation</v-card-title>
-                        <v-card-text>{{confirmDialogText}}</v-card-text>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn color="primary" flat @click.stop="deleteHotelConfirm()">Confirm</v-btn>
-                          <v-btn color="red" flat @click="cancel">Cancel</v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-dialog>
                   </v-flex>
                 </v-layout>
               </div>
@@ -341,7 +457,7 @@
                           background-color="orange lighten-3"
                           color="orange"
                           readonly
-                          v-model="hotel_stars_num"
+                          v-model="hotel.stars_num"
                         ></v-rating>
                         <div class="mb-3">
                           <v-icon color="pink">room</v-icon>Tp HCM
@@ -396,7 +512,6 @@
   </div>
 </template>
 <script>
-import { constants } from "crypto";
 export default {
   $_veeValidate: {
     validator: "new"
@@ -433,8 +548,16 @@ export default {
         credit_card: "",
         phone: "",
         tax_code: "",
-        fax_number: ""
+        fax_number: "",
+        checkin: null,
+        checkout: null,
+        cancelable: false,
+        cancel_day: 0,
+        refundRate: 0,
+        detailPolicy: ""
       },
+      menuCheckin: false,
+      menuCheckout: false,
       defaultHotelType: 1,
       defaultProvince: 1,
       defaultDistrict: 1,
@@ -460,9 +583,7 @@ export default {
       hotel_id: 0
     };
   },
-  created() {
-    this.panel = this.hotelPanel;
-  },
+  created() {},
   watch: {
     // panelIndex: function() {
     //   if (this.panelIndex !== null) {
@@ -474,34 +595,49 @@ export default {
     // }
     hotelPanel: function() {
       this.panel = this.hotelPanel;
-    },
-    panel: function(oldPanel, newPanel) {
-      var index = 0;
-      if (this.firstTime == false) {
-        for (var i = 0; i < this.panel.length; i++) {
-          if (oldPanel[i] != newPanel[i]) {
-            index = i;
-          }
-        }
-
-        for (var i = 0; i < this.panel.length; i++) {
-          this.panel[i] = false;
-        }
-        this.panel[index] = true;
-        this.hotel_id = this.arrayHotel[index].id;
-        this.hotel_stars_num = this.arrayHotel[index].stars_num;
-        this.$emit("chooseHotel", this.hotel_id);
-        this.$emit("panelIndex", index);
-        // localStorage.hotelId = hotelId;
-      } else {
-        this.firstTime = false;
-      }
-    },
-    dialog: function() {
-      if (this.dialog == false) {
-        this.images = [];
-      }
+      this.panel[0] = true;
     }
+    // if (this.firstTime == false) {
+
+    //   for (var i = 0; i < this.panel.length; i++) {
+    //     this.panel[i] = false;
+    //   }
+    //   console.log(this.panel[index]);
+    //   console.log(this.panel);
+
+    // if (this.firstTime == true) {
+    //   this.panel[0] = true;
+    //   this.firstTime = false;
+    // } else {
+    //   for (var i = 0; i < this.panel.length; i++) {
+    //     this.panel[i] = false;
+    //   }
+    //   for (var i = 0; i < this.panel.length; i++) {
+    //     if (oldPanel[i] != newPanel[i]) {
+    //       index = i;
+    //     }
+    //   }
+    //   console.log(index);
+    //   this.panel[index] = true;
+    // for (var i = 0; i < this.panel.length; i++) {
+    //   if (oldPanel[i] != newPanel[i]) {
+    //     index = i;
+    //   }
+    // }
+    // this.hotel_id = this.arrayHotel[index].id;
+    // this.hotel_stars_num = this.arrayHotel[index].stars_num;
+    // this.$emit("chooseHotel", this.hotel_id);
+    // this.$emit("panelIndex", index);
+    // }
+    //   console.log(this.panel);
+    //   this.hotel_id = this.arrayHotel[index].id;
+    //   this.hotel_stars_num = this.arrayHotel[index].stars_num;
+    //   this.$emit("chooseHotel", this.hotel_id);
+    //   this.$emit("panelIndex", index);
+    // } else {
+    //   this.firstTime = false;
+    // }
+    // }
   },
   computed: {
     addNewTitle: function() {
@@ -512,6 +648,22 @@ export default {
     }
   },
   methods: {
+    onInput(ev, index) {
+      if (ev == false) {
+        for (var i = 0; i < this.panel.length; i++) {
+          this.panel[i] = false;
+        }
+      }
+      if (ev == true) {
+        for (var i = 0; i < this.panel.length; i++) {
+          this.panel[i] = false;
+        }
+        this.hotel_id = this.arrayHotel[index].id;
+        this.hotel_stars_num = this.arrayHotel[index].stars_num;
+        this.$emit("chooseHotel", this.hotel_id);
+        this.$emit("panelIndex", index);
+      }
+    },
     validate() {
       var _this = this;
       this.$validator.validate().then(valid => {
@@ -537,13 +689,20 @@ export default {
               tax_code: this.newHotelData.tax_code,
               // arrayService: this.arrayServiceChoose,
               images: this.images,
-              primaryId: this.primaryImage
+              primaryId: this.primaryImage,
+              checkin: this.newHotelData.checkin,
+              checkout: this.newHotelData.checkout,
+              cancelable: this.newHotelData.cancelable,
+              cancel_day: this.newHotelData.cancel_day,
+              refundRate: this.newHotelData.refundRate,
+              detailPolicy: this.newHotelData.detailPolicy
             },
             headers: {
               Authorization: "Bearer " + this.api_token
             }
           })
             .then(response => {
+              console.log(response.data);
               if (response.data.status == false) {
                 alert("can't create new hotel with this info");
               } else {
@@ -567,9 +726,18 @@ export default {
                   fax_number: this.newHotelData.fax_number,
                   hotel_type: temp_hotel_type,
                   name: this.newHotelData.name,
+                  images: this.images,
                   phone_number: this.newHotelData.phone,
                   stars_num: this.newHotelData.rating,
-                  tax_code: this.newHotelData.tax_code
+                  tax_code: this.newHotelData.tax_code,
+                  policy: {
+                    checkin: this.newHotelData.checkin,
+                    checkout: this.newHotelData.checkout,
+                    cancelable: this.newHotelData.cancelable,
+                    cancel_day: this.newHotelData.cancel_day,
+                    refundRate: this.newHotelData.refundRate,
+                    detailPolicy: this.newHotelData.detailPolicy
+                  }
                 };
                 _this.arrayHotel.push(hotel);
               }
@@ -579,6 +747,7 @@ export default {
             .catch(error => {
               console.log(error.response);
             });
+          this.dialog = false;
         }
       });
     },
@@ -593,18 +762,18 @@ export default {
       reader.onload = e => {
         var temp = {};
         temp.image_link = e.target.result;
-        console.log(_this.images.length);
+        // console.log(_this.images.length);
         if (_this.images.length == 0) {
           temp.is_primary = 1;
           this.primaryImage = 1;
-          
         } else {
           temp.is_primary = 0;
         }
+        temp.id = -1;
         _this.images.push(temp);
       };
       reader.readAsDataURL(file);
-      console.log(this.primaryImage);
+      // console.log(this.primaryImage);
     },
     choosePrimary(index) {
       for (var i = 0; i < this.images.length; i++) {
@@ -700,7 +869,13 @@ export default {
               fax_number: this.newHotelData.fax_number,
               tax_code: this.newHotelData.tax_code,
               images: this.images,
-              primaryId: this.primaryImage
+              primaryId: this.primaryImage,
+              checkin: this.newHotelData.checkin,
+              checkout: this.newHotelData.checkout,
+              cancelable: this.newHotelData.cancelable,
+              cancel_day: this.newHotelData.cancel_day,
+              refundRate: this.newHotelData.refundRate,
+              detailPolicy: this.newHotelData.detailPolicy
             },
             headers: {
               Authorization: "Bearer " + this.api_token
@@ -714,13 +889,14 @@ export default {
               console.log(this.defaultWard);
               if (response.data.status == false) {
                 alert("can't update new hotel with this info");
+                console.log("cant");
               } else {
-                _this.dialog = false;
-                _this.snackbarText = response.data.message;
-                _this.snackbar = true;
+                console.log(response);
+                this.snackbarText = response.data.message;
+                this.snackbar = true;
                 for (var i = 0; i < _this.arrayHotel.length; i++) {
                   if (_this.arrayHotel[i].id == _this.selectedId) {
-                    // console.log(_this.arrayHotel[i]);
+                    console.log(_this.arrayHotel[i]);
                     _this.arrayHotel[i].name = this.newHotelData.name;
                     _this.arrayHotel[i].stars_num = this.newHotelData.rating;
                     for (var j = 0; j < _this.arrayHotelType.length; j++) {
@@ -728,9 +904,7 @@ export default {
                         _this.arrayHotel[i].hotel_type =
                           _this.arrayHotelType[j].name;
                     }
-                    _this.arrayHotel[
-                      i
-                    ].address.address = this.newHotelData.address;
+                    _this.arrayHotel[i].address = this.newHotelData.address;
                     _this.arrayHotel[i].coin = 0;
                     _this.arrayHotel[
                       i
@@ -743,9 +917,26 @@ export default {
                     _this.arrayHotel[
                       i
                     ].fax_number = this.newHotelData.fax_number;
+                    _this.arrayHotel[
+                      i
+                    ].policy.cancel_day = this.newHotelData.cancel_day;
+                    _this.arrayHotel[
+                      i
+                    ].policy.check_in = this.newHotelData.checkin;
+                    _this.arrayHotel[
+                      i
+                    ].policy.check_out = this.newHotelData.checkout;
+                    _this.arrayHotel[
+                      i
+                    ].policy.refundRate = this.newHotelData.refundRate;
                   }
                 }
+                this.dialog = false;
               }
+              //  _this.snackbar = true;
+              //   _this.message = response.data.message;
+              //   __this.dialog = false;
+
               this.$emit("changeArrayHotel", _this.arrayHotel);
             })
             .catch(error => {
@@ -781,6 +972,18 @@ export default {
       this.newHotelData.name = hotel.name;
       this.newHotelData.rating = hotel.stars_num;
       this.newHotelData.description = hotel.description;
+      if (hotel.policy.cancel_day > 0) {
+        this.newHotelData.cancelable = true;
+      } else {
+        this.newHotelData.cancelable = false;
+      }
+      this.newHotelData.checkin = hotel.policy.check_in;
+      this.newHotelData.checkout = hotel.policy.check_out;
+      this.newHotelData.cancel_day = hotel.policy.cancel_day;
+      this.newHotelData.detailPolicy = hotel.policy.detailPolicy;
+      this.newHotelData.refundRate = hotel.policy.refundRate;
+      console.log(hotel.policy);
+      console.log(this.newHotelData);
       axios
         .get("http://localhost:8000/api/manager/hotel-address", {
           params: {
@@ -862,24 +1065,27 @@ export default {
       this.selectedId = hotelId;
       this.confirmDialogText =
         "Are you really want to delete this " + hotelId + " ?";
-      alert("xoa");
     },
     deleteHotelConfirm: function() {
       var _this = this;
       axios
-        .delete("http://localhost:8000/api/manager/hotel/" + this.selectedId)
+        .delete("http://localhost:8000/api/manager/hotel/" + this.selectedId, {
+          headers: {
+            Authorization: "Bearer " + this.api_token
+          }
+        })
         .then(response => {
           if (response.status == 401) {
             this.logout;
           }
           console.log(response);
-          // if (response.data.status == true) {
-          //   for (var i = 0; i < _this.arrayHotel.length; i++) {
-          //     if (_this.arrayHotel[i].id == this.selectedId) {
-          //       _this.arrayHotel.splice(i, 1);
-          //     }
-          //   }
-          // }
+          if (response.data.status == true) {
+            for (var i = 0; i < _this.arrayHotel.length; i++) {
+              if (_this.arrayHotel[i].id == this.selectedId) {
+                _this.arrayHotel.splice(i, 1);
+              }
+            }
+          }
         })
         .catch(error => {
           console.log(error);
@@ -895,9 +1101,9 @@ export default {
         }
       })
         .then(response => {
-          if (response.status == 401) {
-            this.logout;
-          }
+          // if (response.status == 401) {
+          //   this.logout;
+          // }
           console.log(response);
         })
         .catch(error => {

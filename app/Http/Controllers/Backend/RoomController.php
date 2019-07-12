@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\RoomBedType;
 use App\Models\Room;
+use App\Models\RoomImage;
 use App\Models\RoomType;
 use App\Http\Resources\RoomResource;
 use App\Models\Hotel;
@@ -13,6 +14,8 @@ use App\Models\Service;
 use App\Models\ServiceRoomType;
 use function GuzzleHttp\json_decode;
 use App\Http\Resources\RoomBedTypeResource;
+use Intervention\Image\ImageManagerStatic as Image;
+
 
 class RoomController extends Controller
 {
@@ -55,12 +58,29 @@ class RoomController extends Controller
     {
         $room = Room::create($request->all());
         $beds = $request->bed;
+        // return $beds;
         foreach ($beds as $bed) {
-            $bed = json_decode($bed);
+            // $bed = json_decode($bed);
             RoomBedType::updateOrCreate([
-                "bed_type_id" => $bed->bedTypeId,
+                "bed_type_id" => $bed["bedTypeId"],
                 "room_id" => $room->id,
-                "amount" => $bed->amount,
+                "amount" => $bed["amount"],
+            ]);
+        }
+        $images = $request->images;
+        // return $request->images;
+        $length = sizeof($images);
+        for ($i = 0; $i < $length; $i++) {
+            $name = time() . str_random(10);
+            $image = Image::make($images[$i]["image_link"])->resize(200, 200)->save(public_path("images/room/" . $name));
+            $primary = 0;
+            if ($images[$i]["is_primary"] == 1) {
+                $primary = 1;
+            }
+            RoomImage::create([
+                "image_link" => $image->filename,
+                "is_primary" => $primary,
+                "room_id" => $room->id,
             ]);
         }
         return response()->json([

@@ -16,7 +16,7 @@ class CreateReviewTable extends Migration
         Schema::create('review', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
-            $table->string('content');
+            $table->text('content');
             $table->integer('useful_point')->default(0);
             $table->integer('point')->default(0);
             $table->integer('likes')->default(0);

@@ -313,7 +313,7 @@ class DatabaseSeeder extends Seeder
         ]);
         factory(App\Models\BookingStatus::class)->create([
             'name' => 'Completed'
-        ]);
+        ]);        
         factory(App\Models\BookingStatus::class)->create([
             'name' => 'Canceled by user'
         ]);

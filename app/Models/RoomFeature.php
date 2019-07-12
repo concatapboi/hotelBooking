@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Feature;
+use App\Http\Resources\FeatureResource;
 
 class RoomFeature extends Model
 {
@@ -17,11 +19,11 @@ class RoomFeature extends Model
   {
     return $this->belongsTo('App\Models\Feature', 'feature_id', 'id');
   }
-
+  public function FeatureResource(){
+		return new FeatureResource(Feature::find($this->feature_id));
+  }
   public function Room()
   {
     return $this->belongsTo('App\Models\Room', 'room_id', 'id');
   }
-
-
 }

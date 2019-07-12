@@ -15,7 +15,7 @@ class CreateReplyTable extends Migration
     {
         Schema::create('reply', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('content');
+            $table->text('content');
             $table->integer('question_id')->unsigned();
             // $table->integer('hotel_id')->unsigned();
             $table->timestamps();

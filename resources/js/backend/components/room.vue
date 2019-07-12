@@ -78,10 +78,10 @@
                   </v-layout>
                   <v-layout row v-show="showAmount">
                     <v-flex xs3>
-                      <v-text-field
-                        v-validate="'required'"
+                      <!-- v-validate="'required'"
                         :error-messages="errors.collect('maxAmountAdult')"
-                        data-vv-name="maxAmountAdult"
+                      data-vv-name="maxAmountAdult"-->
+                      <v-text-field
                         outline
                         type="number"
                         min="1"
@@ -134,9 +134,57 @@
                         </template>
                         <span>
                           number of children won't be charge
-                          <br>for this room if they under the age
+                          <br />for this room if they under the age
                         </span>
                       </v-tooltip>
+                    </v-flex>
+                  </v-layout>
+                  <v-divider></v-divider>
+                  <h3>Images</h3>
+                  <v-layout row wrap align-space-between justify-start>
+                    <!-- <v-flex style="height : 200px;" v-if="images" md3> -->
+                    <v-flex v-for="(image,i) in images" :key="i" md3>
+                      <div class="img-box" v-if="image.is_primary == 1" id="primaryBox">
+                        <div class="ribbon text-center">
+                          <h5>PRIMARY</h5>
+                        </div>
+                        <div class="deleteImage">
+                          <i
+                            @click="deleteImage(i)"
+                            class="fas fa-minus-square red--text white fa-lg"
+                          ></i>
+                        </div>
+                        <img
+                          @click="choosePrimary(i)"
+                          class="primaryImage"
+                          width="200px"
+                          :src="image.image_link"
+                          height="200px"
+                        />
+                      </div>
+                      <div class="img-box" v-else>
+                        <div class="deleteImage">
+                          <i
+                            @click="deleteImage(i)"
+                            class="fas fa-minus-square red--text white fa-lg"
+                          ></i>
+                        </div>
+                        <img
+                          @click="choosePrimary(i)"
+                          class="img"
+                          width="200px"
+                          :src="image.image_link"
+                          height="200px"
+                        />
+                      </div>
+                    </v-flex>
+                    <v-flex md3 class="justify-center">
+                      <div class="add-image">
+                        <label for="file" class="fileLabel" v-ripple="{ class: `primary--text` }">
+                          <v-icon color="primary">add</v-icon>
+                        </label>
+                        <input type="file" id="file" multiple ref="images" @change="addImage" />
+                      </div>
                     </v-flex>
                   </v-layout>
                   <v-divider></v-divider>
@@ -312,57 +360,88 @@
                       </v-layout>
 
                       <v-layout>
-                        <v-flex xs3 offset-xs1>
-                          <h5>Room Name</h5>
-                        </v-flex>
-                        <v-flex xs8>{{r.room_name}}</v-flex>
-                      </v-layout>
-                      <v-layout>
-                        <v-flex xs3 offset-xs1>
-                          <h5>Room price</h5>
-                        </v-flex>
-                        <v-flex xs8>{{r.price}} $</v-flex>
-                      </v-layout>
-                      <v-layout>
-                        <v-flex xs3 offset-xs1>
-                          <h5>Room Size</h5>
-                        </v-flex>
-                        <v-flex xs8>{{r.room_size}} m²</v-flex>
-                      </v-layout>
-                      <v-layout align-center>
-                        <v-flex xs3 offset-xs1>
-                          <h5>Room maximum capacity</h5>
-                        </v-flex>
-                        <v-flex xs8 align-items-center>
-                          {{r.max_adult_amount}} x
-                          <i class="fas fa-male fa-2x"></i>
-                          {{r.max_child_amount}} x
-                          <i class="fas fa-child"></i>
-                          <span v-if="r.free_child_amount!=0 && r.child_age!=0">
-                            ({{r.free_child_amount}} child under {{r.child_age}} years stay
-                            <span
-                              class="green--text"
-                            >Free!!!</span>)
+                        <v-flex md4>
+                          <span height="200px" v-for="(image,index) in r.images" :key="index">
+                            <v-img v-if="image.is_primary == 1" dark :src="image.image_link"></v-img>
                           </span>
                         </v-flex>
-                      </v-layout>
-                      <v-layout>
-                        <v-flex xs3 offset-xs1>
-                          <h5>Number of rooms this type</h5>
+                        <v-flex md8 class="m-5 mt-2">
+                          <v-layout row wrap>
+                            <v-flex md12>
+                              <h3>Gerneral information</h3>
+                            </v-flex>
+                            <v-flex md12>
+                              <v-container>
+                                <v-layout row wrap>
+                                  <v-flex md5>
+                                    <h5>Room price :</h5>
+                                  </v-flex>
+                                  <v-flex md7>{{r.price}} $</v-flex>
+                                  <v-flex md5>
+                                    <h5>Room Size :</h5>
+                                  </v-flex>
+                                  <v-flex md7>{{r.room_size}} m²</v-flex>
+                                  <v-flex md5>
+                                    <h5>Room maximum capacity :</h5>
+                                  </v-flex>
+                                  <v-flex md7 align-items-center>
+                                    {{r.max_adult_amount}} x
+                                    <i class="fas fa-male fa-2x"></i>
+                                    {{r.max_child_amount}} x
+                                    <i
+                                      class="fas fa-child"
+                                    ></i>
+                                    <span v-if="r.free_child_amount!=0 && r.child_age!=0">
+                                      ({{r.free_child_amount}} child under {{r.child_age}} years stay
+                                      <span
+                                        class="green--text"
+                                      >Free!!!</span>)
+                                    </span>
+                                  </v-flex>
+                                  <v-flex md5>
+                                    <h5>Number of rooms this type</h5>
+                                  </v-flex>
+                                  <v-flex md7>{{r.amount}}</v-flex>
+                                  <v-flex md5></v-flex>
+                                </v-layout>
+                              </v-container>
+                              <!-- <h5>{{r.room_name}}</h5></v-flex> -->
+                            </v-flex>
+                          </v-layout>
+                          <v-layout row wrap>
+                            <v-flex md12>
+                              <h3>Services</h3>
+                            </v-flex>
+                            <v-flex md12>
+                              <v-container class="pa-0">
+                                <!-- {{r.service}} -->
+                                <v-layout row wrap>
+                                  <v-flex md4 v-for="(s,index) in r.service" :key="index">
+                                    <i class="mx-3 fas" :class="icon = 'fa-'+s.icon"></i>
+                                    <b>{{s.name}}</b>
+                                  </v-flex>
+                                </v-layout>
+                              </v-container>
+                            </v-flex>
+                          </v-layout>
+                          <v-layout row wrap>
+                            <v-flex md12>
+                              <h3>Features</h3>
+                            </v-flex>
+                            <v-flex md12>
+                              <v-container class="pa-0">
+                                <!-- {{r.feature}} -->
+                                <v-layout row wrap>
+                                  <v-flex md4 v-for="(f,index) in r.feature" :key="index">
+                                    <!-- <i class="mx-3 fas" :class="icon = 'fa-'+s.icon"></i> -->
+                                    <b class="mx-3">{{f.name}}</b>
+                                  </v-flex>
+                                </v-layout>
+                              </v-container>
+                            </v-flex>
+                          </v-layout>
                         </v-flex>
-                        <v-flex xs8>{{r.amount}}</v-flex>
                       </v-layout>
-                      <!-- <v-divider></v-divider>
-                      <h3>Services</h3>
-                      <v-layout>
-                        {{r.service}}
-                        <v-flex
-                          v-for="(service,index) in r.service"
-                          :key="index"
-                          xs3
-                          offset-xs1
-                        ><h6><i class="mx-3 fas" :class="icon = 'fa-'+service.icon"></i>{{service.name}}</h6></v-flex>
-                      </v-layout>-->
                     </v-container>
                   </v-tab-item>
                 </v-tabs-items>
@@ -390,7 +469,7 @@ export default {
   watch: {
     panelIndex: function() {
       // console.log(this.panelIndex);
-    },
+    }
     // hotelId: function() {
     //   this.hotelId = localStorage.getItem("hotelId");
     // }
@@ -473,6 +552,8 @@ export default {
       roomId: 0,
       roomType: 0,
       hotelId: this.$route.query.hotelId,
+      images: [],
+      primaryImage: 0
     };
   },
   created() {
@@ -504,13 +585,52 @@ export default {
           console.log(error.response);
         });
       this.showAmount = false;
-      if (this.defaultRoomMode == 2) {
+      if (this.defaultRoomMode == 1) {
+        this.room.max_adult_amount = 1;
+      } else if (this.defaultRoomMode == 2) {
         this.room.max_adult_amount = 2;
-      } else if (this.defaultRoomMode != 1) {
+      } else {
         this.room.max_adult_amount = 2;
         this.showAmount = true;
       }
-      // console.log(this.defaultRoomMode);
+      console.log(this.room.max_adult_amount);
+    },
+    addImage(e) {
+      let files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[files.length - 1]);
+    },
+    createImage(file) {
+      let reader = new FileReader();
+      var _this = this;
+      reader.onload = e => {
+        var temp = {};
+        temp.image_link = e.target.result;
+        // console.log(_this.images.length);
+        if (_this.images.length == 0) {
+          temp.is_primary = 1;
+          this.primaryImage = 1;
+        } else {
+          temp.is_primary = 0;
+        }
+        temp.id = -1;
+        _this.images.push(temp);
+      };
+      reader.readAsDataURL(file);
+      // console.log(this.primaryImage);
+    },
+    choosePrimary(index) {
+      for (var i = 0; i < this.images.length; i++) {
+        this.images[i].is_primary = 0;
+        if (i == index) {
+          this.images[i].is_primary = 1;
+        }
+      }
+      console.log(index);
+      console.log(this.primaryImage);
+    },
+    deleteImage: function(i) {
+      this.images.splice(i, 1);
     },
     chooseMaxChildAmount: function() {
       this.showFreeAmount = false;
@@ -525,6 +645,7 @@ export default {
     addNewTitle: function() {
       this.formTitle = "New Room";
       this.$refs.formNewRoom.reset();
+      this.images = [];
     },
     initialize: function() {
       this.chooseRoomMode();
@@ -584,10 +705,12 @@ export default {
       this.bed.splice(index, 1);
     },
     addNewRoom: function() {
-      console.log(this.bed);
+      console.log(this.room);
       this.$validator.validate().then(valid => {
         if (!valid) {
+          console.log("can't");
         } else {
+          console.log("run");
           axios({
             method: "post",
             url: "http://localhost:8000/api/manager/room",
@@ -599,22 +722,26 @@ export default {
               amount: this.room.amount,
               max_adult_amount: this.room.max_adult_amount,
               max_child_amount: this.room.max_child_amount,
+              free_child_amount: this.room.free_child_amount,
               room_size: this.room.room_size,
               room_mode_id: this.defaultRoomMode,
               room_type_id: this.defaultRoomType,
-              bed: this.bed
+              bed: this.bed,
+              images: this.images
             },
             headers: {
               Authorization: "Bearer " + this.api_token
             }
           })
             .then(response => {
-              console.log(this.arrayRoom);
               console.log(response);
+
+              console.log(this.arrayRoom);
             })
             .catch(error => {
               console.log(error.response);
             });
+          console.log("done");
         }
       });
     },
@@ -684,6 +811,7 @@ export default {
             this.room.price = room.price;
             this.defaultRoomMode = room.room_mode_id;
             this.defaultRoomType = room.room_type_id;
+            this.images = room.images;
             // if (response.data.bed.length > 0) {
             //   this.bed = response.data.bed;
             // }
@@ -709,7 +837,8 @@ export default {
           room_size: this.room.room_size,
           room_mode_id: this.defaultRoomMode,
           room_type_id: this.defaultRoomType,
-          bed: this.bed
+          bed: this.bed,
+          images: this.images
         },
         headers: {
           Authorization: "Bearer " + this.api_token
@@ -729,4 +858,64 @@ export default {
   }
 };
 </script>
+<style scoped>
+.primaryImage {
+  border: 4px solid teal;
+  padding: 2px;
+}
+#primaryBox {
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.img-box {
+  position: relative;
+  height: 200px;
+  margin-bottom: 10px;
+}
+.img-box > .img {
+  border: 1px solid black;
+}
+.ribbon {
+  position: absolute;
+  background-color: teal;
+  height: 20px;
+  padding: auto;
+  width: 200px;
+  top: 6px;
+  left: 0px;
+  color: white;
+}
+.deleteImage {
+  position: absolute;
+  padding: auto;
+  top: 6px;
+  left: 180px;
+  color: white;
+}
+#file {
+  display: none;
+}
+.fileLabel {
+  padding-top: 2px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  margin-top: 75px;
+  margin-left: 40%;
+  border-radius: 50px;
+}
+.add-image {
+  height: 200px;
+  width: 200px;
+  border: 4px dashed green;
+}
+.img {
+  height: 200px;
+  width: 200px;
+  margin-bottom: 20px;
+}
+</style>
+
+
 

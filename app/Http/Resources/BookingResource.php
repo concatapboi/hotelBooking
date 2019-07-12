@@ -33,7 +33,7 @@ class BookingResource extends JsonResource
             "room_id" => $this->room_id,
             "customer_id" => $this->customer_id,
             "status" => $this->Status->name,
-            "status_id" => $this->status,
+            "status_id" => $this->status_id,
             "payment_method" => $this->PaymentMethod->name,
         ];
         return $arrayData;

@@ -182,7 +182,7 @@ export default {
     chooseAll: function(index,serviceId) {
       axios({
           method: "post",
-          url: "http://localhost:8000/api/manager/add-all-room",
+          url: "http://localhost:8000/api/manager/add-all-service",
           data: {
             hotelId: this.hotelId,
             serviceId: serviceId,
@@ -195,7 +195,7 @@ export default {
             console.log(response);
           })
           .catch(error => {
-            console.log(error);
+            console.log(error.response);
           });
     },
     chooseRoom: function(index,serviceId) {
