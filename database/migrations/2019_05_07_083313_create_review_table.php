@@ -18,6 +18,7 @@ class CreateReviewTable extends Migration
             $table->string('title');
             $table->string('content');
             $table->integer('useful_point')->default(0);
+            $table->integer('point')->default(0);
             $table->integer('likes')->default(0);
             $table->integer('comments')->default(0);
             $table->integer('customer_id')->unsigned();

@@ -9,14 +9,14 @@
               <template v-slot:activator="{ on }">
                 <v-avatar size="70px" tile flat color="white" v-on="on">
                   <router-link style="width:70px" :to="{name:'account'}">
-                    <img :src="user.avatar.image_link" :alt="user.user.name">
+                    <img :src="user.avatar.image_link" :alt="user.name" />
                   </router-link>
                 </v-avatar>
               </template>
-              <span>{{user.user.name}}</span>
+              <span>{{user.name}}</span>
             </v-tooltip>
-            <div class="subheading font-weight-black mt-2">{{user.user.name}}</div>
-            <div class="body-1">{{user.user.email}}</div>
+            <div class="subheading font-weight-black mt-2">{{user.name}}</div>
+            <div class="body-1">{{user.email}}</div>
           </v-flex>
         </v-layout>
       </v-img>
@@ -62,13 +62,13 @@
             </v-flex>
             <v-flex shrink md3>
               <a href="http://localhost:8000/" target="_blank" :class="textClass.grey">Website</a>
-              <br>
+              <br />
               <a
                 href="http://localhost:8000/policies.html"
                 target="_blank"
                 :class="textClass.grey"
               >Policies</a>
-              <br>
+              <br />
               <a
                 href="http://localhost:8000/about.html"
                 target="_blank"
@@ -81,7 +81,7 @@
                 target="_blank"
                 :class="textClass.grey"
               >Our Hotels</a>
-              <br>
+              <br />
               <a
                 href="http://localhost:8000/contact.html"
                 target="_blank"
@@ -173,11 +173,11 @@
     <v-content>
       <v-container fluid fill-height class="grey lighten-2">
         <router-view
-          :user="user"
-          v-on:helloEdited="event"
-          v-on:loadUser="getUser"
+          :customer="user"
+          v-on:loadLogin="getLogin"
           :snackbar="snackbar"
           v-on:loadSnackbar="eventSnackbar"
+          :login="login"
         ></router-view>
         <v-btn
           href="#top"
@@ -205,42 +205,136 @@
     >
       {{snackbar.content}}
       <v-icon v-on:click="snackbar.state = !snackbar.state" large color="black">close</v-icon>
-    </v-snackbar> 
+    </v-snackbar>
     <v-dialog
-    fullscreen
-    v-model="login.dialog">
-    <div class="commu-login">
-      <v-layout fill-height row wrap justify-center align-center>
-        <v-flex md10>
-          <v-card light flat tile>
-            <v-card-text>ABC</v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
-    </div>
-    </v-dialog>   
+      fullscreen
+      hide-overlay
+      transition="dialog-bottom-transition"
+      v-model="login.dialog"
+      persistent
+    >
+      <v-card title light width="100%" height="100%">
+        <v-layout fill-height row wrap justify-center align-center class="pa-0 ma-0">
+          <div class="text-md-center" v-if="flag === false">
+            <div>
+              <v-icon large color="#9980FA">fas fa-circle-notch fa-spin</v-icon>
+            </div>
+            <div>
+              <span class="font-weight-black red--text">l</span>
+              <span class="font-weight-black orange--text">o</span>
+              <span class="font-weight-black amber--text">a</span>
+              <span class="font-weight-black green--text">d</span>
+              <span class="font-weight-black blue--text">i</span>
+              <span class="font-weight-black indigo--text">n</span>
+              <span class="font-weight-black purple--text">g</span>
+              <span class="font-weight-black teal--text">.</span>
+              <span class="font-weight-black teal--text">.</span>
+              <span class="font-weight-black teal--text">.</span>
+            </div>
+          </div>
+          <v-flex md9 v-else>
+            <v-layout
+              row
+              wrap
+              justify-center
+              align-center
+              class="pa-5 ma-0 border border-warning rounded"
+            >
+              <v-flex md5 mr-2>
+                <v-img :aspect-ratio="4/3" src="/blog/img/slider/slider.png" class="radius">
+                  <v-layout fill-height justify-center align-center>
+                    <div>
+                      <div>
+                        <a href="/" target="_blank" class="body-1">Website</a>
+                      </div>
+                      <div class="ml-1 pl-3 border-left border-dark">
+                        <div>
+                          <a href="/about.html" target="_blank" class="caption">About Us</a>
+                        </div>
+                        <div>
+                          <a href="/contact.html" target="_blank" class="caption">Contact Us</a>
+                        </div>
+                      </div>
+                    </div>
+                  </v-layout>
+                </v-img>
+              </v-flex>
+              <v-flex md6 ml-2>
+                <v-form ref="form" data-vv-scope="form1">
+                  <v-text-field
+                    color="teal"
+                    :error-messages="errors.collect('form1.username')"
+                    data-vv-name="username"
+                    v-validate="'required|min:4'"
+                    type="text"
+                    outline
+                    v-model="login.username"
+                    label="Username"
+                  ></v-text-field>
+                  <v-text-field
+                    color="teal"
+                    :error-messages="errors.collect('form1.password')"
+                    data-vv-name="password"
+                    v-validate="'required|min:4'"
+                    type="password"
+                    outline
+                    v-model="login.password"
+                    label="Password"
+                    append-icon="visibility"
+                    v-on:click:append="login.value=true"
+                    v-if="!login.value"
+                  ></v-text-field>
+                  <v-text-field
+                    color="teal"
+                    :error-messages="errors.collect('form1.password')"
+                    data-vv-name="password"
+                    v-validate="'required|min:4'"
+                    type="text"
+                    outline
+                    v-model="login.password"
+                    label="Password"
+                    append-icon="visibility_off"
+                    v-on:click:append="login.value=false"
+                    v-else
+                  ></v-text-field>
+                  <v-btn color="teal" v-on:click="submitLogin" dark depressed>Login</v-btn>
+                  <v-btn color="grey" v-on:click="clear" dark depressed>Clear</v-btn>
+                </v-form>
+              </v-flex>
+            </v-layout>
+          </v-flex>
+        </v-layout>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
 <script>
 export default {
+  $_veeValidate: {
+    validator: "new"
+  },
   data() {
-    return {      
+    return {
+      flag:false,
+      dictionary: {
+        custom: {
+          username: {
+            required: () => "Username can not be empty",
+            min: "Username can not be under 4 characters"
+          },
+          password: {
+            min: "Password can not be under 4 characters"
+          }
+        }
+      },
       login: {
         dialog: true,
         check: false,
         token: "",
         username: "",
         password: "",
-        value: false,
-        user: {
-          user: {
-            name: ""
-          },
-          avatar: {
-            image_link: ""
-          }
-        }
+        value: false
       },
       button: false,
       snackbar: {
@@ -256,13 +350,14 @@ export default {
         teal: "teal--text"
       },
       user: {
-        id: 4,
-        avatar: [],
-        user: [],
-        customer: [],
-        userFollowing: 0,
-        hotelFollowing: 0,
-        followers: 0
+        id:0,
+        customer: {},
+        avatar: {},
+        followers: [],
+        customerFollowings: [],
+        hotelFollowings: [],
+        booking: [],
+        question: []
       },
       drawer: {
         state: false,
@@ -284,11 +379,12 @@ export default {
   },
   created() {
     this.getLogin();
-    this.getUser();
+  },
+  mounted() {
+    this.$validator.localize("en", this.dictionary);
   },
   watch: {
     // call again the method if the route changes
-    $route: "getUser",
     $route: "getLogin"
   },
   methods: {
@@ -299,30 +395,24 @@ export default {
       this.$router.push({ name: "home" });
     },
     logOut: function() {
-      this.hello = " new 1";
-      return;
-    },
-    getUser: function() {
-      axios({
-        method: "get",
-        url: "http://localhost:8000/api/user/" + this.user.id,
-        params: {
-          id: this.user.id
-        }
-      }).then(res => {
-        console.log(res.data.avatar);
-        if (!res.data.status) {
-          this.$router.push({ name: "login" });
-          return;
-        }
-        this.user.user = res.data.user;
-        this.user.avatar = res.data.avatar;
-        this.user.customer = res.data.customer;
-        this.user.userFollowing = res.data.userFollowing;
-        this.user.hotelFollowing = res.data.hotelFollowing;
-        this.user.followers = res.data.followers;
-        return;
-      });
+      this.getLogin();
+      if (this.login.check) {
+        axios({
+          method: "post",
+          url: "http://localhost:8000/api/logout",
+          headers: {
+            Authorization: "Bearer " + this.login.token
+          }
+        }).then(res => {
+          if (res.data.status) {
+            this.login.check = false;
+            this.login.dialog = true;
+            this.flag = true;
+            this.login.token = "";
+            localStorage.removeItem("login_token");
+          }
+        });
+      }
     },
     event: function(val) {
       this.hello = val;
@@ -333,40 +423,87 @@ export default {
     },
     getLogin: function() {
       this.login.token = localStorage.getItem("login_token");
+      console.log(this.login.token);
       if (this.login.token != null) {
         axios({
           method: "get",
-          url: "http://localhost:8000/api/getUserLogin",
+          url: "http://localhost:8000/api/getUser",
           headers: {
             Authorization: "Bearer " + this.login.token
           }
         })
           .then(res => {
-            console.log(res.data.user);
-            this.login.user = res.data.user;
+            this.user = res.data.user;
             this.login.check = true;
             this.login.dialog = false;
+            if (this.$route.name == "login")
+              this.$router.push({ name: "home" });
+            console.log(this.user);
           })
           .catch(error => {
+            console.log(error.response);
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");
               this.login.token = localStorage.getItem("login_token");
               this.login.check = false;
               this.login.dialog = true;
-              this.login.user = {
-                user: [],
-                avatar: []
-              };
+              this.flag = true;
+              this.$router.push({ name: "login" });
             }
           });
       } else {
+        this.flag =true;
+        this.$router.push({ name: "login" });
         this.login.check = false;
-        this.login.user = {
-          user: [],
-          avatar: []
-        };
+        this.login.dialog = true;
       }
     },
+    clear: function() {
+      this.$refs.form.reset();
+      this.$validator.reset();
+    },
+    submitLogin: function() {
+      console.log(this.login);
+      this.$validator.validateAll("form1").then(valid => {
+        if (valid) {
+          axios({
+            method: "post",
+            url: "http://localhost:8000/api/login",
+            data: {
+              username: this.login.username,
+              password: this.login.password
+            }
+          })
+            .then(res => {
+              if (!res.data.status) {
+                this.eventSnackbar("Something wrong!");
+                this.login.check = false;
+                this.login.password = "";
+                this.$validator.reset();
+                return;
+              }
+              this.eventSnackbar("Login successfully!");
+              this.login.dialog = false;
+              this.flag = true;
+              this.login.check = true;
+              this.clear();
+              localStorage.login_token = res.data.token;
+              this.getLogin();
+              return;
+            })
+            .catch(error => {
+              console.log(error.response);
+              if (error.response.status == 401) {
+                localStorage.removeItem("login_token");
+                this.login.token = localStorage.getItem("login_token");
+                this.login.password = "";
+                this.$validator.reset();
+                return;
+              }
+            });
+        }
+      });
+    }
   }
 };
 </script>

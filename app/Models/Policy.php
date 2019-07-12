@@ -8,11 +8,17 @@ class Policy extends Model
 {
   protected $table = 'policy';
 
-  protected $fillable =[
+  protected $fillable = [
     'hotel_id',
     'check_in',
     'check_out',
+    'cancelable',
     'can_refund',
     'content',
   ];
+
+  public function Hotel()
+  {
+    return $this->belongsTo('App\Models\Hotel', 'hotel_id', 'id');
+  }
 }

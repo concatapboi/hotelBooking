@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Model;
@@ -25,43 +26,52 @@ class Room extends Model
     'room_type_id',
     'hotel_id',
   ];
+
   public function Hotel()
   {
     return $this->belongsTo('App\Models\Hotel', 'hotel_id', 'id');
   }
+
   public function RoomTypeResource()
   {
     return new RoomTypeResource(RoomType::find($this->room_type_id));
   }
+
   public function RoomType()
   {
     return $this->belongsTo('App\Models\RoomType', 'room_type_id', 'id');
   }
+
   public function RoomModeResource()
   {
     return new RoomModeResource(RoomMode::find($this->room_mode_id));
   }
+
   public function RoomMode()
   {
     return $this->belongsTo('App\Models\RoomMode', 'room_mode_id', 'id');
   }
+
   public function RoomBedType()
   {
     return $this->hasMany('App\Models\RoomBedType', 'room_id', 'id');
   }
+
   public function RoomBedTypeResource()
   {
     $bedtype = array();
-    foreach($this->RoomBedType as $rBT){
+    foreach ($this->RoomBedType as $rBT) {
       $rBT->bed_type = $rBT->BedTypeResource();
       $bedtype[] = $rBT;
     }
     return $bedtype;
   }
+
   public function Feature()
   {
     return $this->hasMany('App\Models\RoomFeature', 'room_id', 'id');
   }
+
   public function availableRoomAmount($check_in, $check_out)
   {
     $number = $this->amount;
@@ -75,17 +85,18 @@ class Room extends Model
       $bookingCheckoutExplode = explode("-", $booking->check_out);
       $bookingCheckIn = Carbon::createMidnightDate($bookingCheckinExplode[0], $bookingCheckinExplode[1], $bookingCheckinExplode[2]);
       $bookingCheckOut = Carbon::createMidnightDate($bookingCheckoutExplode[0], $bookingCheckoutExplode[1], $bookingCheckoutExplode[2]);
-      if($check_in->lessThan($bookingCheckIn)){
-        if($check_out<=$bookingCheckIn){
+      if ($check_in->lessThan($bookingCheckIn)) {
+        if ($check_out <= $bookingCheckIn) {
           // duoc dat phong
-        }else{
-          $number-= $booking->room_amount;
+          //kiem tra trang thai booking, neu booking cancel thi khong giam so luong phong
+        } else {
+          $number -= $booking->room_amount;
         }
-      }else{
-        if($check_in->greaterThanOrEqualTo($bookingCheckOut)){
+      } else {
+        if ($check_in->greaterThanOrEqualTo($bookingCheckOut)) {
           // duoc dat phong
-        }else{
-          $number-= $booking->room_amount;
+        } else {
+          $number -= $booking->room_amount;
         }
       }
     }

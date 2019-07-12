@@ -59,7 +59,14 @@
             <v-btn flat @click="$refs.checkOut.save(checkOutVal)">OK</v-btn>
           </v-date-picker>
         </v-menu>
-        <v-btn color="teal" dark icon depressed style="width:30px; height:30px;" v-on:click=";">
+        <v-btn
+          color="teal"
+          dark
+          icon
+          depressed
+          style="width:30px; height:30px;"
+          v-on:click="getSearch"
+        >
           <v-icon small>search</v-icon>
         </v-btn>
       </v-layout>
@@ -137,7 +144,8 @@
         <v-tabs-slider color="black"></v-tabs-slider>
         <v-tab href="#tab-1">rooms</v-tab>
         <v-tab href="#tab-2">description</v-tab>
-        <v-tab href="#tab-3">map</v-tab>
+        <v-tab href="#tab-3">guest review</v-tab>
+        <v-tab href="#tab-4">guest question</v-tab>
         <v-tab-item value="tab-1">
           <v-card light flat tile v-show="data.room">
             <v-layout class="search-item" row wrap v-for="(room,index) in data.room" :key="index">
@@ -150,7 +158,11 @@
                     <v-img :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
                   </v-flex>
                   <v-flex class="pa-1" md6>
-                    <v-img :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
+                    <v-img :aspect-ratio="1" src="/blog/img/slider/default.png">
+                      <v-layout fill-height justify-center align-center>
+                        <a href="#" @click="images.dialog = true">More picture...</a>
+                      </v-layout>
+                    </v-img>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -182,7 +194,7 @@
                       Room Size:&nbsp;
                       <span class="font-weight-bold">{{room.room_size}}&nbsp;m²</span>
                     </div>
-                    <div>
+                    <div v-show="room.amount>0">
                       Amount:&nbsp;
                       <input
                         class="amount-room-input"
@@ -236,7 +248,14 @@
                 </v-card-title>
               </v-flex>
               <v-flex md2 class="pt-5 pl-1">
-                <v-btn depressed dark large color="#EE5A24" @click.stop="openDialog(room)">Select</v-btn>
+                <v-btn
+                  :disabled="room.amount ===0"
+                  depressed
+                  large
+                  color="#EE5A24"
+                  @click.stop="openDialog(room)"
+                  class="white--text"
+                >Select</v-btn>
                 <div class="red--text">
                   Availability :&nbsp;
                   <span class="font-weight-bold">{{room.amount}}</span>&nbsp;room(s)
@@ -254,78 +273,294 @@
           <v-card light flat tile>
             <v-layout row wrap class="hotel-tab">
               <v-flex md12>
-                <div class="pl-4">
-                  <span class="font-weight-bold font-italic display-1">
-                    {{data.name}}&nbsp;
-                    <v-tooltip right>
-                      <template v-slot:activator="{ on }">
-                        <i
-                          class="blue--text fas fa-check-circle"
-                          v-on="on"
-                          v-show="data.verified!=0"
-                        ></i>
-                      </template>
-                      <span>verified</span>
-                    </v-tooltip>
-                  </span>
-                  <div>
-                    Your best&nbsp;
-                    <a href="#" class="font-italic">{{data.hotel_type.name}}</a>&nbsp;choice!
-                  </div>
-                </div>
-                <v-img :aspect-ratio="16/4" src="/blog/img/slider/default.png"></v-img>
                 <v-card-title>
-                  <v-layout class="pa-0 ma-2">
+                  <v-layout row wrap class="pa-0 ma-2">
                     <v-flex md12>
-                      <div><span>Description</span></div>
-                      <div><span style="word-wrap: break-word;">{{data.description}}</span></div>
+                      <div class="pl-4">
+                        <span class="font-weight-bold font-italic display-1">
+                          {{data.name}}&nbsp;
+                          <v-tooltip right>
+                            <template v-slot:activator="{ on }">
+                              <i
+                                class="blue--text fas fa-check-circle"
+                                v-on="on"
+                                v-show="data.verified!=0"
+                              ></i>
+                            </template>
+                            <span>verified</span>
+                          </v-tooltip>
+                        </span>
+                        <div>
+                          Your best&nbsp;
+                          <a href="#" class="font-italic">{{data.hotel_type.name}}</a>&nbsp;choice!
+                        </div>
+                      </div>
                     </v-flex>
-                  </v-layout>
-                  <v-layout class="pa-0 ma-2">
                     <v-flex md12>
-                      <div><span>Location Info</span></div>
-                      <div><span style="word-wrap: break-word;">Hotel Address Detail</span></div>
+                      <v-divider></v-divider>
                     </v-flex>
-                  </v-layout>
-                  <v-layout class="pa-0 ma-2">
+                    <v-flex md3 class="pa-1" v-for="(item,i) in images.arr" :key="i" v-show="i<=3">
+                      <v-img :aspect-ratio="1/1" :src="item.image_link">
+                        <v-layout fill-height justify-center align-center v-show="i===3">
+                          <a href="#" @click="images.dialog = true">More picture...</a>
+                        </v-layout>
+                      </v-img>
+                    </v-flex>
                     <v-flex md12>
-                      <div><span>Services</span></div>
+                      <v-divider></v-divider>
+                    </v-flex>
+                    <v-flex md12>
+                      <div>
+                        <span class="font-weight-bold subheading">Description:</span>
+                      </div>
+                      <div class="pa-2 pl-3 border my-1">
+                        <span style="word-wrap: break-word">{{data.description}}</span>
+                      </div>
+                    </v-flex>
+                    <v-flex md12>
+                      <v-divider></v-divider>
+                    </v-flex>
+                    <v-flex md12>
+                      <div>
+                        <span class="font-weight-bold subheading">Location Info:</span>
+                      </div>
+                    </v-flex>
+                    <v-flex md12>
+                      <v-divider></v-divider>
+                    </v-flex>
+                    <v-flex md12>
+                      <div>
+                        <span class="font-weight-bold subheading">Services:</span>
+                      </div>
+                      <v-layout row wrap class="pa-0 ma-0 my-1">
+                        <v-flex md2 v-for="(ser,i) in data.service" :key="i" class="pa-2 border">
+                          <div class="text-md-center">
+                            <div>
+                              <i :class="'fa-2x fas fa-'+ser.icon"></i>
+                            </div>
+                            <div>
+                              <span class="font-italic">{{ser.name}}</span>
+                            </div>
+                          </div>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                    <v-flex md12>
+                      <div>
+                        <span class="font-weight-bold subheading">Policy:</span>
+                      </div>
                     </v-flex>
                   </v-layout>
                 </v-card-title>
-                <v-card-actions>
-                  <a href="https://www.instagram.com/" target="_blank">
-                    <i class="fab fa-instagram fa-4x black--text mr-3"></i>
-                  </a>
-                  <a href="https://www.facebook.com/" target="_blank">
-                    <i class="fab fa-facebook-f fa-4x black--text mr-3"></i>
-                  </a>
-                  <a href="https://www.youtube.com/" target="_blank">
-                    <i class="fab fa-youtube fa-4x black--text mr-3"></i>
-                  </a>
-                  <a href="https://www.twitter.com/" target="_blank">
-                    <i class="fab fa-twitter fa-4x black--text mr-3"></i>
-                  </a>
-                  <a href="https://plus.google.com/" target="_blank">
-                    <i class="fab fa-google-plus-g fa-4x black--text mr-3"></i>
-                  </a>
-                </v-card-actions>
-              </v-flex>
-              <v-flex md3 class="pa-1" v-for="(item,i) in 7" :key="i">
-                <v-img :aspect-ratio="1/1" src="/blog/img/slider/default.png"></v-img>
               </v-flex>
             </v-layout>
           </v-card>
         </v-tab-item>
         <v-tab-item value="tab-3">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.9551334403727!2d106.67572371411624!3d10.7379414628408!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f62a90e5dbd%3A0x674d5126513db295!2zxJDhuqFpIEjhu41jIEPDtG5nIE5naOG7hyBTw6BpIEfDsm4!5e0!3m2!1svi!2s!4v1560999432503!5m2!1svi!2s"
-            width="100%"
-            height="500"
-            frameborder="0"
-            style="border:0"
-            allowfullscreen
-          ></iframe>
+          <v-card light flat tile>
+            <v-layout row wrap class="hotel-tab">
+              <v-flex md12>
+                <v-card-title>
+                  <!-- <v-layout row wrap class="pa-3 ma-0">
+                    <v-flex md12>
+                      <div>
+                        <span class="font-weight-bold subheading">Guest Comment</span>
+                      </div>
+                    </v-flex>
+                    <v-flex md12 class="pl-2 ma-1">
+                      <v-data-table hide-headers :items="review" class="elevation-0 border comment">
+                        <template v-slot:items="r">
+                          <td class="pa-0 ma-0">
+                            <v-card flat tile width="100%">
+                              <v-card-text>
+                                <div>
+                                  <div><span>{{r.item.title}}</span></div>
+                                  <div><span>{{r.item.content}}</span></div>
+                                </div>
+                              </v-card-text>
+                            </v-card>
+                          </td>
+                        </template>
+                      </v-data-table>
+                    </v-flex>
+                    <v-flex md12>
+                      <div>
+                        <span class="font-weight-bold subheading">Guest Question</span>
+                      </div>
+                    </v-flex>
+                    <v-flex md12 class="pl-2 ma-1">
+                      <v-data-table hide-headers :items="review" class="elevation-0 border">
+                        <template v-slot:items="r">
+                          <td class="pa-0 ma-0">
+                            <v-card flat tile width="100%">
+                              <v-card-text>
+                                <div>
+                                  <div><span>{{r.item.title}}</span></div>
+                                  <div><span>{{r.item.content}}</span></div>
+                                </div>
+                              </v-card-text>
+                            </v-card>
+                          </td>
+                        </template>
+                      </v-data-table>
+                    </v-flex>
+                  </v-layout>-->
+                  <v-layout row wrap class="pa-3 ma-0">
+                    <v-flex md12>
+                      <v-layout row wrap class="pa-0 ma-0" justify-center align-center>
+                        <v-flex md6 class="font-weight-bold subheading text-md-left">
+                          <span>Guest review</span>
+                        </v-flex>
+                        <v-flex md6 class="text-md-right pr-3">
+                          <v-btn
+                            color="#B53471"
+                            class="white--text"
+                            depressed
+                            @click="commentAction(0)"
+                          >send an review</v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                    <v-flex md12 class="pl-2 ma-1">
+                      <v-layout row wrap class="pa-0 ma-0" v-if="data.review.length !=0">
+                        <v-flex md12 class="pa-2 ma-2 border" v-for="(r,i) in data.review" :key="i">
+                          <v-card light flat tile class="pl-4">
+                            <v-card-title class="pa-0 ma-0">
+                              <v-spacer></v-spacer>
+                              <i
+                                v-show="r.likes >=10"
+                                class="green--text fa-lg fas fa-cannabis pl-3 pr-1"
+                              ></i>
+                              <i
+                                v-show="r.likes >=100"
+                                class="grey--text fa-lg fas fa-bowling-ball pl-3 pr-1"
+                              ></i>
+                              <i
+                                v-show="r.likes >=500"
+                                class="orange--text fa-lg fas fa-award pl-3 pr-1"
+                              ></i>
+                            </v-card-title>
+                            <v-card-text class="pa-0 ma-0">
+                              <v-layout row wrap align-center class="pa-0 ma-0">
+                                <v-flex md3 class="border-right pa-1 mr-2">
+                                  <v-avatar size="110px" color="black">
+                                    <v-avatar size="100px" color="blue">
+                                      <div class="white--text text-md-center title">{{r.point}}/10</div>
+                                    </v-avatar>
+                                  </v-avatar>
+                                </v-flex>
+                                <v-flex md8>
+                              <div>
+                                <div>
+                                  <v-avatar size="42px" color="black">
+                                    <v-avatar size="40px" color="white">
+                                      <img :src="r.customer.avatar.image_link" alt />
+                                    </v-avatar>
+                                  </v-avatar>
+                                  <span class="subheading">{{r.customer.name}}</span>
+                                  <span class="grey--text">&nbsp;-&nbsp;21/12/2017</span>
+                                </div>
+                                <div>
+                                  <div><span class="pl-2 headline">{{r.title}}</span></div>
+                                  <div><span class="ml-3 pl-4 title border-left">"{{r.content}}"</span></div>
+                                </div>
+                              </div>
+                              </v-flex>
+                              </v-layout>
+                            </v-card-text>
+                            <v-divider></v-divider>
+                            <v-card-actions>
+                              <i
+                                class="purple--text fa-lg far fa-thumbs-up pl-3 pr-1"
+                                v-if="r.useful == true"
+                              ></i>
+                              <i class="blue--text fa-lg far fa-thumbs-up pl-3 pr-1" v-else></i>
+                              <span class="grey--text">This post is useful to you?</span>
+                            </v-card-actions>
+                          </v-card>
+                        </v-flex>
+                      </v-layout>
+                      <v-layout row wrap class="pa-0 ma-0" v-else>
+                        <v-flex md12 class="pa-2 ma-2 border">
+                          <div class="text-md-center">
+                            <span class="title text-uppercase">no reviews yet</span>
+                          </div>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                </v-card-title>
+              </v-flex>
+            </v-layout>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item value="tab-4">
+          <v-card light flat tile>
+            <v-layout row wrap class="hotel-tab">
+              <v-flex md12>
+                <v-card-title>
+                  <v-layout row wrap class="pa-3 ma-0">
+                    <v-flex md12>
+                      <v-layout row wrap class="pa-0 ma-0" justify-center align-center>
+                        <v-flex md6 class="font-weight-bold subheading text-md-left">
+                          <span>Guest question</span>
+                        </v-flex>
+                        <v-flex md6 class="text-md-right pr-3">
+                          <v-btn
+                            color="#B53471"
+                            class="white--text"
+                            depressed
+                            @click="commentAction(1)"
+                          >ask&nbsp;{{data.hotel_type.name}}</v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                    <v-flex md12 class="pl-2 ma-1">
+                      <v-layout row wrap class="pa-0 ma-0" v-if="data.question.length !=0">
+                        <v-flex md12 class="pa-2 ma-2 border" v-for="(q,i) in data.question" :key="i">
+                          <v-card light flat tile class="pl-4">
+                            <v-card-title class="pa-0 ma-0">
+                              <div>
+                                <div>
+                                  <div>
+                                    <v-avatar size="42px" color="black">
+                                      <v-avatar size="40px" color="white">
+                                        <img :src="q.customer.avatar.image_link" alt />
+                                      </v-avatar>
+                                    </v-avatar>
+                                    <span class="subheading">{{q.customer.name}}</span>
+                                    <span class="grey--text">&nbsp;-&nbsp;21/12/2017</span>
+                                  </div>
+                                  <div>
+                                    <div><span class="headline">{{q.title}}</span></div>
+                                    <div><span class="pl-2 title">"{{q.content}}"</span></div>
+                                  </div>
+                                </div>
+                                <div class="pl-3 border-left border-warning" v-if="q.reply !=null">
+                                  <div>
+                                    <span class="font-weight-bold">{{data.name}}</span>
+                                    <span class="grey--text">&nbsp;-&nbsp;21/12/2019</span>
+                                  </div>
+                                  <div class="pl-3">"{{q.reply.content}}"</div>
+                                </div>
+                              </div>
+                            </v-card-title>
+                          </v-card>
+                        </v-flex>
+                      </v-layout>
+                      <v-layout row wrap class="pa-0 ma-0" v-else>
+                        <v-flex md12 class="pa-2 ma-2 border">
+                          <div class="text-md-center">
+                            <span class="title text-uppercase">no questions yet</span>
+                          </div>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
+                </v-card-title>
+              </v-flex>
+            </v-layout>
+          </v-card>
         </v-tab-item>
       </v-tabs>
     </v-flex>
@@ -817,6 +1052,109 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-dialog scrollable v-model="images.dialog" width="650px">
+      <v-card flat tile light>
+        <v-card-text class="pa-3 ma-0">
+          <v-layout row wrap class="ma-0 pa-0">
+            <v-flex md10>
+              <v-img :aspect-ratio="1" :src="images.img.image_link">
+                <span>{{images.img.id}}</span>
+              </v-img>
+            </v-flex>
+            <v-flex md2>
+              <v-layout row wrap class="pa-0 ma-1">
+                <v-flex md12 v-for="(img,i) in images.arr" :key="i" class="pa-1 border">
+                  <v-avatar :tile="img.id !== images.img.id" size="100%">
+                    <v-img :aspect-ratio="1" :src="img.image_link" @click="images.img = img"></v-img>
+                  </v-avatar>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog scrollable v-model="action.dialog" width="700px" persistent>
+      <v-card flat tile light height="470px">
+        <v-card-actions>
+          <span class="ml-5 font-weight-bold title">{{action.title}}</span>
+          <v-spacer></v-spacer>
+          <div class="mr-3">
+            <v-btn color="teal" depressed class="white--text" @click="send(action.id)">send</v-btn>
+            <v-btn color="red" depressed class="white--text" @click="action.dialog = false">close</v-btn>
+          </div>
+        </v-card-actions>
+        <v-divider class="pa-0 ma-0"></v-divider>
+        <v-card-title class="pa-0 ma-0">
+          <v-card flat width="100%" style="overflow:auto;" height="380px" class="pa-0 ma-0">
+            <v-card-title>
+              <v-form ref="form" data-vv-scope="form2">
+                <v-layout row wrap class="pa-0 ma-0">
+                  <v-flex md12 v-show="action.id ===0">
+                    <v-layout row wrap class="pa-0 ma-0">
+                      <v-flex md12>
+                        <v-rating
+                          v-model="action.data.star"
+                          class="pa-0 ma-0"
+                          color="#B53471"
+                          background-color="#636e72"
+                          empty-icon="$vuetify.icons.ratingFull"
+                          half-incrementss
+                          small
+                        ></v-rating>
+                      </v-flex>
+                      <v-flex md6>
+                        <v-checkbox
+                          v-model="action.data.can_comment"
+                          label="Public for comment"
+                          color="#B53471"
+                        ></v-checkbox>
+                      </v-flex>
+                      <v-flex md6>
+                        <v-checkbox
+                          v-model="action.data.notification"
+                          label="Get comment' notifications"
+                          color="#B53471"
+                        ></v-checkbox>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-text-field
+                      :error-messages="errors.collect('form2.title')"
+                      data-vv-name="title"
+                      v-validate="'required'"
+                      v-model="action.data.title"
+                      color="#B53471"
+                      type="text"
+                      outline
+                      clearable
+                      clear-icon="cancel"
+                      label="Title"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-textarea
+                      :error-messages="errors.collect('form2.content')"
+                      data-vv-name="content"
+                      v-validate="'required'"
+                      v-model="action.data.content"
+                      color="#B53471"
+                      outline
+                      clearable
+                      clear-icon="cancel"
+                      auto-grow
+                      rows="4"
+                      label="Content"
+                    ></v-textarea>
+                  </v-flex>
+                </v-layout>
+              </v-form>
+            </v-card-title>
+          </v-card>
+        </v-card-title>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -853,6 +1191,115 @@ export default {
   },
   data() {
     return {
+      action: {
+        id: 1,
+        title: "Example form",
+        dialog: false,
+        data: {
+          title: "example",
+          content: "examples- examples- examples",
+          can_comment: true,
+          notification: true,
+          star: 0
+        },
+        review: {
+          title: "",
+          content: "",
+          can_comment: true,
+          notification: true
+        },
+        question: {
+          title: "",
+          content: ""
+        }
+      },
+      review: [
+        {
+          id: 1,
+          title: "This is the Review Title",
+          content: "",
+          likes: 10000,
+          comments: 150,
+          useful_point: 4
+        },
+        {
+          id: 2,
+          title: "This is the Review Title",
+          content:
+            "Quis totam voluptatem vero deleniti sit fuga. Non ea rerum enim quia itaque dolor magni. Fugiat illum aut in dolor debitis dolorem autem voluptatem. A harum consequatur ut aut temporibus rem sint. Quia ducimus molestias ipsum dolores. Cumque et consequuntur nihil magni omnis debitis dignissimos nam.",
+          likes: 1,
+          comments: 0,
+          useful_point: 0
+        },
+        {
+          id: 12,
+          title: "This is the Review Title",
+          content:
+            "Quis totam voluptatem vero deleniti sit fuga. Non ea rerum enim quia itaque dolor magni. Fugiat illum aut in dolor debitis dolorem autem voluptatem. A harum consequatur ut aut temporibus rem sint. Quia ducimus molestias ipsum dolores. Cumque et consequuntur nihil magni omnis debitis dignissimos nam.",
+          likes: 30,
+          comments: 50,
+          useful_point: 3
+        },
+        {
+          id: 13,
+          title: "This is the Review Title",
+          content:
+            "Quis totam voluptatem vero deleniti sit fuga. Non ea rerum enim quia itaque dolor magni. Fugiat illum aut in dolor debitis dolorem autem voluptatem. A harum consequatur ut aut temporibus rem sint. Quia ducimus molestias ipsum dolores. Cumque et consequuntur nihil magni omnis debitis dignissimos nam.",
+          likes: 30,
+          comments: 50,
+          useful_point: 3
+        },
+        {
+          id: 14,
+          title: "This is the Review Title",
+          content:
+            "Quis totam voluptatem vero deleniti sit fuga. Non ea rerum enim quia itaque dolor magni. Fugiat illum aut in dolor debitis dolorem autem voluptatem. A harum consequatur ut aut temporibus rem sint. Quia ducimus molestias ipsum dolores. Cumque et consequuntur nihil magni omnis debitis dignissimos nam.",
+          likes: 800,
+          comments: 1500,
+          useful_point: 5
+        },
+        {
+          id: 15,
+          title: "This is the Review Title",
+          content:
+            "Quis totam voluptatem vero deleniti sit fuga. Non ea rerum enim quia itaque dolor magni. Fugiat illum aut in dolor debitis dolorem autem voluptatem. A harum consequatur ut aut temporibus rem sint. Quia ducimus molestias ipsum dolores. Cumque et consequuntur nihil magni omnis debitis dignissimos nam.",
+          likes: 30,
+          comments: 3,
+          useful_point: 5
+        },
+        {
+          id: 16,
+          title: "This is the Review Title",
+          content:
+            "Quis totam voluptatem vero deleniti sit fuga. Non ea rerum enim quia itaque dolor magni. Fugiat illum aut in dolor debitis dolorem autem voluptatem. A harum consequatur ut aut temporibus rem sint. Quia ducimus molestias ipsum dolores. Cumque et consequuntur nihil magni omnis debitis dignissimos nam.",
+          likes: 30,
+          comments: 50,
+          useful_point: 3
+        },
+        {
+          id: 17,
+          title: "This is the Review Title",
+          content:
+            "Quis totam voluptatem vero deleniti sit fuga. Non ea rerum enim quia itaque dolor magni. Fugiat illum aut in dolor debitis dolorem autem voluptatem. A harum consequatur ut aut temporibus rem sint. Quia ducimus molestias ipsum dolores. Cumque et consequuntur nihil magni omnis debitis dignissimos nam.",
+          likes: 30,
+          comments: 50,
+          useful_point: 3
+        }
+      ],
+      images: {
+        dialog: false,
+        arr: [
+          { id: 1, image_link: "/blog/img/slider/default.png" },
+          { id: 2, image_link: "/blog/img/slider/default.png" },
+          { id: 3, image_link: "/blog/img/slider/default.png" },
+          { id: 4, image_link: "/blog/img/slider/default.png" },
+          { id: 5, image_link: "/blog/img/slider/default.png" }
+        ],
+        img: {
+          id: 1,
+          image_link: "/blog/img/slider/default.png"
+        }
+      },
       userLogin: {},
       bookingDialog: {
         payment: 1,
@@ -897,6 +1344,12 @@ export default {
             },
             address: {
               required: () => "Contact address can not be empty"
+            },
+            title: {
+              required: () => "Title can not be empty"
+            },
+            content: {
+              required: () => "Content can not be empty"
             }
           }
         }
@@ -906,6 +1359,8 @@ export default {
         followed: false,
         name: "",
         room: [],
+        review: [],
+        question: [],
         hotel_type: {
           name: ""
         }
@@ -951,12 +1406,13 @@ export default {
     //         deep: true
     // },
     loginCheck: "load",
+    placeVal: "loadSearchData",
     checkInVal: "loadSearchData",
     checkOutVal: "loadSearchData"
   },
   methods: {
     load: function() {
-      console.log(localStorage.getItem("login_token"));
+      // console.log(localStorage.getItem("login_token"));
       if (localStorage.getItem("login_token") != null) {
         axios({
           method: "get",
@@ -986,7 +1442,7 @@ export default {
       }
     },
     getHotelDetail: function() {
-      console.log(this.userLogin);
+      console.log(this.paymentMethods);
       axios({
         method: "get",
         url: "http://localhost:8000/api/hotel/" + this.id,
@@ -994,15 +1450,23 @@ export default {
           id: this.id,
           userID: this.userLogin.id,
           check_in: this.checkInVal,
-          check_out: this.checkInOut,
+          check_out: this.checkOutVal
         }
-      }).then(res => {
-        console.log(res.data.data);
-        if (res.data.status) {
-          this.data = res.data.data;
-          return;
-        }
-      });
+      })
+        .then(res => {
+          console.log(res.data.data);
+          if (res.data.status) {
+            this.data = res.data.data;
+            return;
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.getLogin(1);
+          }
+        });
     },
     loadSearchData: function() {
       this.$emit("loadSearchData", {
@@ -1095,6 +1559,7 @@ export default {
           if (res.data.status == true) {
             console.log(res.data.booking);
             this.bookingDialog.state = false;
+            this.load();
             this.$emit("loadLogin");
             this.$emit("loadBookingDetail", res.data.booking, 1);
           } else {
@@ -1110,44 +1575,124 @@ export default {
           }
         });
     },
-    followHotel: function(value, cmd) {
-        if (cmd == 1) {
-          axios({
-            method: "get",
-            url: "http://localhost:8000/api/following",
-            params: {
-              type: 1,
-              id: this.userLogin.id,
-              followed: value.id
-            }
-          }).then(res => {
-            console.log(res.data.data);
-            if (res.data.data == null) {
-              this.$emit("loadSnackbar", "Something wrong!");
-              return;
-            }
-            this.$emit("loadSnackbar", "Following " + value.name);
-            this.data.followed = true;
-          });
-        } else {
-          axios({
-            method: "get",
-            url: "http://localhost:8000/api/un-following",
-            params: {
-              type: 1,
-              id: this.userLogin.id,
-              followed: value.id
-            }
-          }).then(res => {
-            console.log(res.data.data);
-            if (res.data.data == null) {
-              this.$emit("loadSnackbar", "Something wrong!");
-              return;
-            }
-            this.$emit("loadSnackbar", "Unfollowing " + value.name);
-            this.data.followed = false;
-          });
+    commentAction(cmd) {
+      this.load();
+      if(localStorage.getItem('login_token') == null ){
+        this.$emit("loadLoginDialog", true, 1);
+        return;
       }
+      switch (cmd) {
+        case 0:
+          this.action.id = 0;
+          this.action.data.star = 0;
+          this.action.title = "";
+          this.action.data.title = "";
+          this.action.data.content = "";
+          this.action.data.can_comment = true;
+          this.action.data.notification = true;
+          break;
+        case 1:
+          this.action.id = 1;
+          this.action.title = "";
+          this.action.data.title = "";
+          this.action.data.content = "";
+          break;
+      }
+      this.$validator.reset();
+      this.action.dialog = true;
+    },
+    send: function(actionID) {
+      this.$validator.validateAll("form2").then(valid => {
+        if (valid) {
+          switch (actionID) {
+            case 0:
+              axios({
+                method: "get",
+                url: "http://localhost:8000/api/review/create",
+                params: {
+                  title: this.action.data.title,
+                  content: this.action.data.content,
+                  star: this.action.data.star,
+                  hotel_id: this.data.id,
+                  can_comment: this.action.data.can_comment,
+                  notification: this.action.data.notification
+                },
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("login_token")
+                }
+              })
+                .then(res => {
+                  if (res.data.status == true) {
+                    this.getHotelDetail();
+                    this.$emit("loadSnackbar", "Successfully!");
+                    this.action.dialog = false;
+                    this.$validator.reset();
+                  } else {
+                    this.$emit("loadSnackbar", "Something wrong!");
+                  }
+                })
+                .catch(error => {
+                  console.log(error.response);
+                  if (error.response.status == 401) {
+                    localStorage.removeItem("login_token");
+                    this.$router.push({ name: "login" });
+                  }
+                });
+              break;
+            case 1:
+              break;
+          }
+        }
+      });
+    },
+    followHotel: function(value, cmd) {
+      if (cmd == 1) {
+        axios({
+          method: "get",
+          url: "http://localhost:8000/api/following",
+          params: {
+            type: 1,
+            id: this.userLogin.id,
+            followed: value.id
+          }
+        }).then(res => {
+          console.log(res.data.data);
+          if (res.data.data == null) {
+            this.$emit("loadSnackbar", "Something wrong!");
+            return;
+          }
+          this.$emit("loadSnackbar", "Following " + value.name);
+          this.data.followed = true;
+        });
+      } else {
+        axios({
+          method: "get",
+          url: "http://localhost:8000/api/un-following",
+          params: {
+            type: 1,
+            id: this.userLogin.id,
+            followed: value.id
+          }
+        }).then(res => {
+          console.log(res.data.data);
+          if (res.data.data == null) {
+            this.$emit("loadSnackbar", "Something wrong!");
+            return;
+          }
+          this.$emit("loadSnackbar", "Unfollowing " + value.name);
+          this.data.followed = false;
+        });
+      }
+    },
+    getSearch: function() {
+      this.$router.push({
+        name: "searching",
+        query: {
+          place: this.place.replace(/\s/g, "-"),
+          check_in: this.checkIn,
+          check_out: this.checkOut
+        }
+      });
     }
   }
 };
@@ -1183,5 +1728,9 @@ export default {
 .v-stepper {
   border: 1px solid #fff;
   margin-right: 100px;
+}
+div.comment tbody {
+  height: 400px !important;
+  overflow: auto !important;
 }
 </style>

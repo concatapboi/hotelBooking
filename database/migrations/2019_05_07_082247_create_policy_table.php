@@ -14,10 +14,12 @@ class CreatePolicyTable extends Migration
     public function up()
     {
         Schema::create('policy', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('hotel_id')->unsigned();
-            $table->timestamp('check_in')->nullable();
-            $table->timestamp('check_out')->nullable();
-            $table->tinyInteger('can_refund');
+            $table->time('check_in')->nullable();
+            $table->time('check_out')->nullable();
+            $table->integer('cancelable')->default(0);
+            $table->integer('can_refund')->default(0)->max(100);
             $table->string('content');
             $table->timestamps();
             $table->foreign('hotel_id')

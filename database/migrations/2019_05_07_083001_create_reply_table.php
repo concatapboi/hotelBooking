@@ -17,14 +17,14 @@ class CreateReplyTable extends Migration
             $table->increments('id');
             $table->string('content');
             $table->integer('question_id')->unsigned();
-            $table->integer('hotel_id')->unsigned();
+            // $table->integer('hotel_id')->unsigned();
             $table->timestamps();
             $table->foreign('question_id')
             ->references('id')->on('question')
             ->onDelete('cascade');
-            $table->foreign('hotel_id')
-            ->references('id')->on('hotel')
-            ->onDelete('cascade');
+            // $table->foreign('hotel_id')
+            // ->references('id')->on('hotel')
+            // ->onDelete('cascade');
         });
     }
 

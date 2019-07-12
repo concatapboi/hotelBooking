@@ -8,7 +8,7 @@ class ReviewPoint extends Model
 {
   protected $table = 'review_point';
 
-  protected $fillable =[
+  protected $fillable = [
     'point',
     'customer_id',
     'review_id',

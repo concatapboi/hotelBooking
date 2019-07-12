@@ -34,7 +34,7 @@ class AuthController extends Controller
         );
         if ($validateData->fails()) {
             return response()->json([
-                'token' =>"",
+                'token' => "",
                 'status' => false,
                 'errors' => $validateData->errors(),
             ]);
@@ -42,7 +42,7 @@ class AuthController extends Controller
         $arr = array('username' => $req->username, 'password' => $req->password);
         if (!($token = JWTAuth::attempt($arr))) {
             return response()->json([
-                'token' =>"",
+                'token' => "",
                 'status' => false,
                 'errors' => array("username" => "", "password" => ""),
             ]);
@@ -51,8 +51,16 @@ class AuthController extends Controller
             if ($user->isCustomer()) {
                 return response()->json(
                     [
-                        'token' =>$token,
+                        'token' => $token,
                         'status' => true,
+                        'errors' => array("username" => "", "password" => ""),
+                    ]
+                );
+            }else{
+                return response()->json(
+                    [
+                        'token' => null,
+                        'status' => false,
                         'errors' => array("username" => "", "password" => ""),
                     ]
                 );
@@ -63,14 +71,16 @@ class AuthController extends Controller
     public function getUserLogin()
     {
         $user = Auth::user();
-        $user->getCustomer;
+        $user->Customer;
         $avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
         $user->avatar = $avatar;
-        foreach($user->Booking as $b){
+        foreach ($user->Booking as $b) {
             $b->Status;
+            $b->cancel_status = $b->Hotel()->CancelableStatus();
             $b->PaymentMethod;
             $b->Room->RoomMode;
             $b->Room->RoomType;
+            $b->Room->Hotel->HotelType;
         };
         return response()->json([
             'user' => $user,

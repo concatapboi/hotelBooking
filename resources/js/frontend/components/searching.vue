@@ -59,7 +59,7 @@
             <v-btn flat @click="$refs.checkOut.save(checkOutVal)">OK</v-btn>
           </v-date-picker>
         </v-menu>
-        <v-btn color="teal" dark icon depressed style="width:30px; height:30px;" v-on:click="getData()">
+        <v-btn color="teal" dark icon depressed style="width:30px; height:30px;" v-on:click="reSearch()">
           <v-icon small>search</v-icon>
         </v-btn>
       </v-layout>
@@ -149,6 +149,7 @@
                       :max="priceMax"
                       :min="priceMin"
                       :step="10"
+                      @end="getData"
                     ></v-range-slider>
                   </v-flex>
                   <!-- <v-flex md3 offset-md1>Min : {{priceMin}} -- Max : {{priceMax}}</v-flex> -->
@@ -279,7 +280,7 @@
                 <v-card-title>
                   <v-card flat tile width="100%">
                     <v-list two-line class="grey lighten-2">
-                      <v-list-tile>
+                      <v-list-tile class="pa-0 ma-0">
                         <v-list-tile-content>
                           <div>
                             <span class="headline">{{hotel.name}}</span>
@@ -297,25 +298,16 @@
                           <v-list-tile-title>{{hotel.description}}</v-list-tile-title>
                         </v-list-tile-content>
                       </v-list-tile>
-                      <v-list-tile>
+                      <v-list-tile class="pa-0 ma-0">
                         <div>
                           <div>
                             Price:
-                            <!-- <span>{{hotel.minPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span> -->
+                            <span>{{hotel.minPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
                           </div>
                         </div>
                       </v-list-tile>
                     </v-list>
                   </v-card>
-                  <!-- <div>
-                  <router-link
-                    class="headline"
-                    tag="a"
-                    :to="{name:'hotel',params:{id:hotel.id}}"
-                    target="_blank"
-                  >{{hotel.name}}</router-link>
-                  <div>{{hotel.description}}</div>
-                  </div>-->
                 </v-card-title>
               </router-link>
             </v-flex>
@@ -386,11 +378,16 @@ export default {
     };
   },
   created() {
-    this.setSearchValue();
+    this.placeVal = this.$route.query.place.replace(/\-/g, " ");
+    this.checkInVal = this.$route.query.check_in;
+    this.checkInFormattedVal = this.formatDate(this.$route.query.check_in);
+    this.checkOutVal = this.$route.query.check_out;
+    this.checkOutFormattedVal = this.formatDate(this.$route.query.check_out);
     this.initialize();
     this.getData();
   },
   watch: {
+    $route: "getData",
     placeVal: "loadSearchData",
     checkInVal: "loadSearchData",
     checkIn: "setSearchValue",
@@ -400,7 +397,7 @@ export default {
     districtSeleted: "getData",
     serviceSeleted: "getData",
     hotelTypeSeleted: "getData",
-    price: "getData",
+    // price: "getData",
     RoomTypeSeleted: "getData",
     
   },
@@ -424,11 +421,24 @@ export default {
       });
     },
     setSearchValue: function() {
+      // this.placeVal = this.$route.query.place.replace(/\-/g, " ");
+      // this.checkInVal = this.$route.query.check_in;
+      // this.checkInFormattedVal = this.formatDate(this.$route.query.check_in);
+      // this.checkOutVal = this.$route.query.check_out;
+      // this.checkOutFormattedVal = this.formatDate(this.$route.query.check_out);
       this.placeVal = this.place;
       this.checkInVal = this.checkIn;
       this.checkOutVal = this.checkOut;
       this.checkInFormattedVal = this.checkInFormatted;
       this.checkOutFormattedVal = this.checkOutFormatted;
+    },
+    formatDate: function(date) {
+      if (!date) return null;
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
+    },
+    reSearch: function(){
+      this.$router.push({ path: "searching" , query:{place:this.place.replace(/\s/g,'-'), check_in:this.checkIn, check_out:this.checkOut}});
     },
     getData: function() {
       this.loading = true;

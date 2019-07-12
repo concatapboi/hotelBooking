@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Title -->
-    <title>Roberto - Hotel &amp; Resort HTML Template</title>
+    <title>Trvel Club</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{{asset('blog/img/core-img/favicon.png')}}">

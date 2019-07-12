@@ -8,11 +8,13 @@ class HotelType extends Model
 {
   protected $table = 'hotel_type';
 
-  protected $fillable =[
+  protected $fillable = [
     'name',
     'meta_name',
   ];
-  public function Hotel(){
-		return $this->hasMany('App\Models\Hotel','hotel_manager_id','id');
-	}
+
+  public function Hotel()
+  {
+    return $this->hasMany('App\Models\Hotel', 'hotel_manager_id', 'id');
+  }
 }

@@ -62,6 +62,7 @@ Route::get('/update-password', 'Frontend\UserController@updateUserPassword');
 Route::get('/following', 'Frontend\UserController@follow');
 Route::get('/un-following', 'Frontend\UserController@unfollow');
 Route::resource('/image', 'Frontend\UserImageController');
+Route::resource('/payment-method', 'Frontend\PaymentMethodController');
 Route::post('/login', 'Frontend\AuthController@postLogin');
 Route::get('/check', 'Frontend\AuthController@check');
 Route::post('/register', 'Frontend\AuthController@postRegister');
@@ -72,4 +73,9 @@ Route::get('room-type', 'Backend\RoomTypeController@getAllRoomType');
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('/logout', 'Frontend\AuthController@postLogout');
     Route::get('/getUserLogin', 'Frontend\AuthController@getUserLogin');
+    Route::get('/getUser', 'Frontend\UserController@getUser');
+    Route::get('/userInfo', 'Frontend\UserController@getUserInfo');
+    Route::resource('/booking', 'Frontend\BookingController');
+    Route::resource('/review', 'Frontend\ReviewController');
+    Route::resource('/question', 'Frontend\QuestionController');
 });

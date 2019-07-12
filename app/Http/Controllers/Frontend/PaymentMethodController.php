@@ -18,8 +18,8 @@ class PaymentMethodController extends Controller
     public function index()
     {
         $arr = PaymentMethod::all();
-        return response()->json(['data'=>$arr,'status'=>true]);
-     }
+        return response()->json(['data' => $arr, 'status' => true]);
+    }
 
     //get paymentMethod/create
     public function create()

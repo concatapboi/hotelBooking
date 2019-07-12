@@ -12,15 +12,16 @@ use Session;
 
 class SearchController extends Controller
 {
-    public function getSearchingResult(Request $req){
+    public function getSearchingResult(Request $req)
+    {
         $status = false;
         $hotels = Hotel::all();
         $arr = array();
-        if ($hotels->count()>0) {
+        if ($hotels->count() > 0) {
             $status = true;
             foreach ($hotels as $h) {
-                $h->maxPrice=$h->maxPrice();
-                $h->minPrice=$h->minPrice();
+                $h->maxPrice = $h->maxPrice();
+                $h->minPrice = $h->minPrice();
             }
         }
         return response()->json(['status' => $status, 'data' => $hotels]);

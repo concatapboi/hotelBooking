@@ -13,17 +13,17 @@ class CreateApplyCouponCodeHotelTable extends Migration
      */
     public function up()
     {
-        Schema::create('apply_coupon_code_hotel', function (Blueprint $table) {
-            $table->integer('coupon_code_id')->unsigned();
-            $table->integer('hotel_id')->unsigned();
-            $table->timestamps();
-            $table->foreign('coupon_code_id')
-            ->references('id')->on('coupon_code')
-            ->onDelete('cascade');
-            $table->foreign('hotel_id')
-            ->references('id')->on('hotel')
-            ->onDelete('cascade');
-        });
+        // Schema::create('apply_coupon_code_hotel', function (Blueprint $table) {
+        //     $table->integer('coupon_code_id')->unsigned();
+        //     $table->integer('hotel_id')->unsigned();
+        //     $table->timestamps();
+        //     $table->foreign('coupon_code_id')
+        //     ->references('id')->on('coupon_code')
+        //     ->onDelete('cascade');
+        //     $table->foreign('hotel_id')
+        //     ->references('id')->on('hotel')
+        //     ->onDelete('cascade');
+        // });
     }
 
     /**
@@ -33,6 +33,6 @@ class CreateApplyCouponCodeHotelTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('apply_coupon_code_hotel');
+        // Schema::dropIfExists('apply_coupon_code_hotel');
     }
 }

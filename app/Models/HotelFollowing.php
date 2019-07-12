@@ -12,4 +12,15 @@ class HotelFollowing extends Model
     'customer_id',
     'hotel_id',
   ];
+
+  public function Customer()
+  {
+    return $this->belongsTo('App\Models\User', 'customer_id', 'id');
+  }
+
+  public function Hotel()
+  {
+    return $this->belongsTo('App\Models\Hotel', 'hotel_id', 'id');
+  }
+
 }

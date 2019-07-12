@@ -8,7 +8,7 @@ class RoomMode extends Model
 {
   protected $table = 'room_mode';
 
-  protected $fillable =[
+  protected $fillable = [
     'price',
     'name',
     'status',

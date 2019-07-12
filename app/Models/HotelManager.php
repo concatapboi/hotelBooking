@@ -10,14 +10,17 @@ class HotelManager extends Model
 
 	protected $primaryKey = "user_id";
 
-	protected $fillable =[
-	  'user_id',
+	protected $fillable = [
+		'user_id',
 	];
 
-	public function User(){
+	public function User()
+	{
 		return $this->belongsTo('App\Models\User');
 	}
-	public function Hotel(){
-		return $this->hasMany('App\Models\Hotel','hotel_manager_id','user_id');
+
+	public function Hotel()
+	{
+		return $this->hasMany('App\Models\Hotel', 'hotel_manager_id', 'user_id');
 	}
 }

@@ -308,10 +308,15 @@
 
 <script>
 export default {
-  props: ["user"],
+  props: {
+    customer:{
+      type: Object
+    }
+  },
   mounted() {},
   data() {
     return {
+      user:{},
       expand: [true, true, true],
       examples: [
         {
@@ -565,6 +570,7 @@ export default {
     };
   },
   created() {
+    this.user = this.customer;
     this.getTop5Hotel();
     this.getTop5User();
   },

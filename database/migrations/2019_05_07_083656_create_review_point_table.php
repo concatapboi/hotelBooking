@@ -13,19 +13,19 @@ class CreateReviewPointTable extends Migration
      */
     public function up()
     {
-        Schema::create('review_point', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('point');
-            $table->integer('customer_id')->unsigned();
-            $table->integer('review_id')->unsigned();
-            $table->timestamps();
-            $table->foreign('customer_id')
-            ->references('user_id')->on('customer')
-            ->onDelete('cascade');
-            $table->foreign('review_id')
-            ->references('id')->on('review')
-            ->onDelete('cascade');
-        });
+        // Schema::create('review_point', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->integer('point');
+        //     $table->integer('customer_id')->unsigned();
+        //     $table->integer('review_id')->unsigned();
+        //     $table->timestamps();
+        //     $table->foreign('customer_id')
+        //     ->references('user_id')->on('customer')
+        //     ->onDelete('cascade');
+        //     $table->foreign('review_id')
+        //     ->references('id')->on('review')
+        //     ->onDelete('cascade');
+        // });
     }
 
     /**
@@ -35,6 +35,6 @@ class CreateReviewPointTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('review_point');
+        // Schema::dropIfExists('review_point');
     }
 }

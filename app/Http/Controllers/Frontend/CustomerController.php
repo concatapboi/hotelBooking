@@ -46,7 +46,7 @@ class CustomerController extends Controller
 
   public function unfollowUser($id)
   {
-    $follow = CustomerFollowing::where('followed_id',$id)->where('follower_id',Auth::user()->id);
+    $follow = CustomerFollowing::where('followed_id', $id)->where('follower_id', Auth::user()->id);
     $follow->delete();
     return redirect()->back();
   }
@@ -62,9 +62,8 @@ class CustomerController extends Controller
 
   public function unfollowHotel($id)
   {
-    $follow = HotelFollowing::where('hotel_id',$id)->where('customer_id',Auth::user()->id);
+    $follow = HotelFollowing::where('hotel_id', $id)->where('customer_id', Auth::user()->id);
     $follow->delete();
     return redirect()->back();
   }
-
 }
