@@ -20,6 +20,7 @@ class Room extends Model
     'price',
     'max_adult_amount',
     'max_child_amount',
+    'free_child_amount',
     'room_size',
     'amount',
     'room_mode_id',
@@ -101,5 +102,9 @@ class Room extends Model
       }
     }
     return $number;
+  }
+  public function Image()
+  {
+    return $this->hasMany('App\Models\RoomImage', 'room_id', 'id');
   }
 }

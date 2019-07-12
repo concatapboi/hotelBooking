@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\ServiceResource;
+use App\Http\Resources\RoomImageResource;
+use App\Models\ServiceRoomType;
 
 class RoomResource extends JsonResource
 {
@@ -18,6 +20,21 @@ class RoomResource extends JsonResource
         $roomType = $this->RoomType->name;
         $roomMode = $this->RoomMode->name;
         $full_name = $this->room_name."($roomType - $roomMode)";
+        $arrayImage = [];
+        foreach($this->Image as $image){
+            $arrayImage[] = new RoomImageResource($image);
+        }
+        $service = [];
+        $temp = $this->RoomType->ServiceRoomTypeByHotel($this->hotel_id);
+        foreach($temp as $t){
+            $service[] = $t->ServiceResource();
+        }
+        $feature = [];
+        $temp = $this->Feature;
+        foreach($temp as $t){
+            $feature[] = $t->FeatureResource();
+        }
+
         $arrayData = [
             "id" => $this->id,
             "room_name" => $this->room_name,
@@ -34,6 +51,9 @@ class RoomResource extends JsonResource
             "room_mode" => $roomMode,
             "room_mode_id" => $this->RoomMode->id,
             "full_name" => $full_name,
+            "images" => $arrayImage,
+            "service" => $service,
+            "feature" => $feature,
         ];
         return $arrayData;
     }

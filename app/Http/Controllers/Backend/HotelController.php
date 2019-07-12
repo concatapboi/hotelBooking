@@ -266,8 +266,6 @@ class HotelController extends Controller
      */
     public function destroy($id)
     {
-        // $token =  $request->api_token;
-        // $arrayHotelRaw = User::where("api_token", $token)->first()->HotelManager->first()->Hotel;
         $hotel = Hotel::find($id);
         if ($hotel == null) {
             return response()->json([

@@ -20,7 +20,7 @@ class CreatePolicyTable extends Migration
             $table->time('check_out')->nullable();
             $table->integer('cancelable')->default(0);
             $table->integer('can_refund')->default(0)->max(100);
-            $table->string('content');
+            $table->text('content');
             $table->timestamps();
             $table->foreign('hotel_id')
             ->references('id')->on('hotel')

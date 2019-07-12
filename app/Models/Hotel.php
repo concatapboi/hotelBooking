@@ -19,6 +19,7 @@ class Hotel extends Model
     'description',
     'stars_num',
     'name',
+    'address',
     'email',
     'meta_name',
     'child_age',
@@ -26,7 +27,8 @@ class Hotel extends Model
     'review_point',
     'fax_number',
     'phone_number',
-    'coint',
+    'coin',
+    'ward_id',
     'hotel_type_id',
     'hotel_manager_id',
   ];
@@ -52,6 +54,10 @@ class Hotel extends Model
   }
 
   public function Room()
+  {
+    return $this->hasMany('App\Models\Room', 'hotel_id', 'id');
+  }
+  public function RoomByPrice()
   {
     return $this->hasMany('App\Models\Room', 'hotel_id', 'id')->orderBy('price');
   }
@@ -114,10 +120,6 @@ class Hotel extends Model
     return $min;
   }
 
-  // public function Room()
-  // {
-  //   return $this->hasMany('App\Models\Room', 'hotel_id', 'id');
-  // }
 
   public function Image()
   {
@@ -136,7 +138,6 @@ class Hotel extends Model
     }
     return $data;
   }
-
   public function CancelableStatus()
   {
     $arr = array();
@@ -154,5 +155,9 @@ class Hotel extends Model
       }
     }
     return $arr;
+  }
+  public function Policy()
+  {
+    return $this->hasOne('App\Models\Policy','hotel_id','id');
   }
 }

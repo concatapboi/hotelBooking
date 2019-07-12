@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\HotelImageResource;
+use App\Http\Resources\PolicyResource;
 use App\Http\Resources\RoomResource;
 
 class HotelResource extends JsonResource
@@ -20,6 +21,7 @@ class HotelResource extends JsonResource
         foreach($this->Image as $image){
             $arrayImage[] = new HotelImageResource($image);
         }
+        
         $arrayData = [
             "id" => $this->id,
             "name" => $this->name,
@@ -39,7 +41,20 @@ class HotelResource extends JsonResource
             "minPrice" => $this->minPrice(),
             "maxPrice" => $this->maxPrice(),
             "ward" => $this->ward_id,
+            
         ];
+        $policy = $this->Policy;
+        if($policy != null){
+            $arrayData["policy"] = new PolicyResource($policy);
+        }else{
+            $arrayData["policy"] = [
+                "check_in" => null,
+                "check_out" => null,
+                "cancel_day" => 0,
+                "refundRate" => 0,
+                "policyDetail" => "",
+            ];
+        }
         return $arrayData;
     }
 }

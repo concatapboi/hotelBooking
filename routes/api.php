@@ -40,6 +40,10 @@ Route::group(['prefix' => '/manager'], function () {
         Route::resource('feature', 'Backend\FeatureController');
         Route::resource('booking', 'Backend\BookingController');
         Route::get('all-booking', 'Backend\BookingController@getBookingWithHotelId');
+        Route::post('accept', 'Backend\BookingController@acceptBooking');
+        Route::post('decline', 'Backend\BookingController@declineBooking');
+        Route::post('confirm', 'Backend\BookingController@confirmBooking');
+        Route::post('cancel', 'Backend\BookingController@cancelBooking');
         Route::get('hotel-address', 'Backend\AddressController@getAddress');
         Route::get('province', 'Backend\AddressController@getProvince');
         Route::get('district', 'Backend\AddressController@getDistrict');

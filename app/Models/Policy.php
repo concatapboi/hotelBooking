@@ -14,6 +14,7 @@ class Policy extends Model
     'check_out',
     'cancelable',
     'can_refund',
+    'cancelable',
     'content',
   ];
 
