@@ -267,6 +267,7 @@
           <v-progress-circular :size="70" :width="7" color="blue" indeterminate></v-progress-circular>
         </div>
         <div v-else>
+
           <v-card v-if="noData == true" light flat tile>No Data found :'(</v-card>
           <v-card v-else light flat tile>
             <v-layout class="search-item" v-for="(hotel,index) in data" :key="index">

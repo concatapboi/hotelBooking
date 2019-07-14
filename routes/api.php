@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
 //     return $request->all();
 // });
 Route::group(['prefix' => '/manager'], function () {
+    Route::get('test', 'Backend\EmailController@ship');
     Route::post('login', 'Backend\AuthController@login');
     Route::post('register', 'Backend\AuthController@register');
     Route::post('country', 'Backend\AddressController@postCountries');
@@ -52,6 +53,7 @@ Route::group(['prefix' => '/manager'], function () {
         Route::Resource('room-type', 'Backend\RoomTypeController');
         Route::get('room-types', 'Backend\HotelController@getAllRoomType');
         Route::Resource('bed-type', 'Backend\BedTypeController');
+       
     });
 });
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\HotelTypeResource;
 use App\Models\Booking;
+use App\Models\RoomMode;
 use App\Http\Resources\BookingResource;
 
 
@@ -36,6 +37,19 @@ class Hotel extends Model
   public function HotelType()
   {
     return $this->belongsTo('App\Models\HotelType', 'hotel_type_id', 'id');
+  }
+  public function RoomMode()
+  {
+    $temp = [];
+    foreach($this->Room as $room){
+      $temp[] = $room->room_mode_id;
+    }
+    $roomMode = [];
+    $roomModeIds = array_unique($temp);
+    foreach($roomModeIds as $roomModeId){
+      $roomMode[] = RoomMode::find($roomModeId);
+    }
+    return $roomMode;
   }
 
   public function HotelTypeResource()
@@ -193,5 +207,9 @@ class Hotel extends Model
       break;
     }
     return $paymentMethods;
+  }
+  public function Ward()
+  {
+    return $this->belongsTo('App\Models\Ward', 'ward_id', 'id');
   }
 }
