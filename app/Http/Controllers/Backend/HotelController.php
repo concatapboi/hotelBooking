@@ -83,6 +83,7 @@ class HotelController extends Controller
             "fax_number" => $request->fax_number,
             "tax_code" => $request->tax_code,
             "stars_num" => $request->stars_num,
+            "child_age" => $request->child_age,
         ];
         $validator = Validator::make($data, [
             'name' => 'required|unique:hotel',
@@ -97,6 +98,7 @@ class HotelController extends Controller
             'phone_number' => 'required',
             'fax_number' => 'required',
             'tax_code' => 'required',
+            'child_age' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -174,6 +176,7 @@ class HotelController extends Controller
             "fax_number" => $request->fax_number,
             "tax_code" => $request->tax_code,
             "stars_num" => $request->stars_num,
+            "child_age" => $request->child_age,
         ];
         $validator = Validator::make($data, [
             'name' => 'required',
@@ -187,6 +190,7 @@ class HotelController extends Controller
             'phone_number' => 'required',
             'fax_number' => 'required',
             'tax_code' => 'required',
+            "child_age" => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -199,59 +203,71 @@ class HotelController extends Controller
         $hotel->update($data);
         $images = $request->images;
         $length = sizeof($images);
-        $primaryId = $request->primaryId;
-        $nameForPrimary = 0;
         $temp = [];
-        // return $images[1]["is_primary"];
+        // return $images;
         for ($i = 0; $i < $length; $i++) {
-            //hình cũ
-            if (strpos($images[$i]["image_link"], 'data:image') === false) {
+            //hinh cu
+            if ($images[$i]["id"] != -1) {
                 $explode = explode("/", $images[$i]["image_link"]);
                 $imageName = ($explode[5]);
                 $temp[] = $imageName;
+                $primary = 0;
+                if ($images[$i]["is_primary"] == 1) {
+                    $primary = 1;
+                }
+                HotelImage::find($images[$i]["id"])->update(["is_primary" => $primary]);
+            }
+            //hinh moi
+            else {
+                $name = time() . str_random(10);
+                $image = Image::make($images[$i]["image_link"])->resize(200, 200)->save(public_path("images/hotel/" . $name));
+                $primary = 0;
+                if ($images[$i]["is_primary"] == 1) {
+                    $primary = 1;
+                }
+                HotelImage::create([
+                    "image_link" => $image->filename,
+                    "is_primary" => $primary,
+                    "hotel_id" => $hotel->id,
+                ]);
             }
         }
         $oldImage = HotelImage::where("hotel_id", $hotel->id)
             ->whereNotIn("image_link", $temp)
             ->delete();
-        for ($i = 0; $i < $length; $i++) {
-            //hình mới
-            if (strpos($images[$i]["image_link"], 'data:image') !== false) {
-                $name = time() . str_random(10);
-                $image = Image::make($images[$i]["image_link"])
-                    ->resize(200, 200)
-                    ->save(public_path("images/hotel/" . $name));
-                if ($images[$i]["is_primary"] == 1) {
-                    $oldImages = HotelImage::where("hotel_id", $hotel->id)
-                        ->whereIn("image_link", $temp)->get();
-                    foreach($oldImages as $oldImage){
-                        $oldImage->update(["is_primary"=>0]);
-                    }
-                }
-                $a = HotelImage::create([
-                    "image_link" => $image->filename,
-                    "is_primary" => $images[$i]["is_primary"],
-                    "hotel_id" => $hotel->id,
-                ]);
-                $temp[] = $a->image_link;
-            }
-        }
-        // HotelImage::where("hotel_id", $hotel->id)
-        //     ->where("is_primary", 1)
-        //     ->update(["is_primary" => 0]);
         // for ($i = 0; $i < $length; $i++) {
-        //     if ($images[$i]["is_primary"] == 1) {
-        //         // if (strpos($images[$i]["image_link"], 'data:image') === false) {
+        //     //hình cũ
+        //     if (strpos($images[$i]["image_link"], 'data:image') === false) {
         //         $explode = explode("/", $images[$i]["image_link"]);
         //         $imageName = ($explode[5]);
-        //         // }
-        //         // ------------------------------------ do primary co 2 truong hop la cu~ muoi nen lam lai.
-        //         HotelImage::where("hotel_id", $hotel->id)
-        //             ->where("image_link", $imageName)
-        //             ->update(["is_primary" => 1]);
+        //         $temp[] = $imageName;
         //     }
         // }
-        return $hotel;
+        // $oldImage = HotelImage::where("hotel_id", $hotel->id)
+        //     ->whereNotIn("image_link", $temp)
+        //     ->delete();
+        // for ($i = 0; $i < $length; $i++) {
+        //     //hình mới
+        //     if (strpos($images[$i]["image_link"], 'data:image') !== false) {
+        //         $name = time() . str_random(10);
+        //         $image = Image::make($images[$i]["image_link"])
+        //             ->resize(200, 200)
+        //             ->save(public_path("images/hotel/" . $name));
+        //         if ($images[$i]["is_primary"] == 1) {
+        //             $oldImages = HotelImage::where("hotel_id", $hotel->id)
+        //                 ->whereIn("image_link", $temp)->get();
+        //             foreach($oldImages as $oldImage){
+        //                 $oldImage->update(["is_primary"=>0]);
+        //             }
+        //         }
+        //         $a = HotelImage::create([
+        //             "image_link" => $image->filename,
+        //             "is_primary" => $images[$i]["is_primary"],
+        //             "hotel_id" => $hotel->id,
+        //         ]);
+        //         $temp[] = $a->image_link;
+        //     }
+        // }
         return response()->json([
             "status" => true,
             "message" => "Hotel updated !!!",
@@ -361,6 +377,9 @@ class HotelController extends Controller
     }
     public function search(Request $request)
     {
+
+        // return Province::with("District")->get();
+
         $place = $request->place;
         $checkIn = $request->checkIn;
         $checkOut = $request->checkOut;
@@ -376,14 +395,24 @@ class HotelController extends Controller
         $checkIn = Carbon::createMidnightDate($checkinExplode[0], $checkinExplode[1], $checkinExplode[2]);
         $checkOut = Carbon::createMidnightDate($checkoutExplode[0], $checkoutExplode[1], $checkoutExplode[2]);
         $data = [];
-        if ($place != null && $province = Province::where("name", $place)->first()) {
-            foreach ($province->District as $district) {
-                foreach ($district->Ward as $ward) {
-                    $arrayHotels = $ward->Hotel;
-                    if (sizeOf($arrayHotels) > 0) {
-                        foreach ($arrayHotels as $hotel) {
-                            $data[] = new HotelResource($hotel);
-                        }
+        $province = Province::where("name", $place)->with(["District" => function ($query) {
+            $query->with(["Ward" => function ($query) {
+                $query->with(["Hotel"]);
+            }]);
+        }])->get();
+        if(sizeof($province) == 0){
+            return response()->json([
+                "status" => false,
+                "message" => "Can't find any hotel :'(",
+            ]);
+        }
+        $arrayDistrict = $province[0]->district;
+        foreach($arrayDistrict as $district){
+            foreach ($district->ward as $ward) {
+                $arrayHotels = $ward->hotel;
+                if (sizeOf($arrayHotels) > 0) {
+                    foreach ($arrayHotels as $hotel) {
+                        $data[] = new HotelResource($hotel);
                     }
                 }
             }
@@ -405,7 +434,6 @@ class HotelController extends Controller
         if (is_array($price) && sizeOf($price) > 0) {
             $data = $this->filterByPrice($data, $price);
         }
-        return $data;
         return response()->json([
             "status" => true,
             "data" => $data,
@@ -435,7 +463,7 @@ class HotelController extends Controller
             foreach ($temp as $hotelId => $value) {
                 foreach ($data as $hotel) {
                     if ($hotel->id == $hotelId) {
-                        $tempData[] = $hotel;
+                        $tempData[] = new HotelResource($hotel);
                     }
                 }
             }
@@ -448,28 +476,36 @@ class HotelController extends Controller
             ]);
         }
     }
-    public function filterByDistrict($array, $district)
+    public function filterByDistrict($array, $districts)
     {
         $temp = [];
-        foreach ($district as $districtId) {
-            foreach (District::find($districtId)->Ward as $ward) {
-                $arrayHotels = $ward->Hotel;
-                if (sizeOf($arrayHotels) > 0) {
-                    foreach ($arrayHotels as $hotel) {
-                        $temp[] = $hotel->id;
-                    }
+        foreach($array as $hotel){
+            foreach($districts as $district){
+                if($hotel->Ward->District->id == $district){
+                    $temp = new HotelResource($hotel);
                 }
             }
         }
-        $data = [];
-        foreach ($array as $hotel) {
-            foreach ($temp as $hotelId) {
-                if ($hotel->id == $hotelId) {
-                    $data[] = $hotel;
-                }
-            }
-        }
-        return $data;
+        return $temp;
+        // foreach ($district as $districtId) {
+        //     foreach (District::find($districtId)->Ward as $ward) {
+        //         $arrayHotels = $ward->Hotel;
+        //         if (sizeOf($arrayHotels) > 0) {
+        //             foreach ($arrayHotels as $hotel) {
+        //                 $temp[] = $hotel->id;
+        //             }
+        //         }
+        //     }
+        // }
+        // $data = [];
+        // foreach ($array as $hotel) {
+        //     foreach ($temp as $hotelId) {
+        //         if ($hotel->id == $hotelId) {
+        //             $data[] = $hotel;
+        //         }
+        //     }
+        // }
+        // return $data;
     }
     public function filterByStar($array, $stars)
     {
@@ -508,7 +544,7 @@ class HotelController extends Controller
         foreach ($array as $hotel) {
             foreach ($temp as $hotelId) {
                 if ($hotel->id == $hotelId) {
-                    $data[] = $hotel;
+                    $data[] = new HotelResource($hotel);
                 }
             }
         }
@@ -531,7 +567,7 @@ class HotelController extends Controller
             //         $temp[] = $hotel->id;
             //     }
             // }
-            if($hotel->minPrice() >= $priceMin && $hotel->maxPrice()<= $priceMax){
+            if ($hotel->minPrice() >= $priceMin && $hotel->maxPrice() <= $priceMax) {
                 $temp[] = $hotel->id;
             }
         }
@@ -540,31 +576,32 @@ class HotelController extends Controller
         foreach ($array as $hotel) {
             foreach ($temp as $hotelId) {
                 if ($hotel->id == $hotelId) {
-                    $data[] = $hotel;
+                    $data[] = new HotelResource($hotel);
                 }
             }
         }
         return $this->getSort($data);
         // return $data;
     }
-    public function getSort($arr){        
+    public function getSort($arr)
+    {
         $tempArr = $arr;
-        if(sizeOf($arr) == 0) return $tempArr;
+        if (sizeOf($arr) == 0) return $tempArr;
         $number = 0;
-        do{
+        do {
             $min = $tempArr[$number]->minPrice();
             $index = $number;
-            for($i = $number;$i<sizeOf($tempArr);$i++){
-                if($tempArr[$i]->minPrice()<$min){
-                     $min = $tempArr[$i]->minPrice();
-                     $index = $i;
+            for ($i = $number; $i < sizeOf($tempArr); $i++) {
+                if ($tempArr[$i]->minPrice() < $min) {
+                    $min = $tempArr[$i]->minPrice();
+                    $index = $i;
                 }
             }
             $temp = $tempArr[$number];
             $tempArr[$number] = $tempArr[$index];
             $tempArr[$index] = $temp;
             $number++;
-        }while($number<sizeOf($tempArr));
+        } while ($number < sizeOf($tempArr));
         return $tempArr;
     }
     // public function remove_duplicate_hotel_in_array($array, $numberOfService)

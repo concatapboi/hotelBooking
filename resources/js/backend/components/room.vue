@@ -4,7 +4,7 @@
       <v-spacer></v-spacer>
       <v-dialog max-width="75%" scrollable v-model="dialog">
         <template v-slot:activator="{ on }">
-          <v-btn class="primary" flat v-on="on" @click="addNewTitle">New Room Type</v-btn>
+          <v-btn class="primary" flat v-on="on" @click="addNewTitle();">New Room Type</v-btn>
         </template>
         <v-layout>
           <v-flex>
@@ -48,7 +48,7 @@
                       v-model="room.description"
                     ></v-textarea>
                   </v-layout>
-                  <v-layout row>
+                  <v-layout row v-if="formTitle == 'New Room'">
                     <v-select
                       v-validate="'required'"
                       :error-messages="errors.collect('roomMode')"
@@ -76,8 +76,8 @@
                       :disabled="roomTypeDisable"
                     ></v-select>
                   </v-layout>
-                  <v-layout row v-show="showAmount">
-                    <v-flex xs3>
+                  <v-layout row wrap v-show="showAmount">
+                    <v-flex md3>
                       <!-- v-validate="'required'"
                         :error-messages="errors.collect('maxAmountAdult')"
                       data-vv-name="maxAmountAdult"-->
@@ -90,7 +90,7 @@
                         v-model="room.max_adult_amount"
                       ></v-text-field>
                     </v-flex>
-                    <v-flex xs3 offset-xs1>
+                    <v-flex md3 offset-md1>
                       <v-text-field
                         outline
                         type="number"
@@ -101,31 +101,17 @@
                         @change="chooseMaxChildAmount"
                       ></v-text-field>
                     </v-flex>
-                    <v-flex xs3 offset-xs1 v-show="showFreeAmount">
-                      <v-layout row>
-                        <v-flex xs4>
-                          <v-select
-                            outline
-                            label="Child's age"
-                            :items="arrayAge"
-                            item-text="text"
-                            item-value="value"
-                            v-model="room.child_age"
-                          ></v-select>
-                        </v-flex>
-                        <v-flex xs6 offset-xs1>
-                          <v-text-field
-                            outline
-                            type="number"
-                            min="1"
-                            class="pl-3"
-                            label="Number of free children"
-                            v-model="room.free_child_amount"
-                          ></v-text-field>
-                        </v-flex>
-                      </v-layout>
+                    <v-flex md3 offset-md1 v-show="showFreeAmount">
+                      <v-text-field
+                        outline
+                        type="number"
+                        min="1"
+                        class="pl-3"
+                        label="Number of free children"
+                        v-model="room.free_child_amount"
+                      ></v-text-field>
                     </v-flex>
-                    <v-flex v-show="showFreeAmount" xs1>
+                    <v-flex v-show="showFreeAmount" md1>
                       <v-tooltip close-delay="800" top light>
                         <template v-slot:activator="{ on }">
                           <v-btn flat icon v-on="on">
@@ -134,7 +120,8 @@
                         </template>
                         <span>
                           number of children won't be charge
-                          <br />for this room if they under the age
+                          <br />
+                          for this room if they under {{room.child_age}} years old
                         </span>
                       </v-tooltip>
                     </v-flex>
@@ -208,8 +195,9 @@
                       item-value="id"
                     ></v-select>
                   </v-layout>-->
-                  <v-layout row v-for="(b,i) in bed" :key="i" justify-start>
-                    <v-flex md-2>
+                  <v-layout row wrap v-for="(b,i) in bed" :key="i" justify-start>
+                    <v-flex md-6>
+                    <!-- <v-flex md-2> -->
                       <v-text-field
                         v-validate="'required'"
                         :error-messages="errors.collect('numberOfBed')"
@@ -223,7 +211,8 @@
                         @change="test"
                       ></v-text-field>
                     </v-flex>
-                    <v-flex md-11 class="pl-5">
+                    <!-- <v-flex md-11 class="pl-5"> -->
+                    <v-flex md-6 class="pl-5">
                       <v-select
                         v-validate="'required'"
                         :error-messages="errors.collect('bedType')"
@@ -304,7 +293,7 @@
                   color="blue darken-1"
                   flat
                   type="submit"
-                  @click="editRoom(roomMode,roomId)"
+                  @click="editRoom(roomId)"
                 >Update</v-btn>
                 <v-btn color="blue darken-1" flat @click="$refs.formNewRoom.reset()">Reset</v-btn>
                 <v-btn color="blue darken-1" flat @click="cancel">Cancel</v-btn>
@@ -313,6 +302,16 @@
           </v-flex>
         </v-layout>
       </v-dialog>
+      <v-snackbar
+        v-model="snackbar"
+        color="primary white--text"
+        top
+        right
+        :timeout="snackbarTimeout"
+        multi-line
+      >
+        <h4>{{snackbarText}}</h4>
+      </v-snackbar>
     </v-layout>
     <v-layout>
       <v-container>
@@ -322,43 +321,25 @@
 
           <v-expansion-panel v-model="panelIndex" v-bind:popout="popout" expand class="elevation-0">
             <h1 class="white--text">Your rooms</h1>
-            <v-expansion-panel-content
-              v-for="(room,index) in arrayRoom"
-              :key="index"
-              class="primary"
-            >
+            <v-expansion-panel-content v-for="(el,index) in arrayRoom" :key="index" class="primary">
               <template v-slot:header>
                 <div>
-                  <!-- <h3>{{index}}</h3> -->
-                  <h3>{{index}}</h3>
+                  <h3>{{el.room_mode.name}}</h3>
                 </div>
               </template>
               <!-- <v-card>
               <v-card-text class="grey lighten-3 black--text">-->
               <v-tabs grow slider-color="yellow">
-                <v-tab v-for="(r,i) in room" :key="i">{{r.room_type}}</v-tab>
+                <v-tab v-for="(r,i) in el.room" :key="i">{{r.room_type}}</v-tab>
                 <v-tabs-items>
-                  <v-tab-item v-for="(r,i) in room" :key="i">
+                  <v-tab-item v-for="(r,i) in el.room" :key="i">
                     <v-container class="grey lighten-3">
                       <v-layout row>
                         <v-spacer></v-spacer>
-                        <v-btn @click="showEdit(index,r.id)">edit</v-btn>
-                        <v-btn @click="deleteConfirm(index,r.id)">delete</v-btn>
-                        <v-dialog width="30%" v-model="confirmDialog">
-                          <v-card>
-                            <v-card-title>
-                              <h3>Confirmation</h3>
-                            </v-card-title>
-                            <v-card-text>Do you really want to delete this Room</v-card-text>
-                            <v-card-actions>
-                              <v-spacer></v-spacer>
-                              <v-btn @click="cancel">cancel</v-btn>
-                              <v-btn @click="deleteRoom">delete</v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </v-dialog>
-                      </v-layout>
 
+                        <v-btn @click="showEdit(el.room_mode.name,r.id)">edit</v-btn>
+                        <v-btn @click="deleteConfirm(el.room_mode.name,r.id)">delete</v-btn>
+                      </v-layout>
                       <v-layout>
                         <v-flex md4>
                           <span height="200px" v-for="(image,index) in r.images" :key="index">
@@ -448,6 +429,19 @@
               </v-tabs>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <v-dialog width="30%" v-model="confirmDialog">
+            <v-card>
+              <v-card-title>
+                <h3>Confirmation</h3>
+              </v-card-title>
+              <v-card-text>Do you really want to delete this Room</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn @click="cancel">cancel</v-btn>
+                <v-btn @click="deleteRoom">delete</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-card>
       </v-container>
     </v-layout>
@@ -510,26 +504,7 @@ export default {
       defaultBedType: 1,
       amount: 1,
       total: 1,
-      arrayAge: [
-        { text: "<1", value: 0 },
-        { text: "1", value: 1 },
-        { text: "2", value: 2 },
-        { text: "3", value: 3 },
-        { text: "4", value: 4 },
-        { text: "5", value: 5 },
-        { text: "6", value: 6 },
-        { text: "7", value: 7 },
-        { text: "8", value: 8 },
-        { text: "9", value: 9 },
-        { text: "10", value: 10 },
-        { text: "11", value: 11 },
-        { text: "12", value: 12 },
-        { text: "13", value: 13 },
-        { text: "14", value: 14 },
-        { text: "15", value: 15 },
-        { text: "16", value: 16 },
-        { text: "17", value: 17 }
-      ],
+
       dictionary: {
         custom: {
           roomName: {
@@ -553,7 +528,11 @@ export default {
       roomType: 0,
       hotelId: this.$route.query.hotelId,
       images: [],
-      primaryImage: 0
+      primaryImage: 0,
+      snackbar: false,
+      snackbarText: "hihi",
+      snackbarTimeout: 5000,
+      roomModeWorkingOn: ""
     };
   },
   created() {
@@ -566,7 +545,11 @@ export default {
   methods: {
     chooseRoomMode: function() {
       this.roomTypeDisable = false;
-      console.log(this.hotelId);
+      for (var i = 0; i < this.arrayRoomMode.length; i++) {
+        if (this.defaultRoomMode == this.arrayRoomMode[i].id) {
+          this.roomModeWorkingOn = this.arrayRoomMode[i].name;
+        }
+      }
       axios
         .get("http://localhost:8000/api/manager/room-type", {
           params: {
@@ -593,7 +576,6 @@ export default {
         this.room.max_adult_amount = 2;
         this.showAmount = true;
       }
-      console.log(this.room.max_adult_amount);
     },
     addImage(e) {
       let files = e.target.files || e.dataTransfer.files;
@@ -627,7 +609,7 @@ export default {
         }
       }
       console.log(index);
-      console.log(this.primaryImage);
+      console.log(this.images);
     },
     deleteImage: function(i) {
       this.images.splice(i, 1);
@@ -660,10 +642,8 @@ export default {
         })
         .then(response => {
           if (response.data.status == true) {
-            console.log(" array room : " + response);
             this.arrayRoom = response.data.data;
           }
-          console.log(this.arrayRoom);
         })
         .catch(function(error) {
           console.log(error.response);
@@ -676,6 +656,7 @@ export default {
         })
         .then(response => {
           this.arrayRoomMode = response.data;
+          console.log(this.arrayRoomMode);
         })
         .catch(function(error) {
           console.log(error.response);
@@ -705,56 +686,87 @@ export default {
       this.bed.splice(index, 1);
     },
     addNewRoom: function() {
-      console.log(this.room);
-      this.$validator.validate().then(valid => {
-        if (!valid) {
-          console.log("can't");
-        } else {
-          console.log("run");
-          axios({
-            method: "post",
-            url: "http://localhost:8000/api/manager/room",
-            data: {
-              hotel_id: this.hotelId,
-              room_name: this.room.room_name,
-              description: this.room.description,
-              price: this.room.price,
-              amount: this.room.amount,
-              max_adult_amount: this.room.max_adult_amount,
-              max_child_amount: this.room.max_child_amount,
-              free_child_amount: this.room.free_child_amount,
-              room_size: this.room.room_size,
-              room_mode_id: this.defaultRoomMode,
-              room_type_id: this.defaultRoomType,
-              bed: this.bed,
-              images: this.images
-            },
-            headers: {
-              Authorization: "Bearer " + this.api_token
-            }
-          })
-            .then(response => {
-              console.log(response);
-
-              console.log(this.arrayRoom);
+      var _this = this;
+      this.$validator
+        .validate()
+        .then(valid => {
+          if (!valid) {
+          } else {
+            axios({
+              method: "post",
+              url: "http://localhost:8000/api/manager/room",
+              data: {
+                hotel_id: this.hotelId,
+                room_name: this.room.room_name,
+                description: this.room.description,
+                price: this.room.price,
+                amount: this.room.amount,
+                max_adult_amount: this.room.max_adult_amount,
+                max_child_amount: this.room.max_child_amount,
+                free_child_amount: this.room.free_child_amount,
+                child_age: this.room.child_age,
+                room_size: this.room.room_size,
+                room_mode_id: this.defaultRoomMode,
+                room_type_id: this.defaultRoomType,
+                bed: this.bed,
+                images: this.images
+              },
+              headers: {
+                Authorization: "Bearer " + this.api_token
+              }
             })
-            .catch(error => {
-              console.log(error.response);
-            });
-          console.log("done");
-        }
-      });
+              .then(response => {
+                console.log(response.data);
+                if (response.data.status == true) {
+                  this.dialog = false;
+                  this.snackbarText = response.data.message;
+                  this.snackbar = true;
+                  var exist = false;
+                  var room = response.data.room;
+                  console.log(room);
+                  this.arrayRoom.forEach(element => {
+                    if (element.room_mode.name == room.room_mode) {
+                      exist = true;
+                    }
+                  });
+                  if (exist == false) {
+                    var object = {
+                      room_mode: {
+                        id: room.room_mode_id,
+                        name: room.room_mode
+                      },
+                      room: []
+                    };
+                    this.arrayRoom.push(object);
+                  }
+                  this.arrayRoom.forEach(element => {
+                    console.log(element);
+                    if (element.room_mode.name == room.room_mode) {
+                      element.room.push(room);
+                    }
+                  });
+                }
+              })
+              .catch(error => {
+                console.log(error.response);
+              });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
-    deleteConfirm: function(roomType, roomId) {
+    deleteConfirm: function(roomMode, roomId) {
       this.confirmDialog = true;
       this.roomId = roomId;
-      this.roomType = roomType;
+      this.roomModeWorkingOn = roomMode;
     },
     cancel: function() {
       this.dialog = false;
       this.confirmDialog = false;
     },
     deleteRoom: function() {
+      console.log("xoa" + this.roomId);
       axios({
         method: "delete",
         url: "http://localhost:8000/api/manager/room/" + this.roomId,
@@ -766,25 +778,29 @@ export default {
         }
       })
         .then(response => {
-          for (let [key, value] of Object.entries(this.arrayRoom)) {
-            if (key === this.roomType) {
-              for (var i = 0; i < value.length; i++) {
-                if (value[i].id == this.roomId) {
-                  value.splice(i, 1);
-                }
-              }
-              this.confirmDialog = false;
-              if (value.length < 1) {
-                delete this.arrayRoom[key];
+          this.arrayRoom.forEach(element => {
+            for (var i = 0; i < element.room.length; i++) {
+              if (element.room[i].id == this.roomId) {
+                element.room.splice(i, 1);
               }
             }
+          });
+          console.log(this.arrayRoom);
+          for (var i = 0; i < this.arrayRoom.length; i++) {
+            console.log(this.arrayRoom[i].room.length);
+            if (this.arrayRoom[i].room.length == 0) {
+              this.arrayRoom.splice(i, 1);
+            }
           }
+          this.confirmDialog = false;
         })
         .catch(error => {
           console.log(error.response);
         });
     },
-    showEdit: function(roomType, roomId) {
+    showEdit: function(roomMode, roomId) {
+      this.roomModeWorkingOn = roomMode;
+
       this.dialog = true;
       this.formTitle = "Edit Room";
       this.roomId = roomId;
@@ -803,6 +819,13 @@ export default {
             this.room.room_name = room.room_name;
             this.room.amount = room.amount;
             this.room.description = room.description;
+            if (this.room.child_age != null) {
+              this.showAmount = true;
+              this.showFreeAmount = true;
+            } else {
+              this.showAmount = false;
+              this.showFreeAmount = false;
+            }
             this.room.max_adult_amount = room.max_adult_amount;
             this.room.max_child_amount = room.max_child_amount;
             this.room.child_age = room.child_age;
@@ -812,6 +835,7 @@ export default {
             this.defaultRoomMode = room.room_mode_id;
             this.defaultRoomType = room.room_type_id;
             this.images = room.images;
+            console.log(this.images);
             // if (response.data.bed.length > 0) {
             //   this.bed = response.data.bed;
             // }
@@ -820,9 +844,12 @@ export default {
         })
         .catch(function(error) {
           console.log(error.response);
+          this.dialog = false;
+          this.snackbarText = response.data.message;
+          this.snackbar = true;
         });
     },
-    editRoom: function(roomType, roomId) {
+    editRoom: function(roomId) {
       axios({
         method: "put",
         url: "http://localhost:8000/api/manager/room/" + roomId,
@@ -834,6 +861,7 @@ export default {
           amount: this.room.amount,
           max_adult_amount: this.room.max_adult_amount,
           max_child_amount: this.room.max_child_amount,
+          free_child_amount: this.room.free_child_amount,
           room_size: this.room.room_size,
           room_mode_id: this.defaultRoomMode,
           room_type_id: this.defaultRoomType,
@@ -845,10 +873,21 @@ export default {
         }
       })
         .then(response => {
-          for (let [key, value] of Object.entries(this.arrayRoom)) {
-            console.log(key);
-            console.log(value);
-            console.log(roomType);
+          console.log(response);
+          if (response.data.status == true) {
+            this.dialog = false;
+            this.snackbarText = response.data.message;
+            this.snackbar = true;
+            this.arrayRoom.forEach(element => {
+              for (let i = 0; i < element.room.length; i++) {
+                if(element.room[i].id == response.data.room.id){
+                  var room = response.data.room;
+                  element.room[i] = room;
+                  this.images = room.images;
+                }
+                
+              }
+            });
           }
         })
         .catch(error => {

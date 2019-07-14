@@ -2,7 +2,7 @@
   <v-layout row wrap>
     <v-flex shrink md12>
       <v-layout class="top-search" row wrap justify-center align-center>
-        <input class="search-input" style="width:250px;" type="text" v-model="placeVal">
+        <input class="search-input" style="width:250px;" type="text" v-model="placeVal" />
         <v-menu
           ref="checkIn"
           v-model="mn.menu2"
@@ -23,7 +23,7 @@
               v-model="checkInFormattedVal"
               readonly
               v-on="on"
-            >
+            />
           </template>
           <v-date-picker light no-title scrollable v-model="checkInVal">
             <v-spacer></v-spacer>
@@ -51,7 +51,7 @@
               v-model="checkOutFormattedVal"
               readonly
               v-on="on"
-            >
+            />
           </template>
           <v-date-picker light no-title scrollable v-model="checkOutVal">
             <v-spacer></v-spacer>
@@ -59,7 +59,14 @@
             <v-btn flat @click="$refs.checkOut.save(checkOutVal)">OK</v-btn>
           </v-date-picker>
         </v-menu>
-        <v-btn color="teal" dark icon depressed style="width:30px; height:30px;" v-on:click="reSearch()">
+        <v-btn
+          color="teal"
+          dark
+          icon
+          depressed
+          style="width:30px; height:30px;"
+          v-on:click="reSearch()"
+        >
           <v-icon small>search</v-icon>
         </v-btn>
       </v-layout>
@@ -158,8 +165,8 @@
               </v-card-text>
             </v-card>
             <v-divider></v-divider>
-            <v-card flat>
-              <v-card-title class="pa-0 ma-0">
+            <v-card v-if="noData == false" flat>
+              <v-card-title>
                 <h5>Location</h5>
                 {{districtSeleted}}
               </v-card-title>
@@ -188,7 +195,7 @@
                 </v-layout>
               </v-card-text>
             </v-card>
-            <v-divider></v-divider>
+            <v-divider v-if="noData == false"></v-divider>
             <v-card flat>
               <v-card-title class="pa-0 ma-0">
                 <h5>Hotel Type</h5>
@@ -259,7 +266,10 @@
         <div v-if="loading" class="text-center">
           <v-progress-circular :size="70" :width="7" color="blue" indeterminate></v-progress-circular>
         </div>
-        <div v-else></div>
+        <div v-else>
+          <v-card v-if="noData == true" light flat tile>
+            No Data found :'(
+          </v-card>
         <v-card light flat tile>
           <v-layout class="search-item" v-for="(hotel,index) in data" :key="index">
             <v-flex xs3>
@@ -298,21 +308,22 @@
                           <v-list-tile-title>{{hotel.description}}</v-list-tile-title>
                         </v-list-tile-content>
                       </v-list-tile>
-                      <v-list-tile class="pa-0 ma-0">
-                        <div>
                           <div>
-                            Price:
-                            <span>{{hotel.minPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
+                            <div>
+                              Price:
+                              <span>{{hotel.minPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
+                            </div>
                           </div>
-                        </div>
-                      </v-list-tile>
-                    </v-list>
-                  </v-card>
-                </v-card-title>
-              </router-link>
-            </v-flex>
-          </v-layout>
-        </v-card>
+                        </v-list-tile>
+                      </v-list>
+                    </v-card>
+                  </v-card-title>
+                </router-link>
+              </v-flex>
+            </v-layout>
+          </v-card>
+          </div>
+        </div>
       </div>
     </v-flex>
   </v-layout>
@@ -374,7 +385,9 @@ export default {
         5: false
       },
       arrayHotel: [],
-      loading: false
+      loading: false,
+      noData: false,
+      firstTime: true,
     };
   },
   created() {
@@ -383,7 +396,7 @@ export default {
     this.checkInFormattedVal = this.formatDate(this.$route.query.check_in);
     this.checkOutVal = this.$route.query.check_out;
     this.checkOutFormattedVal = this.formatDate(this.$route.query.check_out);
-    this.getData();    
+    this.getData();
   },
   watch: {
     $route: "getData",
@@ -398,7 +411,11 @@ export default {
     hotelTypeSeleted: "getData",
     // price: "getData",
     RoomTypeSeleted: "getData",
-    
+    firstTime: function(newValue , oldValue) {
+      if (oldValue != newValue) {
+        this.initialize();
+      }
+    }
   },
   methods: {
     chooseStar: function(i) {
@@ -436,8 +453,15 @@ export default {
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
-    reSearch: function(){
-      this.$router.push({ path: "searching" , query:{place:this.place.replace(/\s/g,'-'), check_in:this.checkIn, check_out:this.checkOut}});
+    reSearch: function() {
+      this.$router.push({
+        path: "searching",
+        query: {
+          place: this.place.replace(/\s/g, "-"),
+          check_in: this.checkIn,
+          check_out: this.checkOut
+        }
+      });
     },
     getData: function() {
       this.loading = true;
@@ -453,15 +477,21 @@ export default {
           district: this.districtSeleted,
           hotelType: this.hotelTypeSeleted,
           price: this.price,
-          roomType: this.RoomTypeSeleted,
+          roomType: this.RoomTypeSeleted
         }
       })
         .then(response => {
-          this.loading = false;
-          console.log(response);
-          this.data = response.data;
-        this.initialize();
-
+          this.firstTime = false;
+          if (response.data.status == false) {
+            this.loading = false;
+            this.noData = true;
+          } else {
+            this.loading = false;
+            this.noData = false;
+            console.log(response);
+            this.data = response.data.data;
+            this.getDisctrict();
+          }
         })
         .catch(error => {
           this.loading = false;
@@ -470,7 +500,6 @@ export default {
     },
     initialize: function() {
       this.getService();
-      this.getDisctrict();
       this.getPrice();
       this.getHotelType();
       this.getRoomType();
@@ -484,7 +513,12 @@ export default {
         })
         .then(response => {
           console.log(response);
-          this.arrayDistrict = response.data.data;
+          if (response.data.status == false) {
+            this.showDistrict = false;
+          } else {
+            this.arrayDistrict = response.data.data;
+            this.showDistrict = true;
+          }
         })
         .catch(function(error) {
           console.log(error);
@@ -523,8 +557,7 @@ export default {
     },
     getRoomType: function() {
       axios
-        .get("http://localhost:8000/api/room-type", {
-        })
+        .get("http://localhost:8000/api/room-type", {})
         .then(response => {
           console.log(response);
           this.arrayRoomType = response.data.data;
@@ -532,7 +565,7 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
-    },
+    }
     // search: function() {
     //   axios
     //     .get("http://localhost:8000/api/hotel-type", {

@@ -15,7 +15,7 @@ use App\Models\ServiceRoomType;
 use function GuzzleHttp\json_decode;
 use App\Http\Resources\RoomBedTypeResource;
 use Intervention\Image\ImageManagerStatic as Image;
-
+use App\Http\Resources\RoomModeResource;
 
 class RoomController extends Controller
 {
@@ -28,9 +28,15 @@ class RoomController extends Controller
     {
         $rooms =  Room::where("hotel_id", $request->hotelId)->get();
         $result = [];
-        foreach ($rooms as $room) {
-            // dd($room);
-            $result[$room->RoomMode->name][] = new RoomResource($room);
+        $arrayRoomMode = [];
+        foreach (Hotel::find($request->hotelId)->RoomMode() as $roomMode) {
+            $arrayRoomMode[] = new RoomModeResource($roomMode);
+        }
+        foreach ($arrayRoomMode as $roomMode) {
+            $temp = [];
+            $temp['room_mode'] = $roomMode;
+            $temp['room'] = $roomMode->roomByHotel($request->hotelId);
+            $result[] = $temp;
         }
         return response()->json([
             "status" => true,
@@ -86,6 +92,7 @@ class RoomController extends Controller
         return response()->json([
             "status" => true,
             "message" => "room created",
+            "room" => new RoomResource($room),
         ]);
     }
 
@@ -136,16 +143,51 @@ class RoomController extends Controller
             $beds = $request->bed;
             RoomBedType::where("room_id", $id)->delete();
             foreach ($beds as $bed) {
-                $bed = json_decode($bed);
+                // $bed = json_decode($bed);
                 RoomBedType::updateOrCreate([
-                    "bed_type_id" => $bed->bedTypeId,
+                    "bed_type_id" => $bed["bedTypeId"],
                     "room_id" => $id,
-                    "amount" => $bed->amount,
+                    "amount" => $bed["amount"],
                 ]);
             }
+            $images = $request->images;
+            $length = sizeof($images);
+            $temp = [];
+            // return $images;
+            for ($i = 0; $i < $length; $i++) {
+                //hinh cu
+                if ($images[$i]["id"] != -1) {
+                    $explode = explode("/", $images[$i]["image_link"]);
+                    $imageName = ($explode[5]);
+                    $temp[] = $imageName;
+                    $primary = 0;
+                    if ($images[$i]["is_primary"] == 1) {
+                        $primary = 1;
+                    }
+                    RoomImage::find($images[$i]["id"])->update(["is_primary" => $primary]);
+                }
+                //hinh moi
+                else {
+                    $name = time() . str_random(10);
+                    $image = Image::make($images[$i]["image_link"])->resize(200, 200)->save(public_path("images/room/" . $name));
+                    $primary = 0;
+                    if ($images[$i]["is_primary"] == 1) {
+                        $primary = 1;
+                    }
+                    RoomImage::create([
+                        "image_link" => $image->filename,
+                        "is_primary" => $primary,
+                        "room_id" => $room->id,
+                    ]);
+                }
+            }
+            $oldImage = RoomImage::where("room_id", $room->id)
+                ->whereNotIn("image_link", $temp)
+                ->delete();
             return response()->json([
                 "status" => true,
                 "message" => "room updated",
+                "room" => new RoomResource($room),
             ]);
         } else {
             return response()->json([
