@@ -16,3 +16,4 @@ yarn-error.log
 /public/images
 composer.lock
 composer.json
+/composer.lock

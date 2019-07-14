@@ -353,6 +353,16 @@
                         mask="##"
                       ></v-text-field>
                     </v-flex>
+                    <v-flex xs4>
+                          <v-select
+                            outline
+                            label="Child's age"
+                            :items="arrayAge"
+                            item-text="text"
+                            item-value="value"
+                            v-model="newHotelData.child_age"
+                          ></v-select>
+                        </v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex offset-md1 md11>
@@ -554,7 +564,8 @@ export default {
         cancelable: false,
         cancel_day: 0,
         refundRate: 0,
-        detailPolicy: ""
+        detailPolicy: "",
+        child_age: "",
       },
       menuCheckin: false,
       menuCheckout: false,
@@ -580,7 +591,27 @@ export default {
       firstTime: true,
       images: [],
       primaryImage: 0,
-      hotel_id: 0
+      hotel_id: 0,
+      arrayAge: [
+        { text: "<1", value: 0 },
+        { text: "1", value: 1 },
+        { text: "2", value: 2 },
+        { text: "3", value: 3 },
+        { text: "4", value: 4 },
+        { text: "5", value: 5 },
+        { text: "6", value: 6 },
+        { text: "7", value: 7 },
+        { text: "8", value: 8 },
+        { text: "9", value: 9 },
+        { text: "10", value: 10 },
+        { text: "11", value: 11 },
+        { text: "12", value: 12 },
+        { text: "13", value: 13 },
+        { text: "14", value: 14 },
+        { text: "15", value: 15 },
+        { text: "16", value: 16 },
+        { text: "17", value: 17 }
+      ],
     };
   },
   created() {},
@@ -597,47 +628,6 @@ export default {
       this.panel = this.hotelPanel;
       this.panel[0] = true;
     }
-    // if (this.firstTime == false) {
-
-    //   for (var i = 0; i < this.panel.length; i++) {
-    //     this.panel[i] = false;
-    //   }
-    //   console.log(this.panel[index]);
-    //   console.log(this.panel);
-
-    // if (this.firstTime == true) {
-    //   this.panel[0] = true;
-    //   this.firstTime = false;
-    // } else {
-    //   for (var i = 0; i < this.panel.length; i++) {
-    //     this.panel[i] = false;
-    //   }
-    //   for (var i = 0; i < this.panel.length; i++) {
-    //     if (oldPanel[i] != newPanel[i]) {
-    //       index = i;
-    //     }
-    //   }
-    //   console.log(index);
-    //   this.panel[index] = true;
-    // for (var i = 0; i < this.panel.length; i++) {
-    //   if (oldPanel[i] != newPanel[i]) {
-    //     index = i;
-    //   }
-    // }
-    // this.hotel_id = this.arrayHotel[index].id;
-    // this.hotel_stars_num = this.arrayHotel[index].stars_num;
-    // this.$emit("chooseHotel", this.hotel_id);
-    // this.$emit("panelIndex", index);
-    // }
-    //   console.log(this.panel);
-    //   this.hotel_id = this.arrayHotel[index].id;
-    //   this.hotel_stars_num = this.arrayHotel[index].stars_num;
-    //   this.$emit("chooseHotel", this.hotel_id);
-    //   this.$emit("panelIndex", index);
-    // } else {
-    //   this.firstTime = false;
-    // }
-    // }
   },
   computed: {
     addNewTitle: function() {
@@ -695,6 +685,7 @@ export default {
               cancelable: this.newHotelData.cancelable,
               cancel_day: this.newHotelData.cancel_day,
               refundRate: this.newHotelData.refundRate,
+              child_age: this.newHotelData.child_age,
               detailPolicy: this.newHotelData.detailPolicy
             },
             headers: {
@@ -730,6 +721,7 @@ export default {
                   phone_number: this.newHotelData.phone,
                   stars_num: this.newHotelData.rating,
                   tax_code: this.newHotelData.tax_code,
+                  child_age: this.newHotelData.child_age,
                   policy: {
                     checkin: this.newHotelData.checkin,
                     checkout: this.newHotelData.checkout,
@@ -868,6 +860,7 @@ export default {
               phone: this.newHotelData.phone,
               fax_number: this.newHotelData.fax_number,
               tax_code: this.newHotelData.tax_code,
+              child_age: this.newHotelData.child_age,
               images: this.images,
               primaryId: this.primaryImage,
               checkin: this.newHotelData.checkin,
@@ -917,6 +910,9 @@ export default {
                     _this.arrayHotel[
                       i
                     ].fax_number = this.newHotelData.fax_number;
+                    _this.arrayHotel[
+                      i
+                    ].child_age = this.newHotelData.child_age;
                     _this.arrayHotel[
                       i
                     ].policy.cancel_day = this.newHotelData.cancel_day;
@@ -972,6 +968,7 @@ export default {
       this.newHotelData.name = hotel.name;
       this.newHotelData.rating = hotel.stars_num;
       this.newHotelData.description = hotel.description;
+      this.newHotelData.child_age = hotel.child_age;
       if (hotel.policy.cancel_day > 0) {
         this.newHotelData.cancelable = true;
       } else {

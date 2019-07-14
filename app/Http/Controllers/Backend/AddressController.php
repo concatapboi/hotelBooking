@@ -104,9 +104,15 @@ class AddressController extends Controller
     public function getDistrictByPronvinceName(Request $request)
     {
         $provinceName = $request->province;
-        $provinceId = Province::where("name",$provinceName)->first()->id;
+        $province = Province::where("name",$provinceName)->first();
+        if($province == null){
+            return response()->json([
+                "status" => false,
+            ]);
+        }else{
+            $provinceId = $province->id;
+        }
         $arrayDistrict = District::where('province_id',$provinceId)->get();
-        // return $arrayDistrict;
         $arrayData = [];
         foreach($arrayDistrict as $district){
             $data = new ProvinceResource($district);

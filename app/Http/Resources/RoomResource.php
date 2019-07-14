@@ -43,7 +43,7 @@ class RoomResource extends JsonResource
             "max_adult_amount" => $this->max_adult_amount,
             "max_child_amount" => $this->max_child_amount,
             "free_child_amount" => $this->free_child_amount,
-            "child_age" => $this->child_age,
+            "child_age" => $this->Hotel->child_age,
             "room_size" => $this->room_size,
             "amount" => $this->amount,
             "room_type" => $roomType,
