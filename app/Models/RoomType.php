@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ServiceRoomType;
+use App\Models\ApplyCouponCodeRoomType;
 
 class RoomType extends Model
 {
@@ -19,6 +20,10 @@ class RoomType extends Model
   public function ServiceRoomType()
   {
     return $this->hasMany('App\Models\ServiceRoomType', 'room_type_id', 'id');
+  }
+  public function Apply()
+  {
+    return ApplyCouponCodeRoomType::where('room_type_id', $this->id)->get();
   }
 
   public function Service()

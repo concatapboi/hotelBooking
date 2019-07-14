@@ -95,23 +95,22 @@ class UserController extends Controller
                 ]);
             }
         }
-        return response()->json(['data' => $f]);
+        return response()->json(['data' => true]);
     }
 
     //unfollow
     public function unfollow(Request $req)
     {
-        $f = null;
         if ($req->type == 0) {
             if (User::find($req->id) && User::find($req->followed)) {
-                $f = CustomerFollowing::where('follower_id', $req->id)->where('followed_id', $req->followed)->delete();
+                CustomerFollowing::where('follower_id', $req->id)->where('followed_id', $req->followed)->delete();
             }
         } else {
             if (User::find($req->id) && Hotel::find($req->followed)) {
-                $f = HotelFollowing::where('customer_id', $req->id)->where('hotel_id', $req->followed)->delete();
+                HotelFollowing::where('customer_id', $req->id)->where('hotel_id', $req->followed)->delete();
             }
         }
-        return response()->json(['data' => $f]);
+        return response()->json(['data' => true]);
     }
 
     //member count

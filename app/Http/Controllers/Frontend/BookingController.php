@@ -12,6 +12,7 @@ use Validator;
 use Hash;
 use Session;
 use App\Models\BookingStatus;
+use App\Models\CouponCode;
 
 class BookingController extends Controller
 {
@@ -49,6 +50,12 @@ class BookingController extends Controller
             else {
                 $status = true;
                 $mess = 'Sucessfully!';
+                $coupon_code = CouponCode::find($b['coupon_code_id']);
+                $discount = 0;
+                if($coupon_code !=null){
+                    $discount = $coupon_code->discount_value;
+                    $coupon_code = $coupon_code->code;
+                }
                 $booking = Booking::create([
                     'hotel_name' => $room->Hotel->name,
                     'room_price' => $room->price,
@@ -64,6 +71,8 @@ class BookingController extends Controller
                     'room_id' => $b['roomId'],
                     'customer_id' => Auth::user()->id,
                     'payment_method_id' => $b['payment'],
+                    'coupon_code' => $coupon_code,
+                    'discount_value' => $discount,
                     'status_id' => 1,
                 ]);
                 $booking->Status;
