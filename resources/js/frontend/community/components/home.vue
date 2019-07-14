@@ -144,7 +144,7 @@
                   <v-flex md10 class="pl-3">
                     <v-card-title>
                       <v-textarea
-                      v-model="comment"
+                      v-model="comment.content"
                         outline
                         auto-grow
                         rows="2"
@@ -157,7 +157,7 @@
                   </v-flex>
                   <v-flex>
                     <v-card-actions>
-                      <v-btn round large depressed :disabled="comment.length ===0" color="teal" class="white--text" @click="sendComment">
+                      <v-btn round large depressed :disabled="comment.length ===0" color="teal" class="white--text" @click="sendComment(r.id)">
                         <span>Send</span>
                       </v-btn>
                     </v-card-actions>
@@ -498,7 +498,11 @@ export default {
   mounted() {},
   data() {
     return {
-      comment:"",
+      comment: {
+        review_id: 0,
+        content: "",
+        able: false
+      },
       oops: "",
       user: {},
       expand: [true, true, true],
@@ -760,6 +764,17 @@ export default {
     this.user = this.customer;
     this.load();
   },
+  watch:{
+    "comment.content": function(val) {
+      if (val.length == 0) {
+        this.comment.able = false;
+        this.comment.review_id = 0;
+        this.comment.content = "";
+      } else {
+        this.comment.able = true;
+      }
+    }
+  },
   methods: {
     load: function() {
       this.$emit("loadLogin");
@@ -947,8 +962,53 @@ export default {
           }
         });
     },
-    sendComment: function(){
-      alert('comment'+this.comment.length);
+    getIndex(id) {
+      var index = -1;
+      if (this.feeds.length != 0) {
+        this.feeds.forEach((element, i) => {
+          if (element.id == id) index = i;
+        });
+      }
+      return index;
+    },
+    sendComment: function(reviewID) {
+      var flag = true;
+      var index = this.getIndex(reviewID);
+      this.comment.review_id = reviewID;
+      axios({
+        method: "post",
+        url: "http://localhost:8000/api/comment",
+        data: {
+          comment: this.comment
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          console.log(res.data.status);
+          if (res.data.status == true) {
+            console.log(res.data.comment);
+            var comment = res.data.comment;
+            this.feeds[index].comment.push(comment);
+            this.feeds[index].comments = this.feeds[index].comments+1;
+            this.comment.able = false;
+            this.comment.content = "";
+            this.comment.review_id = 0;
+          } else {
+            this.$emit("loadSnackbar", "Something wrong!");
+          }
+        })
+        .catch(error => {
+          this.comment.able = false;
+          this.comment.content = "";
+          this.comment.review_id = 0;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
     },
     hide: function(index) {
       this.snackbar.state = !this.snackbar.state;
