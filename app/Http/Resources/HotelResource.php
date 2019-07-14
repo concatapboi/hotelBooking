@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\HotelImageResource;
 use App\Http\Resources\PolicyResource;
 use App\Http\Resources\RoomResource;
+use App\Models\HotelImage;
 
 class HotelResource extends JsonResource
 {
@@ -41,7 +42,7 @@ class HotelResource extends JsonResource
             "minPrice" => $this->minPrice(),
             "maxPrice" => $this->maxPrice(),
             "ward" => $this->ward_id,
-            
+            "image" => HotelImage::where('hotel_id',$this->id)->where('is_primary',1)->first()->image_link            
         ];
         $policy = $this->Policy;
         if($policy != null){

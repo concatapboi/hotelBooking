@@ -3,6 +3,7 @@ import VueRouter  from 'vue-router';
 
 import home  from '@/js/frontend/community/components/home';
 import account  from '@/js/frontend/community/components/account';
+import hotel  from '@/js/frontend/community/components/hotel';
 import user  from '@/js/frontend/community/components/user';
 import news  from '@/js/frontend/community/components/news';
 import login  from '@/js/frontend/community/components/login';
@@ -26,6 +27,11 @@ const router = new VueRouter({
 			path: '/community/account',
 			name: 'account',
 			component: account
+		},
+		{
+			path: '/hotel/:id',
+			name: 'hotel',
+			component: hotel
 		},
 		{
 			path: '/community/user/:id',

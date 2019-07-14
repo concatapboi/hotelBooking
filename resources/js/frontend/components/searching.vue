@@ -66,14 +66,14 @@
     </v-flex>
     <v-flex md4>
       <div class="right-search">
-        <v-card dark flat>
+        <v-card dark flat width="100%">
           <v-card-text>
             <v-card flat>
-              <v-card-title>
-                <h5>Star rating</h5>
-                {{starsSeleted}}
+              <v-card-title class="pa-0 ma-0">
+                  <h5>Star rating</h5>
+                  {{starsSeleted}}
               </v-card-title>
-              <v-card-text>
+              <v-card-text class="pa-0 ma-0">
                 <v-layout row v-for="i in number" :key="i" justify-center align-center>
                   <v-flex md1 offset-md1 class="pt-3">
                     <v-checkbox
@@ -102,11 +102,11 @@
             <v-divider></v-divider>
 
             <v-card flat>
-              <v-card-title>
+              <v-card-title class="pa-0 ma-0">
                 <h5>Service</h5>
                 {{serviceSeleted}}
               </v-card-title>
-              <v-card-text>
+              <v-card-text class="pa-0 ma-0">
                 <v-layout
                   row
                   v-for="(service,i) in arrayService"
@@ -136,12 +136,13 @@
             </v-card>
             <v-divider></v-divider>
             <v-card flat>
-              <v-card-title>
+              <v-card-title class="pa-0 ma-0">
                 <h5>Price</h5>
+                <span>({{price[0].toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{price[1].toLocaleString('en-US', {style: 'currency',currency: 'USD',})}})</span>
               </v-card-title>
-              <v-card-text>
+              <v-card-text class="pa-0 ma-0 mt-3">
                 <v-layout row justify-center align-center>
-                  <v-flex md12>
+                  <v-flex md10>
                     <v-range-slider
                       thumb-label="always"
                       always-dirty
@@ -158,11 +159,11 @@
             </v-card>
             <v-divider></v-divider>
             <v-card flat>
-              <v-card-title>
+              <v-card-title class="pa-0 ma-0">
                 <h5>Location</h5>
                 {{districtSeleted}}
               </v-card-title>
-              <v-card-text>
+              <v-card-text class="pa-0 ma-0">
                 <v-layout
                   row
                   v-for="(district,i) in arrayDistrict"
@@ -189,11 +190,11 @@
             </v-card>
             <v-divider></v-divider>
             <v-card flat>
-              <v-card-title>
+              <v-card-title class="pa-0 ma-0">
                 <h5>Hotel Type</h5>
                 {{hotelTypeSeleted}}
               </v-card-title>
-              <v-card-text>
+              <v-card-text class="pa-0 ma-0">
                 <v-layout
                   row
                   v-for="(hotelType,i) in arrayHotelType"
@@ -220,11 +221,11 @@
             </v-card>
             <v-divider></v-divider>
             <v-card flat>
-              <v-card-title>
+              <v-card-title class="pa-0 ma-0">
                 <h5>Room Type</h5>
                 {{RoomTypeSeleted}}
               </v-card-title>
-              <v-card-text>
+              <v-card-text class="pa-0 ma-0">
                 <v-layout
                   row
                   v-for="(roomType,i) in arrayRoomType"
@@ -249,7 +250,6 @@
                 </v-layout>
               </v-card-text>
             </v-card>
-            <v-divider></v-divider>
           </v-card-text>
         </v-card>
       </div>
@@ -268,7 +268,7 @@
                 :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
                 target="_blank"
               >
-                <v-img :aspect-ratio="4/3" src="/blog/img/slider/default.png"></v-img>
+                <v-img :aspect-ratio="4/3" :src="'/blog/img/hotel/'+hotel.image"></v-img>
               </router-link>
             </v-flex>
             <v-flex xs9>
@@ -383,8 +383,7 @@ export default {
     this.checkInFormattedVal = this.formatDate(this.$route.query.check_in);
     this.checkOutVal = this.$route.query.check_out;
     this.checkOutFormattedVal = this.formatDate(this.$route.query.check_out);
-    this.initialize();
-    this.getData();
+    this.getData();    
   },
   watch: {
     $route: "getData",
@@ -461,6 +460,8 @@ export default {
           this.loading = false;
           console.log(response);
           this.data = response.data;
+        this.initialize();
+
         })
         .catch(error => {
           this.loading = false;

@@ -3,7 +3,7 @@
     <v-flex shrink md8>
       <v-img :aspect-ratio="16/4" src="/blog/img/slider/default.png" class="mr-2 radius mb-3">
         <v-layout row wrap fill-height class="lightbox white--text mt-5 mb-1 pl-5">
-          <v-spacer></v-spacer>
+          <!-- <v-spacer></v-spacer> -->
           <v-flex md9 shrink class="pl-5">
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -16,7 +16,8 @@
             <div class="subheading font-weight-black mt-2">{{user.name}}</div>
             <div class="body-1">{{user.email}}</div>
           </v-flex>
-          <v-flex md3>
+          <v-spacer></v-spacer>
+          <!-- <v-flex md3>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn dark large icon v-on:click="dialog = true" v-on="on">
@@ -26,7 +27,7 @@
               <span>Change pictures</span>
             </v-tooltip>
           </v-flex>
-          <!-- <v-dialog
+          <v-dialog
             v-model="dialog"
             fullscreen
             hide-overlay
@@ -234,160 +235,178 @@
           </v-dialog>-->
         </v-layout>
       </v-img>
-      <v-layout class="row wrap mx-3 mb-5" v-for="(item,index) in user.review" :key="index">
-        <v-badge left overlap :color="color.badge">
-          <template v-slot:badge>
-            <v-tooltip top v-if="item.can_comment == 1">
-              <template v-slot:activator="{ on }">
-                <v-icon small color="white" v-on="on" class="pointer">lock_open</v-icon>
-              </template>
-              <span>Open comment</span>
-            </v-tooltip>
-            <v-tooltip top v-else>
-              <template v-slot:activator="{ on }">
-                <v-icon small color="black" v-on="on" class="pointer">lock</v-icon>
-              </template>
-              <span>Lock comment</span>
-            </v-tooltip>
-          </template>
-          <v-card light min-height="120px" class="pa-1" flat tile width="800px">
-            <v-card-title>
-              <v-spacer></v-spacer>
-              <v-menu bottom right>
+      <div v-if="user.review.length !=0">
+        <v-layout class="row wrap mx-3 mb-5" v-for="(item,index) in user.review" :key="index">
+          <v-badge left overlap :color="color.badge">
+            <template v-slot:badge>
+              <v-tooltip top v-if="item.can_comment == 1">
                 <template v-slot:activator="{ on }">
-                  <v-btn fab icon v-on="on">
-                    <v-icon color="black">more_vert</v-icon>
-                  </v-btn>
+                  <v-icon small color="white" v-on="on" class="pointer">lock_open</v-icon>
                 </template>
-                <v-list dark>
-                  <v-list-tile v-if="item.customer_review.status ==1">
-                    <v-list-tile-title>Off notification</v-list-tile-title>
-                  </v-list-tile>
-                  <v-list-tile v-else>
-                    <v-list-tile-title>Get notification</v-list-tile-title>
-                  </v-list-tile>
-                </v-list>
-              </v-menu>
+                <span>Open comment</span>
+              </v-tooltip>
+              <v-tooltip top v-else>
+                <template v-slot:activator="{ on }">
+                  <v-icon small color="black" v-on="on" class="pointer">lock</v-icon>
+                </template>
+                <span>Lock comment</span>
+              </v-tooltip>
+            </template>
+            <v-card light min-height="120px" class="pa-1" flat tile width="800px">
+              <v-card-title>
+                <v-spacer></v-spacer>
+                <v-menu bottom right>
+                  <template v-slot:activator="{ on }">
+                    <v-btn fab icon v-on="on">
+                      <v-icon color="black">more_vert</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list dark>
+                    <v-list-tile v-if="item.customer_review.status ==1">
+                      <v-list-tile-title>Off notification</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile v-else>
+                      <v-list-tile-title>Get notification</v-list-tile-title>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
 
-              <v-card-text>
-                <span class="headline">{{item.title}}</span>
-                <v-layout>
-                  <v-card
-                    flat
-                    tile
-                    tag="div"
-                    width="100%"
-                    class="radius"
-                    color="grey lighten-2"
-                    light
-                  >
-                    <v-card-text
-                      class="font-weight-bold font-italic"
-                    >{{item.content}}</v-card-text>
-                  </v-card>
-                </v-layout>
-                <span class="grey--text">&nbsp;21/12/2019</span>
-              </v-card-text>
-            </v-card-title>
-            <v-card-actions>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-icon
-                    v-on="on"
-                    class="ml-3 mr-1"
-                    large
-                    :color="color.heart"
-                    v-on:click=";"
-                    v-if="item.customer_review.like == 0"
-                  >favorite_border</v-icon>
-                  <v-icon
-                    v-on="on"
-                    class="ml-3 mr-1"
-                    large
-                    :color="color.heart"
-                    v-on:click=";"
-                    v-else
-                  >favorite</v-icon>
-                </template>
-                <span>like</span>
-              </v-tooltip>
-              <span class="grey--text subheading">{{item.likes}}</span>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-icon
-                    v-on="on"
-                    class="ml-3 mr-1"
-                    large
-                    :color="color.comment"
-                    v-on:click="item.model = true"
-                    v-if="!item.model"
-                  >chat_bubble_outline</v-icon>
-                  <v-icon
-                    v-on="on"
-                    class="ml-3 mr-1"
-                    large
-                    :color="color.comment"
-                    v-on:click="item.model = false"
-                    v-else
-                  >chat_bubble</v-icon>
-                </template>
-                <span>comment</span>
-              </v-tooltip>
-              <span class="grey--text subheading">{{item.comments}}</span>
-            </v-card-actions>
-            <v-divider v-show="item.model"></v-divider>
-            <v-layout class="row wrap" justify-center v-if="item.model">
-              <v-card light flat tile width="790px" class="mb-1" v-for="(value,i) in item.comment" :key="i">
-                <v-card-title>
-                  <v-avatar size="42px" color="black" flat>
-                    <v-avatar size="40px" flat color="white">
-                      <img :src="value.customer.avatar.image_link" />
-                    </v-avatar>
-                  </v-avatar>
-                  <span class="pl-3">{{value.customer.name}}</span>
-                </v-card-title>
                 <v-card-text>
+                  <span class="headline">{{item.title}}</span>
                   <v-layout>
-                    <v-card flat tile tag="div" color="grey lighten-2" width="100%" class="radius">
-                      <v-card-text
-                        class="font-weight-bold font-italic black--text"
-                      >{{value.content}}</v-card-text>
+                    <v-card
+                      flat
+                      tile
+                      tag="div"
+                      width="100%"
+                      class="radius"
+                      color="grey lighten-2"
+                      light
+                    >
+                      <v-card-text class="font-weight-bold font-italic">{{item.content}}</v-card-text>
                     </v-card>
                   </v-layout>
+                  <span class="grey--text">&nbsp;21/12/2019</span>
                 </v-card-text>
-                <v-divider v-show="item.can_comment === 1"></v-divider>
-              </v-card>
-              <v-card flat tile width="790px" v-show="item.can_comment === 1">
-                <v-layout row wrap align-center>
-                  <v-flex md10 class="pl-3">
-                    <v-card-title>
-                      <v-textarea
-                        outline
-                        auto-grow
-                        rows="2"
-                        color="teal"
-                        label="New comment"
-                        clear-icon="$vuetify.icons.clear"
-                        clearable
-                      ></v-textarea>
-                    </v-card-title>
-                  </v-flex>
-                  <v-flex>
-                    <v-card-actions>
-                      <v-btn large depressed dark color="teal">
-                        <span>Send</span>
-                      </v-btn>
-                    </v-card-actions>
-                  </v-flex>
-                </v-layout>
-              </v-card>
-            </v-layout>
-          </v-card>
-        </v-badge>
-      </v-layout>
+              </v-card-title>
+              <v-card-actions>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      v-on="on"
+                      class="ml-3 mr-1"
+                      large
+                      :color="color.heart"
+                      v-on:click=";"
+                      v-if="item.customer_review.like == 0"
+                    >favorite_border</v-icon>
+                    <v-icon
+                      v-on="on"
+                      class="ml-3 mr-1"
+                      large
+                      :color="color.heart"
+                      v-on:click=";"
+                      v-else
+                    >favorite</v-icon>
+                  </template>
+                  <span>like</span>
+                </v-tooltip>
+                <span class="grey--text subheading">{{item.likes}}</span>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      v-on="on"
+                      class="ml-3 mr-1"
+                      large
+                      :color="color.comment"
+                      v-on:click="item.model = true"
+                      v-if="!item.model"
+                    >chat_bubble_outline</v-icon>
+                    <v-icon
+                      v-on="on"
+                      class="ml-3 mr-1"
+                      large
+                      :color="color.comment"
+                      v-on:click="item.model = false"
+                      v-else
+                    >chat_bubble</v-icon>
+                  </template>
+                  <span>comment</span>
+                </v-tooltip>
+                <span class="grey--text subheading">{{item.comments}}</span>
+              </v-card-actions>
+              <v-divider v-show="item.comments>0 && item.model"></v-divider>
+              <v-layout class="row wrap" justify-center v-if="item.model">
+                <v-card
+                  light
+                  flat
+                  tile
+                  width="790px"
+                  class="mb-1"
+                  v-for="(value,i) in item.comment"
+                  :key="i"
+                >
+                  <v-card-title>
+                    <v-avatar size="42px" color="black" flat>
+                      <v-avatar size="40px" flat color="white">
+                        <img :src="value.customer.avatar.image_link" />
+                      </v-avatar>
+                    </v-avatar>
+                    <span class="pl-3">{{value.customer.name}}</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-layout>
+                      <v-card
+                        flat
+                        tile
+                        tag="div"
+                        color="grey lighten-2"
+                        width="100%"
+                        class="radius"
+                      >
+                        <v-card-text
+                          class="font-weight-bold font-italic black--text"
+                        >{{value.content}}</v-card-text>
+                      </v-card>
+                    </v-layout>
+                  </v-card-text>
+                  <v-divider v-show="item.can_comment === 1"></v-divider>
+                </v-card>
+                <v-card flat tile width="790px" v-show="item.can_comment === 1">
+                  <v-layout row wrap align-center>
+                    <v-flex md10 class="pl-3">
+                      <v-card-title>
+                        <v-textarea
+                          outline
+                          auto-grow
+                          rows="2"
+                          color="teal"
+                          label="New comment"
+                          clear-icon="$vuetify.icons.clear"
+                          clearable
+                        ></v-textarea>
+                      </v-card-title>
+                    </v-flex>
+                    <v-flex>
+                      <v-card-actions>
+                        <v-btn round large depressed dark color="teal" @click="sendComment">
+                          <span>Send</span>
+                        </v-btn>
+                      </v-card-actions>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </v-layout>
+            </v-card>
+          </v-badge>
+        </v-layout>
+      </div>
+      <div v-else class="mx-3 pa-4 text-md-center border">
+        <span class="text-uppercase">no reviews yet</span>
+      </div>
     </v-flex>
     <v-flex shrink md4>
-      <v-expansion-panel light class="elevation-0" expand v-model="expand">
+      <v-expansion-panel light class="elevation-0" v-model="expand">
         <v-expansion-panel-content class="mb-3">
           <template v-slot:actions>
             <v-icon>expand_more</v-icon>
@@ -397,10 +416,11 @@
               <v-icon color="black">assignment_ind</v-icon>&nbsp;profile
             </div>
           </template>
-          <v-btn depressed color="grey lighten-2" v-on:click.stop="openFormUserInfo">
+          <v-btn round depressed color="grey lighten-2" v-on:click.stop="openFormUserInfo">
             <v-icon small>create</v-icon>&nbsp;update
           </v-btn>
           <v-btn
+            round
             depressed
             color="grey lighten-2"
             v-on:click.stop="passDialog.check = true; form.pass=''"
@@ -483,10 +503,126 @@
           </template>
           <template v-slot:header>
             <div class="title my-3 text-uppercase font-weight-black">
+              <i class="fas fa-list-ol black--text"></i>&nbsp;booking list
+            </div>
+          </template>
+          <v-btn round depressed color="grey lighten-2" @click.stop="openBookingListDialog">
+            <v-icon small>notes</v-icon>&nbsp;see all
+          </v-btn>
+          <v-divider class="ma-0 pa-0"></v-divider>
+          <v-container class="pa-1 ma-0">
+            <v-layout
+              row
+              wrap
+              align-center
+              class="pa-3 ma-3 border"
+              v-for="(b,i) in user.booking"
+              :key="i"
+              v-show="i<3"
+            >
+              <v-flex md6>
+                <div>
+                  <div>
+                    ID:&nbsp;
+                    <span class="font-weight-black">{{b.id}}</span>
+                  </div>
+                  <div>
+                    Total:&nbsp;
+                    <span
+                      class="font-weight-black"
+                    >{{ (b.room_amount*b.room_price).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
+                  </div>
+                </div>
+              </v-flex>
+              <v-flex md6>
+                <div>
+                  <div>
+                    Status:&nbsp;
+                    <span class="orange--text">{{b.status.name}}</span>
+                  </div>
+                  <div>
+                    Method:&nbsp;
+                    <span class="teal--text">{{b.payment_method.name}}</span>
+                  </div>
+                </div>
+              </v-flex>
+              <v-flex md12>
+                <v-divider class="pa-0 ma-0"></v-divider>
+              </v-flex>
+              <v-flex md12 class="mt-2">
+                <div class="pl-3 body-2 font-italic" v-if="b.can_review == true">
+                  No review yet.&nbsp;
+                  <span class="pointer purple--text" @click="openReviewForm(b)">Review?</span>
+                </div>
+                <div class="pl-3 body-2 font-italic">
+                  <span class="pointer teal--text" @click="bookingAction(b,1)">More...</span>
+                </div>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-expansion-panel-content>
+        <v-expansion-panel-content class="mb-3">
+          <template v-slot:actions>
+            <v-icon>expand_more</v-icon>
+          </template>
+          <template v-slot:header>
+            <div class="title my-3 text-uppercase font-weight-black">
+              <i class="fas fa-question black--text"></i>&nbsp;question list
+            </div>
+          </template>
+          <v-btn
+            round
+            depressed
+            color="grey lighten-2"
+            @click.stop="openQuestionListDialog"
+            v-if="user.question.length!=0"
+          >
+            <v-icon small>notes</v-icon>&nbsp;see all
+          </v-btn>
+          <v-divider class="ma-0 pa-0"></v-divider>
+          <v-container class="pa-1 ma-0">
+            <v-layout
+              row
+              wrap
+              align-center
+              class="pa-3 ma-3 border"
+              v-for="(q,i) in user.question"
+              :key="i"
+              v-show="i<3"
+            >
+              <v-flex md12>
+                <div>
+                  <div>
+                    Title:&nbsp;
+                    <span class="font-weight-black">{{q.title}}</span>
+                  </div>
+                  <div>
+                    Content:&nbsp;
+                    <span class="font-weight-black">"{{q.content}}"</span>
+                  </div>
+                </div>
+              </v-flex>
+              <v-flex md12 v-if="q.reply!=null">
+                <v-divider class="pa-0 ma-0"></v-divider>
+              </v-flex>
+              <v-flex md12 v-if="q.reply !=null">
+                <div>
+                  <span>{{q.hotel.name}}:&nbsp;"{{q.reply.content}}"</span>
+                </div>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-expansion-panel-content>
+        <v-expansion-panel-content class="mb-3">
+          <template v-slot:actions>
+            <v-icon>expand_more</v-icon>
+          </template>
+          <template v-slot:header>
+            <div class="title my-3 text-uppercase font-weight-black">
               <v-icon color="black">group</v-icon>&nbsp;following &amp; followers
             </div>
           </template>
-          <v-btn depressed color="grey lighten-2" v-on:click="followDialog = true">
+          <v-btn round depressed color="grey lighten-2" v-on:click="followDialog = true">
             <v-icon small>notes</v-icon>&nbsp;see all
           </v-btn>
           <v-tabs centered grow color="grey lighten-2" light class="ma-1">
@@ -680,11 +816,11 @@
                 <v-layout v-for="(item,i) in user.followers" :key="i">
                   <v-card-title style="width:100%">
                     <router-link :to="{name:'user',params:{id:item.follower.id}}">
-                    <v-avatar size="52px" flat color="black">
-                      <v-avatar size="50px" flat color="white">
-                        <img :src="item.avatar.image_link" :alt="item.follower.name">
+                      <v-avatar size="52px" flat color="black">
+                        <v-avatar size="50px" flat color="white">
+                          <img :src="item.avatar.image_link" :alt="item.follower.name" />
+                        </v-avatar>
                       </v-avatar>
-                    </v-avatar>
                     </router-link>
                     <v-spacer></v-spacer>
                     <v-tooltip top>
@@ -696,7 +832,9 @@
                       <span>unfollowing</span>
                     </v-tooltip>
                     <v-card-text class="pa-0 ma-0 mt-2">
-                      <router-link :to="{name:'user',params:{id:item.follower.id}}"><span class="font-weight-bold">{{user.name}}</span></router-link>
+                      <router-link :to="{name:'user',params:{id:item.follower.id}}">
+                        <span class="font-weight-bold">{{user.name}}</span>
+                      </router-link>
                       <v-divider class="pa-0 ma-0 mt-3" v-show="i<(user.followers.length-1)"></v-divider>
                     </v-card-text>
                   </v-card-title>
@@ -708,11 +846,11 @@
                 <v-layout v-for="(item,i) in user.customerFollowings" :key="i">
                   <v-card-title style="width:100%">
                     <router-link :to="{name:'user',params:{id:item.followed.id}}">
-                    <v-avatar size="52px" flat color="black">
-                      <v-avatar size="50px" flat color="white">
-                        <img :src="item.avatar.image_link" :alt="item.followed.name">
+                      <v-avatar size="52px" flat color="black">
+                        <v-avatar size="50px" flat color="white">
+                          <img :src="item.avatar.image_link" :alt="item.followed.name" />
+                        </v-avatar>
                       </v-avatar>
-                    </v-avatar>
                     </router-link>
                     <v-spacer></v-spacer>
                     <v-tooltip top>
@@ -725,9 +863,12 @@
                     </v-tooltip>
                     <v-card-text class="pa-0 ma-0 mt-2">
                       <router-link :to="{name:'user',params:{id:item.followed.id}}">
-                      <span class="font-weight-bold">{{item.followed.name}}</span>
+                        <span class="font-weight-bold">{{item.followed.name}}</span>
                       </router-link>
-                      <v-divider class="pa-0 ma-0 mt-3" v-show="i<(user.customerFollowings.length-1)"></v-divider>
+                      <v-divider
+                        class="pa-0 ma-0 mt-3"
+                        v-show="i<(user.customerFollowings.length-1)"
+                      ></v-divider>
                     </v-card-text>
                   </v-card-title>
                 </v-layout>
@@ -735,6 +876,371 @@
             </v-tab-item>
           </v-tabs>
         </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="bookingList.dialog" width="700px" persistent>
+      <v-card flat tile light height="470px">
+        <v-card-text>
+          <v-btn depressed color="red" dark v-on:click="bookingList.dialog = false">
+            <span class="text-uppercase">close</span>
+          </v-btn>
+          <v-card light flat width="100%" height="370px" style="overflow:auto">
+            <v-data-table
+              :rows-per-page-items='[5,10,15,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
+              :headers="tblHeaders.booking"
+              :items="user.booking"
+              class="elevation-0 border"
+            >
+              <template v-slot:items="b">
+                <td>
+                  <a href="#">
+                    <span style="word-wrap: break-word;">{{ b.item.id }}</span>
+                  </a>
+                </td>
+                <td class="border-left">
+                  <a href="#">
+                    <span
+                      style="word-wrap: break-word;"
+                    >{{ (b.item.room_amount*b.item.room_price).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
+                  </a>
+                </td>
+                <td class="border-left">
+                  <a href="#">
+                    <span style="word-wrap: break-word;">{{ b.item.status.name}}</span>
+                  </a>
+                </td>
+                <td class="border-left">
+                  <v-btn depressed color="teal" dark small @click="bookingAction(b.item,1)">detail</v-btn>
+                  <v-btn
+                    :disabled="!b.item.cancel_status"
+                    depressed
+                    color="orange"
+                    small
+                    @click="confirmAction(b.item)"
+                  >cancel</v-btn>
+                </td>
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="questionList.dialog" width="700px" persistent>
+      <v-card flat tile light height="470px">
+        <v-card-text>
+          <v-btn depressed color="red" dark v-on:click="questionList.dialog = false">
+            <span class="text-uppercase">close</span>
+          </v-btn>
+          <v-card light flat width="100%" height="370px" style="overflow:auto">
+            <v-data-table
+              :rows-per-page-items='[2,4,6,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
+              :headers="tblHeaders.question"
+              hide-headers
+              :items="user.question"
+              class="elevation-0 border"
+            >
+              <template v-slot:items="q">
+                <td>
+                  <div class="ma-2">
+                    <div>
+                      <span
+                        class="font-weight-black"
+                        style="word-wrap: break-word;"
+                      >{{q.item.title}}</span>
+                      <span class="caption grey--text">-&nbsp;12/07/2019</span>
+                    </div>
+                    <div>
+                      <span class="font-italic" style="word-wrap: break-word;">"{{q.item.content}}"</span>
+                    </div>
+                  </div>
+                  <v-divider class="pa-0 ma-0"></v-divider>
+                  <div class="ma-2" v-if="q.item.reply !=null">
+                    <div>
+                      <span class="font-weight-black" style="word-wrap: break-word;">
+                        <router-link
+                          :to="{name:'hotel', params:{id:q.item.hotel.id}}"
+                          target="_blank"
+                        >{{q.item.hotel.name}}</router-link>
+                      </span>
+                    </div>
+                    <div>
+                      <span
+                        class="font-italic"
+                        style="word-wrap: break-word;"
+                      >"{{q.item.reply.content}}"</span>
+                    </div>
+                    <div class="pl-3">
+                      <span class="caption grey--text">-&nbsp;12/07/2019</span>
+                    </div>
+                  </div>
+                  <div class="ma-2" v-else>
+                    <div>
+                      <span class="font-weight-black" style="word-wrap: break-word;">
+                        <router-link
+                          :to="{name:'hotel', params:{id:q.item.hotel.id}}"
+                          target="_blank"
+                        >{{q.item.hotel.name}}</router-link>
+                      </span>
+                    </div>
+                    <div>
+                      <span class="font-italic" style="word-wrap: break-word;">No answer yet...</span>
+                    </div>
+                  </div>
+                </td>
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="bookingList.detail.dialog" width="750px">
+      <v-card flat tile light>
+        <v-layout class="pa-5 ma-0" row wrap>
+          <v-flex md12>
+            <div>
+              <span
+                class="font-weight-black title text-uppercase"
+              >booking code:&nbsp;{{bookingList.detail.booking.id}}</span>
+            </div>
+            <v-divider></v-divider>
+            <div>
+              <span class="font-weight-black title">Your Information</span>
+            </div>
+            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
+              <v-flex md3>
+                <v-img :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
+              </v-flex>
+              <v-flex md9>
+                <v-layout row wrap class="pa-0 pl-4 ma-0">
+                  <v-flex md12>
+                    <h2>{{bookingList.detail.booking.hotel_name}}</h2>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-divider class="pa-0 ma-0"></v-divider>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-layout row wrap class="pa-0 ma-0">
+                      <v-flex md6 class="pa-2">
+                        <div>
+                          <div>
+                            <span class="font-weight-bold">Check-In:</span>
+                          </div>
+                          <div>
+                            <span>{{formatDate(bookingList.detail.booking.check_in)}}</span>
+                          </div>
+                        </div>
+                      </v-flex>
+                      <v-flex md6 class="pa-2">
+                        <div>
+                          <div>
+                            <span class="font-weight-bold">Check-Out:</span>
+                          </div>
+                          <div>
+                            <span>{{formatDate(bookingList.detail.booking.check_out)}}</span>
+                          </div>
+                        </div>
+                      </v-flex>
+                      <v-flex md12 class="pl-2">
+                        <span class="font-weight-bold">Guess Information</span>
+                      </v-flex>
+                      <v-flex md12 class="pl-2">
+                        <v-layout row wrap class="pa-0 ma-0">
+                          <v-flex md3>Name</v-flex>
+                          <v-flex md9>{{bookingList.detail.booking.contact_name}}</v-flex>
+                          <v-flex md3>Email</v-flex>
+                          <v-flex md9>{{bookingList.detail.booking.contact_email}}</v-flex>
+                          <v-flex md3>Mobile-number</v-flex>
+                          <v-flex md9>{{bookingList.detail.booking.contact_phone}}</v-flex>
+                          <v-flex md3>Address</v-flex>
+                          <v-flex md9>{{bookingList.detail.booking.contact_address}}</v-flex>
+                        </v-layout>
+                      </v-flex>
+                      <v-spacer></v-spacer>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-divider></v-divider>
+                  </v-flex>
+                  <v-flex md12>
+                    <span class="font-weight-bold">Room Details:</span>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-layout row wrap class="pa-0 ma-0">
+                      <v-flex md3>Room Type:</v-flex>
+                      <v-flex
+                        md9
+                      >{{bookingList.detail.booking.room.room_mode.name}}&nbsp;{{bookingList.detail.booking.room.room_type.name}}</v-flex>
+                      <v-flex md3>No. Of Rooms:</v-flex>
+                      <v-flex md9>{{bookingList.detail.booking.room_amount}}</v-flex>
+                      <v-flex md3>Special Request:</v-flex>
+                      <v-flex md9>{{bookingList.detail.booking.special_request}}</v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+            </v-layout>
+            <div>
+              <v-divider dark></v-divider>
+              <span class="font-weight-black title">Status</span>
+            </div>
+            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
+              <div>
+                <div>
+                  <span
+                    class="font-weight-black red--text font-italic"
+                  >{{bookingList.detail.booking.status.name}}</span>
+                </div>
+                <div>
+                  <v-btn
+                    :disabled="!bookingList.detail.booking.cancel_status"
+                    @click="bookingAction(bookingList.detail.booking,0)"
+                    small
+                    depressed
+                    color="orange"
+                  >cancel</v-btn>
+                </div>
+              </div>
+            </v-layout>
+            <div>
+              <v-divider dark></v-divider>
+              <span class="font-weight-black title">Cancellation Policy</span>
+            </div>
+            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
+              <span>Id soluta temporibus sint molestias sapiente dolore beatae ratione velit blanditiis maxime sunt.</span>
+            </v-layout>
+            <div>
+              <v-divider dark></v-divider>
+              <span class="font-weight-black title">Price Details</span>
+            </div>
+            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
+              <v-flex md12>
+                <v-divider></v-divider>
+              </v-flex>
+              <v-flex md8>
+                <span>{{bookingList.detail.booking.room.room_type.name}}&nbsp;{{bookingList.detail.booking.room.room_mode.name}}</span>
+              </v-flex>
+              <v-flex
+                md4
+              >{{bookingList.detail.booking.room.price.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+              <v-flex md8>
+                <span>Amount</span>
+              </v-flex>
+              <v-flex md4>{{bookingList.detail.booking.room_amount}}</v-flex>
+              <v-flex md12>
+                <v-divider></v-divider>
+              </v-flex>
+              <v-flex md8>
+                <span>Total price</span>
+              </v-flex>
+              <v-flex
+                md4
+              >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+            </v-layout>
+          </v-flex>
+        </v-layout>
+      </v-card>
+    </v-dialog>
+    <v-dialog persistent v-model="confirm.dialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline">{{confirm.title}}</v-card-title>
+
+        <v-card-text>{{confirm.content}}</v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn color="green darken-1" flat="flat" @click="confirm.dialog = false">Cancel</v-btn>
+
+          <v-btn color="green darken-1" flat="flat" @click="bookingAction(confirm.booking,0)">Sure</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog scrollable v-model="reviewForm.dialog" width="500px" persistent>
+      <v-card flat tile light height="470px">
+        <v-card-actions>
+          <span class="ml-5 font-weight-bold title">Review form</span>
+          <v-spacer></v-spacer>
+          <div class="mr-3">
+            <v-btn color="teal" depressed class="white--text" @click="sendReview">send</v-btn>
+            <v-btn
+              color="red"
+              depressed
+              class="white--text"
+              @click="reviewForm.dialog = false"
+            >close</v-btn>
+          </div>
+        </v-card-actions>
+        <v-divider class="pa-0 ma-0"></v-divider>
+        <v-card-title class="pa-0 ma-0">
+          <v-card flat width="100%" style="overflow:auto;" height="380px" class="pa-0 ma-0">
+            <v-card-title>
+              <v-form ref="form" data-vv-scope="formReview">
+                <v-layout row wrap class="pa-0 ma-0">
+                  <v-flex md12>
+                    <v-layout row wrap class="pa-0 ma-0" align-center>
+                      <v-flex md8>
+                        <v-rating
+                          length ="10"
+                          v-model="reviewForm.star"
+                          class="pa-0 ma-0"
+                          color="#B53471"
+                          background-color="#636e72"
+                          empty-icon="$vuetify.icons.ratingFull"
+                          half-incrementss
+                          small
+                        ></v-rating>
+                      </v-flex>
+                      <v-flex md2>({{reviewForm.star}}/10)</v-flex>
+                      <v-flex md6>
+                        <v-checkbox
+                          v-model="reviewForm.can_comment"
+                          label="Public for comment"
+                          color="#B53471"
+                        ></v-checkbox>
+                      </v-flex>
+                      <v-flex md6>
+                        <v-checkbox
+                          v-model="reviewForm.notification"
+                          label="Get comment' notifications"
+                          color="#B53471"
+                        ></v-checkbox>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-text-field
+                      :error-messages="errors.collect('formReview.title')"
+                      data-vv-name="title"
+                      v-validate="'required'"
+                      v-model="reviewForm.title"
+                      color="#B53471"
+                      type="text"
+                      outline
+                      clearable
+                      clear-icon="cancel"
+                      label="Title"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex md12>
+                    <v-textarea
+                      :error-messages="errors.collect('formReview.content')"
+                      data-vv-name="content"
+                      v-validate="'required'"
+                      v-model="reviewForm.content"
+                      color="#B53471"
+                      outline
+                      clearable
+                      clear-icon="cancel"
+                      auto-grow
+                      rows="4"
+                      label="Content"
+                    ></v-textarea>
+                  </v-flex>
+                </v-layout>
+              </v-form>
+            </v-card-title>
+          </v-card>
+        </v-card-title>
       </v-card>
     </v-dialog>
   </v-layout>
@@ -748,6 +1254,91 @@ export default {
   props: {},
   data() {
     return {
+      tblHeaders: {
+        booking: [
+          {
+            text: "ID",
+            value: 0,
+            align: "center",
+            class: "red--text",
+            sortable: false
+          },
+          {
+            text: "Total",
+            value: 0,
+            align: "center",
+            class: "red--text border-left",
+            sortable: false
+          },
+          {
+            text: "Status",
+            value: "",
+            align: "center",
+            class: "red--text border-left",
+            sortable: false
+          },
+          {
+            text: "Action",
+            value: 0,
+            align: "center",
+            class: "red--text border-left",
+            sortable: false
+          }
+        ],
+        question: [
+          {
+            text: "Question",
+            value: 0,
+            align: "center",
+            class: "red--text",
+            sortable: false
+          }
+        ]
+      },
+      confirm: {
+        dialog: false,
+        booking: {},
+        title: "Are you sure?",
+        content:
+          "By clicking this button, you acknowledge that you have read and agree to Hotel's Terms & Conditions and Privacy Policy."
+      },
+      bookingList: {
+        dialog: false,
+        detail: {
+          dialog: false,
+          booking: {
+            cancel_status: [],
+            status: {},
+            payment_method: {},
+            room: {
+              price: 0,
+              room_mode: {},
+              room_type: {},
+              hotel: {}
+            }
+          }
+        }
+      },
+      questionList: {
+        dialog: false
+      },
+      bookingList: {
+        dialog: false,
+        detail: {
+          dialog: false,
+          booking: {
+            cancel_status: [],
+            status: {},
+            payment_method: {},
+            room: {
+              price: 0,
+              room_mode: {},
+              room_type: {},
+              hotel: {}
+            }
+          }
+        }
+      },
       followDialog: false,
       value: false,
       value1: false,
@@ -759,7 +1350,7 @@ export default {
         hotelFollowings: [],
         followers: [],
         question: [],
-        review: [],
+        review: []
       },
       form: {
         email: "",
@@ -785,8 +1376,23 @@ export default {
           password_confirmation: {
             required: () => "Can not be empty",
             confirmed: "Not match"
+          },
+          title: {
+            required: () => "Title can not be empty"
+          },
+          content: {
+            required: () => "Content can not be empty"
           }
         }
+      },
+      reviewForm: {
+        dialog: false,
+        title: "",
+        content: "",
+        star: 0,
+        hotel_id: 0,
+        can_comment: true,
+        notification: true
       },
       comment: true,
       like: false,
@@ -817,6 +1423,61 @@ export default {
   },
   watch: {},
   methods: {
+    bookingAction: function(booking, cmd) {
+      console.log(booking);
+      if (cmd == 1) {
+        this.bookingList.detail.booking = booking;
+        this.bookingList.detail.dialog = true;
+      } else {
+        if (this.confirm.dialog === true) this.confirm.dialog = false;
+        axios({
+          method: "put",
+          url: "http://localhost:8000/api/booking/" + booking.id,
+          params: {
+            action: "cancel"
+          },
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("login_token")
+          }
+        })
+          .then(res => {
+            console.log(res.data.status);
+            if (res.data.status) {
+              this.$emit("loadSnackbar", "Updated Successfully!!");
+              this.getInfo();
+            } else {
+              this.$emit("loadSnackbar", "Updated Fail!!");
+            }
+          })
+          .catch(error => {
+            console.log(error.response);
+            if (error.response.status == 401) {
+              localStorage.removeItem("login_token");
+              this.$emit("loadLogin");
+            }
+          });
+      }
+    },
+    openBookingListDialog: function() {
+      this.getInfo();
+      if (localStorage.getItem("login_token") != null) {
+        this.bookingList.dialog = true;
+      }
+    },
+    openQuestionListDialog: function() {
+      this.getInfo();
+      if (localStorage.getItem("login_token") != null) {
+        this.questionList.dialog = true;
+      }
+    },
+    confirmAction: function(booking) {
+      this.confirm.dialog = true;
+      this.confirm.booking = booking;
+      this.confirm.title = "Are you sure?";
+      if (booking.status.id == 4)
+        this.confirm.content =
+          "By clicking this button, you acknowledge that you have read the Refund Policy of this Hotel.";
+    },
     openFormUserInfo: function() {
       this.formDialog = true;
       this.form.username = this.user.username;
@@ -824,6 +1485,9 @@ export default {
       this.form.email = this.user.email;
       this.form.address = this.user.customer.address;
       this.form.phone = this.user.phone_number;
+    },
+    sendComment: function(){
+      alert('comment');
     },
     clear: function() {
       this.$refs.form.reset();
@@ -843,13 +1507,13 @@ export default {
             }
           }).then(res => {
             console.log(res.data.status);
-            if(res.data.status == true){
+            if (res.data.status == true) {
               this.getInfo();
               this.$emit("loadLogin");
               this.$emit("loadSnackbar", "Updated!");
               this.formDialog = false;
               return;
-            }else{
+            } else {
               this.$emit("loadSnackbar", "Something wrong!");
               this.$validator.reset();
             }
@@ -880,6 +1544,57 @@ export default {
       } else {
         this.$router.push({ name: "login" });
       }
+    },
+    openReviewForm: function(booking) {
+      if (localStorage.getItem("login_token") != null) {
+        this.reviewForm.title = "";
+        this.reviewForm.content = "";
+        this.reviewForm.star = 0;
+        this.reviewForm.booking = booking;
+        this.reviewForm.can_comment = true;
+        this.reviewForm.notification = true;
+        this.reviewForm.dialog = true;
+        this.$validator.reset();
+      } else this.$router.push({ name: "login" });
+    },
+    sendReview: function() {
+      this.$validator.validateAll("formReview").then(valid => {
+        if (valid) {
+          axios({
+            method: "get",
+            url: "http://localhost:8000/api/review/create",
+            params: {
+              title: this.reviewForm.title,
+              content: this.reviewForm.content,
+              star: this.reviewForm.star,
+              hotel_id: this.reviewForm.booking.room.hotel.id,
+              booking_id: this.reviewForm.booking.id,
+              can_comment: this.reviewForm.can_comment,
+              notification: this.reviewForm.notification
+            },
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("login_token")
+            }
+          })
+            .then(res => {
+              if (res.data.status == true) {
+                this.getInfo();
+                this.$emit("loadLogin");
+                this.reviewForm.dialog = false;
+                this.$validator.reset();
+              } else {
+                this.$emit("loadSnackbar", "Something wrong!");
+              }
+            })
+            .catch(error => {
+              console.log(error.response);
+              if (error.response.status == 401) {
+                localStorage.removeItem("login_token");
+                this.$router.push({ name: "login" });
+              }
+            });
+        }
+      });
     },
     cancel: function() {
       this.dialog = false;
@@ -959,6 +1674,11 @@ export default {
       this.hello = "new 2";
       this.$emit("helloEdited", this.hello);
       alert(this.hello);
+    },
+    formatDate: function(date) {
+      if (!date) return null;
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
     }
   }
 };

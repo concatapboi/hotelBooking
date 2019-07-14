@@ -1,7 +1,174 @@
 <template>
   <v-layout row wrap class="mx-3">
-    <v-flex shrink md8>
-      <v-layout
+    <v-flex shrink md8 v-if="feeds.length !=0">
+      <v-layout class="row wrap mx-3 mb-5" v-for="(r,index) in feeds" :key="index">
+        <v-badge left overlap :color="color.badge">
+          <template v-slot:badge>
+            <v-tooltip top v-if="r.can_comment == 1">
+              <template v-slot:activator="{ on }">
+                <v-icon small color="white" v-on="on" class="pointer">lock_open</v-icon>
+              </template>
+              <span>Open comment</span>
+            </v-tooltip>
+            <v-tooltip top v-else>
+              <template v-slot:activator="{ on }">
+                <v-icon small color="black" v-on="on" class="pointer">lock</v-icon>
+              </template>
+              <span>Lock comment</span>
+            </v-tooltip>
+          </template>
+          <v-card light min-height="120px" class="pa-1" flat tile width="800px">
+            <v-card-title>
+              <v-avatar size="72px" color="black" flat>
+                <v-avatar size="70px" color="white">
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <img :src="r.customer.avatar.image_link" v-on="on" />
+                    </template>
+                    <span>{{r.customer.name }}</span>
+                  </v-tooltip>
+                </v-avatar>
+              </v-avatar>
+              <span class="title pl-3 font-weight-light">{{r.customer.name}}</span>
+              <v-spacer></v-spacer>
+              <v-menu bottom right>
+                <template v-slot:activator="{ on }">
+                  <v-btn fab icon v-on="on">
+                    <v-icon color="black">more_vert</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dark>
+                  <v-list-tile v-if="r.customer_review.status ==0">
+                    <v-list-tile-title>Get notification</v-list-tile-title>
+                  </v-list-tile>
+                  <v-list-tile v-else>
+                    <v-list-tile-title>Off notification</v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
+            </v-card-title>
+            <v-divider class="m-0 p-0"></v-divider>
+            <v-card-text>
+              <span class="headline">" {{r.title}} "</span>
+              <v-layout>
+                <v-card
+                  flat
+                  tile
+                  tag="div"
+                  width="100%"
+                  class="radius"
+                  color="grey lighten-2"
+                  light
+                >
+                  <v-card-text class="font-weight-bold font-italic">{{r.content}}</v-card-text>
+                </v-card>
+              </v-layout>
+              <span class="grey--text">&nbsp;{{formatDate(r.created_at)}}</span>
+            </v-card-text>
+            <v-card-actions>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    v-on="on"
+                    class="ml-3 mr-1"
+                    large
+                    :color="color.heart"
+                    v-on:click=";"
+                    v-if="r.customer_review.like == 0"
+                  >favorite_border</v-icon>
+                  <v-icon
+                    v-on="on"
+                    class="ml-3 mr-1"
+                    large
+                    :color="color.heart"
+                    v-on:click=";"
+                    v-else
+                  >favorite</v-icon>
+                </template>
+                <span>like</span>
+              </v-tooltip>
+              <span class="grey--text subheading">{{r.likes}}</span>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    v-on="on"
+                    class="ml-3 mr-1"
+                    large
+                    :color="color.comment"
+                    v-on:click="r.model = true"
+                    v-if="!r.model"
+                  >chat_bubble_outline</v-icon>
+                  <v-icon
+                    v-on="on"
+                    class="ml-3 mr-1"
+                    large
+                    :color="color.comment"
+                    v-on:click="r.model = false"
+                    v-else
+                  >chat_bubble</v-icon>
+                </template>
+                <span>comment</span>
+              </v-tooltip>
+              <span class="grey--text subheading">{{r.comments}}</span>
+            </v-card-actions>
+            <v-divider v-show="r.comments>0 && r.model" class="pa-0 ma-0"></v-divider>
+            <v-layout class="row wrap" justify-center v-if="r.model">
+              <v-card
+                light
+                flat
+                tile
+                width="790px"
+                class="mb-1"
+                v-for="(c,i) in r.comment"
+                :key="i"
+              >
+                <v-card-title>
+                  <v-avatar size="42px" color="black" flat>
+                    <v-avatar size="40px" flat color="white">
+                      <img :src="c.customer.avatar.image_link" />
+                    </v-avatar>
+                  </v-avatar>
+                  <span class="pl-3">{{c.customer.name}}</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-layout>
+                    <v-card flat tile tag="div" color="grey lighten-2" width="100%" class="radius">
+                      <v-card-text class="font-weight-bold font-italic black--text">{{c.content}}</v-card-text>
+                    </v-card>
+                  </v-layout>
+                </v-card-text>
+                <v-divider class="pa-0 ma-0"></v-divider>
+              </v-card>
+              <v-card flat tile width="790px" v-show="r.can_comment === 1">
+                <v-layout row wrap align-center>
+                  <v-flex md10 class="pl-3">
+                    <v-card-title>
+                      <v-textarea
+                      v-model="comment"
+                        outline
+                        auto-grow
+                        rows="2"
+                        color="teal"
+                        label="New comment"
+                        clear-icon="$vuetify.icons.clear"
+                        clearable
+                      ></v-textarea>
+                    </v-card-title>
+                  </v-flex>
+                  <v-flex>
+                    <v-card-actions>
+                      <v-btn round large depressed :disabled="comment.length ===0" color="teal" class="white--text" @click="sendComment">
+                        <span>Send</span>
+                      </v-btn>
+                    </v-card-actions>
+                  </v-flex>
+                </v-layout>
+              </v-card>
+            </v-layout>
+          </v-card>
+        </v-badge>
+      </v-layout>
+      <!-- <v-layout
         class="row wrap mx-3 mb-5"
         v-for="(item,index) in examples"
         :key="index"
@@ -28,7 +195,7 @@
                 <v-avatar size="70px" color="white">
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
-                      <img :src="item.customer.avatar" v-on="on">
+                      <img :src="item.customer.avatar" v-on="on" />
                     </template>
                     <span>{{item.customer.name }}</span>
                   </v-tooltip>
@@ -130,7 +297,7 @@
                 <v-card-title>
                   <v-avatar size="42px" color="black" flat>
                     <v-avatar size="40px" flat color="white">
-                      <img :src="value.customer.avatar">
+                      <img :src="value.customer.avatar" />
                     </v-avatar>
                   </v-avatar>
                   <span class="pl-3">{{value.customer.name}}</span>
@@ -173,14 +340,24 @@
             </v-layout>
           </v-card>
         </v-badge>
-      </v-layout>
-      <v-layout justify-center align-center>
-        <v-card :color="color.header" flat tile width="600px" height="60px" class="px-5">
-          <v-card-title class="text-lg-center" v-on:click="true">
-            <v-icon medium color="white">fas fa-circle-notch fa-spin</v-icon>
-            <span class="white--text title font-weight-light ml-3 pointer">Load more news...</span>
-          </v-card-title>
-        </v-card>
+      </v-layout>-->
+    </v-flex>
+    <v-flex shrink md8 v-else-if="flag == true">
+      <v-img src="/blog/img/slider/oops.png">
+        <v-layout row wrap fill-height justify-center align-center>
+          <v-flex md12>
+            <div class="text-md-center headline font-italic">{{oops}}</div>
+          </v-flex>
+        </v-layout>
+      </v-img>
+    </v-flex>
+    <v-flex shrink md8 v-else>
+      <v-layout row wrap fill-height justify-center align-center>
+        <v-flex md12>
+          <div class="text-md-center headline font-italic">
+            <v-icon large>fas fa-circle-notch fa-spin</v-icon>
+          </div>
+        </v-flex>
       </v-layout>
     </v-flex>
     <v-flex shrink md4>
@@ -208,8 +385,11 @@
               <v-list-tile-content>
                 <v-tooltip color="black" left max-width="300px">
                   <template v-slot:activator="{ on }">
-                    <v-list-tile-title v-on="on" >
-                      <a :href="'hotel/'+item.hotel.id" target="_blank">{{item.hotel.name}}</a>
+                    <v-list-tile-title v-on="on">
+                      <router-link
+                        :to="{name:'hotel',params:{id:item.hotel.id}}"
+                        target="_blank"
+                      >{{item.hotel.name}}</router-link>
                     </v-list-tile-title>
                     <v-list-tile-sub-title v-on="on">
                       <v-icon small color="pink">room</v-icon>&nbsp; tp Ho Chi Minh
@@ -238,6 +418,7 @@
               </v-list-tile-content>
               <v-list-tile-action>
                 <v-btn
+                  round
                   depressed
                   color="grey lighten-2"
                   v-on:click="followHotel(item.hotel)"
@@ -246,7 +427,7 @@
                   <i class="fas fa-plus mx-2"></i>
                   <span class="caption mr-1">follow</span>
                 </v-btn>
-                <v-btn depressed color="teal" v-on:click="unfollowHotel(item.hotel)" v-else>
+                <v-btn round depressed color="teal" v-on:click="unfollowHotel(item.hotel)" v-else>
                   <i class="fas fa-check mx-2 white--text"></i>
                   <span class="white--text caption mr-1">following</span>
                 </v-btn>
@@ -272,7 +453,7 @@
                 <v-avatar size="52px" flat color="black">
                   <router-link :to="{name:'user',params:{id:item.user.id}}">
                     <v-avatar size="50px" flat color="white">
-                      <img :src="item.avatar.image_link" alt>
+                      <img :src="item.avatar.image_link" alt />
                     </v-avatar>
                   </router-link>
                 </v-avatar>
@@ -285,6 +466,7 @@
               </v-list-tile-content>
               <v-list-tile-action>
                 <v-btn
+                  round
                   depressed
                   color="grey lighten-2"
                   v-on:click="followUser(item.user)"
@@ -293,7 +475,7 @@
                   <i class="fas fa-plus mx-2"></i>
                   <span class="caption mr-1">follow</span>
                 </v-btn>
-                <v-btn depressed color="teal" v-on:click="unfollowUser(item.user)" v-else>
+                <v-btn round depressed color="teal" v-on:click="unfollowUser(item.user)" v-else>
                   <i class="fas fa-check mx-2 white--text"></i>
                   <span class="white--text caption mr-1">following</span>
                 </v-btn>
@@ -309,15 +491,18 @@
 <script>
 export default {
   props: {
-    customer:{
+    customer: {
       type: Object
     }
   },
   mounted() {},
   data() {
     return {
-      user:{},
+      comment:"",
+      oops: "",
+      user: {},
       expand: [true, true, true],
+      feeds: [],
       examples: [
         {
           review: {
@@ -566,17 +751,49 @@ export default {
         top2: "#a55eea",
         top3: "#6ab04c",
         none: "#7ed6df"
-      }
+      },
+      flag: false
     };
   },
+  mounted() {},
   created() {
     this.user = this.customer;
-    this.getTop5Hotel();
-    this.getTop5User();
+    this.load();
   },
   methods: {
+    load: function() {
+      this.$emit("loadLogin");
+      if (localStorage.getItem("login_token") != null) {
+        this.getFeeds();
+        this.getTop5User();
+        this.getTop5Hotel();
+        this.oops = "Oops! Today has nothing...";
+      }
+    },
+    getFeeds: function() {
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/review",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          console.log(res.data.data);
+          this.feeds = res.data.data;
+          this.flag = true;
+          return;
+        })
+        .catch(error => {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
+    },
     getTop5Hotel: function() {
-      console.log(this.user.id);
       axios({
         method: "get",
         url: "http://localhost:8000/api/get-top5-hotel",
@@ -610,21 +827,29 @@ export default {
           type: 0,
           id: this.user.id,
           followed: value.id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
         }
-      }).then(res => {
-        console.log(res.data.data);
-        if (res.data.data == null) {
-          this.$emit("loadSnackbar", "Something wrong!");
-          return;
-        }
-        this.$emit("loadSnackbar", "Following " + value.name);
-        for (var i = 0; i < this.top5User.length; i++) {
-          if (this.top5User[i].user.id === value.id) {
-            this.top5User[i].follow = true;
+      })
+        .then(res => {
+          console.log(res.data.data);
+          if (res.data.data == null) {
+            this.$emit("loadSnackbar", "Something wrong!");
+            return;
           }
-        }
-        return;
-      });
+          this.$emit("loadSnackbar", "Following " + value.name);
+          this.getTop5User();
+          return;
+        })
+        .catch(error => {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
     },
     unfollowUser: function(value) {
       axios({
@@ -634,21 +859,29 @@ export default {
           type: 0,
           id: this.user.id,
           followed: value.id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
         }
-      }).then(res => {
-        console.log(res.data.data);
-        if (res.data.data == null) {
-          this.$emit("loadSnackbar", "Something wrong!");
-          return;
-        }
-        this.$emit("loadSnackbar", "Unfollowing " + value.name);
-        for (var i = 0; i < this.top5User.length; i++) {
-          if (this.top5User[i].user.id === value.id) {
-            this.top5User[i].follow = false;
+      })
+        .then(res => {
+          console.log(res.data.data);
+          if (res.data.data == null) {
+            this.$emit("loadSnackbar", "Something wrong!");
+            return;
           }
-        }
-        return;
-      });
+          this.$emit("loadSnackbar", "Unfollowing " + value.name);
+          this.getTop5User();
+          return;
+        })
+        .catch(error => {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
     },
     followHotel: function(value) {
       axios({
@@ -658,21 +891,29 @@ export default {
           type: 1,
           id: this.user.id,
           followed: value.id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
         }
-      }).then(res => {
-        console.log(res.data.data);
-        if (res.data.data == null) {
-          this.$emit("loadSnackbar", "Something wrong!");
-          return;
-        }
-        this.$emit("loadSnackbar", "Following " + value.name);
-        for (var i = 0; i < this.top5Hotel.length; i++) {
-          if (this.top5Hotel[i].hotel.id === value.id) {
-            this.top5Hotel[i].follow = true;
+      })
+        .then(res => {
+          console.log(res.data.data);
+          if (res.data.data == null) {
+            this.$emit("loadSnackbar", "Something wrong!");
+            return;
           }
-        }
-        return;
-      });
+          this.$emit("loadSnackbar", "Following " + value.name);
+          this.getTop5Hotel();
+          return;
+        })
+        .catch(error => {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
     },
     unfollowHotel: function(value) {
       axios({
@@ -682,27 +923,44 @@ export default {
           type: 1,
           id: this.user.id,
           followed: value.id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
         }
-      }).then(res => {
-        console.log(res.data.data);
-        if (res.data.data == null) {
-          this.$emit("loadSnackbar", "Something wrong!");
-          return;
-        }
-        this.$emit("loadSnackbar", "Unfollowing " + value.name);
-        for (var i = 0; i < this.top5Hotel.length; i++) {
-          if (this.top5Hotel[i].hotel.id === value.id) {
-            this.top5Hotel[i].follow = false;
+      })
+        .then(res => {
+          console.log(res.data.data);
+          if (res.data.data == null) {
+            this.$emit("loadSnackbar", "Something wrong!");
+            return;
           }
-        }
-        return;
-      });
+          this.$emit("loadSnackbar", "Unfollowing " + value.name);
+          this.getTop5Hotel();
+          return;
+        })
+        .catch(error => {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
+    },
+    sendComment: function(){
+      alert('comment'+this.comment.length);
     },
     hide: function(index) {
       this.snackbar.state = !this.snackbar.state;
       this.snackbar.content = "Hide " + index;
       this.examples[index].hide = false;
       return;
+    },
+    formatDate: function(date) {
+      if (!date) return null;
+      date = date.substr(0, 10);
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
     }
   }
 };
@@ -724,7 +982,6 @@ a {
 .v-tooltip__content {
   opacity: 1 !important;
   padding: 4px !important;
-  border-bottom-left-radius: 20%;
   box-shadow: none !important;
 }
 .v-menu__content {

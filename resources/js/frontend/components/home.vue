@@ -99,23 +99,25 @@
             </v-card-title>
             <v-card-text>
               CEO:
-              <a href="#">Nguyen Tran Hoang Thang</a>
+              <a href="#">
+                Nguyen Tran Hoang Thang
+              </a>
             </v-card-text>
           </v-card>
         </v-flex>
         <v-flex md6>
           <v-layout row wrap>
             <v-flex md6 class="pa-1">
-              <v-img :aspect-ratio="1/2" src="/blog/img/slider/default.png"></v-img>
+              <v-img :aspect-ratio="1/2" src="/blog/img/bg-img/15.jpg"></v-img>
             </v-flex>
             <v-flex md6 class="pa-1">
-              <v-img class="mb-1" :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
-              <v-img :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
+              <v-img class="mb-1" :aspect-ratio="1" src="/blog/img/bg-img/13.jpg"></v-img>
+              <v-img :aspect-ratio="1" src="/blog/img/bg-img/5.jpg"></v-img>
             </v-flex>
           </v-layout>
         </v-flex>
         <v-flex md12 class="my-3">
-          <v-img :aspect-ratio="16/2" src="/blog/img/slider/default.png"></v-img>
+          <v-img :aspect-ratio="16/2" src="/blog/img/slider/oops.png"></v-img>
         </v-flex>
       </v-layout>
     </v-flex>
@@ -144,6 +146,7 @@ export default {
   },
   data() {
     return {
+      val: 25,
       // slider: 1,
       placeVal: "",
       checkInVal: "",

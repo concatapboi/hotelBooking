@@ -44,18 +44,8 @@ class UserController extends Controller
         $user->customerFollowings = $user->Followings();
         $user->hotelFollowings = $user->HotelFollowings();
         $user->review = $user->reViewList();
-        foreach ($user->Booking as $b) {
-            $b->Status;
-            $b->cancel_status = $b->Hotel()->CancelableStatus();
-            $b->PaymentMethod;
-            $b->Room->RoomMode;
-            $b->Room->RoomType;
-            $b->Room->Hotel->HotelType;
-        }
-        foreach ($user->Question as $q) {
-            $q->Reply;
-            $q->Hotel;
-        }
+        $user->question = $user->QuestionList();
+        $user->booking = $user->bookingList();        
         return response()->json([
             'user' => $user
         ]);
@@ -179,22 +169,22 @@ class UserController extends Controller
         $user->review = $user->reViewList();
         if (sizeOf($followers) > 0) {
             foreach ($followers as $f) {
-                $f->isFollowing = $f->follower->isFollowed(Auth::user()->id);  
+                $f->isFollowing = $f->follower->isFollowed(Auth::user()->id);
                 if ($f->follower_id ==  Auth::user()->id) {
-                    $user->follow = true;     
-                    $f->isFollowing =null;
-                }         
-            }            
+                    $user->follow = true;
+                    $f->isFollowing = null;
+                }
+            }
         }
         $user->followers = $followers;
         $customerFollowings = $user->Followings();
         if (sizeOf($customerFollowings) > 0) {
             foreach ($customerFollowings as $c) {
-                $c->isFollowing = $c->followed->isFollowed(Auth::user()->id);  
-                if ($c->followed_id ==  Auth::user()->id) {  
-                    $c->isFollowing =null;
-                }         
-            }            
+                $c->isFollowing = $c->followed->isFollowed(Auth::user()->id);
+                if ($c->followed_id ==  Auth::user()->id) {
+                    $c->isFollowing = null;
+                }
+            }
         }
         $user->customerFollowings = $customerFollowings;
         $user->hotelFollowings = $user->HotelFollowings();

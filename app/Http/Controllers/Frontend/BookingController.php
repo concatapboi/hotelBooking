@@ -95,12 +95,14 @@ class BookingController extends Controller
         if ($b != null) {
             switch ($req->action) {
                 case 'cancel':
-                    if ($b->Status->id == 1 || $b->Status->id == 2) {
-                        $b->delete();
-                        $status = true;
-                    } else {
-                        $b->update(['status_id' => 5]);
-                        $status = true;
+                    if ($b->cancelAble()) {
+                        if ($b->Status->id == 1) {
+                            $b->delete();
+                            $status = true;
+                        } else {
+                            $b->update(['status_id' => 5]);
+                            $status = true;
+                        }
                     }
                     break;
                 case 'declined':

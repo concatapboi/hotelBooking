@@ -13,6 +13,7 @@ use Auth;
 use Validator;
 use Hash;
 use Session;
+use App\Models\Question;
 
 class QuestionController extends Controller
 {
@@ -23,9 +24,35 @@ class QuestionController extends Controller
     }
 
     //get question/create
-    public function create()
+    public function create(Request $req)
     {
-        return;
+        $validateData = Validator::make(
+            $req->all(),
+            [
+                'title' => 'required',
+                'content' => 'required'
+            ],
+            [
+                'title.required' => 'Title is empty!',
+                'content.required' => 'Content is empty!',
+            ]
+        );
+        if ($validateData->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validateData->errors(),
+            ]);
+        }
+        $question = Question::create([
+            'title' => $req->title,
+            'content' => $req->content,
+            'customer_id' => Auth::user()->id,
+            'hotel_id' => $req->hotel_id,
+        ]);
+        return response()->json([
+            'status' => true,
+            'errors' => null,
+        ]);
     }
 
     //post question
@@ -49,7 +76,7 @@ class QuestionController extends Controller
     //put/patch question/{question}
     public function update($id, Request $req)
     {
-        return ;
+        return;
     }
 
     //delete question/{question}

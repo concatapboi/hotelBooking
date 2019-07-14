@@ -17,7 +17,8 @@ class Review extends Model
     'comments',
     'can_comment',
     'customer_id',
-    'hotel_id'
+    'hotel_id',
+    'booking_id',
   ];
 
   public function User()

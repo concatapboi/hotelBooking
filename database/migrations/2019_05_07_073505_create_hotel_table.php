@@ -25,7 +25,7 @@ class CreateHotelTable extends Migration
             $table->string('phone_number');
             $table->string('name');
             $table->string('meta_name');
-            $table->string('child_age')->default(13);
+            $table->integer('child_age')->default(13);
             $table->string('tax_code');
             $table->double('review_point')->default(0);
             $table->string('fax_number');
