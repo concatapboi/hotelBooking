@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\HotelManager;
+use App\Http\Resources\BookingStatusResource;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -65,48 +68,65 @@ class User extends Authenticatable implements JWTSubject
     return $this->hasMany('App\Models\Booking', 'customer_id', 'id');
   }
 
+  public function bookingList()
+  {
+    $bookingList = $this->Booking;
+    foreach ($bookingList as $b) {
+      $b->cancel_status = $b->cancelAble();
+      $b->status = new BookingStatusResource($b->Status);
+      $b->PaymentMethod;
+      $b->Room->RoomMode;
+      $b->Room->RoomType;
+      $b->Room->Hotel->HotelType;
+      $b->Review;
+      $b->can_review = $b->reviewAble();
+    }
+    return $bookingList;
+  }
+
   public function Followers()
   {
-    $followers = CustomerFollowing::where('followed_id',$this->id)->get();
-    foreach($followers as $f){
+    $followers = CustomerFollowing::where('followed_id', $this->id)->get();
+    foreach ($followers as $f) {
       $f->Follower;
       $f->avatar = UserImage::where('user_id', $f->follower_id)->where('is_primary', 1)->first();
     }
-     return $followers;
+    return $followers;
   }
 
   public function Followings()
   {
-    $followings = CustomerFollowing::where('follower_id',$this->id)->get();
-    foreach($followings as $f){
+    $followings = CustomerFollowing::where('follower_id', $this->id)->get();
+    foreach ($followings as $f) {
       $f->Followed;
       $f->avatar = UserImage::where('user_id', $f->followed_id)->where('is_primary', 1)->first();
     }
-     return $followings;
+    return $followings;
   }
 
   public function HotelFollowings()
   {
-    $followings = HotelFollowing::where('customer_id',$this->id)->get();
-    foreach($followings as $f){
+    $followings = HotelFollowing::where('customer_id', $this->id)->get();
+    foreach ($followings as $f) {
       $f->Customer;
       $f->avatar = HotelImage::where('hotel_id', $f->hotel_id)->where('is_primary', 1)->first();
-
     }
-     return $followings;
+    return $followings;
   }
 
-  public function isFollowing($id){
+  public function isFollowing($id)
+  {
     $customerFollowing = $this->customerFollowings();
-    foreach($customerFollowing as $c){
-      if($c->followed->id == $id) return true;
+    foreach ($customerFollowing as $c) {
+      if ($c->followed->id == $id) return true;
     }
     return false;
   }
-  public function isFollowed($id){
+  public function isFollowed($id)
+  {
     $follower = $this->Followers();
-    foreach($follower as $f){
-      if($f->follower->id == $id) return true;
+    foreach ($follower as $f) {
+      if ($f->follower->id == $id) return true;
     }
     return false;
   }
@@ -115,17 +135,28 @@ class User extends Authenticatable implements JWTSubject
     return $this->hasMany('App\Models\Question', 'customer_id', 'id');
   }
 
+  public function questionList()
+  {
+    $question = $this->Question;
+    foreach ($question as $q) {
+      $q->Hotel->HotelType;
+      $q->Reply;
+    }
+    return $question;
+  }
+
   public function Review()
   {
     return $this->hasMany('App\Models\Review', 'customer_id', 'id');
   }
 
-  public function reViewList(){
-    $reviews = Review::where('customer_id',$this->id)->get();
-    foreach($reviews as $r){
-      $r->customer_review=$r->CustomerReview($this->id,$r->id);
+  public function reViewList()
+  {
+    $reviews = Review::where('customer_id', $this->id)->get();
+    foreach ($reviews as $r) {
+      $r->customer_review = $r->CustomerReview($this->id, $r->id);
       $r->model = false;
-      foreach($r->Comment as $c){
+      foreach ($r->Comment as $c) {
         $c->customer = $c->Customer();
       };
     }

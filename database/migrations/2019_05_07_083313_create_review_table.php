@@ -24,6 +24,7 @@ class CreateReviewTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->integer('hotel_id')->unsigned();
             $table->tinyInteger('can_comment')->default(1);
+            $table->integer('booking_id')->unsigned();
             $table->timestamps();
             $table->foreign('customer_id')
             ->references('user_id')->on('customer')

@@ -88,6 +88,22 @@ $factory->define(App\Models\RoomBedType::class, function (Faker $faker) {
         'amount' => rand(1, 2)
     ];
 });
+$factory->define(App\Models\HotelImage::class, function (Faker $faker) {
+    static $no = 1;
+    return [
+        'image_link' => $no.'.png',
+        'hotel_id' => $no++,
+        'is_primary' => 1
+    ];
+});
+$factory->define(App\Models\RoomImage::class, function (Faker $faker) {
+    static $no = 1;
+    return [
+        'image_link' => $no.'.png',
+        'room_id' => $no++,
+        'is_primary' => 1
+    ];
+});
 $factory->define(App\Models\RoomFeature::class, function (Faker $faker) {
     static $no = 1, $fN = 1;
     if ($fN > 8) $fN = 1;
@@ -108,6 +124,14 @@ $factory->define(App\Models\ServiceRoomType::class, function (Faker $faker) {
 $factory->define(App\Models\BookingStatus::class, function (Faker $faker) {
     return [
         'name' => 'Pending'
+    ];
+});
+$factory->define(App\Models\Policy::class, function (Faker $faker) {
+    static $num =1;
+    return [
+        'hotel_id' => $num,
+        'content' => $faker->sentence($nbWords = 6, $variableNbWords = true),
+        
     ];
 });
 $factory->define(App\Models\Booking::class, function (Faker $faker) {

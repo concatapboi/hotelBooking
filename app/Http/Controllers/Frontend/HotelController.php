@@ -17,6 +17,8 @@ use App\Models\ServiceRoomType;
 use App\Models\Service;
 use App\Http\Resources\ServiceResource;
 use Carbon\Carbon;
+use App\Models\HotelImage;
+use App\Models\RoomImage;
 
 class HotelController extends Controller
 {
@@ -69,6 +71,10 @@ class HotelController extends Controller
         if ($id > 0) {
             $hotel = Hotel::find($id);
             if ($hotel != null) {
+                $hotel->Policy;
+                $hotel->paymentMethods = $hotel->paymentMethods();
+                $hotel->image = HotelImage::where('hotel_id', $hotel->id)->where('is_primary', 1)->first()->image_link;
+                $hotel->images = HotelImage::where('hotel_id', $hotel->id)->get();
                 $hotel->question = $hotel->questionList();
                 $status = true;
                 $hotel->hotel_type = $hotel->HotelTypeResource();
@@ -80,6 +86,8 @@ class HotelController extends Controller
                         $hotel->followed = true;
                 }
                 foreach ($hotel->Room as $r) {
+                    $r->image = RoomImage::where('room_id', $r->id)->where('is_primary', 1)->first()->image_link;
+                    $r->images = RoomImage::where('room_id', $r->id)->get();
                     $r->room_mode = $r->RoomModeResource();
                     $r->room_type = $r->RoomTypeResource();
                     $tempRoomType = $r->room_type;

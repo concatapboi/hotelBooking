@@ -55,7 +55,7 @@ class Hotel extends Model
 
   public function Room()
   {
-    return $this->hasMany('App\Models\Room', 'hotel_id', 'id');
+    return $this->hasMany('App\Models\Room', 'hotel_id', 'id')->orderBy('price');
   }
   public function RoomByPrice()
   {
@@ -159,5 +159,35 @@ class Hotel extends Model
   public function Policy()
   {
     return $this->hasOne('App\Models\Policy','hotel_id','id');
+  }
+
+  public function paymentMethods()
+  {
+    $policy = $this->Policy;
+    $paymentMethods = array();
+    switch($policy->cancelable){
+      case 0:
+        $tempCase0 = array();
+        $tempCase0['method'] = PaymentMethod::find(1);
+        $tempCase0['content'] ="Booking cannot be canceled.";
+        $paymentMethods[] = $tempCase0;
+      break;
+      default:
+      for($i =1;$i<=2;$i++){
+        $tempDefault = array();
+        $tempDefault['method'] = PaymentMethod::find($i);
+        $tempDefault['content'] ="Booking can be canceled before the check-in date ".$policy->cancelable." days";
+        if($i == 2){
+          if($policy->can_refund ==0){
+            $tempDefault['content'] ="Booking can be canceled, and has no refund.";
+          }else{
+            $tempDefault['content'] ="Booking can be canceled, and has ".$policy->can_refund."% back to you.";
+          }
+        }        
+        $paymentMethods[] = $tempDefault;
+      }
+      break;
+    }
+    return $paymentMethods;
   }
 }

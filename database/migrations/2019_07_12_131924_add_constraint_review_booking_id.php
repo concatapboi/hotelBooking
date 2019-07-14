@@ -14,7 +14,7 @@ class AddConstraintReviewBookingId extends Migration
     public function up()
     {
         Schema::table('review', function (Blueprint $table) {
-            $table->integer('booking_id')->unsigned();
+            // $table->integer('booking_id')->unsigned();
             $table->foreign('booking_id')
             ->references('id')->on('booking')
             ->onDelete('cascade');

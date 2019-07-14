@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         static $userNum = 25, $mnNum = 5, $adNum = 3, $hotelNum = 15;
 
         //không thể thay đổi
-        static $hotelType = 7, $roomMode = 4, $roomType = 6, $bedType = 5, $roomService = 5, $feature = 8, $bookingStatus = 5, $paymentMethod = 2;
+        static $hotelType = 7, $roomMode = 4,  $roomType= 6, $bedType = 5, $roomService = 5, $feature = 8, $bookingStatus = 5, $paymentMethod = 2;
 
         //User:
         factory(App\Models\User::class, $userNum)->create();
@@ -247,13 +247,30 @@ class DatabaseSeeder extends Seeder
         // factory(App\Models\CouponCode::class, $couponCode)->create();
 
         //Hotel: 15
-        factory(App\Models\Hotel::class, $hotelNum)->create();
+        //length 16
+        $arr = [1,3,16,21,22,23,28,29,32,33,35,36,37,38,39,40];
+        for($i = 1;$i<=$hotelNum;$i++){
+            $rand = rand(0,sizeOf($arr)-1);
+            factory(App\Models\Hotel::class)->create([
+                'ward_id' => $arr[$rand],
+                'address' => 'Ha Noi',
+            ]);
+            $cancel = rand (0,7);
+            if($cancel ==0) $refund = 0;
+            else $refund = rand(0,15);
+            factory(App\Models\Policy::class)->create([
+                'hotel_id' => $i,
+                'cancelable' => $cancel,
+                'can_refund' => $refund
+            ]);
+
+        }       
 
         static $count = 0, $countCoup = 0;
         for ($h = 1; $h <= $hotelNum; $h++) {
             $couNo = rand(1, 5);
             $countCoup += $couNo;
-            $rTNum = rand(2, $roomType);
+            $rTNum = rand(2, 4);
             for ($rT = 1; $rT <= $rTNum; $rT++) {
                 //Room
                 $rNum = rand(2, $roomMode);
@@ -262,6 +279,7 @@ class DatabaseSeeder extends Seeder
                     'hotel_id' => $h,
                     'room_type_id' => $rT
                 ]);
+
                 //ServiceRoomType
                 $noS = rand(3, $roomService);
                 for ($s = 1; $s <= $noS; $s++) {
@@ -285,14 +303,29 @@ class DatabaseSeeder extends Seeder
                 }
             }
         }
-
+        static $img = 0;
         for ($r = 1; $r <= $count; $r++) {
+            //RoomImage
+            if($img == 50) $img =0;
+            $img++;
+            factory(App\Models\RoomImage::class)->create([
+                'room_id' => $r,
+                'image_link' => $img.'.png',
+            ]); 
+            for($i=0;$i<4;$i++){
+                $rI = rand($img+1,50);
+                factory(App\Models\RoomImage::class)->create([
+                    'room_id' => $r,
+                    'image_link' => $rI.'.png',
+                    'is_primary' => 0,
+                ]); 
+            }
             //RoomFeature
             $noRF = rand(2, $feature);
             for ($rF = 1; $rF <= $noRF; $rF++) {
                 factory(App\Models\RoomFeature::class)->create([
                     'room_id' => $r
-                ]);
+                ]); 
             }
             //RoomBedType
             $noB = rand(1, 2);
@@ -313,7 +346,7 @@ class DatabaseSeeder extends Seeder
         ]);
         factory(App\Models\BookingStatus::class)->create([
             'name' => 'Completed'
-        ]);        
+        ]);
         factory(App\Models\BookingStatus::class)->create([
             'name' => 'Canceled by user'
         ]);
@@ -329,17 +362,17 @@ class DatabaseSeeder extends Seeder
 
         for ($uID = $mnNum + 1; $uID <= 10; $uID++) {
             //Booking
-            // $bNo = rand(1, 5);
-            // for ($b = 1; $b <= $bNo; $b++) {
-            //     $m = rand(7, 9);
-            //     $d = rand(10, 25);
-            //     factory(App\Models\Booking::class)->create([
-            //         'customer_id' => $uID,
-            //         'check_in' => '2019-0' . $m . '-' . $d,
-            //         'check_out' => '2019-0' . $m . '-' . ($d + 5),
-            //         'room_id' => rand(1, $count),
-            //     ]);
-            // }
+            $bNo = rand(5, 10);
+            for ($b = 1; $b <= $bNo; $b++) {
+                $m = rand(1, 8);
+                $d = rand(10, 25);
+                factory(App\Models\Booking::class)->create([
+                    'customer_id' => $uID,
+                    'check_in' => '2019-0' . $m . '-' . $d,
+                    'check_out' => '2019-0' . $m . '-' . ($d + 5),
+                    'room_id' => rand(1, $count),
+                ]);
+            }
             //HotelFollowing
             for ($f = 1; $f <= rand(2, 5); $f++) {
                 factory(App\Models\HotelFollowing::class)->create([
@@ -353,6 +386,18 @@ class DatabaseSeeder extends Seeder
                 factory(App\Models\CustomerFollowing::class)->create([
                     'follower_id' => $uID,
                     'followed_id' => $cF,
+                ]);
+            }
+        }
+
+        factory(App\Models\HotelImage::class, $hotelNum)->create([]);
+        for($i =0;$i<$hotelNum;$i++){
+            for($j=0;$j<4;$j++){
+                $img = rand(1,30);
+                factory(App\Models\HotelImage::class)->create([
+                    'hotel_id' => $i,
+                    'is_primary' => 0,
+                    'image_link' => $img.'.png',
                 ]);
             }
         }

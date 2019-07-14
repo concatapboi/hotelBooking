@@ -18,6 +18,7 @@
           </v-flex>
           <v-flex md3>
             <v-btn
+              round
               dark
               depressed
               color="indigo darken-2"
@@ -28,6 +29,7 @@
               <i class="fas fa-plus"></i> &nbsp;follow
             </v-btn>
             <v-btn
+              round
               dark
               depressed
               color="blue darken-2"
@@ -40,156 +42,161 @@
           </v-flex>
         </v-layout>
       </v-img>
-      <v-layout class="row wrap mx-3 mb-5" v-for="(item,index) in data.review" :key="index">
-        <v-badge left overlap :color="color.badge">
-          <template v-slot:badge>
-            <v-tooltip top v-if="item.can_comment == 1">
-              <template v-slot:activator="{ on }">
-                <v-icon small color="white" v-on="on" class="pointer">lock_open</v-icon>
-              </template>
-              <span>Open comment</span>
-            </v-tooltip>
-            <v-tooltip top v-else>
-              <template v-slot:activator="{ on }">
-                <v-icon small color="black" v-on="on" class="pointer">lock</v-icon>
-              </template>
-              <span>Lock comment</span>
-            </v-tooltip>
-          </template>
-          <v-card light min-height="120px" class="pa-1" flat tile width="800px">
-            <v-card-title>
-              <v-spacer></v-spacer>
-              <v-menu bottom right>
+      <div v-if="data.review.length!=0">
+        <v-layout class="row wrap mx-3 mb-5" v-for="(item,index) in data.review" :key="index">
+          <v-badge left overlap :color="color.badge">
+            <template v-slot:badge>
+              <v-tooltip top v-if="item.can_comment == 1">
                 <template v-slot:activator="{ on }">
-                  <v-btn fab icon v-on="on">
-                    <v-icon color="black">more_vert</v-icon>
-                  </v-btn>
+                  <v-icon small color="white" v-on="on" class="pointer">lock_open</v-icon>
                 </template>
-                <v-list dark>
-                  <v-list-tile v-if="item.customer_review.status ==1">
-                    <v-list-tile-title>Off notification</v-list-tile-title>
-                  </v-list-tile>
-                  <v-list-tile v-else>
-                    <v-list-tile-title>Get notification</v-list-tile-title>
-                  </v-list-tile>
-                </v-list>
-              </v-menu>
-              <v-card-text>
-                <span class="headline">{{item.title}}</span>
-                <v-layout>
-                  <v-card
-                    flat
-                    tile
-                    tag="div"
-                    width="100%"
-                    class="radius"
-                    color="grey lighten-2"
-                    light
-                  >
-                    <v-card-text
-                      class="font-weight-bold font-italic"
-                    >{{item.content}}</v-card-text>
-                  </v-card>
-                </v-layout>
-                <span class="grey--text">&nbsp;21/12/2019</span>
-              </v-card-text>
-            </v-card-title>
-            <v-card-actions>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-icon
-                    v-on="on"
-                    class="ml-3 mr-1"
-                    large
-                    :color="color.heart"
-                    v-on:click=";"
-                    v-if="item.customer_review.like == 0"
-                  >favorite_border</v-icon>
-                  <v-icon
-                    v-on="on"
-                    class="ml-3 mr-1"
-                    large
-                    :color="color.heart"
-                    v-on:click=";"
-                    v-else
-                  >favorite</v-icon>
-                </template>
-                <span>like</span>
+                <span>Open comment</span>
               </v-tooltip>
-              <span class="grey--text subheading">{{item.likes}}</span>
-              <v-tooltip top>
+              <v-tooltip top v-else>
                 <template v-slot:activator="{ on }">
-                  <v-icon
-                    v-on="on"
-                    class="ml-3 mr-1"
-                    large
-                    :color="color.comment"
-                    v-on:click="item.model = true"
-                    v-if="!item.model"
-                  >chat_bubble_outline</v-icon>
-                  <v-icon
-                    v-on="on"
-                    class="ml-3 mr-1"
-                    large
-                    :color="color.comment"
-                    v-on:click="item.model = false"
-                    v-else
-                  >chat_bubble</v-icon>
+                  <v-icon small color="black" v-on="on" class="pointer">lock</v-icon>
                 </template>
-                <span>comment</span>
+                <span>Lock comment</span>
               </v-tooltip>
-              <span class="grey--text subheading">{{item.comments}}</span>
-            </v-card-actions>
-            <v-divider v-show="item.model"></v-divider>
-            <v-layout class="row wrap" justify-center v-if="item.model">
-              <v-card light flat tile width="790px" class="mb-1" v-for="(value,i) in item.comment" :key="i">
-                <v-card-title>
-                  <v-avatar size="42px" color="black" flat>
-                    <v-avatar size="40px" flat color="white">
-                      <img :src="value.customer.avatar.image_link">
-                    </v-avatar>
-                  </v-avatar>
-                  <span class="pl-3">{{value.customer.name}}</span>
-                </v-card-title>
+            </template>
+            <v-card light min-height="120px" class="pa-1" flat tile width="800px">
+              <v-card-title>
+                <v-spacer></v-spacer>
+                <v-menu bottom right>
+                  <template v-slot:activator="{ on }">
+                    <v-btn fab icon v-on="on">
+                      <v-icon color="black">more_vert</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list dark>
+                    <v-list-tile v-if="item.customer_review.status ==1">
+                      <v-list-tile-title>Off notification</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile v-else>
+                      <v-list-tile-title>Get notification</v-list-tile-title>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
                 <v-card-text>
+                  <span class="headline">{{item.title}}</span>
                   <v-layout>
-                    <v-card flat tile tag="div" color="grey lighten-2" width="100%" class="radius">
+                    <v-card
+                      flat
+                      tile
+                      tag="div"
+                      width="100%"
+                      class="radius"
+                      color="grey lighten-2"
+                      light
+                    >
                       <v-card-text
-                        class="font-weight-bold font-italic black--text"
-                      >{{value.content}}</v-card-text>
+                        class="font-weight-bold font-italic"
+                      >{{item.content}}</v-card-text>
                     </v-card>
                   </v-layout>
+                  <span class="grey--text">&nbsp;21/12/2019</span>
                 </v-card-text>
-                <v-divider v-show="item.can_comment === 1"></v-divider>
-              </v-card>
-              <v-card flat tile width="790px" v-show="item.can_comment === 1">
-                <v-layout row wrap align-center>
-                  <v-flex md10 class="pl-3">
-                    <v-card-title>
-                      <v-textarea
-                        outline
-                        auto-grow
-                        rows="2"
-                        color="teal"
-                        label="New comment"
-                        clear-icon="$vuetify.icons.clear"
-                        clearable
-                      ></v-textarea>
-                    </v-card-title>
-                  </v-flex>
-                  <v-flex>
-                    <v-card-actions>
-                      <v-btn large depressed dark color="teal">
-                        <span>Send</span>
-                      </v-btn>
-                    </v-card-actions>
-                  </v-flex>
-                </v-layout>
-              </v-card>
-            </v-layout>
-          </v-card>
-        </v-badge>
-      </v-layout>
+              </v-card-title>
+              <v-card-actions>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      v-on="on"
+                      class="ml-3 mr-1"
+                      large
+                      :color="color.heart"
+                      v-on:click=";"
+                      v-if="item.customer_review.like == 0"
+                    >favorite_border</v-icon>
+                    <v-icon
+                      v-on="on"
+                      class="ml-3 mr-1"
+                      large
+                      :color="color.heart"
+                      v-on:click=";"
+                      v-else
+                    >favorite</v-icon>
+                  </template>
+                  <span>like</span>
+                </v-tooltip>
+                <span class="grey--text subheading">{{item.likes}}</span>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      v-on="on"
+                      class="ml-3 mr-1"
+                      large
+                      :color="color.comment"
+                      v-on:click="item.model = true"
+                      v-if="!item.model"
+                    >chat_bubble_outline</v-icon>
+                    <v-icon
+                      v-on="on"
+                      class="ml-3 mr-1"
+                      large
+                      :color="color.comment"
+                      v-on:click="item.model = false"
+                      v-else
+                    >chat_bubble</v-icon>
+                  </template>
+                  <span>comment</span>
+                </v-tooltip>
+                <span class="grey--text subheading">{{item.comments}}</span>
+              </v-card-actions>
+              <v-divider v-show="item.model"></v-divider>
+              <v-layout class="row wrap" justify-center v-if="item.model">
+                <v-card light flat tile width="790px" class="mb-1" v-for="(value,i) in item.comment" :key="i">
+                  <v-card-title>
+                    <v-avatar size="42px" color="black" flat>
+                      <v-avatar size="40px" flat color="white">
+                        <img :src="value.customer.avatar.image_link">
+                      </v-avatar>
+                    </v-avatar>
+                    <span class="pl-3">{{value.customer.name}}</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-layout>
+                      <v-card flat tile tag="div" color="grey lighten-2" width="100%" class="radius">
+                        <v-card-text
+                          class="font-weight-bold font-italic black--text"
+                        >{{value.content}}</v-card-text>
+                      </v-card>
+                    </v-layout>
+                  </v-card-text>
+                  <v-divider v-show="item.can_comment === 1"></v-divider>
+                </v-card>
+                <v-card flat tile width="790px" v-show="item.can_comment === 1">
+                  <v-layout row wrap align-center>
+                    <v-flex md10 class="pl-3">
+                      <v-card-title>
+                        <v-textarea
+                          outline
+                          auto-grow
+                          rows="2"
+                          color="teal"
+                          label="New comment"
+                          clear-icon="$vuetify.icons.clear"
+                          clearable
+                        ></v-textarea>
+                      </v-card-title>
+                    </v-flex>
+                    <v-flex>
+                      <v-card-actions>
+                        <v-btn round large depressed dark color="teal" @click="sendComment">
+                          <span>Send</span>
+                        </v-btn>
+                      </v-card-actions>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </v-layout>
+            </v-card>
+          </v-badge>
+        </v-layout>
+      </div>
+      <div v-else class="mx-3 pa-4 text-md-center border">
+        <span class="text-uppercase">no reviews yet</span>
+      </div>
     </v-flex>
     <v-flex shrink md4>
       <v-expansion-panel light class="elevation-0" expand v-model="expand">
@@ -282,6 +289,7 @@
             </div>
           </template>
           <v-btn
+            round
             depressed
             color="grey lighten-2"
             v-on:click="followDialog = true"
@@ -530,7 +538,10 @@ export default {
         this.getData();
         return;
       });
-    }
+    },
+    sendComment: function(){
+      alert('comment');
+    },
   }
 };
 </script>

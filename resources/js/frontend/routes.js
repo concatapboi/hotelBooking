@@ -45,7 +45,7 @@ const router = new VueRouter({
 			component: singleHotel
 		},
 		{
-			path: '/user.html',
+			path: '/community/user/:id',
 			name: 'user',
 			component: user
 		},

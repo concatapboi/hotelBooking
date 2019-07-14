@@ -8,7 +8,7 @@ export default {
     }
   },
   created() {
-      if(this.login){
+      if(this.login || localStorage.getItem('login_token') != null){
           this.$router.push({ name: "home" });
       }
   }
