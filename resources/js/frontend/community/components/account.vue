@@ -377,6 +377,7 @@
                     <v-flex md10 class="pl-3">
                       <v-card-title>
                         <v-textarea
+                          v-model="comment.content"
                           outline
                           auto-grow
                           rows="2"
@@ -389,7 +390,14 @@
                     </v-flex>
                     <v-flex>
                       <v-card-actions>
-                        <v-btn round large depressed dark color="teal" @click="sendComment">
+                        <v-btn
+                          round
+                          large
+                          depressed
+                          :disabled="!comment.able"
+                          color="teal"
+                          @click="sendComment(item.id)"
+                        >
                           <span>Send</span>
                         </v-btn>
                       </v-card-actions>
@@ -552,7 +560,10 @@
               <v-flex md12 class="mt-2">
                 <div class="pl-3 body-2 font-italic" v-if="b.can_review == true">
                   No review yet.&nbsp;
-                  <span class="pointer purple--text" @click="openReviewForm(b)">Review?</span>
+                  <span
+                    class="pointer purple--text"
+                    @click="openReviewForm(b)"
+                  >Review?</span>
                 </div>
                 <div class="pl-3 body-2 font-italic">
                   <span class="pointer teal--text" @click="bookingAction(b,1)">More...</span>
@@ -1013,7 +1024,10 @@
               <v-flex md9>
                 <v-layout row wrap class="pa-0 pl-4 ma-0">
                   <v-flex md12>
-                    <h2>{{bookingList.detail.booking.hotel_name}}</h2>
+                    <router-link
+                        :to="{name:'hotel',params:{id:bookingList.detail.booking.room.hotel.id}}"
+                        target="_blank"
+                      ><h2>{{bookingList.detail.booking.hotel_name}}</h2></router-link>
                   </v-flex>
                   <v-flex md12>
                     <v-divider class="pa-0 ma-0"></v-divider>
@@ -1128,10 +1142,15 @@
                     <span>{{bookingList.detail.booking.coupon_code}}</span>
                   </v-flex>
                   <v-flex md12>
-                    <div class="font-italic font-weight-black">Yout did get <span class="red--text">{{bookingList.detail.booking.discount_value}}%</span> for discount!</div>
+                    <div class="font-italic font-weight-black">
+                      Yout did get
+                      <span
+                        class="red--text"
+                      >{{bookingList.detail.booking.discount_value}}%</span> for discount!
+                    </div>
                   </v-flex>
                 </v-layout>
-              </v-flex>              
+              </v-flex>
               <v-flex md12>
                 <v-divider></v-divider>
               </v-flex>
@@ -1186,15 +1205,14 @@
                     <v-layout row wrap class="pa-0 ma-0" align-center>
                       <v-flex md8>
                         <v-rating
-                          length ="10"
-                          v-model="reviewForm.star"
-                          class="pa-0 ma-0"
-                          color="#B53471"
-                          background-color="#636e72"
-                          empty-icon="$vuetify.icons.ratingFull"
-                          half-incrementss
                           small
-                        ></v-rating>
+                          v-model="reviewForm.star"
+                          color="indigo darken-3"
+                          background-color="grey darken-1"
+                          empty-icon="$vuetify.icons.ratingFull"
+                          hover
+                          :length="10"
+                          ></v-rating>
                       </v-flex>
                       <v-flex md2>({{reviewForm.star}}/10)</v-flex>
                       <v-flex md6>
@@ -1301,6 +1319,11 @@ export default {
           }
         ]
       },
+      comment: {
+        review_id: 0,
+        content: "",
+        able: false
+      },
       confirm: {
         dialog: false,
         booking: {},
@@ -1400,7 +1423,7 @@ export default {
         can_comment: true,
         notification: true
       },
-      comment: true,
+      // comment: true,
       like: false,
       model: false,
       expand: [true, true],
@@ -1427,7 +1450,17 @@ export default {
   created() {
     this.getInfo();
   },
-  watch: {},
+  watch: {
+    "comment.content": function(val) {
+      if (val.length == 0) {
+        this.comment.able = false;
+        this.comment.review_id = 0;
+        this.comment.content = "";
+      } else {
+        this.comment.able = true;
+      }
+    }
+  },
   methods: {
     bookingAction: function(booking, cmd) {
       console.log(booking);
@@ -1492,8 +1525,53 @@ export default {
       this.form.address = this.user.customer.address;
       this.form.phone = this.user.phone_number;
     },
-    sendComment: function(){
-      alert('comment');
+    getIndex(id) {
+      var index = -1;
+      if (this.user.review.length != 0) {
+        this.user.review.forEach((element, i) => {
+          if (element.id == id) index = i;
+        });
+      }
+      return index;
+    },
+    sendComment: function(reviewID) {
+      var flag = true;
+      var index = this.getIndex(reviewID);
+      this.comment.review_id = reviewID;
+      axios({
+        method: "post",
+        url: "http://localhost:8000/api/comment",
+        data: {
+          comment: this.comment
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          console.log(res.data.status);
+          if (res.data.status == true) {
+            console.log(res.data.comment);
+            var comment = res.data.comment;
+            this.user.review[index].comment.push(comment);
+            this.user.review[index].comments = this.user.review[index].comments+1;
+            this.comment.able = false;
+            this.comment.content = "";
+            this.comment.review_id = 0;
+          } else {
+            this.$emit("loadSnackbar", "Something wrong!");
+          }
+        })
+        .catch(error => {
+          this.comment.able = false;
+          this.comment.content = "";
+          this.comment.review_id = 0;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
     },
     clear: function() {
       this.$refs.form.reset();

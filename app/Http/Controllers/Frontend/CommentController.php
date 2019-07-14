@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 use App\Models\User;
+use App\Models\Review;
 use App\Models\UserImage;
 use App\Models\Customer;
 use Auth;
@@ -13,6 +14,7 @@ use JWTAuth;
 use Validator;
 use Hash;
 use Session;
+use App\Models\CustomerReview;
 
 class CommentController extends Controller
 {
@@ -23,13 +25,31 @@ class CommentController extends Controller
     }
 
     //get comment/create
-    public function create()
+    public function store(Request $req)
     {
-        return;
+        $data = $req->comment;
+        $review = Review::find($data['review_id']);
+        if ($review == null || strlen($data['content']) == 0)
+            return response()->json([
+                'status' => false,
+            ]);
+        $comment = Comment::create([
+            'content' => $data['content'],
+            'review_id' => $review->id,
+            'customer_id' => Auth::user()->id,
+        ]);
+        $review->update([
+            'comments' =>$review->comments+1,
+        ]);
+        $comment->customer = $comment->Customer();
+        return response()->json([
+            'status' => true,
+            'comment' => $comment
+        ]);
     }
 
     //post comment
-    public function store()
+    public function create()
     {
         return;
     }

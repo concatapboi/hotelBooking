@@ -173,11 +173,13 @@
     <v-content>
       <v-container fluid fill-height class="grey lighten-2">
         <router-view
+          :user="user"
           :customer="user"
           v-on:loadLogin="getLogin"
           :snackbar="snackbar"
           v-on:loadSnackbar="eventSnackbar"
           :login="login"
+          :check="login.check"
         ></router-view>
         <v-btn
           href="#top"
@@ -482,6 +484,7 @@ export default {
                 this.$validator.reset();
                 return;
               }
+              localStorage.login_token = res.data.token;
               this.eventSnackbar("Login successfully!");
               this.login.dialog = false;
               this.flag = true;
