@@ -236,7 +236,7 @@ class HotelController extends Controller
             ->whereNotIn("image_link", $temp)
             ->delete();
         // for ($i = 0; $i < $length; $i++) {
-        //     //hình cũ
+        //     //hi`nh cu~
         //     if (strpos($images[$i]["image_link"], 'data:image') === false) {
         //         $explode = explode("/", $images[$i]["image_link"]);
         //         $imageName = ($explode[5]);
@@ -247,7 +247,7 @@ class HotelController extends Controller
         //     ->whereNotIn("image_link", $temp)
         //     ->delete();
         // for ($i = 0; $i < $length; $i++) {
-        //     //hình mới
+        //     //hi`nh mo´i
         //     if (strpos($images[$i]["image_link"], 'data:image') !== false) {
         //         $name = time() . str_random(10);
         //         $image = Image::make($images[$i]["image_link"])

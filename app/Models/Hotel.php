@@ -71,6 +71,10 @@ class Hotel extends Model
   {
     return $this->hasMany('App\Models\Room', 'hotel_id', 'id')->orderBy('price');
   }
+  public function CouponCode()
+  {
+    return $this->hasMany('App\Models\CouponCode', 'hotel_id', 'id');
+  }
   public function RoomByPrice()
   {
     return $this->hasMany('App\Models\Room', 'hotel_id', 'id')->orderBy('price');

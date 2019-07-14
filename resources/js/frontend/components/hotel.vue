@@ -161,13 +161,16 @@
                     <v-img :aspect-ratio="4/3" :src="'/blog/img/room/'+room.image"></v-img>
                   </v-flex>
                   <v-flex class="pa-1" md6>
-                    <v-img :aspect-ratio="1" :src="'/blog/img/room/'+room.images[2].image_link">
-                    </v-img>
+                    <v-img :aspect-ratio="1" :src="'/blog/img/room/'+room.images[2].image_link"></v-img>
                   </v-flex>
                   <v-flex class="pa-1" md6>
                     <v-img :aspect-ratio="1" :src="'/blog/img/room/'+room.images[3].image_link">
                       <v-layout fill-height justify-center align-center>
-                        <a href="#" @click="openImagesDialog(1,room)" class="red--text">More picture...</a>
+                        <a
+                          href="#"
+                          @click="openImagesDialog(1,room)"
+                          class="red--text"
+                        >More picture...</a>
                       </v-layout>
                     </v-img>
                   </v-flex>
@@ -351,7 +354,9 @@
                     </v-flex>
                     <v-flex md12>
                       <div>
-                        <span class="font-weight-bold subheading">Location Info:&nbsp;{{data.address}}</span>
+                        <span
+                          class="font-weight-bold subheading"
+                        >Location Info:&nbsp;{{data.address}}</span>
                       </div>
                     </v-flex>
                     <v-flex md12>
@@ -385,10 +390,14 @@
                         </div>
                         <div class="ml-2 pl-2 border-left">
                           <div v-if="data.policy.check_in !=null">
-                            <span class="font-weight-bold subheading">Check-in:&nbsp;{{data.policy.check_in}}</span>
+                            <span
+                              class="font-weight-bold subheading"
+                            >Check-in:&nbsp;{{data.policy.check_in}}</span>
                           </div>
                           <div v-if="data.policy.check_ !=null">
-                            <span class="font-weight-bold subheading">Check-out:&nbsp;{{data.policy.check_out}}</span>
+                            <span
+                              class="font-weight-bold subheading"
+                            >Check-out:&nbsp;{{data.policy.check_out}}</span>
                           </div>
                           <div v-for="(p,i) in paymentMethods" :key="i">
                             <span class="font-weight-bold subheading">{{p.method.name}}&nbsp;method:</span>
@@ -891,6 +900,25 @@
                         <v-flex md12>
                           <v-divider></v-divider>
                         </v-flex>
+                        <v-flex md12>
+                          <v-layout row wrap class="pa-0 ma-0" align-center>
+                            <v-flex md8>
+                              <v-text-field v-model="text" class="my-2 ma-0" color="teal" outline></v-text-field>
+                            </v-flex>
+                            <v-flex md4>
+                              <v-btn
+                                round
+                                depressed
+                                :disabled="!bookingDialog.couponCode.check"
+                                @click="applyCouponCode"
+                              >apply</v-btn>
+                            </v-flex>
+                            <v-flex md12><span class="red--text font-italic">{{bookingDialog.couponCode.mess}}</span></v-flex>
+                          </v-layout>
+                        </v-flex>
+                        <v-flex md12>
+                          <v-divider></v-divider>
+                        </v-flex>
                         <v-flex md8>
                           <span>Total price</span>
                         </v-flex>
@@ -1251,7 +1279,9 @@ export default {
   },
   data() {
     return {
-      paymentMethods:[],
+      text: "",
+      paymentMethods: [],
+      couponCodes: [],
       action: {
         dialog: false,
         data: {
@@ -1260,7 +1290,7 @@ export default {
         }
       },
       images: {
-        key: 'hotel',
+        key: "hotel",
         dialog: false,
         arr: [{ id: 0, image_link: "default.png" }],
         img: {
@@ -1270,7 +1300,13 @@ export default {
       },
       userLogin: {},
       bookingDialog: {
-        policy:"",
+        couponCode: {
+          check: false,
+          id: 0,
+          text: "",
+          mess: ""
+        },
+        policy: "",
         payment: 1,
         accept: false,
         totalPrice: 0,
@@ -1332,8 +1368,8 @@ export default {
         image: "default.png",
         review: [],
         question: [],
-        policy:{
-          content:""
+        policy: {
+          content: ""
         },
         hotel_type: {
           name: ""
@@ -1370,9 +1406,28 @@ export default {
     } else {
       this.setSearchValue();
     }
-    // this.load();
+    this.load();
   },
   watch: {
+    text: function(val) {
+      this.bookingDialog.couponCode.check = false;
+      this.bookingDialog.couponCode.id = 0;
+      if (val.length == 0) {
+        this.bookingDialog.couponCode.mess = "";
+      } else {
+        this.couponCodes.forEach(c => {
+          if (c.code.localeCompare(val.trim()) == 0) {
+            this.bookingDialog.couponCode.check = true;
+            this.bookingDialog.couponCode.id = c.id;
+            this.bookingDialog.couponCode.mess =
+              "You got " + c.discount_value + "% for discount.";
+          }
+        });
+        if (this.bookingDialog.couponCode.check == false) {
+          this.bookingDialog.couponCode.mess = "Wrong code! Try again?!";
+        }
+      }
+    },
     // $route: "load",
     // login: {
     //         handler: function(newValue) {
@@ -1380,9 +1435,9 @@ export default {
     //         },
     //         deep: true
     // },
-    'bookingDialog.payment': function() {
+    "bookingDialog.payment": function() {
       this.paymentMethods.forEach(element => {
-        if(element.method.id == this.bookingDialog.payment){
+        if (element.method.id == this.bookingDialog.payment) {
           this.bookingDialog.policy = element.content;
         }
       });
@@ -1440,11 +1495,12 @@ export default {
           if (res.data.status) {
             this.data = res.data.data;
             this.paymentMethods = res.data.data.paymentMethods;
-            res.data.data.paymentMethods.forEach(p=>{
-              if(p.method.id==1){
+            this.couponCodes = res.data.data.coupon_code;
+            res.data.data.paymentMethods.forEach(p => {
+              if (p.method.id == 1) {
                 this.bookingDialog.policy = p.content;
               }
-            });            
+            });
             return;
           }
         })
@@ -1481,6 +1537,10 @@ export default {
       this.bookingDialog.accept = false;
       this.bookingDialog.totalPrice = room.bookingAmount * room.price;
       this.bookingDialog.step = 1;
+      this.bookingDialog.couponCode.check = false;
+      this.text = "";
+      this.bookingDialog.couponCode.mess = "";
+      this.bookingDialog.couponCode.id = 0;
       this.paymentMethods.forEach(element => {
         if (element.name == "Offline") this.bookingDialog.payment = element.id;
         // console.log(element.name);
@@ -1519,6 +1579,16 @@ export default {
     getLogin: function(val) {
       this.$emit("loadLoginDialog", true, val);
     },
+    applyCouponCode: function() {
+      var $temp = 1;
+      this.couponCodes.forEach(c => {
+        if (c.id == this.bookingDialog.couponCode.id) $temp = c.discount_value;
+      });
+      this.bookingDialog.totalPrice =
+        this.bookingDialog.room.bookingAmount *
+        this.bookingDialog.room.price *
+        ((100 - $temp) / 100);
+    },
     getBooking: function() {
       axios({
         method: "post",
@@ -1534,7 +1604,8 @@ export default {
             checkIn: this.checkIn,
             checkOut: this.checkOut,
             roomId: this.bookingDialog.room.id,
-            roomAmount: this.bookingDialog.room.bookingAmount
+            roomAmount: this.bookingDialog.room.bookingAmount,
+            coupon_code_id: this.bookingDialog.couponCode.id
           }
         },
         headers: {
@@ -1644,11 +1715,6 @@ export default {
         })
           .then(res => {
             console.log(res.data.data);
-            if (res.data.data == null) {
-              this.$emit("loadSnackbar", "Something wrong!");
-              flag = false;
-              return;
-            }
             this.$emit("loadSnackbar", "Following " + value.name);
           })
           .catch(error => {
@@ -1657,7 +1723,6 @@ export default {
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");
               this.$emit("loadLoginDialog", true, 1);
-              return;
             }
           });
         if (!flag) this.data.followed = false;
@@ -1677,10 +1742,6 @@ export default {
         })
           .then(res => {
             console.log(res.data.data);
-            if (res.data.data == null) {
-              this.$emit("loadSnackbar", "Something wrong!");
-              return;
-            }
             this.$emit("loadSnackbar", "Unfollowing " + value.name);
             flag = true;
           })
@@ -1689,19 +1750,18 @@ export default {
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");
               this.$emit("loadLoginDialog", true, 1);
-              return;
             }
           });
         if (!flag) this.data.followed = true;
       }
     },
     openImagesDialog: function(val, room) {
-      if(val==0){
-        this.images.key = 'hotel';
-      this.images.arr = this.data.images;
-      this.images.img = this.data.images[0];
-      }else{
-        this.images.key = 'room';
+      if (val == 0) {
+        this.images.key = "hotel";
+        this.images.arr = this.data.images;
+        this.images.img = this.data.images[0];
+      } else {
+        this.images.key = "room";
         this.images.arr = room.images;
         this.images.img = room.images[0];
       }

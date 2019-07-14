@@ -391,8 +391,8 @@ class DatabaseSeeder extends Seeder
         }
 
         factory(App\Models\HotelImage::class, $hotelNum)->create([]);
-        for($i =0;$i<$hotelNum;$i++){
-            for($j=0;$j<4;$j++){
+        for($i =1;$i<=$hotelNum;$i++){
+            for($j=1;$j<=4;$j++){
                 $img = rand(1,30);
                 factory(App\Models\HotelImage::class)->create([
                     'hotel_id' => $i,

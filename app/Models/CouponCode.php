@@ -23,4 +23,8 @@ class CouponCode extends Model
   {
     return $this->belongsTo('App\Models\Hotel', 'hotel_id', 'id');
   }
+  public function Apply()
+  {
+    return $this->hasMany('App\Models\ApplyCouponCodeRoomType', 'coupon_code_id', 'id');
+  }
 }

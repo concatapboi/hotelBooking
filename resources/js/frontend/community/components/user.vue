@@ -540,7 +540,22 @@ export default {
       });
     },
     sendComment: function(){
-      alert('comment');
+      axios({
+        method: "post",
+        url: "http://localhost:8000/api/comment",
+        data: {
+          
+        }
+      }).then(res => {
+        console.log(res.data.data);
+        if (res.data.data == null) {
+          this.$emit("loadSnackbar", "Something wrong!");
+          return;
+        }
+        this.$emit("loadSnackbar", "Following " + value.name);
+        this.getData();
+        return;
+      });
     },
   }
 };

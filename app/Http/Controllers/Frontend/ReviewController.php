@@ -29,7 +29,7 @@ class ReviewController extends Controller
                 $temp->customer = $user;
                 $temp->customer->avatar = UserImage::where('user_id',$user->id)->first();
                 $arr[] = $temp;
-            }     
+            }
         }
         return response()->json([
             'data' => $arr,

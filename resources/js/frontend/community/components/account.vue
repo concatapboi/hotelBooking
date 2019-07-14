@@ -1103,13 +1103,6 @@
             </v-layout>
             <div>
               <v-divider dark></v-divider>
-              <span class="font-weight-black title">Cancellation Policy</span>
-            </div>
-            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
-              <span>Id soluta temporibus sint molestias sapiente dolore beatae ratione velit blanditiis maxime sunt.</span>
-            </v-layout>
-            <div>
-              <v-divider dark></v-divider>
               <span class="font-weight-black title">Price Details</span>
             </div>
             <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
@@ -1126,6 +1119,19 @@
                 <span>Amount</span>
               </v-flex>
               <v-flex md4>{{bookingList.detail.booking.room_amount}}</v-flex>
+              <v-flex md12 v-if="bookingList.detail.booking.discount_value!=0">
+                <v-layout row wrap class="pa-0 ma-0">
+                  <v-flex md8>
+                    <span>Code</span>
+                  </v-flex>
+                  <v-flex md4>
+                    <span>{{bookingList.detail.booking.coupon_code}}</span>
+                  </v-flex>
+                  <v-flex md12>
+                    <div class="font-italic font-weight-black">Yout did get <span class="red--text">{{bookingList.detail.booking.discount_value}}%</span> for discount!</div>
+                  </v-flex>
+                </v-layout>
+              </v-flex>              
               <v-flex md12>
                 <v-divider></v-divider>
               </v-flex>
@@ -1134,7 +1140,7 @@
               </v-flex>
               <v-flex
                 md4
-              >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+              >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price*((100-bookingList.detail.booking.discount_value)/100)).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
             </v-layout>
           </v-flex>
         </v-layout>
