@@ -76,7 +76,7 @@ class HotelController extends Controller
             "description" => $request->description,
             "province" => $request->province,
             "district" => $request->district,
-            "ward" => $request->ward,
+            "ward_id" => $request->ward,
             "address" => $request->address,
             "credit_card" => $request->credit_card,
             "phone_number" => $request->phone,
@@ -92,7 +92,7 @@ class HotelController extends Controller
             'description' => 'required',
             'province' => 'required|exists:province,id',
             'district' => 'required|exists:district,id',
-            'ward' => 'required|exists:ward,id',
+            'ward_id' => 'required|exists:ward,id',
             'address' => 'required',
             'credit_card' => 'required',
             'phone_number' => 'required',
@@ -377,9 +377,6 @@ class HotelController extends Controller
     }
     public function search(Request $request)
     {
-
-        // return Province::with("District")->get();
-
         $place = $request->place;
         $checkIn = $request->checkIn;
         $checkOut = $request->checkOut;
@@ -395,29 +392,45 @@ class HotelController extends Controller
         $checkIn = Carbon::createMidnightDate($checkinExplode[0], $checkinExplode[1], $checkinExplode[2]);
         $checkOut = Carbon::createMidnightDate($checkoutExplode[0], $checkoutExplode[1], $checkoutExplode[2]);
         $data = [];
-        $province = Province::where("name", $place)->with(["District" => function ($query) {
-            $query->with(["Ward" => function ($query) {
-                $query->with(["Hotel"]);
+        //------Loc theo province neu du lieu province it
+        // $province = Province::where("name", $place)->with(["District" => function ($query) {
+        //     $query->with(["Ward" => function ($query) {
+        //         $query->with(["Hotel"]);
+        //     }]);
+        // }])->get();
+        // if (sizeof($province) == 0) {
+        //     return response()->json([
+        //         "status" => false,
+        //         "message" => "Can't find any hotel :'(",
+        //     ]);
+        // }
+        // $arrayDistrict = $province[0]->district;
+        // foreach ($arrayDistrict as $district) {
+        //     foreach ($district->ward as $ward) {
+        //         $arrayHotels = $ward->hotel;
+        //         if (sizeOf($arrayHotels) > 0) {
+        //             foreach ($arrayHotels as $hotel) {
+        //                 $data[] = new HotelResource($hotel);
+        //             }
+        //         }
+        //     }
+        // }
+        //------
+        //Loc theo Hotel neu du lieu hotel it
+        $hotel = Hotel::with(["Ward" => function ($query) {
+            $query->with(["District" => function ($query) {
+                $query->with(["Province"]);
             }]);
         }])->get();
-        if(sizeof($province) == 0){
-            return response()->json([
-                "status" => false,
-                "message" => "Can't find any hotel :'(",
-            ]);
-        }
-        $arrayDistrict = $province[0]->district;
-        foreach($arrayDistrict as $district){
-            foreach ($district->ward as $ward) {
-                $arrayHotels = $ward->hotel;
-                if (sizeOf($arrayHotels) > 0) {
-                    foreach ($arrayHotels as $hotel) {
-                        $data[] = new HotelResource($hotel);
-                    }
-                }
+        $data = [];
+        foreach ($hotel as $h) {
+            if($h->ward->district->province->id == 1){
+                $data[] = new HotelResource($h);
             }
         }
+        //-------
         $data = $this->filterByDate($data, $checkIn, $checkOut, $roomTypes);
+
         if (is_array($districts) && sizeOf($districts) > 0) {
             $data = $this->filterByDistrict($data, $districts);
         }
@@ -434,6 +447,7 @@ class HotelController extends Controller
         if (is_array($price) && sizeOf($price) > 0) {
             $data = $this->filterByPrice($data, $price);
         }
+        $data = $this->filterByRankPoint($data);
         return response()->json([
             "status" => true,
             "data" => $data,
@@ -459,16 +473,20 @@ class HotelController extends Controller
                 }
             }
             $temp = array_count_values($temp);
-            $tempData = [];
-            foreach ($temp as $hotelId => $value) {
-                foreach ($data as $hotel) {
-                    if ($hotel->id == $hotelId) {
-                        $tempData[] = new HotelResource($hotel);
-                    }
-                }
-            }
-            $data = $tempData;
+            $collection = collect($data);
+            $data = $collection->whereIn("id", $temp)->all();
             return $data;
+            // $tempData = [];
+            // foreach ($temp as $hotelId => $value) {
+            //     foreach ($data as $hotel) {
+            //         if ($hotel->id == $hotelId) {
+            //             $tempData[] = new HotelResource($hotel);
+            //         }
+            //     }
+            // }
+
+            // $data = $tempData;
+            // return $data;
         } else {
             return response()->json([
                 "status" => false,
@@ -479,10 +497,10 @@ class HotelController extends Controller
     public function filterByDistrict($array, $districts)
     {
         $temp = [];
-        foreach($array as $hotel){
-            foreach($districts as $district){
-                if($hotel->Ward->District->id == $district){
-                    $temp = new HotelResource($hotel);
+        foreach ($array as $hotel) {
+            foreach ($districts as $district) {
+                if ($hotel->Ward->District->id == $district) {
+                    $temp[] = new HotelResource($hotel);
                 }
             }
         }
@@ -540,14 +558,16 @@ class HotelController extends Controller
             }
         }
         //------------------------------------
-        $data = [];
-        foreach ($array as $hotel) {
-            foreach ($temp as $hotelId) {
-                if ($hotel->id == $hotelId) {
-                    $data[] = new HotelResource($hotel);
-                }
-            }
-        }
+        // $data = [];
+        // foreach ($array as $hotel) {
+        //     foreach ($temp as $hotelId) {
+        //         if ($hotel->id == $hotelId) {
+        //             $data[] = new HotelResource($hotel);
+        //         }
+        //     }
+        // }
+        $collection = collect($array);
+        $data = $collection->whereIn("id", $temp)->all();
         return $data;
     }
     public function filterByHotelType($array, $hotelTypes)
@@ -572,14 +592,16 @@ class HotelController extends Controller
             }
         }
         $temp = array_unique($temp);
-        $data = [];
-        foreach ($array as $hotel) {
-            foreach ($temp as $hotelId) {
-                if ($hotel->id == $hotelId) {
-                    $data[] = new HotelResource($hotel);
-                }
-            }
-        }
+        // $data = [];
+        // foreach ($array as $hotel) {
+        //     foreach ($temp as $hotelId) {
+        //         if ($hotel->id == $hotelId) {
+        //             $data[] = new HotelResource($hotel);
+        //         }
+        //     }
+        // }
+        $collection = collect($array);
+        $data = $collection->whereIn("id", $temp)->values();
         return $this->getSort($data);
         // return $data;
     }
@@ -603,6 +625,12 @@ class HotelController extends Controller
             $number++;
         } while ($number < sizeOf($tempArr));
         return $tempArr;
+    }
+    public function filterByRankPoint($array)
+    {
+        $collection = collect($array);
+        $data = $collection->sortByDesc("rank_point")->values();
+        return $data;
     }
     // public function remove_duplicate_hotel_in_array($array, $numberOfService)
     // {

@@ -77,8 +77,8 @@
           <v-card-text>
             <v-card flat>
               <v-card-title class="pa-0 ma-0">
-                  <h5>Star rating</h5>
-                  {{starsSeleted}}
+                <h5>Star rating</h5>
+                {{starsSeleted}}
               </v-card-title>
               <v-card-text class="pa-0 ma-0">
                 <v-layout row v-for="i in number" :key="i" justify-center align-center>
@@ -267,47 +267,47 @@
           <v-progress-circular :size="70" :width="7" color="blue" indeterminate></v-progress-circular>
         </div>
         <div v-else>
-          <v-card v-if="noData == true" light flat tile>
-            No Data found :'(
-          </v-card>
-        <v-card light flat tile>
-          <v-layout class="search-item" v-for="(hotel,index) in data" :key="index">
-            <v-flex xs3>
-              <router-link
-                tag="a"
-                :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
-                target="_blank"
-              >
-                <v-img :aspect-ratio="4/3" :src="'/blog/img/hotel/'+hotel.image"></v-img>
-              </router-link>
-            </v-flex>
-            <v-flex xs9>
-              <router-link
-                tag="a"
-                :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
-                target="_blank"
-              >
-                <v-card-title>
-                  <v-card flat tile width="100%">
-                    <v-list two-line class="grey lighten-2">
-                      <v-list-tile class="pa-0 ma-0">
-                        <v-list-tile-content>
-                          <div>
-                            <span class="headline">{{hotel.name}}</span>
-                            <v-tooltip right>
-                              <template v-slot:activator="{ on }">
-                                <i
-                                  class="blue--text fas fa-check-circle"
-                                  v-on="on"
-                                  v-show="hotel.verified!=0"
-                                ></i>
-                              </template>
-                              <span>verified</span>
-                            </v-tooltip>
-                          </div>
-                          <v-list-tile-title>{{hotel.description}}</v-list-tile-title>
-                        </v-list-tile-content>
-                      </v-list-tile>
+
+          <v-card v-if="noData == true" light flat tile>No Data found :'(</v-card>
+          <v-card v-else light flat tile>
+            <v-layout class="search-item" v-for="(hotel,index) in data" :key="index">
+              <v-flex xs3>
+                <router-link
+                  tag="a"
+                  :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
+                  target="_blank"
+                >
+                  <v-img :aspect-ratio="4/3" :src="'/blog/img/hotel/'+hotel.image"></v-img>
+                </router-link>
+              </v-flex>
+              <v-flex xs9>
+                <router-link
+                  tag="a"
+                  :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
+                  target="_blank"
+                >
+                  <v-card-title>
+                    <v-card flat tile width="100%">
+                      <v-list two-line class="grey lighten-2">
+                        <v-list-tile class="pa-0 ma-0">
+                          <v-list-tile-content>
+                            <div>
+                              <span class="headline">{{hotel.name}}</span>
+                              <v-tooltip right>
+                                <template v-slot:activator="{ on }">
+                                  <i
+                                    class="blue--text fas fa-check-circle"
+                                    v-on="on"
+                                    v-show="hotel.verified!=0"
+                                  ></i>
+                                </template>
+                                <span>verified</span>
+                              </v-tooltip>
+                            </div>
+                            <v-list-tile-title>{{hotel.description}}</v-list-tile-title>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                        <v-list-tile>
                           <div>
                             <div>
                               Price:
@@ -322,7 +322,6 @@
               </v-flex>
             </v-layout>
           </v-card>
-          </div>
         </div>
       </div>
     </v-flex>
@@ -387,7 +386,7 @@ export default {
       arrayHotel: [],
       loading: false,
       noData: false,
-      firstTime: true,
+      firstTime: true
     };
   },
   created() {
@@ -411,7 +410,7 @@ export default {
     hotelTypeSeleted: "getData",
     // price: "getData",
     RoomTypeSeleted: "getData",
-    firstTime: function(newValue , oldValue) {
+    firstTime: function(newValue, oldValue) {
       if (oldValue != newValue) {
         this.initialize();
       }

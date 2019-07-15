@@ -43,7 +43,7 @@ class HotelResource extends JsonResource
             "maxPrice" => $this->maxPrice(),
             "ward" => $this->ward_id,
             "child_age" => $this->child_age,
-            "image" => HotelImage::where('hotel_id',$this->id)->where('is_primary',1)->first()->image_link            
+            "image" => HotelImage::where('hotel_id',$this->id)->where('is_primary',1)->first()->image_link,           
         ];
         $policy = $this->Policy;
         if($policy != null){

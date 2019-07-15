@@ -160,24 +160,26 @@
         class="mt-2"
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-badge overlap color="red" class="mr-5">
+      <!-- <v-badge overlap color="red" class="mr-5">
         <template v-slot:badge>
           <span>3+</span>
         </template>
         <v-avatar :color="drawer.iconColor" size="40px">
           <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
         </v-avatar>
-      </v-badge>
+      </v-badge> -->
     </v-toolbar>
     <div id="top"></div>
     <v-content>
       <v-container fluid fill-height class="grey lighten-2">
         <router-view
+          :user="user"
           :customer="user"
           v-on:loadLogin="getLogin"
           :snackbar="snackbar"
           v-on:loadSnackbar="eventSnackbar"
           :login="login"
+          :check="login.check"
         ></router-view>
         <v-btn
           href="#top"
@@ -482,6 +484,7 @@ export default {
                 this.$validator.reset();
                 return;
               }
+              localStorage.login_token = res.data.token;
               this.eventSnackbar("Login successfully!");
               this.login.dialog = false;
               this.flag = true;

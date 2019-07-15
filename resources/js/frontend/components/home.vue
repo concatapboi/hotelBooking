@@ -89,6 +89,46 @@
         </v-layout>
       </v-img>
       <v-layout row wrap class="ma-4" justify-center align-center>
+        <v-flex md12>
+          <v-divider></v-divider>
+        </v-flex>
+        <v-flex md12>
+      <v-layout row wrap class="pa-0 ma-4" align-center>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg green--text fas fa-broom"></i>
+          </div>
+        </v-flex>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg yellow--text fas fa-guitar"></i>
+          </div>
+        </v-flex>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg indigo--text fas fa-cookie-bite"></i>
+          </div>
+        </v-flex>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg red--text fas fa-palette"></i>
+          </div>
+        </v-flex>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg grey--text fas fa-umbrella"></i>
+          </div>
+        </v-flex>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg orange--text fas fa-tree"></i>
+          </div>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+        <v-flex md12>
+          <v-divider></v-divider>
+        </v-flex>
         <v-flex md6>
           <v-card light flat tile>
             <v-card-title>
@@ -99,9 +139,7 @@
             </v-card-title>
             <v-card-text>
               CEO:
-              <a href="#">
-                Nguyen Tran Hoang Thang
-              </a>
+              <a href="#">Nguyen Tran Hoang Thang</a>
             </v-card-text>
           </v-card>
         </v-flex>
@@ -116,12 +154,138 @@
             </v-flex>
           </v-layout>
         </v-flex>
-        <v-flex md12 class="my-3">
-          <v-img :aspect-ratio="16/2" src="/blog/img/slider/oops.png"></v-img>
+        <v-flex md12>
+          <v-divider></v-divider>
+        </v-flex>
+        <v-flex md12>
+          <v-divider></v-divider>
         </v-flex>
       </v-layout>
     </v-flex>
-    <v-flex shrink md12></v-flex>
+    <v-flex shrink md12>
+      <v-layout row wrap class="pa-0 ma-0 mx-4">
+        <v-flex md4 class="pa-3">
+          <div>
+            <div>
+              <span class="title">Join us</span>
+            </div>
+            <div>
+              <span
+                class="body-2"
+              >Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus expedita itaque blanditiis quisquam, quis accusamus id voluptatem nulla excepturi praesentium aut impedit nobis, quas fugiat porro. Magnam minus incidunt laboriosam?</span>
+            </div>
+          </div>
+        </v-flex>
+        <v-flex md4 class="pa-3">
+          <div>
+            <div>
+              <span class="title">Trvel is better?</span>
+            </div>
+            <div>
+              <span
+                class="body-2"
+              >Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fuga inventore obcaecati, at dicta omnis voluptatem voluptas molestias pariatur enim dolor commodi temporibus velit distinctio vero natus asperiores repellat totam quam.</span>
+            </div>
+          </div>
+        </v-flex>
+        <v-flex md4 class="pa-3">
+          <div>
+            <div>
+              <span class="title">We care about our members.</span>
+            </div>
+            <div>
+              <span
+                class="body-2"
+              >Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas et distinctio quasi, eum repellat rem mollitia. Animi porro ducimus natus adipisci excepturi odit, qui accusamus minus voluptate sunt perferendis sapiente?</span>
+            </div>
+          </div>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+    <v-flex md12>
+      <v-divider></v-divider>
+    </v-flex>
+    <v-flex shrink md12>
+      <v-layout row wrap class="pa-0 ma-0 mx-4" align-center>
+        <v-flex md8 class="py-3">
+          <div class="my-3">
+            <span class="display-1">Sowmewhere in your hometown</span>
+          </div>
+          <div class="pl-3 subheading">
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque culpa corrupti iure tenetur commodi, error obcaecati perspiciatis, quis eos veritatis est fuga, sint nobis nisi incidunt nihil aliquid laudantium totam.
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas dolores deserunt officia reprehenderit commodi eos exercitationem, voluptates nihil, pariatur recusandae asperiores doloremque harum vel, atque sunt accusamus nemo modi. Aliquam!
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quo eum alias in hic culpa quas, impedit earum harum voluptate beatae adipisci explicabo sequi, incidunt distinctio architecto atque qui esse reprehenderit.
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima sunt numquam ut suscipit alias dolorum reiciendis nostrum tempora error perferendis corrupti rerum quos, laborum aut omnis. Suscipit ratione inventore architecto.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Et voluptatibus deserunt quidem nesciunt at accusamus debitis sequi nisi suscipit, molestias mollitia dignissimos, minus quas repudiandae magni repellat, odit beatae provident.
+          </div>
+        </v-flex>
+        <v-flex md4 class="pa-3">
+          <v-img :aspect-ratio="4/3" src="/blog/img/slider/travel.png"></v-img>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+    <v-flex md12>
+      <v-divider></v-divider>
+    </v-flex>
+    <v-flex md12>
+      <v-layout row wrap class="pa-0 ma-4" align-center>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg green--text fas fa-leaf"></i>
+          </div>
+        </v-flex>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg yellow--text fas fa-lemon"></i>
+          </div>
+        </v-flex>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg indigo--text fas fa-cloud-meatball"></i>
+          </div>
+        </v-flex>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg red--text fas fa-candy-cane"></i>
+          </div>
+        </v-flex>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg grey--text fas fa-puzzle-piece"></i>
+          </div>
+        </v-flex>
+        <v-flex>
+          <div class="text-md-center">
+            <i class="fa-lg orange--text fas fa-carrot"></i>
+          </div>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+    <v-flex md12>
+      <v-divider></v-divider>
+    </v-flex>
+    <v-flex shrink md12>
+      <v-layout row wrap class="pa-0 ma-0 mx-4" align-center>
+        <v-flex md8 class="py-3">
+          <div class="my-3">
+            <span class="display-1">Go somewhere peace.</span>
+          </div>
+          <div class="pl-3 subheading">
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque culpa corrupti iure tenetur commodi, error obcaecati perspiciatis, quis eos veritatis est fuga, sint nobis nisi incidunt nihil aliquid laudantium totam.
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas dolores deserunt officia reprehenderit commodi eos exercitationem, voluptates nihil, pariatur recusandae asperiores doloremque harum vel, atque sunt accusamus nemo modi. Aliquam!
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quo eum alias in hic culpa quas, impedit earum harum voluptate beatae adipisci explicabo sequi, incidunt distinctio architecto atque qui esse reprehenderit.
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima sunt numquam ut suscipit alias dolorum reiciendis nostrum tempora error perferendis corrupti rerum quos, laborum aut omnis. Suscipit ratione inventore architecto.
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Et voluptatibus deserunt quidem nesciunt at accusamus debitis sequi nisi suscipit, molestias mollitia dignissimos, minus quas repudiandae magni repellat, odit beatae provident.
+          </div>
+        </v-flex>
+        <v-flex md4 class="pa-3">
+          <v-img :aspect-ratio="4/3" src="/blog/img/slider/pool.png"></v-img>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+    <v-flex shrink md12>
+      <v-layout row wrap class="pa-0 ma-4"></v-layout>
+    </v-flex>
   </v-layout>
 </template>
 
@@ -152,17 +316,17 @@ export default {
       checkInVal: "",
       checkInFormattedVal: "",
       checkOutVal: "",
-      checkOutFormattedVal: "",
+      checkOutFormattedVal: ""
     };
   },
   computed: {},
   watch: {
-    placeVal:"loadSearchData",
+    placeVal: "loadSearchData",
     checkIn: "setSearchValue",
     checkInVal: "loadSearchData",
     checkIn: "setSearchValue",
     checkOutVal: "loadSearchData",
-    checkOut: "setSearchValue",
+    checkOut: "setSearchValue"
   },
   created() {
     // window.setInterval(() => {
@@ -179,11 +343,18 @@ export default {
         checkIn: this.checkInVal,
         checkInFormatted: this.checkInFormattedVal,
         checkOut: this.checkOutVal,
-        checkOutFormatted: this.checkOutFormattedVal,
+        checkOutFormatted: this.checkOutFormattedVal
       });
     },
     search: function() {
-      this.$router.push({ path: "searching" , query:{place:this.place.replace(/\s/g,'-'), check_in:this.checkIn, check_out:this.checkOut}});
+      this.$router.push({
+        path: "searching",
+        query: {
+          place: this.place.replace(/\s/g, "-"),
+          check_in: this.checkIn,
+          check_out: this.checkOut
+        }
+      });
     },
     setSearchValue: function() {
       this.placeVal = this.place;

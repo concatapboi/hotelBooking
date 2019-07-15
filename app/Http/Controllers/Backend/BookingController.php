@@ -117,7 +117,8 @@ class BookingController extends Controller
         }
         return response()->json([
             "status" => true,
-            "data" => $booking->status_id,
+            // "data" => new BookingResource($booking),
+            "data" => $booking->Hotel()->booking(),
         ]);
     }
     public function declineBooking(Request $request)
@@ -126,7 +127,8 @@ class BookingController extends Controller
         $booking->update(["status_id" => 3]);
         return response()->json([
             "status" => true,
-            "data" => $booking->status_id,
+            // "data" => new BookingResource($booking),
+            "data" => $booking->Hotel()->booking(),
         ]);
     }
     public function confirmBooking(Request $request)
@@ -135,16 +137,28 @@ class BookingController extends Controller
         $booking->update(["status_id" => 4]);
         return response()->json([
             "status" => true,
-            "data" => $booking->status_id,
+            // "data" => new BookingResource($booking),
+            "data" => $booking->Hotel()->booking(),
         ]);
     }
     public function cancelBooking(Request $request)
     {
         $booking = Booking::find($request->bookingId);
-        return $this->today;
+        $totalPrice = $booking->room_price * $booking->room_amount; 
+        if($booking->payment_method_id == 1){
+            $percent = 20;      
+        }else if ($booking->payment_method_id == 2){
+            $percent = 40;   
+        }
+        $amount = $totalPrice * $percent /100;
+        $booking->Hotel()->update(["coin"=>$booking->Hotel()->coin - $amount]);
+        $customer = $booking->Customer;
+        $customer->update(["coin"=> $customer->coin + $amount]);
+        $booking->update(["status_id" => 6]);
         return response()->json([
             "status" => true,
-            "data" => $booking,
+            // "data" => new BookingResource($booking),
+            "data" => $booking->Hotel()->booking(),
         ]);
     }
 }

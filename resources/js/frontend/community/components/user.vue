@@ -24,7 +24,7 @@
               color="indigo darken-2"
               class="mr-3"
               v-if="!data.follow"
-              v-on:click="followUser(data.user)"
+              v-on:click="followUser(data)"
             >
               <i class="fas fa-plus"></i> &nbsp;follow
             </v-btn>
@@ -35,7 +35,7 @@
               color="blue darken-2"
               class="mr-3"
               v-else
-              v-on:click="unfollowUser(data.user)"
+              v-on:click="unfollowUser(data)"
             >
               <i class="fas fa-check"></i>&nbsp;following
             </v-btn>
@@ -62,7 +62,7 @@
             <v-card light min-height="120px" class="pa-1" flat tile width="800px">
               <v-card-title>
                 <v-spacer></v-spacer>
-                <v-menu bottom right>
+                <!-- <v-menu bottom right>
                   <template v-slot:activator="{ on }">
                     <v-btn fab icon v-on="on">
                       <v-icon color="black">more_vert</v-icon>
@@ -76,7 +76,7 @@
                       <v-list-tile-title>Get notification</v-list-tile-title>
                     </v-list-tile>
                   </v-list>
-                </v-menu>
+                </v-menu> -->
                 <v-card-text>
                   <span class="headline">{{item.title}}</span>
                   <v-layout>
@@ -89,16 +89,14 @@
                       color="grey lighten-2"
                       light
                     >
-                      <v-card-text
-                        class="font-weight-bold font-italic"
-                      >{{item.content}}</v-card-text>
+                      <v-card-text class="font-weight-bold font-italic">{{item.content}}</v-card-text>
                     </v-card>
                   </v-layout>
                   <span class="grey--text">&nbsp;21/12/2019</span>
                 </v-card-text>
               </v-card-title>
               <v-card-actions>
-                <v-tooltip top>
+                <!-- <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-icon
                       v-on="on"
@@ -119,7 +117,7 @@
                   </template>
                   <span>like</span>
                 </v-tooltip>
-                <span class="grey--text subheading">{{item.likes}}</span>
+                <span class="grey--text subheading">{{item.likes}}</span> -->
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-icon
@@ -145,18 +143,33 @@
               </v-card-actions>
               <v-divider v-show="item.model"></v-divider>
               <v-layout class="row wrap" justify-center v-if="item.model">
-                <v-card light flat tile width="790px" class="mb-1" v-for="(value,i) in item.comment" :key="i">
+                <v-card
+                  light
+                  flat
+                  tile
+                  width="790px"
+                  class="mb-1"
+                  v-for="(value,i) in item.comment"
+                  :key="i"
+                >
                   <v-card-title>
                     <v-avatar size="42px" color="black" flat>
                       <v-avatar size="40px" flat color="white">
-                        <img :src="value.customer.avatar.image_link">
+                        <img :src="value.customer.avatar.image_link" />
                       </v-avatar>
                     </v-avatar>
                     <span class="pl-3">{{value.customer.name}}</span>
                   </v-card-title>
                   <v-card-text>
                     <v-layout>
-                      <v-card flat tile tag="div" color="grey lighten-2" width="100%" class="radius">
+                      <v-card
+                        flat
+                        tile
+                        tag="div"
+                        color="grey lighten-2"
+                        width="100%"
+                        class="radius"
+                      >
                         <v-card-text
                           class="font-weight-bold font-italic black--text"
                         >{{value.content}}</v-card-text>
@@ -170,6 +183,7 @@
                     <v-flex md10 class="pl-3">
                       <v-card-title>
                         <v-textarea
+                          v-model="comment.content"
                           outline
                           auto-grow
                           rows="2"
@@ -182,7 +196,14 @@
                     </v-flex>
                     <v-flex>
                       <v-card-actions>
-                        <v-btn round large depressed dark color="teal" @click="sendComment">
+                        <v-btn
+                          round
+                          large
+                          depressed
+                          :disabled="!comment.able"
+                          color="teal"
+                          @click="sendComment(item.id)"
+                        >
                           <span>Send</span>
                         </v-btn>
                       </v-card-actions>
@@ -361,14 +382,14 @@
                 <v-layout v-for="(item,i) in data.followers" :key="i">
                   <v-card-title style="width:100%">
                     <router-link :to="{name:'user',params:{id:item.follower.id}}">
-                    <v-avatar size="52px" flat color="black">
-                      <v-avatar size="50px" flat color="white">
-                        <img :src="item.avatar.image_link" :alt="item.follower.name">
+                      <v-avatar size="52px" flat color="black">
+                        <v-avatar size="50px" flat color="white">
+                          <img :src="item.avatar.image_link" :alt="item.follower.name" />
+                        </v-avatar>
                       </v-avatar>
-                    </v-avatar>
                     </router-link>
                     <v-spacer></v-spacer>
-                    <v-tooltip top v-if="item.isFollowing == true">
+                    <!-- <v-tooltip top v-if="item.isFollowing == true">
                       <template v-slot:activator="{ on }">
                         <v-btn small depressed color="grey lighten-2" fab v-on="on">
                           <i class="fas fa-user-slash"></i>
@@ -383,9 +404,11 @@
                         </v-btn>
                       </template>
                       <span>follow</span>
-                    </v-tooltip>
+                    </v-tooltip> -->
                     <v-card-text class="pa-0 ma-0 mt-2">
-                      <router-link :to="{name:'user',params:{id:item.follower.id}}"><span class="font-weight-bold">{{item.follower.name}}</span></router-link>
+                      <router-link :to="{name:'user',params:{id:item.follower.id}}">
+                        <span class="font-weight-bold">{{item.follower.name}}</span>
+                      </router-link>
                       <v-divider class="pa-0 ma-0 mt-3" v-show="i<(data.followers.length-1)"></v-divider>
                     </v-card-text>
                   </v-card-title>
@@ -398,18 +421,18 @@
                   <v-card-title style="width:100%">
                     <v-avatar size="52px" flat color="black">
                       <v-avatar size="50px" flat color="white">
-                        <img :src="item.avatar.image_link" :alt="item.followed.name">
+                        <img :src="item.avatar.image_link" :alt="item.followed.name" />
                       </v-avatar>
                     </v-avatar>
                     <v-spacer></v-spacer>
-                    <v-tooltip top v-if="item.isFollowing == true">
-                      <template v-slot:activator="{ on }">
-                        <v-btn small depressed color="grey lighten-2" fab v-on="on">
-                          <i class="fas fa-user-slash"></i>
-                        </v-btn>
-                      </template>
-                      <span>unfollowing</span>
-                    </v-tooltip>
+                      <!-- <v-tooltip top v-if="item.isFollowing == true">
+                        <template v-slot:activator="{ on }">
+                          <v-btn small depressed color="grey lighten-2" fab v-on="on">
+                            <i class="fas fa-user-slash"></i>
+                          </v-btn>
+                        </template>
+                        <span>unfollowing</span>
+                      </v-tooltip>
                     <v-tooltip top v-else-if="item.isFollowing == false">
                       <template v-slot:activator="{ on }">
                         <v-btn small depressed color="grey lighten-2" fab v-on="on">
@@ -417,10 +440,13 @@
                         </v-btn>
                       </template>
                       <span>follow</span>
-                    </v-tooltip>
+                    </v-tooltip> -->
                     <v-card-text class="pa-0 ma-0 mt-2">
                       <span class="font-weight-bold">{{item.followed.name}}</span>
-                      <v-divider class="pa-0 ma-0 mt-3" v-show="i<(data.customerFollowings.length-1)"></v-divider>
+                      <v-divider
+                        class="pa-0 ma-0 mt-3"
+                        v-show="i<(data.customerFollowings.length-1)"
+                      ></v-divider>
                     </v-card-text>
                   </v-card-title>
                 </v-layout>
@@ -435,13 +461,19 @@
 
 <script>
 export default {
-  props: ["user"],
+  props: {},
   mounted() {},
   watch: {
     $route: "getData"
   },
   data() {
     return {
+      user: {},
+      comment: {
+        review_id: 0,
+        content: "",
+        able: false
+      },
       followDialog: false,
       like: false,
       model: false,
@@ -467,21 +499,58 @@ export default {
     };
   },
   created() {
-    this.getData();
+    this.load();
+  },
+  watch: {
+    "comment.content": function(val) {
+      if (val.length == 0) {
+        this.comment.able = false;
+        this.comment.review_id = 0;
+        this.comment.content = "";
+      } else {
+        this.comment.able = true;
+      }
+    }
   },
   methods: {
+    load: function() {
+      if (localStorage.getItem("login_token") != null) {
+        axios({
+          method: "get",
+          url: "http://localhost:8000/api/getUserLogin",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("login_token")
+          }
+        })
+          .then(res => {
+            console.log(res.data.user);
+            this.user = res.data.user;
+            this.getData();
+          })
+          .catch(error => {
+            console.log(error.response);
+            if (error.response.status == 401) {
+              localStorage.removeItem("login_token");
+              this.user = {};
+              this.$emit("loadLogin");
+            }
+          });
+      } else {
+        this.$emit("loadLogin");
+      }
+    },
     getData: function() {
       // if (this.user.id == this.$route.params.id) {
       //   this.$router.push({ name: "account" });
       //   return;
       // }
-      this.id = this.$route.params.id
+      this.id = this.$route.params.id;
       axios({
         method: "get",
         url: "http://localhost:8000/api/userInfo",
         headers: {
-            Authorization: "Bearer " + localStorage.getItem("login_token")
-          },
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        },
         params: {
           id: this.id
         }
@@ -496,10 +565,13 @@ export default {
           return;
         })
         .catch(error => {
+          this.$emit("loadLogin");
           console.log(error.response);
         });
     },
     followUser: function(value) {
+      this.data.follow = true;
+      var flag = true;
       axios({
         method: "get",
         url: "http://localhost:8000/api/following",
@@ -507,19 +579,30 @@ export default {
           type: 0,
           id: this.user.id,
           followed: value.id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
         }
-      }).then(res => {
-        console.log(res.data.data);
-        if (res.data.data == null) {
-          this.$emit("loadSnackbar", "Something wrong!");
-          return;
-        }
-        this.$emit("loadSnackbar", "Following " + value.name);
-        this.getData();
-        return;
-      });
+      })
+        .then(res => {
+          console.log(res.data.data);
+          if (res.data.data == null) {
+            flag = false;
+            this.$emit("loadSnackbar", "Something wrong!");
+          }
+          this.$emit("loadSnackbar", "Following " + value.name);
+          this.getData();
+        })
+        .catch(error => {
+          flag = false;
+          this.$emit("loadLogin");
+          console.log(error.response);
+        });
+      if (!flag) this.data.follow = false;
     },
     unfollowUser: function(value) {
+      this.data.follow = false;
+      var flag = true;
       axios({
         method: "get",
         url: "http://localhost:8000/api/un-following",
@@ -527,21 +610,76 @@ export default {
           type: 0,
           id: this.user.id,
           followed: value.id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
         }
-      }).then(res => {
-        console.log(res.data.data);
-        if (res.data.data == null) {
-          this.$emit("loadSnackbar", "Something wrong!");
-          return;
+      })
+        .then(res => {
+          console.log(res.data.data);
+          if (res.data.data == null) {
+            flag = false;
+            this.$emit("loadSnackbar", "Something wrong!");
+          }
+          this.$emit("loadSnackbar", "Unfollowing " + value.name);
+          this.getData();
+        })
+        .catch(error => {
+          this.$emit("loadLogin");
+          console.log(error.response);
+          flag = false;
+        });
+      if (!flag) this.data.follow = true;
+    },
+    getIndex(id) {
+      var index = -1;
+      if (this.data.review.length != 0) {
+        this.data.review.forEach((element, i) => {
+          if (element.id == id) index = i;
+        });
+      }
+      return index;
+    },
+    sendComment: function(reviewID) {
+      var flag = true;
+      var index = this.getIndex(reviewID);
+      this.comment.review_id = reviewID;
+      axios({
+        method: "post",
+        url: "http://localhost:8000/api/comment",
+        data: {
+          comment: this.comment
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
         }
-        this.$emit("loadSnackbar", "Unfollowing " + value.name);
-        this.getData();
-        return;
-      });
-    },
-    sendComment: function(){
-      alert('comment');
-    },
+      })
+        .then(res => {
+          console.log(res.data.status);
+          if (res.data.status == true) {
+            console.log(res.data.comment);
+            var comment = res.data.comment;
+            this.data.review[index].comment.push(comment);
+            this.data.review[index].comments =
+              this.data.review[index].comments + 1;
+            this.comment.able = false;
+            this.comment.content = "";
+            this.comment.review_id = 0;
+          } else {
+            this.$emit("loadSnackbar", "Something wrong!");
+          }
+        })
+        .catch(error => {
+          this.comment.able = false;
+          this.comment.content = "";
+          this.comment.review_id = 0;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
+    }
   }
 };
 </script>

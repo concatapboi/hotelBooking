@@ -2,20 +2,34 @@
   <div>
     <v-layout class="mx-5">
       <v-spacer></v-spacer>
-      <v-dialog max-width="75%" scrollable v-model="dialog">
+      <v-dialog fullscreen scrollable v-model="dialog">
         <template v-slot:activator="{ on }">
-          <v-btn class="primary" flat v-on="on" @click="addNewTitle();">New Room Type</v-btn>
+          <v-btn
+            class="primary"
+            round
+            depressed
+            flat
+            v-on="on"
+            @click="addNewTitle();"
+          >New Room</v-btn>
         </template>
         <v-layout>
           <v-flex>
-            <v-card width="100%" class="p-5">
-              <v-card-title class="text-xs-center">
-                <h1>{{formTitle}}</h1>
-              </v-card-title>
-              <v-divider></v-divider>
+            <v-card width="100%" class="pa-0">
+              <v-toolbar card flat dark color="primary">
+                <v-toolbar-title class="text-uppercase">
+                  <span class="text-md-center white--text">
+                  {{formTitle}}
+                  </span>
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon dark v-on:click="dialog =false">
+                  <v-icon>close</v-icon>
+                </v-btn>
+              </v-toolbar>
 
               <v-card-text height="100px">
-                <v-form ref="formNewRoom">
+                <v-form ref="formNewRoom" class="px-5">
                   <h3>Gerneral Infomation</h3>
                   <v-layout row>
                     <v-text-field
@@ -197,7 +211,7 @@
                   </v-layout>-->
                   <v-layout row wrap v-for="(b,i) in bed" :key="i" justify-start>
                     <v-flex md-6>
-                    <!-- <v-flex md-2> -->
+                      <!-- <v-flex md-2> -->
                       <v-text-field
                         v-validate="'required'"
                         :error-messages="errors.collect('numberOfBed')"
@@ -285,6 +299,8 @@
                   v-if="formTitle != 'Edit Room'"
                   color="blue darken-1"
                   flat
+                  round
+                  depressed
                   type="submit"
                   @click="addNewRoom"
                 >Create</v-btn>
@@ -292,11 +308,19 @@
                   v-else
                   color="blue darken-1"
                   flat
+                  round
+                  depressed
                   type="submit"
                   @click="editRoom(roomId)"
                 >Update</v-btn>
-                <v-btn color="blue darken-1" flat @click="$refs.formNewRoom.reset()">Reset</v-btn>
-                <v-btn color="blue darken-1" flat @click="cancel">Cancel</v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  flat
+                  round
+                  depressed
+                  @click="$refs.formNewRoom.reset()"
+                >Reset</v-btn>
+                <v-btn color="blue darken-1" flat round depressed @click="cancel">Cancel</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -329,7 +353,7 @@
               </template>
               <!-- <v-card>
               <v-card-text class="grey lighten-3 black--text">-->
-              <v-tabs grow slider-color="yellow">
+              <v-tabs grow slider-color="#0cbf7b">
                 <v-tab v-for="(r,i) in el.room" :key="i">{{r.room_type}}</v-tab>
                 <v-tabs-items>
                   <v-tab-item v-for="(r,i) in el.room" :key="i">
@@ -337,13 +361,18 @@
                       <v-layout row>
                         <v-spacer></v-spacer>
 
-                        <v-btn @click="showEdit(el.room_mode.name,r.id)">edit</v-btn>
-                        <v-btn @click="deleteConfirm(el.room_mode.name,r.id)">delete</v-btn>
+                        <v-btn class="warning" flat round depressed @click="showEdit(el.room_mode.name,r.id)">edit</v-btn>
+                        <v-btn class="red white--text"
+                          flat
+                          round
+                          depressed
+                          @click="deleteConfirm(el.room_mode.name,r.id)"
+                        >delete</v-btn>
                       </v-layout>
                       <v-layout>
                         <v-flex md4>
                           <span height="200px" v-for="(image,index) in r.images" :key="index">
-                            <v-img v-if="image.is_primary == 1" dark :src="image.image_link"></v-img>
+                            <v-img v-if="image.is_primary == 1" dark :src="'localhost:8000'+image.image_link"></v-img>
                           </span>
                         </v-flex>
                         <v-flex md8 class="m-5 mt-2">
@@ -437,8 +466,8 @@
               <v-card-text>Do you really want to delete this Room</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn @click="cancel">cancel</v-btn>
-                <v-btn @click="deleteRoom">delete</v-btn>
+                <v-btn class="grey white--text" flat round depressed @click="cancel">cancel</v-btn>
+                <v-btn class="red white--text" flat round depressed @click="deleteRoom">delete</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -880,12 +909,11 @@ export default {
             this.snackbar = true;
             this.arrayRoom.forEach(element => {
               for (let i = 0; i < element.room.length; i++) {
-                if(element.room[i].id == response.data.room.id){
+                if (element.room[i].id == response.data.room.id) {
                   var room = response.data.room;
                   element.room[i] = room;
                   this.images = room.images;
                 }
-                
               }
             });
           }
@@ -947,7 +975,7 @@ export default {
 .add-image {
   height: 200px;
   width: 200px;
-  border: 4px dashed green;
+  border: 4px dashed teal;
 }
 .img {
   height: 200px;

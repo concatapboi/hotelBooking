@@ -13,13 +13,19 @@
             <v-chip disabled color="warning" text-color="white">{{booking.item.status}}</v-chip>
           </span>
           <span v-else-if="booking.item.status_id == 2">
-            <v-chip disabled color="blue" text-color="white">Wait for payment</v-chip>
+            <v-chip disabled color="blue" text-color="white">{{booking.item.status}}</v-chip>
           </span>
           <span v-else-if="booking.item.status_id == 3">
-            <v-chip disabled color="red" text-color="white">declined</v-chip>
+            <v-chip disabled color="red" text-color="white">{{booking.item.status}}</v-chip>
           </span>
           <span v-else-if="booking.item.status_id == 4">
-            <v-chip disabled color="success" text-color="white">completed</v-chip>
+            <v-chip disabled color="success" text-color="white">{{booking.item.status}}</v-chip>
+          </span>
+          <span v-else-if="booking.item.status_id == 5">
+            <v-chip disabled color="red" text-color="white">{{booking.item.status}}</v-chip>
+          </span>
+          <span v-else-if="booking.item.status_id == 6">
+            <v-chip disabled color="red" text-color="white">{{booking.item.status}}</v-chip>
           </span>
         </td>
         <td class="text-xs-center action-width">
@@ -39,30 +45,147 @@
                   </template>
                   <v-card>
                     <v-card-text>
+                      <v-layout>
+                        <v-flex md19 class="m-3">
+                          <h3>Order #{{detailBooking.id}}</h3>
+                        </v-flex>
+                        <v-flex md3>
+                          <b>Status :</b>
+                          <span v-if="detailBooking.status_id == 1">
+                            <v-chip outline disabled text-color="warning">
+                              <b>{{detailBooking.status}}</b>
+                            </v-chip>
+                          </span>
+                          <span v-else-if="detailBooking.status_id == 2">
+                            <v-chip outline disabled text-color="blue">
+                              <b>{{detailBooking.status}}</b>
+                            </v-chip>
+                          </span>
+                          <span v-else-if="detailBooking.status_id == 3">
+                            <v-chip outline disabled text-color="red">
+                              <b>{{detailBooking.status}}</b>
+                            </v-chip>
+                          </span>
+                          <span v-else-if="detailBooking.status_id == 4">
+                            <v-chip outline disabled text-color="success">
+                              <b>{{detailBooking.status}}</b>
+                            </v-chip>
+                          </span>
+                          <span v-else-if="detailBooking.status_id == 5">
+                            <v-chip outline disabled text-color="red">
+                              <b>{{detailBooking.status}}</b>
+                            </v-chip>
+                          </span>
+                          <span v-else-if="detailBooking.status_id == 6">
+                            <v-chip outline disabled text-color="red">
+                              <b>{{detailBooking.status}}</b>
+                            </v-chip>
+                          </span>
+                        </v-flex>
+                      </v-layout>
+
                       <h5>Customer's info</h5>
                       <v-layout row wrap>
-                        <v-flex md2 offset-md1>Name</v-flex>
-                        <v-flex md9>{{detailBooking.contact_name}}</v-flex>
+                        <v-flex md2 offset-md1>
+                          <b>Name</b>
+                        </v-flex>
+                        <v-flex md9>: {{detailBooking.contact_name}}</v-flex>
                       </v-layout>
                       <v-layout row wrap>
-                        <v-flex md2 offset-md1>Email</v-flex>
-                        <v-flex md9>{{detailBooking.contact_email}}</v-flex>
+                        <v-flex md2 offset-md1>
+                          <b>Email</b>
+                        </v-flex>
+                        <v-flex md9>: {{detailBooking.contact_email}}</v-flex>
                       </v-layout>
                       <v-layout row wrap>
-                        <v-flex md2 offset-md1>Phone</v-flex>
-                        <v-flex md9>{{detailBooking.contact_phone}}</v-flex>
+                        <v-flex md2 offset-md1>
+                          <b>Phone</b>
+                        </v-flex>
+                        <v-flex md9>: {{detailBooking.contact_phone}}</v-flex>
                       </v-layout>
                       <v-layout row wrap>
-                        <v-flex md2 offset-md1>Address</v-flex>
-                        <v-flex md9>{{detailBooking.contact_address}}</v-flex>
+                        <v-flex md2 offset-md1>
+                          <b>Address</b>
+                        </v-flex>
+                        <v-flex md9>: {{detailBooking.contact_address}}</v-flex>
                       </v-layout>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>Special request</v-flex>
-                        <v-flex md9>{{detailBooking.special_request}}</v-flex>
+                      <v-layout v-if="detailBooking.special_request != null" row wrap>
+                        <v-flex md2 offset-md1>
+                          <b>Special request</b>
+                        </v-flex>
+                        <v-flex md9>: {{detailBooking.special_request}}</v-flex>
                       </v-layout>
                       <v-divider></v-divider>
                       <h5>Booking's Detail</h5>
-                      <v-layout row wrap>
+                      <v-layout>
+                        <v-flex md4 class>
+                          <span v-for="(image,index) in detailBooking.room_images" :key="index">
+                            <v-img
+                              height="200px"
+                              v-if="image.is_primary == 1"
+                              dark
+                              :src="'http://localhost:8000/images/room/'+image.image_link"
+                            ></v-img>
+                          </span>
+                        </v-flex>
+                        <v-flex md8 class="mt-3">
+                          <v-layout row wrap class="mb-3">
+                            <v-flex md2 offset-md1>
+                              <b>Check in</b>
+                            </v-flex>
+                            <v-flex md3>
+                              :
+                              <span class="title ml-3">{{detailBooking.check_in}}</span>
+                            </v-flex>
+                            <v-flex md2 offset-md1>
+                              <b>Check out</b>
+                            </v-flex>
+                            <v-flex md3>
+                              :
+                              <span class="title ml-3">{{detailBooking.check_out}}</span>
+                            </v-flex>
+                          </v-layout>
+                          <v-layout row wrap>
+                            <v-flex md2 offset-md1>
+                              <b>Room name</b>
+                            </v-flex>
+                            <v-flex md9>: {{detailBooking.room_name}}</v-flex>
+                          </v-layout>
+                          <v-layout row wrap>
+                            <v-flex md2 offset-md1>
+                              <b>Room price</b>
+                            </v-flex>
+                            <v-flex md9>: {{detailBooking.room_price}} $</v-flex>
+                          </v-layout>
+                          <v-layout row wrap>
+                            <v-flex md2 offset-md1>
+                              <b>Room amount</b>
+                            </v-flex>
+                            <v-flex md9>: {{detailBooking.room_amount}}</v-flex>
+                          </v-layout>
+                          <!-- <v-layout row wrap>
+                            <v-flex md2 offset-md1>check in</v-flex>
+                            <v-flex md9>{{detailBooking.check_in}}</v-flex>
+                          </v-layout>
+                          <v-layout row wrap>
+                            <v-flex md2 offset-md1>check out</v-flex>
+                            <v-flex md9>{{detailBooking.check_out}}</v-flex>
+                          </v-layout>-->
+                          <v-layout row wrap>
+                            <v-flex md2 offset-md1>
+                              <b>room Id</b>
+                            </v-flex>
+                            <v-flex md9>: {{detailBooking.room_id}}</v-flex>
+                          </v-layout>
+                          <v-layout row wrap>
+                            <v-flex md2 offset-md1>
+                              <b>Payment method</b>
+                            </v-flex>
+                            <v-flex md9>: {{detailBooking.payment_method}}</v-flex>
+                          </v-layout>
+                        </v-flex>
+                      </v-layout>
+                      <!-- <v-layout row wrap>
                         <v-flex md2 offset-md1>Room name</v-flex>
                         <v-flex md9>{{detailBooking.room_name}}</v-flex>
                       </v-layout>
@@ -89,7 +212,7 @@
                       <v-layout row wrap>
                         <v-flex md2 offset-md1>Payment method</v-flex>
                         <v-flex md9>{{detailBooking.payment_method}}</v-flex>
-                      </v-layout>
+                      </v-layout>-->
                       <v-divider></v-divider>
                       <!-- {{detailBooking.hotel_name}}
                   {{detailBooking.room_name}}
@@ -136,6 +259,16 @@
                     @click="confirmBooking(booking.item)"
                   >Confirm payment</v-btn>
                 </v-flex>
+                <v-flex md12>
+                  <v-btn
+                    round
+                    depressed
+                    small
+                    color="red"
+                    class="white--text"
+                    @click="showConfirmDialog(booking.item)"
+                  >cancel</v-btn>
+                </v-flex>
               </span>
               <span v-else-if="booking.item.status_id == 4">
                 <v-flex md12>
@@ -145,7 +278,7 @@
                     small
                     color="red"
                     class="white--text"
-                    @click="cancelBooking(booking.item)"
+                    @click="showConfirmDialog(booking.item)"
                   >cancel</v-btn>
                 </v-flex>
               </span>
@@ -154,6 +287,36 @@
         </td>
       </template>
     </v-data-table>
+    <v-dialog max-width="30%" v-model="confirmDialog">
+      <v-card>
+        <v-card-title>
+          <h4>Confirmation</h4>
+        </v-card-title>
+        <v-card-text>
+          {{confirmDialogText}}
+          <br />
+          <ul>
+            <li>derank your hotel</li>
+            <li>transfer {{transferAmount}} coin ({{transferPercent}}% of this order) to the user</li>
+          </ul>
+          <span
+            v-if="cancelReminder == true"
+          >You will also have to refund 100% this order to the user</span>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn round depressed small class="grey white--text" flat @click="cancel">Cancel</v-btn>
+          <v-btn
+            round
+            depressed
+            small
+            class="red white--text"
+            flat
+            @click.stop="cancelBooking()"
+          >Confirm</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 <script>
@@ -166,9 +329,7 @@ export default {
   data: function() {
     return {
       dialog: false,
-      detailBooking: {
-        hotel_name: ""
-      },
+      detailBooking: {},
       bookingList: [],
       headers: [
         { text: "Id", value: 0, sortable: false, align: "center" },
@@ -179,7 +340,12 @@ export default {
         { text: "status", value: 0, sortable: false, align: "center" },
         { text: "Action", value: 0, sortable: false, align: "center" }
       ],
-      hotelId: this.$route.query.hotelId
+      hotelId: this.$route.query.hotelId,
+      confirmDialog: false,
+      confirmDialogText: "",
+      transferPercent: 0,
+      transferAmount: 0,
+      cancelReminder: false
     };
   },
   created() {
@@ -212,85 +378,109 @@ export default {
         });
     },
     ShowDetailBooking: function(item) {
-      console.log(item);
-      var index = this.bookingList.indexOf(item);
-      this.detailBooking = this.bookingList[index];
+      this.detailBooking = item;
     },
-    acceptBooking : function(booking){
-        axios({
+    acceptBooking: function(booking) {
+      var index = this.bookingList.indexOf(booking);
+      axios({
         method: "post",
         url: "http://localhost:8000/api/manager/accept",
         headers: {
           Authorization: "Bearer " + this.api_token
         },
-        data : {
-            bookingId : booking.id
+        data: {
+          bookingId: booking.id
         }
       })
         .then(response => {
           if (response.status == 401) {
             this.logout;
           }
-          console.log(response);
-          booking.status_id = response.data.data;
+          console.log(response);  
+          // booking = response.data.data;
+          // this.bookingList[index] = response.data.data; 
+          this.bookingList = response.data.data;
         })
         .catch(error => {
           console.log(error.response);
         });
     },
-    declineBooking : function(booking){
-        axios({
+    declineBooking: function(booking) {
+      axios({
         method: "post",
         url: "http://localhost:8000/api/manager/decline",
         headers: {
           Authorization: "Bearer " + this.api_token
         },
-        data : {
-            bookingId : booking.id
+        data: {
+          bookingId: booking.id
         }
       })
         .then(response => {
           if (response.status == 401) {
             this.logout;
           }
-          console.log(response);
-          booking.status_id = response.data.data;
+          // console.log(response);
+          // booking = response.data.data;
+          this.bookingList = response.data.data;
         })
         .catch(error => {
           console.log(error.response);
         });
     },
-    confirmBooking : function(booking){
-        axios({
+    confirmBooking: function(booking) {
+      axios({
         method: "post",
         url: "http://localhost:8000/api/manager/confirm",
         headers: {
           Authorization: "Bearer " + this.api_token
         },
-        data : {
-            bookingId : booking.id
+        data: {
+          bookingId: booking.id
         }
       })
         .then(response => {
           if (response.status == 401) {
             this.logout;
           }
-          console.log(response);
-          booking.status_id = response.data.data;
+          // console.log(response);
+          // booking = response.data.data;
+          this.bookingList = response.data.data;
         })
         .catch(error => {
           console.log(error.response);
         });
     },
-    cancelBooking : function(booking){
-        axios({
+    showConfirmDialog: function(booking) {
+      console.log(booking);
+      if (booking.status_id == 2) {
+        this.transferPercent = 20;
+        this.cancelReminder = false;
+      }
+      if (booking.status_id == 4) {
+        this.transferPercent = 40;
+        this.cancelReminder = true;
+      }
+      this.transferAmount = Math.ceil(
+        (this.transferPercent * booking.room_price * booking.room_amount) / 100
+      );
+      this.confirmDialogText =
+        "Are you sure you want to cancel this order? if you cancel this our system will:";
+      this.confirmDialog = true;
+      this.detailBooking = booking;
+    },
+    cancel: function() {
+      this.confirmDialog = false;
+    },
+    cancelBooking: function() {
+      axios({
         method: "post",
         url: "http://localhost:8000/api/manager/cancel",
         headers: {
           Authorization: "Bearer " + this.api_token
         },
-        data : {
-            bookingId : booking.id
+        data: {
+          bookingId: this.detailBooking.id
         }
       })
         .then(response => {
@@ -298,7 +488,9 @@ export default {
             this.logout;
           }
           console.log(response);
-          booking.status_id = response.data.data;
+          // booking = response.data.data;
+          this.bookingList = response.data.data;
+          this.confirmDialog = false;
         })
         .catch(error => {
           console.log(error.response);

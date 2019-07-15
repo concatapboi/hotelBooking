@@ -82,7 +82,7 @@
                     </v-list-tile-action>
                     <v-list-tile-content>Account</v-list-tile-content>
                   </v-list-tile>
-                  <!-- <v-list-tile tag="a" @click="openBookingListDialog">
+                  <v-list-tile tag="a" @click="openBookingListDialog">
                     <v-list-tile-action>
                       <i class="fas fa-list-ol teal--text fa-lg"></i>
                     </v-list-tile-action>
@@ -93,7 +93,7 @@
                       <i class="fas fa-question teal--text fa-lg"></i>
                     </v-list-tile-action>
                     <v-list-tile-content>Question List</v-list-tile-content>
-                  </v-list-tile> -->
+                  </v-list-tile>
                   <v-divider></v-divider>
                   <v-list-tile>
                     <v-btn dark depressed color="teal" large @click="logOut">
@@ -329,7 +329,7 @@
         </v-form>
       </v-layout>
     </v-dialog>
-    <!-- <v-dialog v-model="bookingList.dialog" width="700px" persistent>
+    <v-dialog v-model="bookingList.dialog" width="700px" persistent>
       <v-card flat tile light height="470px">
         <v-card-text>
           <v-btn depressed color="red" dark v-on:click="bookingList.dialog = false">
@@ -517,7 +517,7 @@
         </v-layout>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="questionList.dialog" width="700px" persistent>
+    <!-- <v-dialog v-model="questionList.dialog" width="700px" persistent>
       <v-card flat tile light height="470px">
         <v-card-text>
           <v-btn depressed color="red" dark v-on:click="questionList.dialog = false">
