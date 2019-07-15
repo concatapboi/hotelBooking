@@ -31,7 +31,7 @@
               </v-avatar>
               <span class="title pl-3 font-weight-light">{{r.customer.name}}</span>
               <v-spacer></v-spacer>
-              <v-menu bottom right>
+              <!-- <v-menu bottom right>
                 <template v-slot:activator="{ on }">
                   <v-btn fab icon v-on="on">
                     <v-icon color="black">more_vert</v-icon>
@@ -45,7 +45,7 @@
                     <v-list-tile-title>Off notification</v-list-tile-title>
                   </v-list-tile>
                 </v-list>
-              </v-menu>
+              </v-menu> -->
             </v-card-title>
             <v-divider class="m-0 p-0"></v-divider>
             <v-card-text>
@@ -66,7 +66,7 @@
               <span class="grey--text">&nbsp;{{formatDate(r.created_at)}}</span>
             </v-card-text>
             <v-card-actions>
-              <v-tooltip top>
+              <!-- <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-icon
                     v-on="on"
@@ -87,7 +87,7 @@
                 </template>
                 <span>like</span>
               </v-tooltip>
-              <span class="grey--text subheading">{{r.likes}}</span>
+              <span class="grey--text subheading">{{r.likes}}</span> -->
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-icon
@@ -421,13 +421,13 @@
                   round
                   depressed
                   color="grey lighten-2"
-                  v-on:click="followHotel(item.hotel)"
+                  v-on:click="followHotel(item.hotel,i)"
                   v-if="!item.follow"
                 >
                   <i class="fas fa-plus mx-2"></i>
                   <span class="caption mr-1">follow</span>
                 </v-btn>
-                <v-btn round depressed color="teal" v-on:click="unfollowHotel(item.hotel)" v-else>
+                <v-btn round depressed color="teal" v-on:click="unfollowHotel(item.hotel,i)" v-else>
                   <i class="fas fa-check mx-2 white--text"></i>
                   <span class="white--text caption mr-1">following</span>
                 </v-btn>
@@ -469,13 +469,13 @@
                   round
                   depressed
                   color="grey lighten-2"
-                  v-on:click="followUser(item.user)"
+                  v-on:click="followUser(item.user,i)"
                   v-if="!item.follow"
                 >
                   <i class="fas fa-plus mx-2"></i>
                   <span class="caption mr-1">follow</span>
                 </v-btn>
-                <v-btn round depressed color="teal" v-on:click="unfollowUser(item.user)" v-else>
+                <v-btn round depressed color="teal" v-on:click="unfollowUser(item.user,i)" v-else>
                   <i class="fas fa-check mx-2 white--text"></i>
                   <span class="white--text caption mr-1">following</span>
                 </v-btn>
@@ -834,7 +834,9 @@ export default {
         return;
       });
     },
-    followUser: function(value) {
+    followUser: function(value,index) {
+      this.top5User[index].follow = true;
+      var flag = true;
       axios({
         method: "get",
         url: "http://localhost:8000/api/following",
@@ -850,14 +852,13 @@ export default {
         .then(res => {
           console.log(res.data.data);
           if (res.data.data == null) {
+            flag = false;
             this.$emit("loadSnackbar", "Something wrong!");
-            return;
           }
           this.$emit("loadSnackbar", "Following " + value.name);
-          this.getTop5User();
-          return;
         })
         .catch(error => {
+          flag = false;
           console.log(error.response);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
@@ -865,8 +866,13 @@ export default {
             this.$router.push({ name: "login" });
           }
         });
+        if(!flag){
+          this.top5User[index].follow = false;
+        }
     },
-    unfollowUser: function(value) {
+    unfollowUser: function(value,index) {
+      this.top5User[index].follow = false;
+      var flag = true;
       axios({
         method: "get",
         url: "http://localhost:8000/api/un-following",
@@ -882,14 +888,13 @@ export default {
         .then(res => {
           console.log(res.data.data);
           if (res.data.data == null) {
+            flag = false;
             this.$emit("loadSnackbar", "Something wrong!");
-            return;
           }
           this.$emit("loadSnackbar", "Unfollowing " + value.name);
-          this.getTop5User();
-          return;
         })
         .catch(error => {
+          flag = false;
           console.log(error.response);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
@@ -897,8 +902,13 @@ export default {
             this.$router.push({ name: "login" });
           }
         });
+        if(!flag){
+          this.top5User[index].follow = true;
+        }
     },
-    followHotel: function(value) {
+    followHotel: function(value,index) {
+      this.top5Hotel[index].follow = true;
+      var flag = true;
       axios({
         method: "get",
         url: "http://localhost:8000/api/following",
@@ -914,14 +924,13 @@ export default {
         .then(res => {
           console.log(res.data.data);
           if (res.data.data == null) {
+            flag = false;
             this.$emit("loadSnackbar", "Something wrong!");
-            return;
           }
           this.$emit("loadSnackbar", "Following " + value.name);
-          this.getTop5Hotel();
-          return;
         })
         .catch(error => {
+          flag = false;
           console.log(error.response);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
@@ -929,8 +938,13 @@ export default {
             this.$router.push({ name: "login" });
           }
         });
+        if(!flag){
+          this.top5Hotel[index].follow=false;
+        }
     },
-    unfollowHotel: function(value) {
+    unfollowHotel: function(value,index) {
+      this.top5Hotel[index].follow = false;
+      var flag  = true;
       axios({
         method: "get",
         url: "http://localhost:8000/api/un-following",
@@ -946,14 +960,13 @@ export default {
         .then(res => {
           console.log(res.data.data);
           if (res.data.data == null) {
+            flag = false;
             this.$emit("loadSnackbar", "Something wrong!");
-            return;
           }
           this.$emit("loadSnackbar", "Unfollowing " + value.name);
-          this.getTop5Hotel();
-          return;
         })
         .catch(error => {
+          flag = false;
           console.log(error.response);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
@@ -961,6 +974,9 @@ export default {
             this.$router.push({ name: "login" });
           }
         });
+        if(!flag){
+          this.top5Hotel[index].follow = true;
+        }
     },
     getIndex(id) {
       var index = -1;
@@ -971,6 +987,18 @@ export default {
       }
       return index;
     },
+<<<<<<< HEAD
+=======
+    getIndex(id) {
+      var index = -1;
+      if (this.feeds.length != 0) {
+        this.feeds.forEach((element, i) => {
+          if (element.id == id) index = i;
+        });
+      }
+      return index;
+    },
+>>>>>>> master
     sendComment: function(reviewID) {
       var flag = true;
       var index = this.getIndex(reviewID);

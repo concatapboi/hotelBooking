@@ -255,7 +255,7 @@
             <v-card light min-height="120px" class="pa-1" flat tile width="800px">
               <v-card-title>
                 <v-spacer></v-spacer>
-                <v-menu bottom right>
+                <!-- <v-menu bottom right>
                   <template v-slot:activator="{ on }">
                     <v-btn fab icon v-on="on">
                       <v-icon color="black">more_vert</v-icon>
@@ -269,7 +269,7 @@
                       <v-list-tile-title>Get notification</v-list-tile-title>
                     </v-list-tile>
                   </v-list>
-                </v-menu>
+                </v-menu> -->
 
                 <v-card-text>
                   <span class="headline">{{item.title}}</span>
@@ -290,7 +290,7 @@
                 </v-card-text>
               </v-card-title>
               <v-card-actions>
-                <v-tooltip top>
+                <!-- <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-icon
                       v-on="on"
@@ -311,7 +311,7 @@
                   </template>
                   <span>like</span>
                 </v-tooltip>
-                <span class="grey--text subheading">{{item.likes}}</span>
+                <span class="grey--text subheading">{{item.likes}}</span> -->
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-icon
@@ -834,14 +834,14 @@
                       </v-avatar>
                     </router-link>
                     <v-spacer></v-spacer>
-                    <v-tooltip top>
+                    <!-- <v-tooltip top>
                       <template v-slot:activator="{ on }">
                         <v-btn small depressed color="grey lighten-2" fab v-on="on">
                           <i class="fas fa-user-slash"></i>
                         </v-btn>
                       </template>
                       <span>unfollowing</span>
-                    </v-tooltip>
+                    </v-tooltip> -->
                     <v-card-text class="pa-0 ma-0 mt-2">
                       <router-link :to="{name:'user',params:{id:item.follower.id}}">
                         <span class="font-weight-bold">{{user.name}}</span>
@@ -864,14 +864,14 @@
                       </v-avatar>
                     </router-link>
                     <v-spacer></v-spacer>
-                    <v-tooltip top>
+                    <!-- <v-tooltip top>
                       <template v-slot:activator="{ on }">
                         <v-btn small depressed color="grey lighten-2" fab v-on="on">
                           <i class="fas fa-user-slash"></i>
                         </v-btn>
                       </template>
                       <span>unfollowing</span>
-                    </v-tooltip>
+                    </v-tooltip> -->
                     <v-card-text class="pa-0 ma-0 mt-2">
                       <router-link :to="{name:'user',params:{id:item.followed.id}}">
                         <span class="font-weight-bold">{{item.followed.name}}</span>
@@ -1019,7 +1019,7 @@
             </div>
             <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
               <v-flex md3>
-                <v-img :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
+                <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingList.detail.booking.room.image"></v-img>
               </v-flex>
               <v-flex md9>
                 <v-layout row wrap class="pa-0 pl-4 ma-0">

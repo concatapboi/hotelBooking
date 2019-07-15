@@ -62,7 +62,7 @@
             <v-card light min-height="120px" class="pa-1" flat tile width="800px">
               <v-card-title>
                 <v-spacer></v-spacer>
-                <v-menu bottom right>
+                <!-- <v-menu bottom right>
                   <template v-slot:activator="{ on }">
                     <v-btn fab icon v-on="on">
                       <v-icon color="black">more_vert</v-icon>
@@ -76,7 +76,7 @@
                       <v-list-tile-title>Get notification</v-list-tile-title>
                     </v-list-tile>
                   </v-list>
-                </v-menu>
+                </v-menu> -->
                 <v-card-text>
                   <span class="headline">{{item.title}}</span>
                   <v-layout>
@@ -96,7 +96,7 @@
                 </v-card-text>
               </v-card-title>
               <v-card-actions>
-                <v-tooltip top>
+                <!-- <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-icon
                       v-on="on"
@@ -117,7 +117,7 @@
                   </template>
                   <span>like</span>
                 </v-tooltip>
-                <span class="grey--text subheading">{{item.likes}}</span>
+                <span class="grey--text subheading">{{item.likes}}</span> -->
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-icon
@@ -389,7 +389,7 @@
                       </v-avatar>
                     </router-link>
                     <v-spacer></v-spacer>
-                    <v-tooltip top v-if="item.isFollowing == true">
+                    <!-- <v-tooltip top v-if="item.isFollowing == true">
                       <template v-slot:activator="{ on }">
                         <v-btn small depressed color="grey lighten-2" fab v-on="on">
                           <i class="fas fa-user-slash"></i>
@@ -404,7 +404,7 @@
                         </v-btn>
                       </template>
                       <span>follow</span>
-                    </v-tooltip>
+                    </v-tooltip> -->
                     <v-card-text class="pa-0 ma-0 mt-2">
                       <router-link :to="{name:'user',params:{id:item.follower.id}}">
                         <span class="font-weight-bold">{{item.follower.name}}</span>
@@ -425,14 +425,14 @@
                       </v-avatar>
                     </v-avatar>
                     <v-spacer></v-spacer>
-                    <v-tooltip top v-if="item.isFollowing == true">
-                      <template v-slot:activator="{ on }">
-                        <v-btn small depressed color="grey lighten-2" fab v-on="on">
-                          <i class="fas fa-user-slash"></i>
-                        </v-btn>
-                      </template>
-                      <span>unfollowing</span>
-                    </v-tooltip>
+                      <!-- <v-tooltip top v-if="item.isFollowing == true">
+                        <template v-slot:activator="{ on }">
+                          <v-btn small depressed color="grey lighten-2" fab v-on="on">
+                            <i class="fas fa-user-slash"></i>
+                          </v-btn>
+                        </template>
+                        <span>unfollowing</span>
+                      </v-tooltip>
                     <v-tooltip top v-else-if="item.isFollowing == false">
                       <template v-slot:activator="{ on }">
                         <v-btn small depressed color="grey lighten-2" fab v-on="on">
@@ -440,7 +440,7 @@
                         </v-btn>
                       </template>
                       <span>follow</span>
-                    </v-tooltip>
+                    </v-tooltip> -->
                     <v-card-text class="pa-0 ma-0 mt-2">
                       <span class="font-weight-bold">{{item.followed.name}}</span>
                       <v-divider

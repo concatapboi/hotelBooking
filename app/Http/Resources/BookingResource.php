@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Room;
+use App\Http\Resources\RoomResource;
 
 class BookingResource extends JsonResource
 {
@@ -35,6 +36,7 @@ class BookingResource extends JsonResource
             "status" => $this->Status->name,
             "status_id" => $this->status_id,
             "payment_method" => $this->PaymentMethod->name,
+            "room_images" => $this->Room->Image,
         ];
         return $arrayData;
     }

@@ -160,14 +160,14 @@
         class="mt-2"
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-badge overlap color="red" class="mr-5">
+      <!-- <v-badge overlap color="red" class="mr-5">
         <template v-slot:badge>
           <span>3+</span>
         </template>
         <v-avatar :color="drawer.iconColor" size="40px">
           <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
         </v-avatar>
-      </v-badge>
+      </v-badge> -->
     </v-toolbar>
     <div id="top"></div>
     <v-content>

@@ -153,8 +153,8 @@
         <v-tab href="#tab-3">guest review</v-tab>
         <v-tab href="#tab-4">guest question</v-tab>
         <v-tab-item value="tab-1">
-          <v-card light flat tile v-if="data.room.length !=0">
-            <v-layout class="search-item" row wrap v-for="(room,index) in data.room" :key="index">
+          <v-card light flat tile v-if="rooms.length !=0">
+            <v-layout class="search-item" row wrap v-for="(room,index) in rooms" :key="index">
               <v-flex xs3>
                 <v-layout row wrap class="pl-3">
                   <v-flex class="pa-1" md12>
@@ -529,12 +529,12 @@
                             <v-divider></v-divider>
                             <v-card-actions>
                               <i
-                                @click="takeUseful(r.id)"
+                                @click="takeUseful(r.id,i)"
                                 class="purple--text fa-3x far fa-thumbs-up pl-3 pr-1"
                                 v-if="r.useful == true"
                               ></i>
                               <i
-                                @click="takeUseful(r.id)"
+                                @click="takeUseful(r.id,i)"
                                 class="blue--text fa-lg far fa-thumbs-up pl-3 pr-1"
                                 v-else
                               ></i>
@@ -1359,6 +1359,7 @@ export default {
           }
         }
       },
+      rooms:[],
       id: this.$route.params.id,
       data: {
         followed: false,
@@ -1406,6 +1407,10 @@ export default {
     } else {
       this.setSearchValue();
     }
+<<<<<<< HEAD
+    this.getHotelRooms();
+=======
+>>>>>>> master
     this.load();
   },
   watch: {
@@ -1459,9 +1464,7 @@ export default {
           }
         })
           .then(res => {
-            console.log(res.data.user);
             this.userLogin = res.data.user;
-            console.log(this.userLogin.id);
             this.getHotelDetail();
           })
           .catch(error => {
@@ -1474,12 +1477,10 @@ export default {
           });
       } else {
         this.$emit("loadLogin");
-        this.userLogin = {};
-        this.getHotelDetail();
+        this.userLogin = {};        
       }
     },
     getHotelDetail: function() {
-      console.log(this.paymentMethods);
       axios({
         method: "get",
         url: "http://localhost:8000/api/hotel/" + this.id,
@@ -1494,6 +1495,7 @@ export default {
           console.log(res.data.data);
           if (res.data.status) {
             this.data = res.data.data;
+            // this.data['room'] = [];
             this.paymentMethods = res.data.data.paymentMethods;
             this.couponCodes = res.data.data.coupon_code;
             res.data.data.paymentMethods.forEach(p => {
@@ -1506,10 +1508,27 @@ export default {
         })
         .catch(error => {
           console.log(error.response);
-          if (error.response.status == 401) {
-            localStorage.removeItem("login_token");
-            this.getLogin(1);
+        });
+    },
+    getHotelRooms: function() {
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/hotel-rooms/",
+        params: {
+          hotel_id: this.id,
+          check_in: this.checkInVal,
+          check_out: this.checkOutVal
+        }
+      })
+        .then(res => {
+          console.log(res.data.room);
+          if (res.data.room.length!=0) {
+            this.rooms = res.data.room;
+            return;
           }
+        })
+        .catch(error => {
+          console.log(error.response);
         });
     },
     loadSearchData: function() {
@@ -1767,8 +1786,10 @@ export default {
       }
       this.images.dialog = true;
     },
-    takeUseful: function(reviewID) {
-      console.log(reviewID);
+    takeUseful: function(reviewID,index) {
+      if(this.data.review[index].useful) this.data.review[index].useful = false;
+      else this.data.review[index].useful = true;
+      var flag = true;
       axios({
         method: "get",
         url: "http://localhost:8000/api/update-useful",
@@ -1781,18 +1802,22 @@ export default {
       })
         .then(res => {
           if (res.data.status == false) {
+            flag = false;
             this.$emit("loadSnackbar", "Something wrong!");
           }
-          this.load();
         })
         .catch(error => {
+          flag = false;
           console.log(error.response);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.$emit("loadLoginDialog", true, 1);
-            return;
           }
         });
+        if(!flag){
+          if(this.data.review[index].useful) this.data.review[index].useful = true;
+      else this.data.review[index].useful = false;
+        }
     },
     getSearch: function() {
       this.$router.push({

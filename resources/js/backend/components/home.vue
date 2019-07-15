@@ -34,15 +34,22 @@
       <v-spacer></v-spacer>
       <v-dialog fullscreen scrollable v-model="dialog">
         <template v-slot:activator="{ on }">
-          <v-btn class="primary" flat v-on="on" @click="addNewTitle;images = [];">New hotel</v-btn>
+          <v-btn
+            class="primary"
+            flat
+            round
+            depressed
+            v-on="on"
+            @click="addNewTitle;images = [];"
+          >New hotel</v-btn>
         </template>
         <v-layout row>
           <v-flex>
             <v-card width="100%" class="pa-0">
-              <v-toolbar card flat dark>
+              <v-toolbar card flat color="primary">
                 <v-toolbar-title class="text-uppercase">
-                  <span class="text-md-center"></span>
-                  {{formTitle}}
+                  <span class="text-md-center white--text">
+                  {{formTitle}}</span>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn icon dark v-on:click="dialog =false">
@@ -354,15 +361,15 @@
                       ></v-text-field>
                     </v-flex>
                     <v-flex xs4>
-                          <v-select
-                            outline
-                            label="Child's age"
-                            :items="arrayAge"
-                            item-text="text"
-                            item-value="value"
-                            v-model="newHotelData.child_age"
-                          ></v-select>
-                        </v-flex>
+                      <v-select
+                        outline
+                        label="Child's age"
+                        :items="arrayAge"
+                        item-text="text"
+                        item-value="value"
+                        v-model="newHotelData.child_age"
+                      ></v-select>
+                    </v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex offset-md1 md11>
@@ -430,16 +437,31 @@
             <template v-slot:header>
               <div>
                 <v-layout>
-                  <v-flex xs10>
+                  <v-flex md8>
                     <h3 class="black--text">Hotel {{hotel.name}}</h3>
                   </v-flex>
-                  <v-flex xs2 class="text-right">
-                    <v-btn icon @click.stop="editHotel(arrayHotel[i].id)">
+                  <v-flex md4 class="text-right">
+                    <!-- <v-btn icon @click.stop="editHotel(arrayHotel[i].id)">
                       <v-icon color="orange">create</v-icon>
                     </v-btn>
                     <v-btn icon @click="deleteHotel(arrayHotel[i].id)">
                       <v-icon color="red">delete</v-icon>
-                    </v-btn>
+                    </v-btn>-->
+
+                    <v-btn
+                      class="warning"
+                      flat
+                      round
+                      depressed
+                      @click="editHotel(arrayHotel[i].id)"
+                    >edit</v-btn>
+                    <v-btn
+                      class="red white--text"
+                      flat
+                      round
+                      depressed
+                      @click="deleteHotel(arrayHotel[i].id)"
+                    >delete</v-btn>
                   </v-flex>
                 </v-layout>
               </div>
@@ -565,7 +587,7 @@ export default {
         cancel_day: 0,
         refundRate: 0,
         detailPolicy: "",
-        child_age: "",
+        child_age: ""
       },
       menuCheckin: false,
       menuCheckout: false,
@@ -611,7 +633,7 @@ export default {
         { text: "15", value: 15 },
         { text: "16", value: 16 },
         { text: "17", value: 17 }
-      ],
+      ]
     };
   },
   created() {},
@@ -631,7 +653,7 @@ export default {
   },
   computed: {
     addNewTitle: function() {
-      this.formTitle = "Add new hotel";
+      this.formTitle = "NEW HOTEL";
       this.defaultHotelType = this.arrayHotelType[0];
       this.$refs.formNewHotel.reset();
       return this.formTitle;
@@ -910,9 +932,7 @@ export default {
                     _this.arrayHotel[
                       i
                     ].fax_number = this.newHotelData.fax_number;
-                    _this.arrayHotel[
-                      i
-                    ].child_age = this.newHotelData.child_age;
+                    _this.arrayHotel[i].child_age = this.newHotelData.child_age;
                     _this.arrayHotel[
                       i
                     ].policy.cancel_day = this.newHotelData.cancel_day;
@@ -1166,7 +1186,7 @@ export default {
 .add-image {
   height: 200px;
   width: 200px;
-  border: 4px dashed green;
+  border: 4px dashed teal;
 }
 .img {
   height: 200px;

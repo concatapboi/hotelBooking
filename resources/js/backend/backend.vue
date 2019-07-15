@@ -67,9 +67,28 @@
       </div>
       <v-toolbar-items class="hidden-sm-and-down">
         <!-- <v-btn flat>do sth</v-btn> -->
-        <v-avatar class="mt-2" @click="logout">
+        <!-- <v-avatar class="mt-2" @click="logout">
           <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
-        </v-avatar>
+        </v-avatar>-->
+        <v-menu offset-y>
+          <template v-slot:activator="{ on }">
+            <!-- <v-btn color="primary" dark v-on="on">Dropdown</v-btn> -->
+            <v-avatar v-on="on" class="mt-2">
+              <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+            </v-avatar>
+          </template>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-title>Account</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-title></v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-title @click="logout">logout</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
       </v-toolbar-items>
     </v-toolbar>
 
@@ -102,7 +121,7 @@ export default {
         { icon: "home", title: "Home" },
         { icon: "business", title: "Your Rooms" },
         { icon: "grade", title: "Service" },
-        { icon: "grade", title: "Order" },
+        { icon: "grade", title: "Order" }
       ],
       drawer: null,
       userID: 1,
@@ -243,7 +262,7 @@ export default {
       for (var i = 0; i < this.hotelPanel.length; i++) {
         this.hotelPanel[i] = false;
       }
-      this.hotelPanel[index] = true;  
+      this.hotelPanel[index] = true;
     },
     logout: function() {
       axios({

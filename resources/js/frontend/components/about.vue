@@ -11,9 +11,9 @@
           </v-flex>
         </v-layout>
       </v-img>
-      <v-layout row wrap justify-center align-center class="my-1">
+      <v-layout row wrap justify-center align-center class="my-4">
         <v-flex md3>
-          <v-img :aspect-ratio="1/1" src="/blog/img/slider/default.png"></v-img>
+          <v-img :aspect-ratio="1/1" src="/blog/img/hotel/30.png"></v-img>
         </v-flex>
         <v-flex md8>
           <v-card light flat tile>
@@ -26,9 +26,10 @@
           </v-card>
         </v-flex>
       </v-layout>
-      <v-layout row wrap justify-center align-center class="my-1">
+      <v-divider></v-divider>
+      <v-layout row wrap justify-center align-center class="my-4">
         <v-flex md3>
-          <v-img :aspect-ratio="1/1" src="/blog/img/slider/default.png"></v-img>
+          <v-img :aspect-ratio="1/1" src="/blog/img/hotel/27.png"></v-img>
         </v-flex>
         <v-flex md8>
           <v-card light flat tile>
@@ -37,6 +38,23 @@
               <v-card-text
                 class="headline px-0"
               >Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi odio minima ea error iure esse enim deleniti voluptas tempora accusantium labore, molestiae, exercitationem consequatur quos culpa est laborum blanditiis a!</v-card-text>
+            </v-card-title>
+          </v-card>
+        </v-flex>
+      </v-layout>
+      <v-divider></v-divider>
+      <v-layout row wrap justify-center align-center class="my-4">
+        <v-flex md3>
+          <v-img :aspect-ratio="1/1" src="/blog/img/hotel/16.png"></v-img>
+        </v-flex>
+        <v-flex md8>
+          <v-card light flat tile>
+            <v-card-title>
+              <span class="display-3 font-weight-bold">What's do we do?</span>
+              <v-card-text class="headline px-0">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi odio minima ea error iure esse enim deleniti voluptas tempora accusantium labore, molestiae, exercitationem consequatur quos culpa est laborum blanditiis a!
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde recusandae dolore libero totam optio sint iste itaque tempora aperiam possimus ea vero, reiciendis quisquam, quo neque. Reiciendis molestias obcaecati quia.
+              </v-card-text>
             </v-card-title>
           </v-card>
         </v-flex>
