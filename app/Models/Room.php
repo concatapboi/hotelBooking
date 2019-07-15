@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\RoomModeResource;
 use App\Http\Resources\RoomTypeResource;
+use App\Models\RoomType;
 use App\Http\Resources\RoomBedTypeResource;
 
 class Room extends Model
@@ -51,6 +52,17 @@ class Room extends Model
   public function RoomMode()
   {
     return $this->belongsTo('App\Models\RoomMode', 'room_mode_id', 'id');
+  }
+
+  public function couponCode()
+  {
+    $roomType = RoomType::find($this->room_type_id);
+    $hotel  = Hotel::find($this->hotel_id);
+    $couponCodes = $roomType->Apply();
+    foreach($couponCodes as $c){
+      if(CouponCode::find($c->coupon_code_id)->hotel_id == $hotel->id) return CouponCode::find($c->coupon_code_id);
+    }
+    return null;
   }
 
   public function RoomBedType()

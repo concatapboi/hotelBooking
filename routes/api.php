@@ -82,7 +82,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::resource('/booking', 'Frontend\BookingController');
     Route::resource('/review', 'Frontend\ReviewController');
     Route::resource('/question', 'Frontend\QuestionController');
-    Route::resource('/comment', 'Frontend\QuestionController');
+    Route::resource('/comment', 'Frontend\CommentController');
     Route::get('/following', 'Frontend\UserController@follow');
     Route::get('/un-following', 'Frontend\UserController@unfollow');
     Route::get('/like', 'Frontend\CustomerReviewController@like');

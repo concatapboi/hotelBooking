@@ -81,11 +81,13 @@ class HotelController extends Controller
                 $hotel->service = $hotel->ServiceResource();
                 $hotel->followed = false;
                 $hotel->review = $hotel->reviewList($req->userID);
+                $hotel->CouponCode;
                 if ($req->userID != null) {
                     if (HotelFollowing::where('customer_id', $req->userID)->where('hotel_id', $hotel->id)->first() != null)
                         $hotel->followed = true;
                 }
                 foreach ($hotel->Room as $r) {
+                    $r->couponCode = $r->couponCode();
                     $r->image = RoomImage::where('room_id', $r->id)->where('is_primary', 1)->first()->image_link;
                     $r->images = RoomImage::where('room_id', $r->id)->get();
                     $r->room_mode = $r->RoomModeResource();

@@ -29,7 +29,18 @@ class ReviewController extends Controller
                 $temp->customer = $user;
                 $temp->customer->avatar = UserImage::where('user_id',$user->id)->first();
                 $arr[] = $temp;
-            }     
+            }
+            $followings = $user->Followings();
+            if(sizeOf($followings)!=0){
+                foreach($followings as $f){
+                    foreach($f->followed->reViewList() as $review){
+                        $temp = $review;
+                        $temp->customer = $f->followed;
+                        $temp->customer->avatar = UserImage::where('user_id',$f->followed->id)->first();
+                        $arr[] = $temp;
+                    }
+                }
+            }
         }
         return response()->json([
             'data' => $arr,

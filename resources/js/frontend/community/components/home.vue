@@ -987,6 +987,18 @@ export default {
       }
       return index;
     },
+<<<<<<< HEAD
+=======
+    getIndex(id) {
+      var index = -1;
+      if (this.feeds.length != 0) {
+        this.feeds.forEach((element, i) => {
+          if (element.id == id) index = i;
+        });
+      }
+      return index;
+    },
+>>>>>>> master
     sendComment: function(reviewID) {
       var flag = true;
       var index = this.getIndex(reviewID);

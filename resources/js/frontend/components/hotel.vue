@@ -1407,7 +1407,10 @@ export default {
     } else {
       this.setSearchValue();
     }
+<<<<<<< HEAD
     this.getHotelRooms();
+=======
+>>>>>>> master
     this.load();
   },
   watch: {
