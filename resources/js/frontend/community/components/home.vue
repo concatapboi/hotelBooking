@@ -1012,8 +1012,6 @@ export default {
 =======
 >>>>>>> Stashed changes
     },
-<<<<<<< HEAD
-=======
     getIndex(id) {
       var index = -1;
       if (this.feeds.length != 0) {
@@ -1023,7 +1021,7 @@ export default {
       }
       return index;
     },
->>>>>>> master
+
     sendComment: function(reviewID) {
       var flag = true;
       var index = this.getIndex(reviewID);

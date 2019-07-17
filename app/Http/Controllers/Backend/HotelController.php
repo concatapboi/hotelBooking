@@ -24,7 +24,7 @@ use Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use Intervention\Image\ImageManagerStatic as Image;
-
+use App\Models\Policy;
 
 class HotelController extends Controller
 {
@@ -122,6 +122,20 @@ class HotelController extends Controller
                 "hotel_id" => $hotel->id,
             ]);
         }
+        $policy = [
+            "hotel_id" => $hotel->id,
+            "check_in" => $request->checkin,
+            "check_out" => $request->checkout,
+            "content" => $request->detailPolicy,
+        ];
+        if ($request->cancelable == true) {
+            $policy["cancelable"] = $request->cancel_day;
+            $policy["can_refund"] = $request->refundRate;
+        } else {
+            $policy["cancelable"] = 0;
+            $policy["can_refund"] = 0;
+        }
+        Policy::create($policy);
         return response()->json([
             "status" => true,
             "id" => $hotel->id,
@@ -169,7 +183,7 @@ class HotelController extends Controller
             "description" => $request->description,
             "province" => $request->province,
             "district" => $request->district,
-            "ward" => $request->ward,
+            "ward_id" => $request->ward,
             "address" => $request->address,
             "credit_card" => $request->credit_card,
             "phone_number" => $request->phone,
@@ -184,7 +198,7 @@ class HotelController extends Controller
             'description' => 'required',
             'province' => 'required|exists:province,id',
             'district' => 'required|exists:district,id',
-            'ward' => 'required|exists:ward,id',
+            'ward_id' => 'required|exists:ward,id',
             'address' => 'required',
             'credit_card' => 'required',
             'phone_number' => 'required',
@@ -204,7 +218,6 @@ class HotelController extends Controller
         $images = $request->images;
         $length = sizeof($images);
         $temp = [];
-        // return $images;
         for ($i = 0; $i < $length; $i++) {
             //hinh cu
             if ($images[$i]["id"] != -1) {
@@ -235,39 +248,21 @@ class HotelController extends Controller
         $oldImage = HotelImage::where("hotel_id", $hotel->id)
             ->whereNotIn("image_link", $temp)
             ->delete();
-        // for ($i = 0; $i < $length; $i++) {
-        //     //hình cũ
-        //     if (strpos($images[$i]["image_link"], 'data:image') === false) {
-        //         $explode = explode("/", $images[$i]["image_link"]);
-        //         $imageName = ($explode[5]);
-        //         $temp[] = $imageName;
-        //     }
-        // }
-        // $oldImage = HotelImage::where("hotel_id", $hotel->id)
-        //     ->whereNotIn("image_link", $temp)
-        //     ->delete();
-        // for ($i = 0; $i < $length; $i++) {
-        //     //hình mới
-        //     if (strpos($images[$i]["image_link"], 'data:image') !== false) {
-        //         $name = time() . str_random(10);
-        //         $image = Image::make($images[$i]["image_link"])
-        //             ->resize(200, 200)
-        //             ->save(public_path("images/hotel/" . $name));
-        //         if ($images[$i]["is_primary"] == 1) {
-        //             $oldImages = HotelImage::where("hotel_id", $hotel->id)
-        //                 ->whereIn("image_link", $temp)->get();
-        //             foreach($oldImages as $oldImage){
-        //                 $oldImage->update(["is_primary"=>0]);
-        //             }
-        //         }
-        //         $a = HotelImage::create([
-        //             "image_link" => $image->filename,
-        //             "is_primary" => $images[$i]["is_primary"],
-        //             "hotel_id" => $hotel->id,
-        //         ]);
-        //         $temp[] = $a->image_link;
-        //     }
-        // }
+        $hotel = Hotel::find(2);
+        $policy = [
+            "hotel_id" => $hotel->id,
+            "check_in" => $request->checkin,
+            "check_out" => $request->checkout,
+            "content" => $request->detailPolicy,
+        ];
+        if ($request->cancelable == true) {
+            $policy["cancelable"] = $request->cancel_day;
+            $policy["can_refund"] = $request->refundRate;
+        } else {
+            $policy["cancelable"] = 0;
+            $policy["can_refund"] = 0;
+        }
+        $hotel->Policy->update($policy);
         return response()->json([
             "status" => true,
             "message" => "Hotel updated !!!",
@@ -283,17 +278,64 @@ class HotelController extends Controller
     public function destroy($id)
     {
         $hotel = Hotel::find($id);
+
         if ($hotel == null) {
             return response()->json([
                 "status" => false,
                 "data" => "can't find hotel with this ID",
             ]);
         } else {
-            Hotel::destroy($id);
-            return response()->json([
-                "status" => true,
-                "data" => "hotel deleted",
-            ]);
+            $hotelWithBookingList = $hotel->BookingList($id);
+            $bookingCantDelete = [];
+            foreach ($hotelWithBookingList as $hotel) {
+                foreach ($hotel->room as $room) {
+                    foreach ($room->booking as $booking) {
+                        // return $room->booking;
+                        $bookingCheckinExplode = explode("-", $booking->check_in);
+                        $bookingCheckoutExplode = explode("-", $booking->check_out);
+                        $todayExplode = explode("-", date("Y-m-d"));
+                        $bookingCheckIn = Carbon::createMidnightDate($bookingCheckinExplode[0], $bookingCheckinExplode[1], $bookingCheckinExplode[2]);
+                        $bookingCheckOut = Carbon::createMidnightDate($bookingCheckoutExplode[0], $bookingCheckoutExplode[1], $bookingCheckoutExplode[2]);
+                        $today = Carbon::createMidnightDate($todayExplode[0], $todayExplode[1], $todayExplode[2]);
+                        //cac don co ngay check in lon hon hom nay
+                        if ($bookingCheckIn->greaterThan($today)) {
+
+                            if ($booking->status_id == 1 || $booking->status_id == 2) {
+                                $booking->reason = "Order need to confirm";
+                                $bookingCantDelete["sau"][] = $booking;
+                            }
+                            if ($booking->status_id == 4) {
+                                $booking->reason = "Order need to cancel";
+                                $bookingCantDelete["sau"][] = $booking;
+                            }
+                        }
+                        //cac don co ngay check in be hon va ngay check out lon hon hom nay hom nay
+                        else {
+
+                            if ($bookingCheckOut->greaterThan($today)) {
+                                if ($booking->status_id == 1 || $booking->status_id = 2) {
+                                    $booking->reason = "Order need to confirm";
+                                }
+                                $bookingCantDelete["giua"][] = $booking;
+                            }
+                        }
+                    }
+                }
+            }
+            // return $bookingCantDelete;
+            if (sizeOf($bookingCantDelete) > 0) {
+                return response()->json([
+                    "status" => false,
+                    "message" => "Can't delete",
+                    "booking_list" => $bookingCantDelete,
+                ]);
+            } else {
+                Hotel::destroy($id);
+                return response()->json([
+                    "status" => true,
+                    "data" => "hotel deleted",
+                ]);
+            }
         }
     }
     public function addService(Request $request)
@@ -301,37 +343,45 @@ class HotelController extends Controller
         $hotel = Hotel::find($request->hotelId);
         $choice = $request->radio;
         $service = $request->serviceId;
-        $this->addAllRoom($request);
+        return $this->addAllRoom($request);
     }
     public function removeServiceRoom(Request $request)
     {
-        ServiceRoomType::where("hotel_id", $request->hotelId)->where("service_id", $request->serviceId)->delete();
+        $id = $request->hotelId;
+        $hotel = Hotel::find($id);
+        $allServiceRoomType = ServiceRoomType::where("hotel_id", $id)->where("service_id", $request->serviceId);
+        $allServiceRoomType->delete();
+        $hotel->update(["rank_point" => $hotel->rank_point - 1]);
     }
     public function addAllRoom(Request $request)
     {
-        $hotel = Hotel::find($request->hotelId);
-        if ($hotel != null) {
-            $rooms = Room::where("hotel_id", $request->hotelId)->get();
-            $temp = [];
-            foreach ($rooms as $room) {
-                $temp[$room->room_type_id] = $room->room_type_id;
-            }
-            foreach ($temp as $roomTypeId) {
-                ServiceRoomType::updateOrCreate(
-                    [
-                        "service_id" => $request->serviceId,
-                        "room_type_id" => $roomTypeId,
-                        "hotel_id" => $hotel->id,
-                    ]
-                );
-            }
+        $id = $request->hotelId;
+        $hotel = Hotel::where('id', $id)->with("Room")->get();
+        $roomTypeIds = [];
+        $temp = [];
+        foreach ($hotel[0]->room as $r) {
+            $temp[] = $r->room_type_id;
         }
+        $temp = array_unique($temp);
+        $roomTypeIds = $temp;
+        $this->checkIfExist($request);
+        foreach ($roomTypeIds as $roomTypeId) {
+            ServiceRoomType::create(
+                [
+                    "service_id" => $request->serviceId,
+                    "room_type_id" => $roomTypeId,
+                    "hotel_id" => $hotel[0]->id,
+                ]
+            );
+        }
+        $hotel = Hotel::find($id);
     }
     public function addServiceRoom(Request $request)
     {
         $hotel = Hotel::find($request->hotelId);
+        $this->checkIfExist($request);
         foreach ($request->chosenRoom as $roomTypeId) {
-            ServiceRoomType::updateOrCreate(
+            ServiceRoomType::create(
                 [
                     "service_id" => $request->serviceId,
                     "room_type_id" => $roomTypeId,
@@ -339,6 +389,17 @@ class HotelController extends Controller
                 ]
             );
         }
+        
+    }
+    public function checkIfExist($request)
+    {
+        $hotel = Hotel::find($request->hotelId);
+        $allServiceRoomType = ServiceRoomType::where("hotel_id", $hotel->id)->where("service_id", $request->serviceId);
+        $count = count($allServiceRoomType->get());
+        if($count == 0){
+            $hotel->update(["rank_point" => $hotel->rank_point + 1]);
+        }
+        $allServiceRoomType->delete();
     }
     public function getAllRoomType(Request $request)
     {
@@ -420,11 +481,16 @@ class HotelController extends Controller
         $hotel = Hotel::with(["Ward" => function ($query) {
             $query->with(["District" => function ($query) {
                 $query->with(["Province"]);
+                // function ($query) {
+                //     $query->where("id", 2);
+                // }]);
             }]);
         }])->get();
+        return $hotel;
         $data = [];
         foreach ($hotel as $h) {
             if ($h->ward->district->province->id == 1) {
+
                 $data[] = $h;
             }
         }

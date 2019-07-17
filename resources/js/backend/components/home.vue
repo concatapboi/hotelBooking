@@ -48,8 +48,7 @@
             <v-card width="100%" class="pa-0">
               <v-toolbar card flat color="primary">
                 <v-toolbar-title class="text-uppercase">
-                  <span class="text-md-center white--text">
-                  {{formTitle}}</span>
+                  <span class="text-md-center white--text">{{formTitle}}</span>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn icon dark v-on:click="dialog =false">
@@ -293,6 +292,7 @@
                           v-if="menuCheckin"
                           v-model="newHotelData.checkin"
                           full-width
+                          value="24hr hh:mm"
                           format="24hr"
                           @click:minute="$refs.checkin.save(newHotelData.checkin)"
                         ></v-time-picker>
@@ -325,6 +325,7 @@
                           v-if="menuCheckout"
                           v-model="newHotelData.checkout"
                           full-width
+                          value="24hr hh:mm"
                           format="24hr"
                           @click:minute="$refs.checkout.save(newHotelData.checkout)"
                         ></v-time-picker>
@@ -411,20 +412,32 @@
         <h4>{{snackbarText}}</h4>
       </v-snackbar>
     </v-layout>
-    <v-dialog max-width="20%" v-model="confirmDialog">
+    <v-dialog max-width="40%" v-model="confirmDialog">
       <v-card>
-        <v-card-title>Confirmation</v-card-title>
-        <v-card-text>{{confirmDialogText}}</v-card-text>
+        <v-card-title>
+          <h5>Confirmation</h5>
+        </v-card-title>
+        <v-card-text v-if="bookingListCantDelete == null">{{confirmDialogText}}</v-card-text>
+        <v-card-text v-else>
+          You can't delete this Hotel right now because :
+          <ul>
+            <li v-for="(booking,i) in bookingListCantDelete.sau" :key="i">
+              {{booking.reason}} -- order# {{booking.id}}
+              <v-btn small depressed round @click="detailOrder(booking.id)">detail</v-btn>
+            </li>
+          </ul>
+        </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" flat @click.stop="deleteHotelConfirm()">Confirm</v-btn>
-          <v-btn color="red" flat @click="cancel">Cancel</v-btn>
+          <v-btn color="grey" flat round depressed @click="cancel">Cancel</v-btn>
+          <v-btn color="red" flat round depressed @click.stop="deleteHotelConfirm()">Confirm</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-layout class="m-5">
-      <v-card dark flat color="blue-grey darken-4" class="p-2">
-        <v-expansion-panel class="elevation-0" v-model="panel" expand>
+      <v-card width="100%" dark flat color="blue-grey darken-4" class="p-2">
+        <v-expansion-panel  class="elevation-0" v-model="panel" expand>
           <!-- focusable expand -->
           <h1>Yours hotels</h1>
           <v-expansion-panel-content
@@ -633,7 +646,8 @@ export default {
         { text: "15", value: 15 },
         { text: "16", value: 16 },
         { text: "17", value: 17 }
-      ]
+      ],
+      bookingListCantDelete: null
     };
   },
   created() {},
@@ -649,12 +663,21 @@ export default {
     hotelPanel: function() {
       this.panel = this.hotelPanel;
       this.panel[0] = true;
+    },
+    arrayHotel: function(newVal) {
+      this.arrayHotel = newVal;
+    },
+    confirmDialog: function() {
+      if (this.confirmDialog == false) {
+        this.bookingListCantDelete = null;
+      }
     }
   },
   computed: {
     addNewTitle: function() {
       this.formTitle = "NEW HOTEL";
       this.defaultHotelType = this.arrayHotelType[0];
+      this.newHotelData = {};
       this.$refs.formNewHotel.reset();
       return this.formTitle;
     }
@@ -699,7 +722,6 @@ export default {
               phone: this.newHotelData.phone,
               fax_number: this.newHotelData.fax_number,
               tax_code: this.newHotelData.tax_code,
-              // arrayService: this.arrayServiceChoose,
               images: this.images,
               primaryId: this.primaryImage,
               checkin: this.newHotelData.checkin,
@@ -730,9 +752,7 @@ export default {
                 }
                 var hotel = {
                   id: response.data.id,
-                  address: {
-                    address: this.newHotelData.address
-                  },
+                  address: this.newHotelData.address,
                   coin: 0,
                   credit_card: this.newHotelData.credit_card,
                   description: this.newHotelData.description,
@@ -745,8 +765,8 @@ export default {
                   tax_code: this.newHotelData.tax_code,
                   child_age: this.newHotelData.child_age,
                   policy: {
-                    checkin: this.newHotelData.checkin,
-                    checkout: this.newHotelData.checkout,
+                    check_in: this.newHotelData.checkin,
+                    check_out: this.newHotelData.checkout,
                     cancelable: this.newHotelData.cancelable,
                     cancel_day: this.newHotelData.cancel_day,
                     refundRate: this.newHotelData.refundRate,
@@ -755,7 +775,7 @@ export default {
                 };
                 _this.arrayHotel.push(hotel);
               }
-              console.log(_this.arrayHotel);
+              // console.log(_this.arrayHotel);
               this.$emit("changeArrayHotel", _this.arrayHotel);
             })
             .catch(error => {
@@ -985,11 +1005,13 @@ export default {
           }
         }
       }
+      console.log(hotel);
       this.newHotelData.name = hotel.name;
       this.newHotelData.rating = hotel.stars_num;
       this.newHotelData.description = hotel.description;
       this.newHotelData.child_age = hotel.child_age;
-      if (hotel.policy.cancel_day > 0) {
+      this.newHotelData.email = hotel.email;
+      if (hotel.policy.cancel_day > 0 && hotel.policy.cancel_day != null) {
         this.newHotelData.cancelable = true;
       } else {
         this.newHotelData.cancelable = false;
@@ -1081,7 +1103,7 @@ export default {
       this.confirmDialog = true;
       this.selectedId = hotelId;
       this.confirmDialogText =
-        "Are you really want to delete this " + hotelId + " ?";
+        "Are you really want to delete this Hotel " + "?";
     },
     deleteHotelConfirm: function() {
       var _this = this;
@@ -1096,18 +1118,24 @@ export default {
             this.logout;
           }
           console.log(response);
-          if (response.data.status == true) {
+          if (response.data.status == false) {
+            if (response.data.booking_list != null) {
+              this.confirmDialog = true;
+              this.bookingListCantDelete = response.data.booking_list;
+              console.log(response.data.booking_list);
+            }
+          } else {
             for (var i = 0; i < _this.arrayHotel.length; i++) {
               if (_this.arrayHotel[i].id == this.selectedId) {
                 _this.arrayHotel.splice(i, 1);
               }
             }
+            this.confirmDialog = false;
           }
         })
         .catch(error => {
           console.log(error);
         });
-      this.confirmDialog = false;
     },
     logout: function() {
       axios({
@@ -1132,6 +1160,12 @@ export default {
     },
     deleteImage: function(i) {
       this.images.splice(i, 1);
+    },
+    detailOrder: function(id) {
+      this.$router.push({
+        name: "order",
+        query: { hotelId: this.selectedId, orderId: id }
+      });
     }
   }
 };

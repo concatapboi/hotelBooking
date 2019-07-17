@@ -117,19 +117,16 @@ class FeatureController extends Controller
     }
     public function addFeature(Request $request)
     {
-        $hotel = Hotel::find($request->hotelId);
-        $choice = $request->radio;
-        $feature = $request->featureId;
-        $this->addAllRoom($request);
+        return $this->addAllRoom($request);
     }
     public function addAllRoom(Request $request)
     {
         $hotel = Hotel::find($request->hotelId);
         if ($hotel != null) {
             $rooms = Room::where("hotel_id", $request->hotelId)->get();
-            $temp = [];
+            $this->checkIfExist($request);
             foreach ($rooms as $room) {
-                RoomFeature::updateOrCreate(
+                RoomFeature::create(
                     [
                         "feature_id" => $request->featureId,
                         "room_id" => $room->id,
@@ -140,23 +137,40 @@ class FeatureController extends Controller
     }
     public function removeFeatureRoom(Request $request)
     {
-        $hotel = $hotel = Hotel::find($request->hotelId);
-        foreach ($hotel->Room as $room) {
-            RoomFeature::where("room_id", $room->id)
-                ->where("feature_id", $request->featureId)
-                ->delete();
+        $hotel = Hotel::find($request->hotelId);
+        foreach ($hotel->room as $room) {
+            RoomFeature::where("room_id", $room->id)->where("feature_id", $request->featureId)->delete();
         }
+
+        $hotel->update(["rank_point" => $hotel->rank_point - 1]);
     }
     public function addFeatureRoom(Request $request)
     {
         $hotel = Hotel::find($request->hotelId);
+        $this->checkIfExist($request);
         foreach ($request->chosenRoom as $roomId) {
-            RoomFeature::updateOrCreate(
+            RoomFeature::create(
                 [
                     "feature_id" => $request->featureId,
                     "room_id" => $roomId,
                 ]
             );
+        }
+    }
+    public function checkIfExist($request)
+    {
+        $hotel = Hotel::where("id", $request->hotelId)->with("Room")->get();
+        $feature_id = $request->featureId;
+        $temp = [];
+        foreach ($hotel[0]->Room as $room) {
+            if (RoomFeature::where("room_id", $room->id)->where("feature_id", $feature_id)->first() != null) {
+                $temp[] = $room->id;
+            }
+            RoomFeature::where("room_id", $room->id)->where("feature_id", $feature_id)->delete();
+        }
+        if (sizeOf($temp) == 0) {
+            $hotel = Hotel::find($request->hotelId);
+            $hotel->update(["rank_point" => $hotel->rank_point + 1]);
         }
     }
 }

@@ -4,7 +4,7 @@
       <v-list>
         <v-list-tile class="style-link" :to="{name:'home'}">
           <v-list-tile-action>
-            <v-icon>{{items[0].icon}}</v-icon>
+            <i class="ma-1 fa-lg fas fa-home"></i>
           </v-list-tile-action>
 
           <v-list-tile-content>
@@ -16,21 +16,23 @@
           <template v-slot:activator>
             <v-list-tile>
               <v-list-tile-action>
-                <v-icon>{{items[1].icon}}</v-icon>
+                <i class="ma-1 fa-lg fas fa-hotel"></i>
               </v-list-tile-action>
               <v-list-tile-title>{{items[1].title}}</v-list-tile-title>
             </v-list-tile>
           </template>
           <v-list-tile class="style-link" :to="{name:'room',query :{hotelId : hotelId}}">
+            <i class="ma-1 fa-lg fas fa-bed"></i>
             <v-list-tile-title>Rooms</v-list-tile-title>
           </v-list-tile>
           <v-list-tile class="style-link" :to="{name:'room-facility',query :{hotelId : hotelId}}">
+            <i class="ma-1 fa-lg fas fa-tools"></i>
             <v-list-tile-title>Room facility</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
         <v-list-tile class="style-link" :to="{name:'service',query :{hotelId : hotelId}}">
           <v-list-tile-action>
-            <v-icon>{{items[2].icon}}</v-icon>
+            <i class=" ma-1 fas fa-lg fa-concierge-bell"></i>
           </v-list-tile-action>
 
           <v-list-tile-content>
@@ -136,10 +138,10 @@ export default {
     return {
       loaded: false,
       items: [
-        { icon: "home", color:"black",title: "Home" },
-        { icon: "business", color:"black", title: "Your Rooms" },
-        { icon: "grade", color:"black", title: "Service" },
-        { icon: "grade", color:"black", title: "Order" },
+        { icon: "home", color:"black",title: "Trang chủ" },
+        { icon: "business", color:"black", title: "Quản lý phòng" },
+        { icon: "grade", color:"black", title: "Quản lý dịch vụ" },
+        { icon: "grade", color:"black", title: "Quản lý đơn" },
         { icon: "monetization_on", color:"brown", title: "Khuyến Mãi" },
         { icon: "message", color:"purple", title: "Khách hàng hỏi" },
       ],
@@ -210,6 +212,7 @@ export default {
           this.hotelPanel = response.data.panel;
         })
         .catch(function(error) {
+          console.log(error.response);
           if (error.response.status == 401) {
             _this.logout();
           }

@@ -53,6 +53,10 @@ class Room extends Model
   {
     return $this->belongsTo('App\Models\RoomMode', 'room_mode_id', 'id');
   }
+  public function Booking()
+  {
+    return $this->hasMany('App\Models\Booking', 'room_id', 'id');
+  }
 
   public function couponCode()
   {
@@ -82,7 +86,7 @@ class Room extends Model
 
   public function Feature()
   {
-    return $this->hasMany('App\Models\RoomFeature', 'room_id', 'id');
+    return $this->belongsToMany('App\Models\Feature','room_feature', 'feature_id','room_id');
   }
 
   public function availableRoomAmount($check_in, $check_out)
