@@ -4,10 +4,10 @@
       <v-img :aspect-ratio="16/2" src="/blog/img/slider/slider.png" class="pt-5">
         <v-layout row wrap justify-center>
           <v-flex md10 class="text-md-center">
-            <span class="title text-uppercase font-weight-black">about us</span>
+            <span class="title text-uppercase font-weight-black">Về Chúng Tôi</span>
           </v-flex>
           <v-flex md10 class="text-md-center">
-            <router-link :to="{name:'home'}">Home</router-link>&nbsp;/&nbsp;About Us
+            <router-link :to="{name:'home'}">Trang Chủ</router-link>&nbsp;/&nbsp;Về Chúng Tôi
           </v-flex>
         </v-layout>
       </v-img>

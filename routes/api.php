@@ -26,6 +26,8 @@ Route::group(['prefix' => '/manager'], function () {
     Route::group(['middleware' => 'jwt.auth'], function () {
         Route::post('logout', 'Backend\AuthController@logout');
         Route::resource('hotel', 'Backend\HotelController');
+        Route::resource('question', 'Backend\QuestionController');
+        Route::resource('coupon-code', 'Backend\CouponCodeController');
         Route::resource('room', 'Backend\RoomController');
         Route::get('all-room', 'Backend\RoomController@getAllRoomByHotelId');
         Route::resource('hotel-type', 'Backend\HotelTypeController');
@@ -58,8 +60,10 @@ Route::group(['prefix' => '/manager'], function () {
 });
 
 Route::resource('/hotel', 'Frontend\HotelController');
+Route::get('/hotel-rooms', 'Frontend\HotelController@roomByHotel');
 Route::get('/get-top5-hotel', 'Frontend\HotelController@getTop5');
 Route::resource('/user', 'Frontend\UserController');
+Route::resource('/booking-status', 'Frontend\BookingStatusController');
 Route::get('/get-top5-user', 'Frontend\UserController@getTop5');
 Route::get('/check-user', 'Frontend\UserController@checkUser');
 Route::get('/member-count', 'Frontend\UserController@getMemberCount');

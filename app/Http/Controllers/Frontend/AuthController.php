@@ -74,14 +74,15 @@ class AuthController extends Controller
         $user->Customer;
         $avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
         $user->avatar = $avatar;
-        foreach ($user->Booking as $b) {
-            $b->Status;
-            $b->cancel_status = $b->Hotel()->CancelableStatus();
-            $b->PaymentMethod;
-            $b->Room->RoomMode;
-            $b->Room->RoomType;
-            $b->Room->Hotel->HotelType;
-        };
+        $user->booking = $user->bookingList();  
+        // foreach ($user->Booking as $b) {
+        //     $b->Status;
+        //     $b->cancel_status = $b->Hotel()->CancelableStatus();
+        //     $b->PaymentMethod;
+        //     $b->Room->RoomMode;
+        //     $b->Room->RoomType;
+        //     $b->Room->Hotel->HotelType;
+        // };
         return response()->json([
             'user' => $user,
         ]);

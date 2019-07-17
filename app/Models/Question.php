@@ -35,7 +35,6 @@ class Question extends Model
   
   public function Reply()
   {
-    // $reply = Reply::where('question_id',$this->id)->first();
     return $this->belongsTo('App\Models\Reply', 'id', 'question_id');
   }
 }

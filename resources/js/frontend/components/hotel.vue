@@ -27,7 +27,7 @@
           </template>
           <v-date-picker light no-title scrollable v-model="checkInVal">
             <v-spacer></v-spacer>
-            <v-btn flat v-on:click="mn.menu2 = false">Cancel</v-btn>
+            <v-btn flat v-on:click="mn.menu2 = false">Hủy</v-btn>
             <v-btn flat v-on:click="$refs.checkIn.save(checkInVal)">OK</v-btn>
           </v-date-picker>
         </v-menu>
@@ -55,7 +55,7 @@
           </template>
           <v-date-picker light no-title scrollable v-model="checkOutVal">
             <v-spacer></v-spacer>
-            <v-btn flat @click="mn.menu1 = false">Cancel</v-btn>
+            <v-btn flat @click="mn.menu1 = false">Hủy</v-btn>
             <v-btn flat @click="$refs.checkOut.save(checkOutVal)">OK</v-btn>
           </v-date-picker>
         </v-menu>
@@ -90,50 +90,50 @@
       </v-img>
       <v-layout row wrap class="hotel-info-item" align-center>
         <v-flex md4>
-          <span class="font-weight-black">Review Points:</span>
+          <span>Điểm đánh giá:</span>
         </v-flex>
         <v-flex md7 class="pl-2">
-          <span class="font-weight-black">{{data.review_point}}</span>
+          <span>{{data.review_point}}</span>
         </v-flex>
       </v-layout>
       <v-layout row wrap class="hotel-info-item" align-center>
         <v-flex md4>
-          <span class="font-weight-black">Phone Number:</span>
+          <span>Số điện thoại:</span>
         </v-flex>
         <v-flex md7 class="pl-2">
-          <span class="font-weight-black">{{data.phone_number}}</span>
+          <span>{{data.phone_number}}</span>
         </v-flex>
       </v-layout>
       <v-layout row wrap class="hotel-info-item" align-center>
         <v-flex md4>
-          <span class="font-weight-black">Email:</span>
+          <span>Email:</span>
         </v-flex>
         <v-flex md7 class="pl-2">
-          <span class="font-weight-black" style="word-wrap: break-word;">{{data.email}}</span>
+          <span style="word-wrap: break-word;">{{data.email}}</span>
         </v-flex>
       </v-layout>
       <v-layout row wrap class="hotel-info-item" align-center>
         <v-flex md4>
-          <span class="font-weight-black">Fax Number:</span>
+          <span>Số fax:</span>
         </v-flex>
         <v-flex md7 class="pl-2">
-          <span class="font-weight-black">{{data.fax_number}}</span>
+          <span>{{data.fax_number}}</span>
         </v-flex>
       </v-layout>
       <v-layout row wrap class="hotel-info-item" align-center>
         <v-flex md4>
-          <span class="font-weight-black">Tax Code:</span>
+          <span>Mã số thuế:</span>
         </v-flex>
         <v-flex md7 class="pl-2">
-          <span class="font-weight-black">{{data.tax_code}}</span>
+          <span>{{data.tax_code}}</span>
         </v-flex>
       </v-layout>
       <v-layout row wrap class="hotel-info-item" align-center>
         <v-flex md4>
-          <span class="font-weight-black">Address:</span>
+          <span>Địa chỉ:</span>
         </v-flex>
         <v-flex md7 class="pl-2">
-          <span class="font-weight-black" style="word-wrap: break-word;">{{data.address}}</span>
+          <span style="word-wrap: break-word;">{{data.address}}</span>
         </v-flex>
       </v-layout>
       <v-btn
@@ -142,16 +142,16 @@
         depressed
         dark
         v-on:click="followHotel(data,1)"
-      >follow</v-btn>
-      <v-btn round v-else depressed dark v-on:click="followHotel(data,0)">unfollow</v-btn>
+      >theo dõi</v-btn>
+      <v-btn round v-else depressed dark v-on:click="followHotel(data,0)">hủy theo dõi</v-btn>
     </v-flex>
     <v-flex md9 class="detail-container">
       <v-tabs centered grow color="grey lighten-2" light class="ma-1">
         <v-tabs-slider color="black"></v-tabs-slider>
-        <v-tab href="#tab-1">rooms</v-tab>
-        <v-tab href="#tab-2">description</v-tab>
-        <v-tab href="#tab-3">guest review</v-tab>
-        <v-tab href="#tab-4">guest question</v-tab>
+        <v-tab href="#tab-1">Danh sách phòng</v-tab>
+        <v-tab href="#tab-2">Thông tin</v-tab>
+        <v-tab href="#tab-3">Đánh giá</v-tab>
+        <v-tab href="#tab-4">Đặt câu hỏi</v-tab>
         <v-tab-item value="tab-1">
           <v-card light flat tile v-if="rooms.length !=0">
             <v-layout class="search-item" row wrap v-for="(room,index) in rooms" :key="index">
@@ -170,7 +170,7 @@
                           href="#"
                           @click="openImagesDialog(1,room)"
                           class="red--text"
-                        >More picture...</a>
+                        >Thêm...</a>
                       </v-layout>
                     </v-img>
                   </v-flex>
@@ -181,33 +181,34 @@
                 <v-card-title>
                   <div>
                     <div class="headline">{{room.room_name}}</div>
+                    <div><v-divider></v-divider></div>
                     <div>
-                      Price:&nbsp;
+                      Mức Giá:&nbsp;
                       <span
-                        class="red--text font-weight-bold"
-                      >{{room.price.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
+                        class="red--text font-weight-bold headline"
+                      >{{room.price.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}&nbsp;/đêm</span>
                     </div>
                     <div>
-                      Adult:&nbsp;
-                      <span class="font-weight-bold">{{room.max_adult_amount}}</span>|&nbsp;Kids:&nbsp;
+                      Người Lớn:&nbsp;
+                      <span class="font-weight-bold">{{room.max_adult_amount}}</span>&nbsp;|&nbsp;Trẻ Em:&nbsp;
                       <span
                         class="font-weight-bold"
-                      >{{room.max_child_amount}}&nbsp;(under&nbsp;{{data.child_age}}&nbsp;years old)</span>
+                      >{{room.max_child_amount}}&nbsp;(dưới&nbsp;{{data.child_age}}&nbsp;tuổi)</span>
                     </div>
                     <div>
-                      Room Mode:&nbsp;
+                      Kiểu Phòng:&nbsp;
                       <span class="font-weight-bold">{{room.room_mode.name}}</span>
                     </div>
                     <div>
-                      Room Type:&nbsp;
+                      Loại Phòng:&nbsp;
                       <span class="font-weight-bold">{{room.room_type.name}}</span>
                     </div>
                     <div>
-                      Room Size:&nbsp;
+                      Kích Thước:&nbsp;
                       <span class="font-weight-bold">{{room.room_size}}&nbsp;m²</span>
                     </div>
                     <div v-show="room.amount>0">
-                      Amount:&nbsp;
+                      Số Lượng:&nbsp;
                       <input
                         class="amount-room-input"
                         type="number"
@@ -238,7 +239,7 @@
                     <v-layout row wrap class="pa-0 ma-0">
                       <v-flex md6 class="service-item">
                         <div>
-                          <span>Services</span>
+                          <span>Dịch Vụ</span>
                         </div>
                         <v-divider></v-divider>
                         <div v-for="(service,i) in room.service" :key="i">
@@ -248,7 +249,7 @@
                       </v-flex>
                       <v-flex md6 class="feature-item">
                         <div>
-                          <span>Feature</span>
+                          <span>Nội Thất</span>
                         </div>
                         <v-divider></v-divider>
                         <div v-for="(feature,i) in room.feature" :key="i">
@@ -259,19 +260,18 @@
                   </v-card-text>
                 </v-card-title>
               </v-flex>
-              <v-flex md2 class="pt-5 pl-1">
+              <v-flex md2 class="text-md-center pt-5 pl-1">
                 <v-btn
                   round
-                  :disabled="room.amount ===0"
+                  :disabled="room.amount <= 0"
                   depressed
                   large
                   color="#EE5A24"
                   @click.stop="openDialog(room)"
                   class="white--text"
-                >Select</v-btn>
-                <div class="red--text">
-                  Availability :&nbsp;
-                  <span class="font-weight-bold">{{room.amount}}</span>&nbsp;room(s)
+                >Chọn</v-btn>
+                <div class=" font-weight-bold red--text body-2">
+                  Còn&nbsp;{{room.amount}}&nbsp;phòng
                 </div>
               </v-flex>
               <!-- <v-flex md12>
@@ -305,13 +305,9 @@
                                 v-show="data.verified!=0"
                               ></i>
                             </template>
-                            <span>verified</span>
+                            <span>đã xác thực</span>
                           </v-tooltip>
                         </span>
-                        <div>
-                          Your best&nbsp;
-                          <a href="#" class="font-italic">{{data.hotel_type.name}}</a>&nbsp;choice!
-                        </div>
                       </div>
                     </v-flex>
                     <v-flex md12>
@@ -332,7 +328,7 @@
                                 href="#"
                                 @click="openImagesDialog(0,null)"
                                 class="red--text"
-                              >More picture...</a>
+                              >Thêm...</a>
                             </v-layout>
                           </v-img>
                         </v-flex>
@@ -343,7 +339,7 @@
                     </v-flex>
                     <v-flex md12>
                       <div>
-                        <span class="font-weight-bold subheading">Description:</span>
+                        <span class="font-weight-bold subheading">Mô Tả:</span>
                       </div>
                       <div class="pa-2 pl-3 border my-1">
                         <span style="word-wrap: break-word">{{data.description}}</span>
@@ -356,7 +352,7 @@
                       <div>
                         <span
                           class="font-weight-bold subheading"
-                        >Location Info:&nbsp;{{data.address}}</span>
+                        >Thông Tin Địa Chỉ:&nbsp;{{data.address}}</span>
                       </div>
                     </v-flex>
                     <v-flex md12>
@@ -364,7 +360,7 @@
                     </v-flex>
                     <v-flex md12>
                       <div>
-                        <span class="font-weight-bold subheading">Services:</span>
+                        <span class="font-weight-bold subheading">Dịch Vụ:</span>
                       </div>
                       <v-layout row wrap class="pa-0 ma-0 my-1">
                         <v-flex md2 v-for="(ser,i) in data.service" :key="i" class="pa-2 border">
@@ -385,22 +381,22 @@
                     <v-flex md12>
                       <div>
                         <div>
-                          <span class="font-weight-bold subheading">Policy:</span>
+                          <span class="font-weight-bold subheading">Chính Sách:</span>
                           <span class="ml-2 font-weight-bold font-italic">{{data.policy.content}}</span>
                         </div>
                         <div class="ml-2 pl-2 border-left">
                           <div v-if="data.policy.check_in !=null">
                             <span
                               class="font-weight-bold subheading"
-                            >Check-in:&nbsp;{{data.policy.check_in}}</span>
+                            >Thời Gian Check-in:&nbsp;{{data.policy.check_in}}</span>
                           </div>
-                          <div v-if="data.policy.check_ !=null">
+                          <div v-if="data.policy.check_out !=null">
                             <span
                               class="font-weight-bold subheading"
-                            >Check-out:&nbsp;{{data.policy.check_out}}</span>
+                            >Thời Gian Check-out:&nbsp;{{data.policy.check_out}}</span>
                           </div>
                           <div v-for="(p,i) in paymentMethods" :key="i">
-                            <span class="font-weight-bold subheading">{{p.method.name}}&nbsp;method:</span>
+                            <span class="font-weight-bold subheading">{{p.method.name}}:</span>
                             <span class="font-weight-bold font-italic">{{p.content}}</span>
                           </div>
                         </div>
@@ -463,7 +459,7 @@
                   </v-layout>-->
                   <v-layout row wrap class="pa-3 ma-0">
                     <v-flex md12>
-                      <span class="font-weight-bold subheading">Guest review</span>
+                      <span class="font-weight-bold subheading">Đánh Giá Của Khách Hàng</span>
                     </v-flex>
                     <v-flex md12 class="pl-2 ma-1">
                       <v-layout row wrap class="pa-0 ma-0" v-if="data.review.length !=0">
@@ -502,7 +498,7 @@
                                           target="_blank"
                                         >
                                           <v-avatar size="40px" color="white">
-                                            <img :src="r.customer.avatar.image_link" alt />
+                                            <img :src="'/img/user/'+r.customer.avatar.image_link" alt />
                                           </v-avatar>
                                         </router-link>
                                       </v-avatar>
@@ -538,7 +534,7 @@
                                 class="blue--text fa-lg far fa-thumbs-up pl-3 pr-1"
                                 v-else
                               ></i>
-                              <span class="grey--text">This post is useful to you?</span>
+                              <span class="grey--text">Bài đăng này hữu ích đối với bạn?</span>
                             </v-card-actions>
                           </v-card>
                         </v-flex>
@@ -546,7 +542,7 @@
                       <v-layout row wrap class="pa-0 ma-0" v-else>
                         <v-flex md12 class="pa-2 ma-2 border">
                           <div class="text-md-center">
-                            <span class="title text-uppercase">no reviews yet</span>
+                            <span class="title text-uppercase">chưa có đánh giá nào...</span>
                           </div>
                         </v-flex>
                       </v-layout>
@@ -566,7 +562,7 @@
                     <v-flex md12>
                       <v-layout row wrap class="pa-0 ma-0" justify-center align-center>
                         <v-flex md6 class="font-weight-bold subheading text-md-left">
-                          <span>Guest question</span>
+                          <span>Câu Hỏi Của Khách Hàng</span>
                         </v-flex>
                         <v-flex md6 class="text-md-right pr-3">
                           <v-btn
@@ -575,7 +571,7 @@
                             class="white--text"
                             depressed
                             @click="openQuestionDialog()"
-                          >ask&nbsp;{{data.hotel_type.name}}</v-btn>
+                          >hỏi&nbsp;{{data.hotel_type.name}}</v-btn>
                         </v-flex>
                       </v-layout>
                     </v-flex>
@@ -598,7 +594,7 @@
                                         target="_blank"
                                       >
                                         <v-avatar size="40px" color="white">
-                                          <img :src="q.customer.avatar.image_link" alt />
+                                          <img :src="'/img/user/'+q.customer.avatar.image_link" alt />
                                         </v-avatar>
                                       </router-link>
                                     </v-avatar>
@@ -634,7 +630,7 @@
                       <v-layout row wrap class="pa-0 ma-0" v-else>
                         <v-flex md12 class="pa-2 ma-2 border">
                           <div class="text-md-center">
-                            <span class="title text-uppercase">no questions yet</span>
+                            <span class="title text-uppercase">chưa có câu hỏi nào...</span>
                           </div>
                         </v-flex>
                       </v-layout>
@@ -666,9 +662,9 @@
           <v-spacer></v-spacer>
           <v-stepper v-model="bookingDialog.step" class="pa-2">
             <v-stepper-header>
-              <v-stepper-step color="#EE5A24" :complete="bookingDialog.step > 1" step="1">Step 1</v-stepper-step>
-              <v-stepper-step color="#EE5A24" :complete="bookingDialog.step > 2" step="2">Step 2</v-stepper-step>
-              <v-stepper-step color="#EE5A24" step="3">Step 3</v-stepper-step>
+              <v-stepper-step color="#EE5A24" :complete="bookingDialog.step > 1" step="1">Bước 1</v-stepper-step>
+              <v-stepper-step color="#EE5A24" :complete="bookingDialog.step > 2" step="2">Bước 2</v-stepper-step>
+              <v-stepper-step color="#EE5A24" step="3">Bước 3</v-stepper-step>
             </v-stepper-header>
           </v-stepper>
         </v-toolbar>
@@ -679,11 +675,11 @@
                 <v-flex md12>
                   <v-layout row wrap class="pa-0 ma-0">
                     <v-flex md12>
-                      <div class="font-italic text-md-center">Room information</div>
+                      <div class="font-italic text-md-center">Thông Tin Phòng</div>
                       <v-divider></v-divider>
                     </v-flex>
                     <v-flex md2>
-                      <v-img :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
+                      <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingDialog.room.image"></v-img>
                     </v-flex>
                     <v-flex md10 class="pa-3">
                       <div>{{data.name}} - {{data.hotel_type.name}}</div>
@@ -693,7 +689,7 @@
                 </v-flex>
                 <v-flex md6 class="service-item">
                   <div>
-                    <span>Services</span>
+                    <span>Dịch Vụ</span>
                   </div>
                   <v-divider></v-divider>
                   <div v-for="(service,i) in bookingDialog.room.service" :key="i">
@@ -703,7 +699,7 @@
                 </v-flex>
                 <v-flex md6 class="feature-item">
                   <div>
-                    <span>Feature</span>
+                    <span>Nội Thất</span>
                   </div>
                   <v-divider></v-divider>
                   <div v-for="(feature,i) in bookingDialog.room.feature" :key="i">
@@ -729,13 +725,13 @@
                   <v-divider></v-divider>
                 </v-flex>
                 <v-flex md4>
-                  <span>Kind Of Room:</span>
+                  <span>Loại Phòng:</span>
                 </v-flex>
                 <v-flex md8>
                   <span>{{bookingDialog.room.room_type.name}}</span>
                 </v-flex>
                 <v-flex md4>
-                  <span>Bed(s):</span>
+                  <span>Giường:</span>
                 </v-flex>
                 <v-flex md8>
                   <div
@@ -747,7 +743,7 @@
                   <v-divider></v-divider>
                 </v-flex>
                 <v-flex md4>
-                  <span>Amount Of Room:</span>
+                  <span>Số Lượng Đặt:</span>
                 </v-flex>
                 <v-flex md8>
                   <span>{{bookingDialog.room.bookingAmount}}</span>
@@ -760,7 +756,7 @@
                 <v-flex md12 v-show="!login.check">
                   <div>
                     <h2 class="headline">
-                      <span class="orange--text">J</span>oin Us
+                      <span class="orange--text">Đ</span>ăng Nhập
                     </h2>
                   </div>
                   <v-card flat tile dark color="#B53471">
@@ -771,13 +767,13 @@
                       <v-flex md10>
                         <v-card-title>
                           <div>
-                            <div>Login and enjoy member-only benefits!</div>
+                            <div>Đăng nhập để nhận nhiều lợi ích khi là thành viên của chúng tôi!</div>
                             <div>
                               <span>
-                                <a href="#" class="orange--text" @click="getLogin(1)">Login</a>
+                                <a href="#" class="orange--text" @click="getLogin(1)">Đăng Nhập</a>
                               </span>&nbsp;||&nbsp;
                               <span>
-                                <a href="#" class="orange--text" @click="getLogin(0)">Register</a>
+                                <a href="#" class="orange--text" @click="getLogin(0)">Đăng Ký</a>
                               </span>
                             </div>
                           </div>
@@ -791,14 +787,14 @@
                     <v-flex md12>
                       <div>
                         <h2 class="headline">
-                          <span class="orange--text font-weight-black">Y</span>our Information
+                          <span class="orange--text font-weight-black">T</span>hông Tin Của Bạn
                         </h2>
                       </div>
                       <v-form ref="form" data-vv-scope="form1">
                         <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
                           <v-flex md12>
                             <div>
-                              Contact's name:
+                              Tên liên hệ:
                               <span class="orange--text">*</span>
                             </div>
                             <v-text-field
@@ -809,13 +805,13 @@
                               class="ma-2"
                               color="teal"
                               outline
-                              hint="*Enter the name as shown on ID card / passport (no sign)"
+                              hint="*nhập tên theo chứng minh thư"
                               persistent-hint
                             ></v-text-field>
                           </v-flex>
                           <v-flex md6>
                             <div>
-                              Contact's mobile-number:
+                              Số điện thoại liên hệ:
                               <span class="orange--text">*</span>
                             </div>
                             <v-text-field
@@ -830,7 +826,7 @@
                           </v-flex>
                           <v-flex md6>
                             <div>
-                              Contact's email:
+                              Địa chỉ email:
                               <span class="orange--text">*</span>
                             </div>
                             <v-text-field
@@ -847,7 +843,7 @@
                           </v-flex>
                           <v-flex md6>
                             <div>
-                              Contact's address:
+                              Nơi cư trú:
                               <span class="orange--text">*</span>
                             </div>
                             <v-textarea
@@ -860,12 +856,12 @@
                               outline
                               auto-grow
                               rows="2"
-                              hint="*Ex: Da Kao ward, district 1, Ho Chi Minh city"
+                              hint="*Ex: thành phố Hồ cHí minh, quận 1, phường Đa Kao"
                               persistent-hint
                             ></v-textarea>
                           </v-flex>
                           <v-flex md6>
-                            <div>Special request:</div>
+                            <div>Yêu cầu đặc biệt:</div>
                             <v-textarea
                               v-model="bookingDialog.booking.request"
                               class="ma-2"
@@ -880,7 +876,7 @@
                       <div>
                         <v-divider dark></v-divider>
                         <h2 class="headline">
-                          <span class="orange--text font-weight-black">P</span>rice Details
+                          <span class="orange--text font-weight-black">C</span>hi Tiết Giá
                         </h2>
                       </div>
                       <v-layout row wrap class="grey lighten-2 pa-3 pl-5 ma-0">
@@ -892,9 +888,9 @@
                         </v-flex>
                         <v-flex
                           md4
-                        >{{bookingDialog.room.price.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+                        >{{bookingDialog.room.price.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</v-flex>
                         <v-flex md8>
-                          <span>Amount</span>
+                          <span>Số Lượng</span>
                         </v-flex>
                         <v-flex md4>{{bookingDialog.room.bookingAmount}}</v-flex>
                         <v-flex md12>
@@ -903,7 +899,7 @@
                         <v-flex md12>
                           <v-layout row wrap class="pa-0 ma-0" align-center>
                             <v-flex md8>
-                              <v-text-field v-model="text" class="my-2 ma-0" color="teal" outline></v-text-field>
+                              <v-text-field label="nhập mã giảm giá tại đây..." v-model="text" class="my-2 ma-0" color="teal" outline></v-text-field>
                             </v-flex>
                             <v-flex md4>
                               <v-btn
@@ -911,7 +907,7 @@
                                 depressed
                                 :disabled="!bookingDialog.couponCode.check"
                                 @click="applyCouponCode"
-                              >apply</v-btn>
+                              >Áp dụng</v-btn>
                             </v-flex>
                             <v-flex md12><span class="red--text font-italic">{{bookingDialog.couponCode.mess}}</span></v-flex>
                           </v-layout>
@@ -920,11 +916,11 @@
                           <v-divider></v-divider>
                         </v-flex>
                         <v-flex md8>
-                          <span>Total price</span>
+                          <span>Tổng Giá</span>
                         </v-flex>
                         <v-flex
                           md4
-                        >{{bookingDialog.totalPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+                        >{{bookingDialog.totalPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</v-flex>
                       </v-layout>
                     </v-flex>
                   </v-window-item>
@@ -932,7 +928,7 @@
                     <v-flex md12>
                       <div>
                         <h2 class="headline">
-                          <span class="orange--text font-weight-black">P</span>ayment methods!
+                          <span class="orange--text font-weight-black">T</span>hanh Toán!
                         </h2>
                       </div>
                       <div>
@@ -946,8 +942,10 @@
                               color="grey lighten-2"
                               v-show="bookingDialog.payment == p.method.id"
                             >
-                              <v-card-title>{{p.method.name}}&nbsp;policy.</v-card-title>
-                              <v-card-text>{{p.content}}</v-card-text>
+                              <v-card-title>
+                                <div>{{p.method.name}}</div>
+                                <div>{{p.content}}</div>
+                              </v-card-title>
                             </v-card>
                           </div>
                         </v-radio-group>
@@ -958,21 +956,24 @@
                     <v-flex md12>
                       <div>
                         <h2 class="headline">
-                          <span class="orange--text font-weight-black">P</span>lease Review Your Booking
+                          <span class="orange--text font-weight-black">X</span>em Lại Thông Tin Đặt Phòng
                         </h2>
                       </div>
                       <div>
                         <v-divider dark></v-divider>
-                        <span class="font-weight-black title">Your Information</span>
+                        <span class="font-weight-black title">Thông Tin Của Bạn</span>
                       </div>
                       <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
-                        <v-flex md3>
-                          <v-img :aspect-ratio="1" src="/blog/img/slider/default.png"></v-img>
+                        <v-flex md4>
+                          <div class="mt-3">
+                            <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingDialog.room.image"></v-img>
+                          </div>
                         </v-flex>
-                        <v-flex md9>
+                        <v-flex md8>
                           <v-layout row wrap class="pa-0 pl-4 ma-0">
                             <v-flex md12>
-                              <h2>{{data.name}}&nbsp;-&nbsp;{{data.hotel_type.name}}</h2>
+                              <div><h2>{{data.name}}</h2></div>
+                              <div>{{data.hotel_type.name}}</div>
                             </v-flex>
                             <v-flex md12>
                               <v-divider class="pa-0 ma-0"></v-divider>
@@ -1000,18 +1001,18 @@
                                   </div>
                                 </v-flex>
                                 <v-flex md12 class="pl-2">
-                                  <span class="font-weight-bold">Guess Information</span>
+                                  <span class="font-weight-bold">Thông Tin Liên Hệ</span>
                                 </v-flex>
                                 <v-flex md12 class="pl-2">
-                                  <v-layout row wrap class="pa-0 ma-0">
-                                    <v-flex md3>Name</v-flex>
-                                    <v-flex md9>{{bookingDialog.booking.name}}</v-flex>
-                                    <v-flex md3>Email</v-flex>
-                                    <v-flex md9>{{bookingDialog.booking.email}}</v-flex>
-                                    <v-flex md3>Mobile -number</v-flex>
-                                    <v-flex md9>{{bookingDialog.booking.phone}}</v-flex>
-                                    <v-flex md3>Address</v-flex>
-                                    <v-flex md9>{{bookingDialog.booking.address}}</v-flex>
+                                  <v-layout row wrap class="pa-0 ma-0" align-center>
+                                    <v-flex md5>Tên</v-flex>
+                                    <v-flex md7>{{bookingDialog.booking.name}}</v-flex>
+                                    <v-flex md5>Email</v-flex>
+                                    <v-flex md7>{{bookingDialog.booking.email}}</v-flex>
+                                    <v-flex md5>Số Điện Thoại</v-flex>
+                                    <v-flex md7>{{bookingDialog.booking.phone}}</v-flex>
+                                    <v-flex md5>Địa Chỉ</v-flex>
+                                    <v-flex md7>{{bookingDialog.booking.address}}</v-flex>
                                   </v-layout>
                                 </v-flex>
                                 <v-spacer></v-spacer>
@@ -1021,18 +1022,18 @@
                               <v-divider></v-divider>
                             </v-flex>
                             <v-flex md12>
-                              <span class="font-weight-bold">Room Details:</span>
+                              <span class="font-weight-bold">Chi Tiết Phòng:</span>
                             </v-flex>
                             <v-flex md12>
-                              <v-layout row wrap class="pa-0 ma-0">
-                                <v-flex md3>Room Type:</v-flex>
+                              <v-layout row wrap class="pa-0 ma-0" align-center>
+                                <v-flex md3>Loại Phòng:</v-flex>
                                 <v-flex
                                   md9
-                                >{{bookingDialog.room.room_mode.name}}&nbsp;{{bookingDialog.room.room_type.name}}</v-flex>
-                                <v-flex md3>No. Of Rooms:</v-flex>
-                                <v-flex md9>{{bookingDialog.room.bookingAmount}}</v-flex>
-                                <v-flex md3>Special Request:</v-flex>
-                                <v-flex md9>{{bookingDialog.booking.request}}</v-flex>
+                                >{{bookingDialog.room.room_type.name}}</v-flex>
+                                <v-flex md5>Số Lượng Đặt:</v-flex>
+                                <v-flex md7>{{bookingDialog.room.bookingAmount}}</v-flex>
+                                <v-flex md5>Yêu Cầu Đặt Biệt:</v-flex>
+                                <v-flex md7>{{bookingDialog.booking.request}}</v-flex>
                               </v-layout>
                             </v-flex>
                           </v-layout>
@@ -1040,38 +1041,38 @@
                       </v-layout>
                       <div>
                         <v-divider dark></v-divider>
-                        <span class="font-weight-black title">Cancellation Policy</span>
+                        <span class="font-weight-black title">Chính Sách Hủy</span>
                       </div>
                       <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
                         <span>{{bookingDialog.policy}}</span>
                       </v-layout>
                       <div>
                         <v-divider dark></v-divider>
-                        <span class="font-weight-black title">Price Details</span>
+                        <span class="font-weight-black title">Chi Tiết Giá</span>
                       </div>
                       <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
                         <v-flex md12>
                           <v-divider></v-divider>
                         </v-flex>
                         <v-flex md8>
-                          <span>{{bookingDialog.room.room_type.name}}&nbsp;{{bookingDialog.room.room_mode.name}}</span>
+                          <span>{{bookingDialog.room.room_type.name}}</span>
                         </v-flex>
                         <v-flex
                           md4
-                        >{{bookingDialog.room.price.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+                        >{{bookingDialog.room.price.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</v-flex>
                         <v-flex md8>
-                          <span>Amount</span>
+                          <span>Số Lượng Đặt</span>
                         </v-flex>
                         <v-flex md4>{{bookingDialog.room.bookingAmount}}</v-flex>
                         <v-flex md12>
                           <v-divider></v-divider>
                         </v-flex>
                         <v-flex md8>
-                          <span>Total price</span>
+                          <span>Tổng Giá</span>
                         </v-flex>
                         <v-flex
                           md4
-                        >{{bookingDialog.totalPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+                        >{{bookingDialog.totalPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</v-flex>
                       </v-layout>
                     </v-flex>
                   </v-window-item>
@@ -1080,11 +1081,11 @@
                   <v-layout row wrap class="pa-5 ma-0" align-center>
                     <v-flex md12 class="ma-0 pa-0">
                       <span class="red--text">
-                        By clicking this button, you acknowledge that you have read and agree to Website's Terms &amp; Conditions and Privacy Policy.
+                        Nhấn chọn thực hiện hành động sau, bạn đã trực tiếp đồng ý các điều khoản và chích sách liên quan.
                         <v-checkbox
                           v-show="bookingDialog.step === 3"
                           v-model="bookingDialog.accept"
-                          label="I do agree to term."
+                          label="Tôi đồng ý."
                           color="teal"
                         ></v-checkbox>
                       </span>
@@ -1099,7 +1100,7 @@
                           :disabled="bookingDialog.step === 1"
                           @click="backBookingStep(bookingDialog.step)"
                         >
-                          <i class="fa-lg fas fa-long-arrow-alt-left"></i>&nbsp;back
+                          <i class="fa-lg fas fa-long-arrow-alt-left"></i>&nbsp;quay lại
                         </v-btn>
                       </div>
                     </v-flex>
@@ -1113,7 +1114,7 @@
                           v-show="bookingDialog.step !== 3"
                           @click="nextBookingStep(bookingDialog.step)"
                         >
-                          next&nbsp;
+                          tiếp theo&nbsp;
                           <i class="fa-lg fas fa-long-arrow-alt-right"></i>
                         </v-btn>
                         <v-btn
@@ -1124,7 +1125,7 @@
                           depressed
                           v-show="bookingDialog.step === 3"
                         >
-                          <h1>booking</h1>
+                          <h1>thực hiện đặt</h1>
                         </v-btn>
                       </div>
                     </v-flex>
@@ -1163,11 +1164,11 @@
     <v-dialog scrollable v-model="action.dialog" width="500px" persistent>
       <v-card flat tile light height="470px">
         <v-card-actions>
-          <span class="ml-5 font-weight-bold title">Question form</span>
+          <span class="ml-5 font-weight-bold title">Thực Hiện Đặt Câu Hỏi</span>
           <v-spacer></v-spacer>
           <div class="mr-3">
-            <v-btn color="teal" depressed class="white--text" @click="sendQuestion">send</v-btn>
-            <v-btn color="red" depressed class="white--text" @click="action.dialog = false">close</v-btn>
+            <v-btn color="teal" depressed class="white--text" @click="sendQuestion">Gửi</v-btn>
+            <v-btn color="red" depressed class="white--text" @click="action.dialog = false">Đóng</v-btn>
           </div>
         </v-card-actions>
         <v-divider class="pa-0 ma-0"></v-divider>
@@ -1216,7 +1217,7 @@
                       outline
                       clearable
                       clear-icon="cancel"
-                      label="Title"
+                      label="Nhập tiêu đề tại đây..."
                     ></v-text-field>
                   </v-flex>
                   <v-flex md12>
@@ -1231,7 +1232,7 @@
                       clear-icon="cancel"
                       auto-grow
                       rows="4"
-                      label="Content"
+                      label="Nhập nội dung tại đây..."
                     ></v-textarea>
                   </v-flex>
                 </v-layout>
@@ -1240,7 +1241,7 @@
             <v-card-text>
               <span
                 class="caption font-italic grey--text"
-              >It may take a few day that the Hotel answer your question...</span>
+              >Sẽ mất một khoảng thời gian để nhà cung cấp trả lời câu hỏi của bạn...</span>
             </v-card-text>
           </v-card>
         </v-card-title>
@@ -1325,6 +1326,7 @@ export default {
           price: 1,
           service: {},
           fearure: {},
+          image: 'default.png',
           room_bed_type: {},
           room_type: {
             name: ""
@@ -1335,26 +1337,26 @@ export default {
         },
         dictionary: {
           attributes: {
-            email: "Email Address"
+            email: "Dường như đây hông phải là một địa chỉ Email"
           },
           custom: {
             name: {
-              required: () => "Contact name can not be empty"
+              required: () => "Tên liên hẹe không được bỏ trống"
             },
             email: {
-              required: () => "Contact email can not be empty"
+              required: () => "Eemail liên hệ không được bỏ trống"
             },
             phone: {
-              required: () => "Contact phone-number can not be empty"
+              required: () => "Số điện thoại không được bỏ trống"
             },
             address: {
-              required: () => "Contact address can not be empty"
+              required: () => "Nơi cư trú không được bỏ trống"
             },
             title: {
-              required: () => "Title can not be empty"
+              required: () => "Tiêu đề không được bỏ trống"
             },
             content: {
-              required: () => "Content can not be empty"
+              required: () => "Nội dung không được bỏ trống"
             }
           }
         }
@@ -1407,10 +1409,14 @@ export default {
     } else {
       this.setSearchValue();
     }
+<<<<<<< Updated upstream
 <<<<<<< HEAD
     this.getHotelRooms();
 =======
 >>>>>>> master
+=======
+    this.getHotelRooms();
+>>>>>>> Stashed changes
     this.load();
   },
   watch: {
@@ -1425,11 +1431,11 @@ export default {
             this.bookingDialog.couponCode.check = true;
             this.bookingDialog.couponCode.id = c.id;
             this.bookingDialog.couponCode.mess =
-              "You got " + c.discount_value + "% for discount.";
+              "Bạn nhận được " + c.discount_value + "% giảm giá.";
           }
         });
         if (this.bookingDialog.couponCode.check == false) {
-          this.bookingDialog.couponCode.mess = "Wrong code! Try again?!";
+          this.bookingDialog.couponCode.mess = "Mã không chính xác hoặc không tồn tại! Thử lại?!";
         }
       }
     },
@@ -1450,7 +1456,9 @@ export default {
     loginCheck: "load",
     placeVal: "loadSearchData",
     checkInVal: "loadSearchData",
-    checkOutVal: "loadSearchData"
+    checkIn: "setSearchValue",
+    checkOutVal: "loadSearchData",
+    checkOut: "setSearchValue",
   },
   methods: {
     load: function() {
@@ -1476,6 +1484,10 @@ export default {
             }
           });
       } else {
+<<<<<<< Updated upstream
+=======
+        this.getHotelDetail();
+>>>>>>> Stashed changes
         this.$emit("loadLogin");
         this.userLogin = {};        
       }
@@ -1535,7 +1547,9 @@ export default {
       this.$emit("loadSearchData", {
         place: this.placeVal,
         checkIn: this.checkInVal,
-        checkOut: this.checkOutVal
+        checkInFormatted: this.checkInFormattedVal,
+        checkOut: this.checkOutVal,
+        checkOutFormatted: this.checkOutFormattedVal
       });
     },
     setSearchValue: function() {
@@ -1552,6 +1566,7 @@ export default {
     },
     openDialog: function(room) {
       this.bookingDialog.room = room;
+      this.bookingDialog.room.image = room.image;
       this.bookingDialog.state = true;
       this.bookingDialog.accept = false;
       this.bookingDialog.totalPrice = room.bookingAmount * room.price;
@@ -1561,7 +1576,7 @@ export default {
       this.bookingDialog.couponCode.mess = "";
       this.bookingDialog.couponCode.id = 0;
       this.paymentMethods.forEach(element => {
-        if (element.name == "Offline") this.bookingDialog.payment = element.id;
+        if (element.id == 1) this.bookingDialog.payment = element.id;
         // console.log(element.name);
       });
       if (this.login.check) {
@@ -1689,11 +1704,11 @@ export default {
           })
             .then(res => {
               if (res.data.status == true) {
-                this.$emit("loadSnackbar", "Successfully!");
+                // this.$emit("loadSnackbar", "Successfully!");
                 this.$validator.reset();
               } else {
                 flag = false;
-                this.$emit("loadSnackbar", "Something wrong!");
+                this.$emit("loadSnackbar", "Rất tiếc, thực hiện không thành công!");
               }
             })
             .catch(error => {
@@ -1705,7 +1720,7 @@ export default {
                 this.action.dialog = false;
                 return;
               }
-              this.$emit("loadSnackbar", "Something wrong!");
+              this.$emit("loadSnackbar", "Rất tiếc, thực hiện không thành công!");
               return;
             });
           this.action.dialog = false;
@@ -1734,7 +1749,7 @@ export default {
         })
           .then(res => {
             console.log(res.data.data);
-            this.$emit("loadSnackbar", "Following " + value.name);
+            this.$emit("loadSnackbar", "Đang theo dõi " + value.name);
           })
           .catch(error => {
             flag = false;
@@ -1761,7 +1776,7 @@ export default {
         })
           .then(res => {
             console.log(res.data.data);
-            this.$emit("loadSnackbar", "Unfollowing " + value.name);
+            this.$emit("loadSnackbar", "Hủy theo dõi " + value.name);
             flag = true;
           })
           .catch(error => {
@@ -1803,7 +1818,11 @@ export default {
         .then(res => {
           if (res.data.status == false) {
             flag = false;
+<<<<<<< Updated upstream
             this.$emit("loadSnackbar", "Something wrong!");
+=======
+            this.$emit("loadSnackbar", "Rất tiếc, thực hiện không thành công!");
+>>>>>>> Stashed changes
           }
         })
         .catch(error => {
@@ -1835,7 +1854,7 @@ export default {
 
 <style scoped>
 .detail-container {
-  margin-top: 39px !important;
+  margin-top: 35px !important;
 }
 .v-tooltip__content {
   opacity: 1 !important;

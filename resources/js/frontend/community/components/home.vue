@@ -8,13 +8,13 @@
               <template v-slot:activator="{ on }">
                 <v-icon small color="white" v-on="on" class="pointer">lock_open</v-icon>
               </template>
-              <span>Open comment</span>
+              <span>Bình luận</span>
             </v-tooltip>
             <v-tooltip top v-else>
               <template v-slot:activator="{ on }">
                 <v-icon small color="black" v-on="on" class="pointer">lock</v-icon>
               </template>
-              <span>Lock comment</span>
+              <span>Khóa bình luận</span>
             </v-tooltip>
           </template>
           <v-card light min-height="120px" class="pa-1" flat tile width="800px">
@@ -23,7 +23,7 @@
                 <v-avatar size="70px" color="white">
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
-                      <img :src="r.customer.avatar.image_link" v-on="on" />
+                      <img :src="'/img/user/'+r.customer.avatar.image_link" v-on="on" />
                     </template>
                     <span>{{r.customer.name }}</span>
                   </v-tooltip>
@@ -107,7 +107,7 @@
                     v-else
                   >chat_bubble</v-icon>
                 </template>
-                <span>comment</span>
+                <span>bình luận</span>
               </v-tooltip>
               <span class="grey--text subheading">{{r.comments}}</span>
             </v-card-actions>
@@ -125,7 +125,7 @@
                 <v-card-title>
                   <v-avatar size="42px" color="black" flat>
                     <v-avatar size="40px" flat color="white">
-                      <img :src="c.customer.avatar.image_link" />
+                      <img :src="'/img/user/'+c.customer.avatar.image_link" />
                     </v-avatar>
                   </v-avatar>
                   <span class="pl-3">{{c.customer.name}}</span>
@@ -149,7 +149,7 @@
                         auto-grow
                         rows="2"
                         color="teal"
-                        label="New comment"
+                        label="Nhập bình luận mới tại đây..."
                         clear-icon="$vuetify.icons.clear"
                         clearable
                       ></v-textarea>
@@ -158,7 +158,7 @@
                   <v-flex>
                     <v-card-actions>
                       <v-btn round large depressed :disabled="comment.length ===0" color="teal" class="white--text" @click="sendComment(r.id)">
-                        <span>Send</span>
+                        <span>Gửi</span>
                       </v-btn>
                     </v-card-actions>
                   </v-flex>
@@ -367,12 +367,11 @@
             <v-icon>expand_more</v-icon>
           </template>
           <template v-slot:header>
-            <div class="title my-3 text-uppercase">top 5 hotels</div>
+            <div class="title my-3 text-uppercase">Nhà cung cấp nổi bật</div>
           </template>
           <v-list two-line subheader>
             <v-subheader inset class="ma-0 caption">
-              based on &nbsp;
-              <span class="font-weight-bold">system recommend</span>
+              <span class="font-weight-bold">gợi ý từ hệ thống</span>
             </v-subheader>
             <v-divider class="ma-0"></v-divider>
             <v-list-tile v-for="(item,i) in top5Hotel" :key="i" v-on:click=";">
@@ -392,7 +391,7 @@
                       >{{item.hotel.name}}</router-link>
                     </v-list-tile-title>
                     <v-list-tile-sub-title v-on="on">
-                      <v-icon small color="pink">room</v-icon>&nbsp; tp Ho Chi Minh
+                      <v-icon small color="pink">room</v-icon>&nbsp;{{item.hotel.address}}
                     </v-list-tile-sub-title>
                   </template>
                   <v-badge overlap left color="red">
@@ -425,11 +424,11 @@
                   v-if="!item.follow"
                 >
                   <i class="fas fa-plus mx-2"></i>
-                  <span class="caption mr-1">follow</span>
+                  <span class="caption mr-1">theo dõi</span>
                 </v-btn>
                 <v-btn round depressed color="teal" v-on:click="unfollowHotel(item.hotel,i)" v-else>
                   <i class="fas fa-check mx-2 white--text"></i>
-                  <span class="white--text caption mr-1">following</span>
+                  <span class="white--text caption mr-1">hủy theo dõi</span>
                 </v-btn>
               </v-list-tile-action>
             </v-list-tile>
@@ -440,12 +439,11 @@
             <v-icon>expand_more</v-icon>
           </template>
           <template v-slot:header>
-            <div class="title my-3 text-uppercase">top 5 users</div>
+            <div class="title my-3 text-uppercase">người dùng nổi bật</div>
           </template>
           <v-list two-line subheader>
             <v-subheader inset class="ma-0 caption">
-              based on &nbsp;
-              <span class="font-weight-bold">system recommend</span>
+              <span class="font-weight-bold">gợi ý từ hệ thống</span>
             </v-subheader>
             <v-divider class="ma-0"></v-divider>
             <v-list-tile v-for="(item,i) in top5User" :key="i" v-on:click=";">
@@ -453,7 +451,7 @@
                 <v-avatar size="52px" flat color="black">
                   <router-link :to="{name:'user',params:{id:item.user.id}}">
                     <v-avatar size="50px" flat color="white">
-                      <img :src="item.avatar.image_link" alt />
+                      <img :src="'/img/user/'+item.avatar.image_link" alt />
                     </v-avatar>
                   </router-link>
                 </v-avatar>
@@ -473,11 +471,11 @@
                   v-if="!item.follow"
                 >
                   <i class="fas fa-plus mx-2"></i>
-                  <span class="caption mr-1">follow</span>
+                  <span class="caption mr-1">theo dõi</span>
                 </v-btn>
                 <v-btn round depressed color="teal" v-on:click="unfollowUser(item.user,i)" v-else>
                   <i class="fas fa-check mx-2 white--text"></i>
-                  <span class="white--text caption mr-1">following</span>
+                  <span class="white--text caption mr-1">hủy theo dõi</span>
                 </v-btn>
               </v-list-tile-action>
             </v-list-tile>
@@ -782,7 +780,7 @@ export default {
         this.getFeeds();
         this.getTop5User();
         this.getTop5Hotel();
-        this.oops = "Oops! Today has nothing...";
+        this.oops = "Hôm nay chẳng có gì...";
       }
     },
     getFeeds: function() {
@@ -853,9 +851,15 @@ export default {
           console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
+<<<<<<< Updated upstream
             this.$emit("loadSnackbar", "Something wrong!");
           }
           this.$emit("loadSnackbar", "Following " + value.name);
+=======
+            this.$emit("loadSnackbar", "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?");
+          }
+          // this.$emit("loadSnackbar", "Following " + value.name);
+>>>>>>> Stashed changes
         })
         .catch(error => {
           flag = false;
@@ -889,9 +893,15 @@ export default {
           console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
+<<<<<<< Updated upstream
             this.$emit("loadSnackbar", "Something wrong!");
           }
           this.$emit("loadSnackbar", "Unfollowing " + value.name);
+=======
+            this.$emit("loadSnackbar", "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?");
+          }
+          // this.$emit("loadSnackbar", "Unfollowing " + value.name);
+>>>>>>> Stashed changes
         })
         .catch(error => {
           flag = false;
@@ -925,9 +935,15 @@ export default {
           console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
+<<<<<<< Updated upstream
             this.$emit("loadSnackbar", "Something wrong!");
           }
           this.$emit("loadSnackbar", "Following " + value.name);
+=======
+            this.$emit("loadSnackbar", "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?");
+          }
+          // this.$emit("loadSnackbar", "Following " + value.name);
+>>>>>>> Stashed changes
         })
         .catch(error => {
           flag = false;
@@ -961,9 +977,15 @@ export default {
           console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
+<<<<<<< Updated upstream
             this.$emit("loadSnackbar", "Something wrong!");
           }
           this.$emit("loadSnackbar", "Unfollowing " + value.name);
+=======
+            this.$emit("loadSnackbar", "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?");
+          }
+          // this.$emit("loadSnackbar", "Unfollowing " + value.name);
+>>>>>>> Stashed changes
         })
         .catch(error => {
           flag = false;
@@ -977,6 +999,7 @@ export default {
         if(!flag){
           this.top5Hotel[index].follow = true;
         }
+<<<<<<< Updated upstream
     },
     getIndex(id) {
       var index = -1;
@@ -986,6 +1009,8 @@ export default {
         });
       }
       return index;
+=======
+>>>>>>> Stashed changes
     },
 <<<<<<< HEAD
 =======
@@ -1024,7 +1049,7 @@ export default {
             this.comment.content = "";
             this.comment.review_id = 0;
           } else {
-            this.$emit("loadSnackbar", "Something wrong!");
+            this.$emit("loadSnackbar", "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?");
           }
         })
         .catch(error => {

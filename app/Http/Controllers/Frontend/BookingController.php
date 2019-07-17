@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Models\RoomImage;
 use App\Models\Room;
 use Auth;
 use JWTAuth;
@@ -18,7 +19,20 @@ class BookingController extends Controller
 {
     //get booking
     public function index()
-    { }
+    { 
+        $user = Auth::user();
+        $bookingList = $user->bookingList();
+        if(sizeOf($bookingList) == 0){
+            return response()->json([
+                'status' => false,
+                'data' => $bookingList
+            ]);
+        }
+        return response()->json([
+            'status' => true,
+            'data' => $bookingList
+        ]);
+    }
 
     //get booking/create
     public function create()
@@ -78,9 +92,15 @@ class BookingController extends Controller
                 $booking->Status;
                 $booking->cancel_status = $booking->Hotel()->CancelableStatus();;
                 $booking->PaymentMethod;
-                $booking->Room->RoomMode;
-                $booking->Room->RoomType;
-                $booking->Room->Hotel->HotelType;
+                $hotel = $booking->Room->Hotel;      
+                $booking->room->room_mode = $booking->Room->RoomMode;
+                $booking->room->room_type = $booking->Room->RoomType;
+                $temp = array();
+                $temp['id'] = $hotel->id; 
+                $temp['name'] = $hotel->name; 
+                $temp['type'] = $hotel->HotelType->name; 
+                $booking->room->hotel = $temp; 
+                $booking->room->image = RoomImage::where('room_id',$booking->room->id)->where('is_primary',1)->first()->image_link;
             }
         } else return response()->json(['status' => $status, 'mess' => $validateData->errors()]);
         return response()->json(['status' => $status, 'mess' => $mess, 'booking' => $booking]);

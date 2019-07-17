@@ -9,7 +9,7 @@
               <template v-slot:activator="{ on }">
                 <v-avatar size="70px" tile flat color="white" v-on="on">
                   <router-link style="width:70px" :to="{name:'account'}">
-                    <img :src="user.avatar.image_link" :alt="user.name" />
+                    <img :src="'/img/user/'+user.avatar.image_link" :alt="user.name" />
                   </router-link>
                 </v-avatar>
               </template>
@@ -27,7 +27,7 @@
               <v-icon :color="drawer.iconColor">{{drawer.communityIcon}}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title :class="textClass.black">Community</v-list-tile-title>
+              <v-list-tile-title :class="textClass.black">Cộng Đồng</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </template>
@@ -38,7 +38,7 @@
               <v-icon :color="drawer.iconColor">{{drawer.accountIcon}}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title :class="textClass.black">Account</v-list-tile-title>
+              <v-list-tile-title :class="textClass.black">Tài Khoản</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </template>
@@ -49,7 +49,7 @@
               <v-icon :color="drawer.iconColor">{{drawer.logoutIcon}}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title :class="textClass.black">Logout</v-list-tile-title>
+              <v-list-tile-title :class="textClass.black">Đăng Xuất</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </template>
@@ -61,32 +61,26 @@
               <p :class="textClass.teal">Copyright &copy;{{year}} | All rights reserved</p>
             </v-flex>
             <v-flex shrink md3>
-              <a href="http://localhost:8000/" target="_blank" :class="textClass.grey">Website</a>
+              <a href="http://localhost:8000/" target="_blank" :class="textClass.grey">Trang Chủ</a>
               <br />
               <a
                 href="http://localhost:8000/policies.html"
                 target="_blank"
                 :class="textClass.grey"
-              >Policies</a>
+              >Chính Sách</a>
               <br />
               <a
                 href="http://localhost:8000/about.html"
                 target="_blank"
                 :class="textClass.grey"
-              >About us</a>
+              >Về Chúng Tôi</a>
             </v-flex>
             <v-flex shrink md3>
-              <a
-                href="http://localhost:8000/hotel.html"
-                target="_blank"
-                :class="textClass.grey"
-              >Our Hotels</a>
-              <br />
               <a
                 href="http://localhost:8000/contact.html"
                 target="_blank"
                 :class="textClass.grey"
-              >Contact</a>
+              >Liên Hệ</a>
             </v-flex>
             <v-spacer></v-spacer>
           </v-layout>
@@ -151,7 +145,7 @@
     </v-navigation-drawer>
     <v-toolbar :color="drawer.color" app fixed clipped-right clipped-left flat>
       <v-toolbar-side-icon v-on:click="drawer.state = !drawer.state" class="teal accent-4"></v-toolbar-side-icon>
-      <a class="title ml-3 mr-5 white--text text-uppercase" href="/" target="_blank">website</a>
+      <a class="title ml-3 mr-5 white--text text-uppercase" href="/" target="_blank">Trang Chủ</a>
       <v-text-field
         solo
         label="who's you want to find?"
@@ -222,13 +216,13 @@
               <v-icon large color="#9980FA">fas fa-circle-notch fa-spin</v-icon>
             </div>
             <div>
-              <span class="font-weight-black red--text">l</span>
-              <span class="font-weight-black orange--text">o</span>
-              <span class="font-weight-black amber--text">a</span>
-              <span class="font-weight-black green--text">d</span>
-              <span class="font-weight-black blue--text">i</span>
-              <span class="font-weight-black indigo--text">n</span>
-              <span class="font-weight-black purple--text">g</span>
+              <span class="font-weight-black red--text">đ</span>
+              <span class="font-weight-black orange--text">a</span>
+              <span class="font-weight-black amber--text">n</span>
+              <span class="font-weight-black green--text">g</span>
+              <span class="font-weight-black blue--text">&nbsp;t</span>
+              <span class="font-weight-black indigo--text">ả</span>
+              <span class="font-weight-black purple--text">i</span>
               <span class="font-weight-black teal--text">.</span>
               <span class="font-weight-black teal--text">.</span>
               <span class="font-weight-black teal--text">.</span>
@@ -247,14 +241,14 @@
                   <v-layout fill-height justify-center align-center>
                     <div>
                       <div>
-                        <a href="/" target="_blank" class="body-1">Website</a>
+                        <a href="/" target="_blank" class="body-1">Trang Chủ</a>
                       </div>
                       <div class="ml-1 pl-3 border-left border-dark">
                         <div>
-                          <a href="/about.html" target="_blank" class="caption">About Us</a>
+                          <a href="/about.html" target="_blank" class="caption">Về Chúng Tôi</a>
                         </div>
                         <div>
-                          <a href="/contact.html" target="_blank" class="caption">Contact Us</a>
+                          <a href="/contact.html" target="_blank" class="caption">Liên Hệ</a>
                         </div>
                       </div>
                     </div>
@@ -281,7 +275,7 @@
                     type="password"
                     outline
                     v-model="login.password"
-                    label="Password"
+                    label="Mật khẩu"
                     append-icon="visibility"
                     v-on:click:append="login.value=true"
                     v-if="!login.value"
@@ -294,13 +288,13 @@
                     type="text"
                     outline
                     v-model="login.password"
-                    label="Password"
+                    label="Mật khẩu"
                     append-icon="visibility_off"
                     v-on:click:append="login.value=false"
                     v-else
                   ></v-text-field>
-                  <v-btn color="teal" v-on:click="submitLogin" dark depressed>Login</v-btn>
-                  <v-btn color="grey" v-on:click="clear" dark depressed>Clear</v-btn>
+                  <v-btn color="teal" v-on:click="submitLogin" dark depressed>Đăng Nhập</v-btn>
+                  <v-btn color="grey" v-on:click="clear" dark depressed>Xóa</v-btn>
                 </v-form>
               </v-flex>
             </v-layout>
@@ -322,11 +316,11 @@ export default {
       dictionary: {
         custom: {
           username: {
-            required: () => "Username can not be empty",
-            min: "Username can not be under 4 characters"
+            required: () => "Username không được bỏ trống",
+            min: "Username phải nhiều hơn 3 ký tự"
           },
           password: {
-            min: "Password can not be under 4 characters"
+            min: "Password phải nhiều hơn 3 ký tự"
           }
         }
       },
@@ -478,14 +472,14 @@ export default {
           })
             .then(res => {
               if (!res.data.status) {
-                this.eventSnackbar("Something wrong!");
+                this.eventSnackbar("Rất tiếc, thực hiện không thành công!");
                 this.login.check = false;
                 this.login.password = "";
                 this.$validator.reset();
                 return;
               }
               localStorage.login_token = res.data.token;
-              this.eventSnackbar("Login successfully!");
+              // this.eventSnackbar("Login successfully!");
               this.login.dialog = false;
               this.flag = true;
               this.login.check = true;

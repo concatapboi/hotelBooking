@@ -236,7 +236,7 @@ class HotelController extends Controller
             ->whereNotIn("image_link", $temp)
             ->delete();
         // for ($i = 0; $i < $length; $i++) {
-        //     //hi`nh cu~
+        //     //hình cũ
         //     if (strpos($images[$i]["image_link"], 'data:image') === false) {
         //         $explode = explode("/", $images[$i]["image_link"]);
         //         $imageName = ($explode[5]);
@@ -247,7 +247,7 @@ class HotelController extends Controller
         //     ->whereNotIn("image_link", $temp)
         //     ->delete();
         // for ($i = 0; $i < $length; $i++) {
-        //     //hi`nh mo´i
+        //     //hình mới
         //     if (strpos($images[$i]["image_link"], 'data:image') !== false) {
         //         $name = time() . str_random(10);
         //         $image = Image::make($images[$i]["image_link"])
@@ -424,28 +424,37 @@ class HotelController extends Controller
         }])->get();
         $data = [];
         foreach ($hotel as $h) {
-            if($h->ward->district->province->id == 1){
-                $data[] = new HotelResource($h);
+            if ($h->ward->district->province->id == 1) {
+                $data[] = $h;
             }
         }
         //-------
-        $data = $this->filterByDate($data, $checkIn, $checkOut, $roomTypes);
+        // $data = $this->filterByDate($data, $checkIn, $checkOut, $roomTypes);
 
-        if (is_array($districts) && sizeOf($districts) > 0) {
-            $data = $this->filterByDistrict($data, $districts);
-        }
-        if (is_array($stars) && sizeOf($stars) > 0) {
-            $data = $this->filterByStar($data, $stars);
-        }
+        // if (is_array($districts) && sizeOf($districts) > 0) {
+        //     $data = $this->filterByDistrict($data, $districts);
+        // }
 
-        if (is_array($services) && sizeOf($services) > 0) {
-            $data = $this->filterByService($data, $services);
-        }
-        if (is_array($hotelTypes) && sizeOf($hotelTypes) > 0) {
-            $data = $this->filterByHotelType($data, $hotelTypes);
-        }
-        if (is_array($price) && sizeOf($price) > 0) {
-            $data = $this->filterByPrice($data, $price);
+        // if (is_array($stars) && sizeOf($stars) > 0) {
+        //     $data = $this->filterByStar($data, $stars);
+        // }
+
+        // if (is_array($services) && sizeOf($services) > 0) {
+        //     $data = $this->filterByService($data, $services);
+        // }
+        // if (is_array($hotelTypes) && sizeOf($hotelTypes) > 0) {
+        //     $data = $this->filterByHotelType($data, $hotelTypes);
+        // }
+        // if (is_array($price) && sizeOf($price) > 0) {
+        //     $data = $this->filterByPrice($data, $price);
+        // }
+        // if (is_array($roomTypes) && sizeOf($roomTypes) > 0) {
+        //     $data = $this->filterByRoomType($data, $roomTypes);
+        // }
+        // $data = $this->filterByRankPoint($data);
+        $temp = array();
+        foreach ($data as $h) {
+            $temp[] =  new HotelResource($h);
         }
         $data = $this->filterByRankPoint($data);
         return response()->json([
@@ -499,8 +508,8 @@ class HotelController extends Controller
         $temp = [];
         foreach ($array as $hotel) {
             foreach ($districts as $district) {
-                if ($hotel->Ward->District->id == $district) {
-                    $temp[] = new HotelResource($hotel);
+                if ($hotel->Ward->district->id == $district) {
+                    $temp[] = $hotel;
                 }
             }
         }
@@ -575,6 +584,19 @@ class HotelController extends Controller
         $collection = collect($array);
         $data = $collection->whereIn("hotel_type_id", $hotelTypes)->all();
         return $data;
+    }
+    public function filterByRoomType($array, $roomTypes)
+    {
+        $data = array();
+        foreach ($array as $hotel) {
+            $temp = $hotel;
+            if ($hotel->countRoomByTypes($roomTypes) > 0) {
+                $temp->count = $hotel->countRoomByTypes($roomTypes);
+                $data[] = $temp;
+            }
+        }
+        $data = collect($data)->sortByDesc('count');
+        return $data->values();
     }
     public function filterByPrice($array, $price)
     {

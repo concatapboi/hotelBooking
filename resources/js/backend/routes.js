@@ -8,6 +8,8 @@ import room from '@/js/backend/components/room';
 import room_facility from '@/js/backend/components/room-facility';
 import service from '@/js/backend/components/service';
 import order from '@/js/backend/components/order';
+import question from '@/js/backend/components/question';
+import couponCode from '@/js/backend/components/coupon-code';
 
 Vue.use(VueRouter);
 
@@ -28,6 +30,16 @@ const router = new VueRouter({
             path: '/manager/room',
             name: 'room',
             component: room,
+        },
+        {
+            path: '/manager/question',
+            name: 'question',
+            component: question,
+        },
+        {
+            path: '/manager/coupon-code',
+            name: 'coupon-code',
+            component: couponCode,
         },
         {
             path: '/manager/room-facility',

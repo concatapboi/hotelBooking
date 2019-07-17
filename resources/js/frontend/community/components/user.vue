@@ -8,7 +8,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-avatar size="90px" tile flat color="white" v-on="on">
-                  <img :src="data.avatar.image_link" alt />
+                  <img :src="'/img/user/'+data.avatar.image_link" alt />
                 </v-avatar>
               </template>
               <span>{{data.name}}</span>
@@ -26,7 +26,7 @@
               v-if="!data.follow"
               v-on:click="followUser(data)"
             >
-              <i class="fas fa-plus"></i> &nbsp;follow
+              <i class="fas fa-plus"></i> &nbsp;theo dõi
             </v-btn>
             <v-btn
               round
@@ -37,7 +37,7 @@
               v-else
               v-on:click="unfollowUser(data)"
             >
-              <i class="fas fa-check"></i>&nbsp;following
+              <i class="fas fa-check"></i>&nbsp;đang theo dõi
             </v-btn>
           </v-flex>
         </v-layout>
@@ -50,13 +50,13 @@
                 <template v-slot:activator="{ on }">
                   <v-icon small color="white" v-on="on" class="pointer">lock_open</v-icon>
                 </template>
-                <span>Open comment</span>
+                <span>Bình luận</span>
               </v-tooltip>
               <v-tooltip top v-else>
                 <template v-slot:activator="{ on }">
                   <v-icon small color="black" v-on="on" class="pointer">lock</v-icon>
                 </template>
-                <span>Lock comment</span>
+                <span>Khóa bình luận</span>
               </v-tooltip>
             </template>
             <v-card light min-height="120px" class="pa-1" flat tile width="800px">
@@ -137,7 +137,7 @@
                       v-else
                     >chat_bubble</v-icon>
                   </template>
-                  <span>comment</span>
+                  <span>bình luận</span>
                 </v-tooltip>
                 <span class="grey--text subheading">{{item.comments}}</span>
               </v-card-actions>
@@ -155,7 +155,7 @@
                   <v-card-title>
                     <v-avatar size="42px" color="black" flat>
                       <v-avatar size="40px" flat color="white">
-                        <img :src="value.customer.avatar.image_link" />
+                        <img :src="'/img/user/'+value.customer.avatar.image_link" />
                       </v-avatar>
                     </v-avatar>
                     <span class="pl-3">{{value.customer.name}}</span>
@@ -188,7 +188,7 @@
                           auto-grow
                           rows="2"
                           color="teal"
-                          label="New comment"
+                          label="Nhập bình luận mới tại đây..."
                           clear-icon="$vuetify.icons.clear"
                           clearable
                         ></v-textarea>
@@ -204,7 +204,7 @@
                           color="teal"
                           @click="sendComment(item.id)"
                         >
-                          <span>Send</span>
+                          <span>Gửi</span>
                         </v-btn>
                       </v-card-actions>
                     </v-flex>
@@ -216,7 +216,7 @@
         </v-layout>
       </div>
       <div v-else class="mx-3 pa-4 text-md-center border">
-        <span class="text-uppercase">no reviews yet</span>
+        <span class="text-uppercase">không có bài đánh giá nào...</span>
       </div>
     </v-flex>
     <v-flex shrink md4>
@@ -227,7 +227,7 @@
           </template>
           <template v-slot:header>
             <div class="title my-3 text-uppercase font-weight-black">
-              <v-icon color="black">assignment_ind</v-icon>&nbsp;profile
+              <v-icon color="black">assignment_ind</v-icon>&nbsp;thông tin tài khoản
             </div>
           </template>
           <v-divider class="ma-0 pa-0"></v-divider>
@@ -248,7 +248,7 @@
                 <i class="fas fa-signature orange--text fa-lg"></i>
               </v-flex>
               <v-flex md3>
-                <span class="font-weight-black">Name:</span>
+                <span class="font-weight-black">Họ Tên:</span>
               </v-flex>
               <v-flex md8 class="pl-2">
                 <span class="font-weight-black">{{data.name}}</span>
@@ -270,7 +270,7 @@
                 <i class="fas fa-phone green--text fa-lg"></i>
               </v-flex>
               <v-flex md3>
-                <span class="font-weight-black">Phone number:</span>
+                <span class="font-weight-black">Số điện thoại:</span>
               </v-flex>
               <v-flex md8 class="pl-2">
                 <span class="font-weight-black">{{data.phone_number}}</span>
@@ -281,7 +281,7 @@
                 <i class="fab fa-creative-commons-nd blue--text fa-lg"></i>
               </v-flex>
               <v-flex md3>
-                <span class="font-weight-black">Coin:</span>
+                <span class="font-weight-black">Điểm:</span>
               </v-flex>
               <v-flex md8 class="pl-2">
                 <span class="font-weight-black">{{data.customer.coin}}</span>
@@ -292,7 +292,7 @@
                 <i class="fas fa-home indigo--text fa-lg"></i>
               </v-flex>
               <v-flex md3>
-                <span class="font-weight-black">Address:</span>
+                <span class="font-weight-black">Địa chỉ:</span>
               </v-flex>
               <v-flex md8 class="pl-2">
                 <span class="font-weight-black">{{data.customer.address}}</span>
@@ -306,7 +306,7 @@
           </template>
           <template v-slot:header>
             <div class="title my-3 text-uppercase font-weight-black">
-              <v-icon color="black">group</v-icon>&nbsp;following &amp; followers
+              <v-icon color="black">group</v-icon>&nbsp;đang theo dõi &amp; người theo dõi
             </div>
           </template>
           <v-btn
@@ -316,7 +316,7 @@
             v-on:click="followDialog = true"
             v-show="data.customerFollowings.length + data.hotelFollowings.length >0 || data.followers.length>0"
           >
-            <v-icon small>notes</v-icon>&nbsp;see all
+            <v-icon small>notes</v-icon>&nbsp;xem tất cả
           </v-btn>
           <v-tabs
             centered
@@ -327,17 +327,17 @@
             v-show="data.customerFollowings.length + data.hotelFollowings.length >0 || data.followers.length>0"
           >
             <v-tabs-slider color="black"></v-tabs-slider>
-            <v-tab href="#tab-1">followers ({{data.followers.length}})</v-tab>
+            <v-tab href="#tab-1">Người Theo Dõi ({{data.followers.length}})</v-tab>
             <v-tab
               href="#tab-2"
-            >following ({{data.customerFollowings.length + data.hotelFollowings.length}})</v-tab>
+            >Đang Theo Dõi ({{data.customerFollowings.length + data.hotelFollowings.length}})</v-tab>
             <v-tab-item value="tab-1">
               <v-card light flat v-for="(item,i) in data.followers" :key="i" v-show="i<4">
                 <v-card-title>
                   <router-link :to="{name:'user',params:{id:item.follower.id}}">
                     <v-avatar size="52px" flat color="black">
                       <v-avatar size="50px" flat color="white">
-                        <img :src="item.avatar.image_link" :alt="item.follower.name" />
+                        <img :src="'/img/user/'+item.avatar.image_link" :alt="item.follower.name" />
                       </v-avatar>
                     </v-avatar>
                     <span class="pl-3 font-weight-bold">{{item.follower.name}}</span>
@@ -352,7 +352,7 @@
                   <router-link :to="{name:'user',params:{id:item.followed.id}}">
                     <v-avatar size="52px" flat color="black">
                       <v-avatar size="50px" flat color="white">
-                        <img :src="item.avatar.image_link" :alt="item.followed.name" />
+                        <img :src="'/img/user/'+item.avatar.image_link" :alt="item.followed.name" />
                       </v-avatar>
                     </v-avatar>
                     <span class="pl-3 font-weight-bold">{{item.followed.name}}</span>
@@ -369,14 +369,14 @@
       <v-card flat tile light height="400px">
         <v-card-text>
           <v-btn depressed color="red" dark v-on:click="followDialog = false">
-            <span class="text-uppercase">cancel</span>
+            <span class="text-uppercase">Hủy</span>
           </v-btn>
           <v-tabs grow color="grey lighten-2" light class="ma-1">
             <v-tabs-slider color="black"></v-tabs-slider>
-            <v-tab href="#tab-1">followers ({{data.followers.length}})</v-tab>
+            <v-tab href="#tab-1">Người Theo Dõi ({{data.followers.length}})</v-tab>
             <v-tab
               href="#tab-2"
-            >following ({{data.customerFollowings.length + data.hotelFollowings.length}})</v-tab>
+            >Đang Theo Dõi ({{data.customerFollowings.length + data.hotelFollowings.length}})</v-tab>
             <v-tab-item value="tab-1">
               <v-card light flat width="100%" height="260px" style="overflow:auto">
                 <v-layout v-for="(item,i) in data.followers" :key="i">
@@ -384,7 +384,7 @@
                     <router-link :to="{name:'user',params:{id:item.follower.id}}">
                       <v-avatar size="52px" flat color="black">
                         <v-avatar size="50px" flat color="white">
-                          <img :src="item.avatar.image_link" :alt="item.follower.name" />
+                          <img :src="'/img/user/'+item.avatar.image_link" :alt="item.follower.name" />
                         </v-avatar>
                       </v-avatar>
                     </router-link>
@@ -421,7 +421,7 @@
                   <v-card-title style="width:100%">
                     <v-avatar size="52px" flat color="black">
                       <v-avatar size="50px" flat color="white">
-                        <img :src="item.avatar.image_link" :alt="item.followed.name" />
+                        <img :src="'/img/user/'+item.avatar.image_link" :alt="item.followed.name" />
                       </v-avatar>
                     </v-avatar>
                     <v-spacer></v-spacer>
@@ -588,9 +588,9 @@ export default {
           console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
-            this.$emit("loadSnackbar", "Something wrong!");
+            this.$emit("loadSnackbar", "Xảy ra lỗi, thử lại?");
           }
-          this.$emit("loadSnackbar", "Following " + value.name);
+          // this.$emit("loadSnackbar", "Following " + value.name);
           this.getData();
         })
         .catch(error => {
@@ -619,9 +619,9 @@ export default {
           console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
-            this.$emit("loadSnackbar", "Something wrong!");
+            this.$emit("loadSnackbar", "Đã xảy ra lỗi, thử lại?");
           }
-          this.$emit("loadSnackbar", "Unfollowing " + value.name);
+          // this.$emit("loadSnackbar", "Unfollowing " + value.name);
           this.getData();
         })
         .catch(error => {
@@ -666,7 +666,7 @@ export default {
             this.comment.content = "";
             this.comment.review_id = 0;
           } else {
-            this.$emit("loadSnackbar", "Something wrong!");
+            this.$emit("loadSnackbar", "Đã xảy ra lỗi, thử lại?");
           }
         })
         .catch(error => {
