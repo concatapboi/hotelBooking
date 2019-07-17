@@ -372,7 +372,7 @@
                       <v-layout>
                         <v-flex md4>
                           <span height="200px" v-for="(image,index) in r.images" :key="index">
-                            <v-img v-if="image.is_primary == 1" dark :src="'localhost:8000'+image.image_link"></v-img>
+                            <v-img v-if="image.is_primary == 1" dark :src="image.image_link"></v-img>
                           </span>
                         </v-flex>
                         <v-flex md8 class="m-5 mt-2">

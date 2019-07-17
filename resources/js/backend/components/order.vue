@@ -1,191 +1,329 @@
 <template>
   <div>
-    <v-data-table :headers="headers" :items="bookingList" class="elevation-1">
-      <template v-slot:items="booking" class="setHeight">
-        <td class="text-xs-center">{{booking.item.id}}</td>
-        <td class="text-xs-center">{{booking.item.room_name}}</td>
-        <td class="text-xs-center">{{booking.item.check_in}}</td>
-        <td class="text-xs-center">{{booking.item.check_out}}</td>
-        <td class="text-xs-center">{{booking.item.room_price * booking.item.room_amount}} $</td>
-        <td class="text-xs-center">
-          <!-- <v-btn round color="warning" :ripple="false" depressed small></v-btn> -->
-          <span v-if="booking.item.status_id == 1">
-            <v-chip disabled color="warning" text-color="white">{{booking.item.status}}</v-chip>
+    <template>
+      <v-dialog max-width="40%" v-model="dialogFilter">
+        <v-card width="100%">
+          <span v-if="filterId == true">
+            <v-card-title>
+              <h5>Filter by Id :</h5>
+            </v-card-title>
+            <v-card-text>
+              <v-form ref="formFilterById">
+                <v-text-field
+                  v-model="arrayIdtoFilter"
+                  hint="Type in order id to find.(ex: 1,2,3)"
+                  v-validate="{ required: true, regex: '^[0-9,;]+$'}"
+                  :error-messages="errors.collect('idList')"
+                  data-vv-name="idList"
+                  outline
+                ></v-text-field>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn round depressed color="primary" @click="filterById">Filter</v-btn>
+            </v-card-actions>
           </span>
-          <span v-else-if="booking.item.status_id == 2">
-            <v-chip disabled color="blue" text-color="white">{{booking.item.status}}</v-chip>
-          </span>
-          <span v-else-if="booking.item.status_id == 3">
-            <v-chip disabled color="red" text-color="white">{{booking.item.status}}</v-chip>
-          </span>
-          <span v-else-if="booking.item.status_id == 4">
-            <v-chip disabled color="success" text-color="white">{{booking.item.status}}</v-chip>
-          </span>
-          <span v-else-if="booking.item.status_id == 5">
-            <v-chip disabled color="red" text-color="white">{{booking.item.status}}</v-chip>
-          </span>
-          <span v-else-if="booking.item.status_id == 6">
-            <v-chip disabled color="red" text-color="white">{{booking.item.status}}</v-chip>
-          </span>
-        </td>
-        <td class="text-xs-center action-width">
-          <div>
-            <v-layout row wrap justify-center>
-              <v-flex md12>
-                <v-dialog v-model="dialog" max-width="80%">
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      round
-                      color="primary"
-                      small
-                      depressed
-                      v-on="on"
-                      @click="ShowDetailBooking(booking.item)"
-                    >detail</v-btn>
-                  </template>
-                  <v-card>
-                    <v-card-text>
-                      <v-layout>
-                        <v-flex md19 class="m-3">
-                          <h3>Order #{{detailBooking.id}}</h3>
-                        </v-flex>
-                        <v-flex md3>
-                          <b>Status :</b>
-                          <span v-if="detailBooking.status_id == 1">
-                            <v-chip outline disabled text-color="warning">
-                              <b>{{detailBooking.status}}</b>
-                            </v-chip>
-                          </span>
-                          <span v-else-if="detailBooking.status_id == 2">
-                            <v-chip outline disabled text-color="blue">
-                              <b>{{detailBooking.status}}</b>
-                            </v-chip>
-                          </span>
-                          <span v-else-if="detailBooking.status_id == 3">
-                            <v-chip outline disabled text-color="red">
-                              <b>{{detailBooking.status}}</b>
-                            </v-chip>
-                          </span>
-                          <span v-else-if="detailBooking.status_id == 4">
-                            <v-chip outline disabled text-color="success">
-                              <b>{{detailBooking.status}}</b>
-                            </v-chip>
-                          </span>
-                          <span v-else-if="detailBooking.status_id == 5">
-                            <v-chip outline disabled text-color="red">
-                              <b>{{detailBooking.status}}</b>
-                            </v-chip>
-                          </span>
-                          <span v-else-if="detailBooking.status_id == 6">
-                            <v-chip outline disabled text-color="red">
-                              <b>{{detailBooking.status}}</b>
-                            </v-chip>
-                          </span>
-                        </v-flex>
-                      </v-layout>
+          <span v-else-if="filterDate == true">
+            <v-card-title>
+              <h5>Filter by Date :</h5>
+            </v-card-title>
 
-                      <h5>Customer's info</h5>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>
-                          <b>Name</b>
-                        </v-flex>
-                        <v-flex md9>: {{detailBooking.contact_name}}</v-flex>
-                      </v-layout>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>
-                          <b>Email</b>
-                        </v-flex>
-                        <v-flex md9>: {{detailBooking.contact_email}}</v-flex>
-                      </v-layout>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>
-                          <b>Phone</b>
-                        </v-flex>
-                        <v-flex md9>: {{detailBooking.contact_phone}}</v-flex>
-                      </v-layout>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>
-                          <b>Address</b>
-                        </v-flex>
-                        <v-flex md9>: {{detailBooking.contact_address}}</v-flex>
-                      </v-layout>
-                      <v-layout v-if="detailBooking.special_request != null" row wrap>
-                        <v-flex md2 offset-md1>
-                          <b>Special request</b>
-                        </v-flex>
-                        <v-flex md9>: {{detailBooking.special_request}}</v-flex>
-                      </v-layout>
-                      <v-divider></v-divider>
-                      <h5>Booking's Detail</h5>
-                      <v-layout>
-                        <v-flex md4 class>
-                          <span v-for="(image,index) in detailBooking.room_images" :key="index">
-                            <v-img
-                              height="200px"
-                              v-if="image.is_primary == 1"
-                              dark
-                              :src="'http://localhost:8000/images/room/'+image.image_link"
-                            ></v-img>
-                          </span>
-                        </v-flex>
-                        <v-flex md8 class="mt-3">
-                          <v-layout row wrap class="mb-3">
-                            <v-flex md2 offset-md1>
-                              <b>Check in</b>
+            <v-card-text>
+              <v-form ref="formFilterByDate">
+                <v-layout row>
+                  <v-flex>
+                    <v-menu
+                      ref="menuCheckin"
+                      v-model="menuCheckin"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      :return-value.sync="checkin"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          v-model="checkin"
+                          label="From"
+                          prepend-icon="event"
+                          required
+                          readonly
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="checkin" no-title scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn flat color="primary" @click="menuCheckin = false">Cancel</v-btn>
+                        <v-btn
+                          flat
+                          color="primary"
+                          @click="$refs.menuCheckin.save(checkin);minDate = checkin;"
+                        >OK</v-btn>
+                      </v-date-picker>
+                    </v-menu>
+                  </v-flex>
+                  <v-flex>
+                    <v-menu
+                      ref="menuCheckout"
+                      v-model="menuCheckout"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      :return-value.sync="checkout"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          v-model="checkout"
+                          label="From"
+                          prepend-icon="event"
+                          readonly
+                          required
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="checkout" :min="minDate" no-title scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn flat color="primary" @click="menuCheckout = false">Cancel</v-btn>
+                        <v-btn flat color="primary" @click="$refs.menuCheckout.save(checkout)">OK</v-btn>
+                      </v-date-picker>
+                    </v-menu>
+                  </v-flex>
+                </v-layout>
+              </v-form>
+              <v-layout row>
+                <v-spacer></v-spacer>
+                <v-btn round depressed color="primary" @click="filterByDate">Filter</v-btn>
+              </v-layout>
+            </v-card-text>
+          </span>
+        </v-card>
+        <!-- <v-card > -->
+
+        <!-- <v-card> -->
+      </v-dialog>
+      <v-card>
+        <v-card-title>
+          <v-spacer></v-spacer>
+          <v-menu v-if="filterDate == false && filterId == false" offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn color="primary" class="elevation-0" round dark v-on="on">Action</v-btn>
+            </template>
+            <v-list>
+              <v-list-tile>
+                <v-list-tile-title @click="openFilterById">Filter by Id</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-title @click="openFilterByDate">Filter by Date</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+            <!-- <v-text-field v-model="search" hint="insert Id"></v-text-field> -->
+          </v-menu>
+          <v-btn
+            v-else
+            color="primary"
+            class="elevation-0"
+            round
+            dark
+            @click="resetBookingList"
+          >Reset</v-btn>
+        </v-card-title>
+        <v-data-table :search="search" :headers="headers" :items="bookingList" class="elevation-1">
+          <template v-slot:items="booking" class="setHeight">
+            <td class="text-xs-center">{{booking.item.id}}</td>
+            <td class="text-xs-center">{{booking.item.room_name}}</td>
+            <td class="text-xs-center">{{booking.item.check_in}}</td>
+            <td class="text-xs-center">{{booking.item.check_out}}</td>
+            <td class="text-xs-center">{{booking.item.room_price * booking.item.room_amount}} $</td>
+            <td class="text-xs-center">
+              <!-- <v-btn round color="warning" :ripple="false" depressed small></v-btn> -->
+              <span v-if="booking.item.status_id == 1">
+                <v-chip disabled color="warning" text-color="white">{{booking.item.status}}</v-chip>
+              </span>
+              <span v-else-if="booking.item.status_id == 2">
+                <v-chip disabled color="blue" text-color="white">{{booking.item.status}}</v-chip>
+              </span>
+              <span v-else-if="booking.item.status_id == 3">
+                <v-chip disabled color="red" text-color="white">{{booking.item.status}}</v-chip>
+              </span>
+              <span v-else-if="booking.item.status_id == 4">
+                <v-chip disabled color="success" text-color="white">{{booking.item.status}}</v-chip>
+              </span>
+              <span v-else-if="booking.item.status_id == 5">
+                <v-chip disabled color="red" text-color="white">{{booking.item.status}}</v-chip>
+              </span>
+              <span v-else-if="booking.item.status_id == 6">
+                <v-chip disabled color="red" text-color="white">{{booking.item.status}}</v-chip>
+              </span>
+              <span v-else-if="booking.item.status_id == 7">
+                <v-chip disabled color="grey" text-color="white">{{booking.item.status}}</v-chip>
+              </span>
+            </td>
+            <td class="text-xs-center action-width">
+              <div>
+                <v-layout row wrap justify-center>
+                  <v-flex md12>
+                    <v-dialog v-model="dialog" max-width="80%">
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          round
+                          color="primary"
+                          small
+                          depressed
+                          v-on="on"
+                          @click="ShowDetailBooking(booking.item)"
+                        >detail</v-btn>
+                      </template>
+                      <v-card>
+                        <v-card-text>
+                          <v-layout>
+                            <v-flex md19 class="m-3">
+                              <h3>Order #{{detailBooking.id}}</h3>
                             </v-flex>
                             <v-flex md3>
-                              :
-                              <span class="title ml-3">{{detailBooking.check_in}}</span>
+                              <b>Status :</b>
+                              <span v-if="detailBooking.status_id == 1">
+                                <v-chip outline disabled text-color="warning">
+                                  <b>{{detailBooking.status}}</b>
+                                </v-chip>
+                              </span>
+                              <span v-else-if="detailBooking.status_id == 2">
+                                <v-chip outline disabled text-color="blue">
+                                  <b>{{detailBooking.status}}</b>
+                                </v-chip>
+                              </span>
+                              <span v-else-if="detailBooking.status_id == 3">
+                                <v-chip outline disabled text-color="red">
+                                  <b>{{detailBooking.status}}</b>
+                                </v-chip>
+                              </span>
+                              <span v-else-if="detailBooking.status_id == 4">
+                                <v-chip outline disabled text-color="success">
+                                  <b>{{detailBooking.status}}</b>
+                                </v-chip>
+                              </span>
+                              <span v-else-if="detailBooking.status_id == 5">
+                                <v-chip outline disabled text-color="red">
+                                  <b>{{detailBooking.status}}</b>
+                                </v-chip>
+                              </span>
+                              <span v-else-if="detailBooking.status_id == 6">
+                                <v-chip outline disabled text-color="red">
+                                  <b>{{detailBooking.status}}</b>
+                                </v-chip>
+                              </span>
                             </v-flex>
+                          </v-layout>
+
+                          <h5>Customer's info</h5>
+                          <v-layout row wrap>
                             <v-flex md2 offset-md1>
-                              <b>Check out</b>
+                              <b>Name</b>
                             </v-flex>
-                            <v-flex md3>
-                              :
-                              <span class="title ml-3">{{detailBooking.check_out}}</span>
-                            </v-flex>
+                            <v-flex md9>: {{detailBooking.contact_name}}</v-flex>
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex md2 offset-md1>
-                              <b>Room name</b>
+                              <b>Email</b>
                             </v-flex>
-                            <v-flex md9>: {{detailBooking.room_name}}</v-flex>
+                            <v-flex md9>: {{detailBooking.contact_email}}</v-flex>
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex md2 offset-md1>
-                              <b>Room price</b>
+                              <b>Phone</b>
                             </v-flex>
-                            <v-flex md9>: {{detailBooking.room_price}} $</v-flex>
+                            <v-flex md9>: {{detailBooking.contact_phone}}</v-flex>
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex md2 offset-md1>
-                              <b>Room amount</b>
+                              <b>Address</b>
                             </v-flex>
-                            <v-flex md9>: {{detailBooking.room_amount}}</v-flex>
+                            <v-flex md9>: {{detailBooking.contact_address}}</v-flex>
                           </v-layout>
-                          <!-- <v-layout row wrap>
+                          <v-layout v-if="detailBooking.special_request != null" row wrap>
+                            <v-flex md2 offset-md1>
+                              <b>Special request</b>
+                            </v-flex>
+                            <v-flex md9>: {{detailBooking.special_request}}</v-flex>
+                          </v-layout>
+                          <v-divider></v-divider>
+                          <h5>Booking's Detail</h5>
+                          <v-layout>
+                            <v-flex md4 class>
+                              <span v-for="(image,index) in detailBooking.room_images" :key="index">
+                                <v-img
+                                  height="200px"
+                                  v-if="image.is_primary == 1"
+                                  dark
+                                  :src="'http://localhost:8000/images/room/'+image.image_link"
+                                ></v-img>
+                              </span>
+                            </v-flex>
+                            <v-flex md8 class="mt-3">
+                              <v-layout row wrap class="mb-3">
+                                <v-flex md2 offset-md1>
+                                  <b>Check in</b>
+                                </v-flex>
+                                <v-flex md3>
+                                  :
+                                  <span class="title ml-3">{{detailBooking.check_in}}</span>
+                                </v-flex>
+                                <v-flex md2 offset-md1>
+                                  <b>Check out</b>
+                                </v-flex>
+                                <v-flex md3>
+                                  :
+                                  <span class="title ml-3">{{detailBooking.check_out}}</span>
+                                </v-flex>
+                              </v-layout>
+                              <v-layout row wrap>
+                                <v-flex md2 offset-md1>
+                                  <b>Room name</b>
+                                </v-flex>
+                                <v-flex md9>: {{detailBooking.room_name}}</v-flex>
+                              </v-layout>
+                              <v-layout row wrap>
+                                <v-flex md2 offset-md1>
+                                  <b>Room price</b>
+                                </v-flex>
+                                <v-flex md9>: {{detailBooking.room_price}} $</v-flex>
+                              </v-layout>
+                              <v-layout row wrap>
+                                <v-flex md2 offset-md1>
+                                  <b>Room amount</b>
+                                </v-flex>
+                                <v-flex md9>: {{detailBooking.room_amount}}</v-flex>
+                              </v-layout>
+                              <!-- <v-layout row wrap>
                             <v-flex md2 offset-md1>check in</v-flex>
                             <v-flex md9>{{detailBooking.check_in}}</v-flex>
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex md2 offset-md1>check out</v-flex>
                             <v-flex md9>{{detailBooking.check_out}}</v-flex>
-                          </v-layout>-->
-                          <v-layout row wrap>
-                            <v-flex md2 offset-md1>
-                              <b>room Id</b>
+                              </v-layout>-->
+                              <v-layout row wrap>
+                                <v-flex md2 offset-md1>
+                                  <b>room Id</b>
+                                </v-flex>
+                                <v-flex md9>: {{detailBooking.room_id}}</v-flex>
+                              </v-layout>
+                              <v-layout row wrap>
+                                <v-flex md2 offset-md1>
+                                  <b>Payment method</b>
+                                </v-flex>
+                                <v-flex md9>: {{detailBooking.payment_method}}</v-flex>
+                              </v-layout>
                             </v-flex>
-                            <v-flex md9>: {{detailBooking.room_id}}</v-flex>
                           </v-layout>
-                          <v-layout row wrap>
-                            <v-flex md2 offset-md1>
-                              <b>Payment method</b>
-                            </v-flex>
-                            <v-flex md9>: {{detailBooking.payment_method}}</v-flex>
-                          </v-layout>
-                        </v-flex>
-                      </v-layout>
-                      <!-- <v-layout row wrap>
+                          <!-- <v-layout row wrap>
                         <v-flex md2 offset-md1>Room name</v-flex>
                         <v-flex md9>{{detailBooking.room_name}}</v-flex>
                       </v-layout>
@@ -212,9 +350,9 @@
                       <v-layout row wrap>
                         <v-flex md2 offset-md1>Payment method</v-flex>
                         <v-flex md9>{{detailBooking.payment_method}}</v-flex>
-                      </v-layout>-->
-                      <v-divider></v-divider>
-                      <!-- {{detailBooking.hotel_name}}
+                          </v-layout>-->
+                          <v-divider></v-divider>
+                          <!-- {{detailBooking.hotel_name}}
                   {{detailBooking.room_name}}
                   {{detailBooking.room_price}}
                   {{detailBooking.room_amount}}
@@ -223,70 +361,73 @@
                   {{detailBooking.room_id}}
                   {{detailBooking.customer_id}}
                   {{detailBooking.status_id}}
-                      {{detailBooking.payment_method}}-->
-                    </v-card-text>
-                  </v-card>
-                </v-dialog>
-              </v-flex>
-              <span row wrap v-if="booking.item.status_id == 1">
-                <v-flex md12>
-                  <v-btn
-                    round
-                    depressed
-                    small
-                    color="success"
-                    @click="acceptBooking(booking.item)"
-                  >accept</v-btn>
-                </v-flex>
-                <v-flex md12>
-                  <v-btn
-                    round
-                    depressed
-                    small
-                    color="error"
-                    @click="declineBooking(booking.item)"
-                  >decline</v-btn>
-                </v-flex>
-              </span>
-              <span v-else-if="booking.item.status_id == 2">
-                <v-flex md12>
-                  <v-btn
-                    round
-                    depressed
-                    small
-                    color="blue"
-                    class="white--text"
-                    @click="confirmBooking(booking.item)"
-                  >Confirm payment</v-btn>
-                </v-flex>
-                <v-flex md12>
-                  <v-btn
-                    round
-                    depressed
-                    small
-                    color="red"
-                    class="white--text"
-                    @click="showConfirmDialog(booking.item)"
-                  >cancel</v-btn>
-                </v-flex>
-              </span>
-              <span v-else-if="booking.item.status_id == 4">
-                <v-flex md12>
-                  <v-btn
-                    round
-                    depressed
-                    small
-                    color="red"
-                    class="white--text"
-                    @click="showConfirmDialog(booking.item)"
-                  >cancel</v-btn>
-                </v-flex>
-              </span>
-            </v-layout>
-          </div>
-        </td>
-      </template>
-    </v-data-table>
+                          {{detailBooking.payment_method}}-->
+                        </v-card-text>
+                      </v-card>
+                    </v-dialog>
+                  </v-flex>
+                  <span row wrap v-if="booking.item.status_id == 1">
+                    <v-flex md12>
+                      <v-btn
+                        round
+                        depressed
+                        small
+                        color="success"
+                        @click="acceptBooking(booking.item)"
+                      >accept</v-btn>
+                    </v-flex>
+                    <v-flex md12>
+                      <v-btn
+                        round
+                        depressed
+                        small
+                        color="error"
+                        @click="declineBooking(booking.item)"
+                      >decline</v-btn>
+                    </v-flex>
+                  </span>
+                  <span v-else-if="booking.item.status_id == 2">
+                    <v-flex md12>
+                      <v-btn
+                        round
+                        depressed
+                        small
+                        color="blue"
+                        class="white--text"
+                        @click="confirmBooking(booking.item)"
+                      >Confirm payment</v-btn>
+                    </v-flex>
+                    <v-flex md12>
+                      <v-btn
+                        round
+                        depressed
+                        small
+                        color="red"
+                        class="white--text"
+                        @click="showConfirmDialog(booking.item)"
+                      >cancel</v-btn>
+                    </v-flex>
+                  </span>
+                  <span v-else-if="booking.item.status_id == 4">
+                    <v-flex md12>
+                      <v-btn
+                        round
+                        depressed
+                        small
+                        color="red"
+                        class="white--text"
+                        @click="showConfirmDialog(booking.item)"
+                      >cancel</v-btn>
+                    </v-flex>
+                  </span>
+                </v-layout>
+              </div>
+            </td>
+          </template>
+        </v-data-table>
+      </v-card>
+    </template>
+
     <v-dialog max-width="30%" v-model="confirmDialog">
       <v-card>
         <v-card-title>
@@ -321,6 +462,9 @@
 </template>
 <script>
 export default {
+  $_veeValidate: {
+    validator: "new"
+  },
   props: {
     api_token: {
       type: String
@@ -329,10 +473,15 @@ export default {
   data: function() {
     return {
       dialog: false,
+      menuCheckin: false,
+      menuCheckout: false,
+      checkin: null,
+      checkout: null,
       detailBooking: {},
       bookingList: [],
+      search: "",
       headers: [
-        { text: "Id", value: 0, sortable: false, align: "center" },
+        { text: "Id", value: "id", sortable: false, align: "center" },
         { text: "Room Name", value: 0, sortable: false, align: "center" },
         { text: "Check in", value: 0, sortable: false, align: "center" },
         { text: "Check out", value: 0, sortable: false, align: "center" },
@@ -345,12 +494,57 @@ export default {
       confirmDialogText: "",
       transferPercent: 0,
       transferAmount: 0,
-      cancelReminder: false
+      cancelReminder: false,
+      dialogFilter: false,
+      arrayIdtoFilter: null,
+      filterId: false,
+      filterDate: false,
+      dictionary: {
+        custom: {
+          idList: {
+            regex: "ex : 1,2,3"
+          }
+        }
+      },
+      temp: null,
+      flagFilterId: false,
+      flagFilterDate: false,
+      today: null,
+      minDate: null
     };
+  },
+  mounted() {
+    this.$validator.localize("en", this.dictionary);
   },
   created() {
     this.$emit("chooseHotel", this.hotelId);
     this.initialize();
+    if (this.$route.query.orderId != null) {
+      this.search = this.$route.query.orderId;
+    }
+    // var today = new Date();
+    // var dd = String(today.getDate()).padStart(2, "0");
+    // var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    // var yyyy = today.getFullYear();
+
+    // this.today = yyyy + "-" + mm + "-" + dd;
+    // console.log(this.today);
+  },
+  watch: {
+    dialogFilter: function() {
+      if (this.dialogFilter == false) {
+        if (this.flagFilterId == false) {
+          this.filterId = false;
+        } else {
+          this.filterId = true;
+        }
+        if (this.flagFilterDate == false) {
+          this.filterDate = false;
+        } else {
+          this.filterDate = true;
+        }
+      }
+    }
   },
   methods: {
     initialize: function() {
@@ -371,6 +565,7 @@ export default {
           }
           if (response.data.status == true) {
             this.bookingList = response.data.booking;
+            this.temp = response.data.booking;
           }
         })
         .catch(error => {
@@ -396,9 +591,9 @@ export default {
           if (response.status == 401) {
             this.logout;
           }
-          console.log(response);  
+          console.log(response);
           // booking = response.data.data;
-          // this.bookingList[index] = response.data.data; 
+          // this.bookingList[index] = response.data.data;
           this.bookingList = response.data.data;
         })
         .catch(error => {
@@ -495,6 +690,86 @@ export default {
         .catch(error => {
           console.log(error.response);
         });
+    },
+    openFilterById: function() {
+      this.filterId = true;
+      this.flagFilter = false;
+      this.dialogFilter = true;
+    },
+    openFilterByDate: function() {
+      // this.filterId = false;
+      this.filterDate = true;
+      this.flagFilter = false;
+      this.dialogFilter = true;
+    },
+    filterById: function() {
+      console.log(this.arrayIdtoFilter);
+      this.$validator
+        .validate()
+        .then(valid => {
+          if (!valid) {
+          } else {
+            axios({
+              method: "get",
+              url: "http://localhost:8000/api/manager/booking-filter-id",
+              headers: {
+                Authorization: "Bearer " + this.api_token
+              },
+              params: {
+                bookingIds: this.arrayIdtoFilter,
+                hotelId: this.hotelId
+              }
+            })
+              .then(response => {
+                console.log(response.data);
+                if (response.status == 401) {
+                  this.logout;
+                }
+                if (response.data.status == true) {
+                  this.bookingList = response.data.data;
+                  this.flagFilterId = true;
+                }
+              })
+              .catch(error => {
+                console.log(error.response);
+              });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    filterByDate: function() {
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/manager/booking-filter-date",
+        headers: {
+          Authorization: "Bearer " + this.api_token
+        },
+        params: {
+          checkin: this.checkin,
+          checkout: this.checkout,
+          hotelId: this.hotelId
+        }
+      })
+        .then(response => {
+          console.log(response.data);
+          if (response.status == 401) {
+            this.logout;
+          }
+          if (response.data.status == true) {
+            this.bookingList = response.data.data;
+            this.flagFilterDate = true;
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+    },
+    resetBookingList: function() {
+      this.filterId = false;
+      this.filterDate = false;
+      this.bookingList = this.temp;
     },
     logout: function() {
       axios({

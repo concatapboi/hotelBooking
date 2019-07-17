@@ -15,7 +15,7 @@ class HotelImageResource extends JsonResource
     public function toArray($request)
     {
         $arrayData = [
-            "image_link" => 'http://localhost:8000/images/hotel/'.$this->image_link,
+            "image_link" => asset('images/hotel/'.$this->image_link),
             "is_primary" => $this->is_primary,
             "id" => $this->id,
         ];

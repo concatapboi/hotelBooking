@@ -43,6 +43,8 @@ Route::group(['prefix' => '/manager'], function () {
         Route::resource('feature', 'Backend\FeatureController');
         Route::resource('booking', 'Backend\BookingController');
         Route::get('all-booking', 'Backend\BookingController@getBookingWithHotelId');
+        Route::get('booking-filter-id', 'Backend\BookingController@filterById');
+        Route::get('booking-filter-date', 'Backend\BookingController@filterByDate');
         Route::post('accept', 'Backend\BookingController@acceptBooking');
         Route::post('decline', 'Backend\BookingController@declineBooking');
         Route::post('confirm', 'Backend\BookingController@confirmBooking');

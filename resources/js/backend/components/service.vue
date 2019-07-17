@@ -173,7 +173,7 @@ export default {
             console.log(response);
           })
           .catch(error => {
-            console.log(error);
+            console.log(error.response);
           });
       } else {
         this.chooseSome(serviceId);
@@ -199,7 +199,7 @@ export default {
           });
     },
     chooseRoom: function(index,serviceId) {
-      this.chooseSome(serviceId);
+      // this.chooseSome(serviceId);
       axios({
           method: "post",
           url: "http://localhost:8000/api/manager/add-service-room",
@@ -216,7 +216,7 @@ export default {
             console.log(response);
           })
           .catch(error => {
-            console.log(error);
+            console.log(error.response);
           });
     },
     chooseSome: function(serviceId) {
@@ -235,7 +235,7 @@ export default {
             console.log(response);
           })
           .catch(error => {
-            console.log(error);
+            console.log(error.response);
           });
     }
   }

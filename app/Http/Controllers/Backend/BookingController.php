@@ -161,4 +161,50 @@ class BookingController extends Controller
             "data" => $booking->Hotel()->booking(),
         ]);
     }
+    public function filterById(Request $request)
+    {
+        $bookingIds = explode(",",$request->bookingIds);
+        $result = [];
+        $hotel = Hotel::find($request->hotelId)->BookingList($request->hotelId);
+        foreach($hotel as $h){
+            foreach($h->room as $room){
+                foreach($room->booking as $booking){
+                    // return $booking;
+                    if(in_array($booking->id , $bookingIds)){
+                        $result[] = new BookingResource($booking);
+                    }
+                }
+            }
+        }
+        return response()->json([
+            "status" => true,
+            "data" => $result,
+        ]);
+        
+
+    }
+    public function filterByDate(Request $request)
+    {
+        $checkin = new Carbon($request->checkin);
+        $checkout = new Carbon($request->checkout);
+        $result = [];
+        $hotel = Hotel::find($request->hotelId)->BookingList($request->hotelId);
+        foreach($hotel as $h){
+            foreach($h->room as $room){
+                foreach($room->booking as $booking){
+                    $bookingCheckin = new Carbon($booking->check_in);
+                    $bookingCheckout = new Carbon($booking->check_out);
+                    if($bookingCheckin->greaterThanOrEqualTo($checkin)){
+                        if($bookingCheckout->lessThanOrEqualTo($checkout)){
+                            $result[] = new BookingResource($booking);
+                        }
+                    }
+                }
+            }
+        }
+        return response()->json([
+            "status" => true,
+            "data" => $result,
+        ]);
+    }
 }

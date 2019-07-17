@@ -42,7 +42,7 @@
                     color="primary"
                     label="Some room modes"
                     value="some"
-                    @change="chooseSome(feature.feature.id)"
+                    @change="chooseSome(index,feature.feature.id)"
                   ></v-radio>
                 </v-radio-group>
                 <v-select
@@ -190,13 +190,15 @@ export default {
             console.log(error.response);
           });
       } else {
-        this.chooseSome(featureId);
+        this.chooseSome(index,featureId);
       }
     },
     chooseAll: function(index, featureId) {
+      console.log(index);
+      console.log(featureId);
       axios({
         method: "post",
-        url: "http://localhost:8000/api/manager/add-all-room",
+        url: "http://localhost:8000/api/manager/add-all-feature",
         data: {
           hotelId: this.hotelId,
           featureId: featureId
@@ -209,11 +211,10 @@ export default {
           console.log(response);
         })
         .catch(error => {
-          console.log(error);
+          console.log(error.response);
         });
     },
     chooseRoom: function(index, featureId) {
-      this.chooseSome(featureId);
       axios({
         method: "post",
         url: "http://localhost:8000/api/manager/add-feature-room",
@@ -230,10 +231,10 @@ export default {
           console.log(response);
         })
         .catch(error => {
-          console.log(error);
+          console.log(error.response);
         });
     },
-    chooseSome: function(featureId) {
+    chooseSome: function(index,featureId) {
       axios({
         method: "delete",
         url: "http://localhost:8000/api/manager/remove-feature-room",
@@ -247,6 +248,7 @@ export default {
       })
         .then(response => {
           console.log(response);
+          this.features[index].room.chosenRoom = null;
         })
         .catch(error => {
           console.log(error.response);

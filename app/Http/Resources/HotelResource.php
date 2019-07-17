@@ -7,6 +7,7 @@ use App\Http\Resources\HotelImageResource;
 use App\Http\Resources\PolicyResource;
 use App\Http\Resources\RoomResource;
 use App\Models\HotelImage;
+use App\Models\Policy;
 
 class HotelResource extends JsonResource
 {
@@ -22,7 +23,6 @@ class HotelResource extends JsonResource
         foreach($this->Image as $image){
             $arrayImage[] = new HotelImageResource($image);
         }
-        $roomTypesID = array();
         $arrayData = [
             "id" => $this->id,
             "name" => $this->name,
@@ -43,20 +43,9 @@ class HotelResource extends JsonResource
             "maxPrice" => $this->maxPrice(),
             "ward" => $this->ward_id,
             "child_age" => $this->child_age,
-            "image" => HotelImage::where('hotel_id',$this->id)->where('is_primary',1)->first()->image_link,           
+            // "image" => HotelImage::where('hotel_id',$this->id)->where('is_primary',1)->first()->image_link,
+            "policy" =>  new PolicyResource($this->Policy),
         ];
-        $policy = $this->Policy;
-        if($policy != null){
-            $arrayData["policy"] = new PolicyResource($policy);
-        }else{
-            $arrayData["policy"] = [
-                "check_in" => null,
-                "check_out" => null,
-                "cancel_day" => 0,
-                "refundRate" => 0,
-                "policyDetail" => "",
-            ];
-        }
         return $arrayData;
     }
 }

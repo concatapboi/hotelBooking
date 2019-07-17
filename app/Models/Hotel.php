@@ -117,7 +117,17 @@ class Hotel extends Model
 
   public function Service()
   {
-    return $this->hasMany('App\Models\ServiceRoomType', 'hotel_id', 'id');
+    // return $this->hasMany('App\Models\ServiceRoomType', 'hotel_id', 'id');
+    return $this->belongsToMany('App\Models\Service','service_room_type', 'service_id', 'hotel_id');
+  }
+  public function ServiceRoomType()
+  {
+    return $this->hasMany('App\Models\ServiceRoomType', 'service_id', 'id');
+  }
+  public function RoomType()
+  {
+    // return $this->hasMany('App\Models\ServiceRoomType', 'hotel_id', 'id');
+    return $this->belongsToMany('App\Models\RoomType','service_room_type', 'room_type_id', 'hotel_id');
   }
 
   public function maxPrice()
@@ -225,5 +235,11 @@ class Hotel extends Model
   public function Ward()
   {
     return $this->belongsTo('App\Models\Ward', 'ward_id', 'id');
+  }
+  public function BookingList($id)
+  {
+    return $this->where("id",$id)->with(["Room" => function($query){
+      $query->with("Booking");
+    }])->get();
   }
 }

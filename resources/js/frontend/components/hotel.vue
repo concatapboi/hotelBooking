@@ -1409,14 +1409,7 @@ export default {
     } else {
       this.setSearchValue();
     }
-<<<<<<< Updated upstream
-<<<<<<< HEAD
     this.getHotelRooms();
-=======
->>>>>>> master
-=======
-    this.getHotelRooms();
->>>>>>> Stashed changes
     this.load();
   },
   watch: {
@@ -1484,12 +1477,9 @@ export default {
             }
           });
       } else {
-<<<<<<< Updated upstream
-=======
-        this.getHotelDetail();
->>>>>>> Stashed changes
         this.$emit("loadLogin");
-        this.userLogin = {};        
+        this.userLogin = {};       
+        this.getHotelDetail(); 
       }
     },
     getHotelDetail: function() {
@@ -1818,11 +1808,9 @@ export default {
         .then(res => {
           if (res.data.status == false) {
             flag = false;
-<<<<<<< Updated upstream
-            this.$emit("loadSnackbar", "Something wrong!");
-=======
+
             this.$emit("loadSnackbar", "Rất tiếc, thực hiện không thành công!");
->>>>>>> Stashed changes
+
           }
         })
         .catch(error => {
