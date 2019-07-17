@@ -1,19 +1,19 @@
 <template>
   <v-layout row wrap>
     <v-flex shrink md12>
-      <v-img :aspect-ratio="16/5" src="/blog/img/slider/slider.png">
+      <v-img :aspect-ratio="16/4" src="/blog/img/slider/slider.png">
         <v-layout row wrap justify-center align-center fill-height>
           <v-flex md8 class="pa-1 black">
             <v-form ref="form">
               <v-layout row wrap class="search-form text-xs-center" align-center justify-center>
                 <v-flex md4 class="ma-4 text-xs-left">
-                  <span class="title">Place</span>
+                  <span class="title">Tỉnh/thành phố</span>
                   <v-text-field
                     color="teal"
                     outline
                     type="text"
                     v-model="placeVal"
-                    label="Where do you want to go"
+                    label="Bạn muốn đến đâu..."
                   ></v-text-field>
                 </v-flex>
                 <v-flex md2 class="ma-4 text-xs-left">

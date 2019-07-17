@@ -15,6 +15,8 @@ use Hash;
 use Session;
 use App\Models\CustomerReview;
 use App\Models\UserImage;
+use App\Models\HotelImage;
+use App\Http\Resources\HotelResource;
 
 class ReviewController extends Controller
 {
@@ -27,7 +29,7 @@ class ReviewController extends Controller
             foreach($user->reViewList() as $review){
                 $temp = $review;
                 $temp->customer = $user;
-                $temp->customer->avatar = UserImage::where('user_id',$user->id)->first();
+                $temp->customer->avatar = UserImage::where('user_id',$user->id)->where('is_primary', 1)->first();
                 $arr[] = $temp;
             }
             $followings = $user->Followings();
@@ -35,18 +37,41 @@ class ReviewController extends Controller
                 foreach($followings as $f){
                     foreach($f->followed->reViewList() as $review){
                         $temp = $review;
+                        $temp->isHotel = false;
                         $temp->customer = $f->followed;
-                        $temp->customer->avatar = UserImage::where('user_id',$f->followed->id)->first();
+                        $temp->customer->avatar = UserImage::where('user_id',$f->followed->id)->where('is_primary', 1)->first();
                         $arr[] = $temp;
                     }
                 }
             }
+            $tempArr = array();
+            $hotelFollowings = $user->HotelFollowings();
+            if(sizeOf($hotelFollowings)!=0){
+                foreach($hotelFollowings as $h){
+                    $h->Hotel->CouponCode;
+                    $h->hotel->isHotel = true;
+                    $h->hotel->image = HotelImage::where('hotel_id', $h->hotel->id)->where('is_primary', 1)->first()->image_link;
+                    $tempArr[] = $h->hotel;
+                }
+            }
         }
         return response()->json([
-            'data' => $arr,
+            'data' => $this->filterByRoomType([new HotelResource(Hotel::find(1)),new HotelResource(Hotel::find(2))],[4]),
         ]);
     }
-
+    public function filterByRoomType($array, $roomTypes)
+    {
+        $data = array();
+        foreach ($array as $hotel) {
+            $temp = $hotel;
+            if($hotel->countRoomByTypes($roomTypes) >0){ 
+                $temp->count = $hotel->countRoomByTypes($roomTypes);
+                $data[] = $temp;
+            }
+        }
+        $data = collect($data)->sortByDesc('count');
+        return $data->values();
+    }
     //get review/create
     public function create(Request $req)
     {
@@ -96,7 +121,7 @@ class ReviewController extends Controller
         ]);
         return response()->json([
             'status' => true,
-            'errors' => null,
+            'review' => $review,
         ]);
     }
 

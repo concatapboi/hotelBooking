@@ -22,7 +22,7 @@ class HotelResource extends JsonResource
         foreach($this->Image as $image){
             $arrayImage[] = new HotelImageResource($image);
         }
-        
+        $roomTypesID = array();
         $arrayData = [
             "id" => $this->id,
             "name" => $this->name,

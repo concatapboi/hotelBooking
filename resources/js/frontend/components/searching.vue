@@ -27,7 +27,7 @@
           </template>
           <v-date-picker light no-title scrollable v-model="checkInVal">
             <v-spacer></v-spacer>
-            <v-btn flat v-on:click="mn.menu2 = false">Cancel</v-btn>
+            <v-btn flat v-on:click="mn.menu2 = false">Hủy</v-btn>
             <v-btn flat v-on:click="$refs.checkIn.save(checkInVal)">OK</v-btn>
           </v-date-picker>
         </v-menu>
@@ -55,7 +55,7 @@
           </template>
           <v-date-picker light no-title scrollable v-model="checkOutVal">
             <v-spacer></v-spacer>
-            <v-btn flat @click="mn.menu1 = false">Cancel</v-btn>
+            <v-btn flat @click="mn.menu1 = false">Hủy</v-btn>
             <v-btn flat @click="$refs.checkOut.save(checkOutVal)">OK</v-btn>
           </v-date-picker>
         </v-menu>
@@ -77,7 +77,7 @@
           <v-card-text>
             <v-card flat>
               <v-card-title class="pa-0 ma-0">
-                <h5>Star rating</h5>
+                <h5>Tiêu chuẩn sao</h5>
                 {{starsSeleted}}
               </v-card-title>
               <v-card-text class="pa-0 ma-0">
@@ -110,7 +110,7 @@
 
             <v-card flat>
               <v-card-title class="pa-0 ma-0">
-                <h5>Service</h5>
+                <h5>Dịch vụ</h5>
                 {{serviceSeleted}}
               </v-card-title>
               <v-card-text class="pa-0 ma-0">
@@ -144,7 +144,7 @@
             <v-divider></v-divider>
             <v-card flat>
               <v-card-title class="pa-0 ma-0">
-                <h5>Price</h5>
+                <h5>Mức giá</h5>
                 <span>({{price[0].toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{price[1].toLocaleString('en-US', {style: 'currency',currency: 'USD',})}})</span>
               </v-card-title>
               <v-card-text class="pa-0 ma-0 mt-3">
@@ -167,7 +167,7 @@
             <v-divider></v-divider>
             <v-card v-if="noData == false" flat>
               <v-card-title>
-                <h5>Location</h5>
+                <h5>Vị trí</h5>
                 {{districtSeleted}}
               </v-card-title>
               <v-card-text class="pa-0 ma-0">
@@ -198,7 +198,7 @@
             <v-divider v-if="noData == false"></v-divider>
             <v-card flat>
               <v-card-title class="pa-0 ma-0">
-                <h5>Hotel Type</h5>
+                <h5>Loại hình chỗ ở</h5>
                 {{hotelTypeSeleted}}
               </v-card-title>
               <v-card-text class="pa-0 ma-0">
@@ -229,7 +229,7 @@
             <v-divider></v-divider>
             <v-card flat>
               <v-card-title class="pa-0 ma-0">
-                <h5>Room Type</h5>
+                <h5>Loại phòng</h5>
                 {{RoomTypeSeleted}}
               </v-card-title>
               <v-card-text class="pa-0 ma-0">
@@ -268,7 +268,7 @@
         </div>
         <div v-else>
 
-          <v-card v-if="noData == true" light flat tile>No Data found :'(</v-card>
+          <v-card v-if="noData == true" light flat tile>Không tìm thấy dữ liệu phù hợp :'(</v-card>
           <v-card v-else light flat tile>
             <v-layout class="search-item" v-for="(hotel,index) in data" :key="index">
               <v-flex xs3>
@@ -301,7 +301,7 @@
                                     v-show="hotel.verified!=0"
                                   ></i>
                                 </template>
-                                <span>verified</span>
+                                <span>đã kiểm chứng</span>
                               </v-tooltip>
                             </div>
                             <v-list-tile-title>{{hotel.description}}</v-list-tile-title>
@@ -310,9 +310,10 @@
                         <v-list-tile>
                           <div>
                             <div>
-                              Price:
+                              Mức giá:
                               <span>{{hotel.minPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
                             </div>
+                            <div v-if="hotel.count">Số Lượng Phòng: {{hotel.count}}</div>
                           </div>
                         </v-list-tile>
                       </v-list>

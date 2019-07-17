@@ -46,6 +46,24 @@
             <v-list-tile-title>{{items[3].title}}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
+        <v-list-tile class="style-link" :to="{name:'coupon-code',query :{hotelId : hotelId}}">
+          <v-list-tile-action>
+            <v-icon :color="items[4].color">{{items[4].icon}}</v-icon>
+          </v-list-tile-action>
+
+          <v-list-tile-content>
+            <v-list-tile-title>{{items[4].title}}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile class="style-link" :to="{name:'question',query :{hotelId : hotelId}}">
+          <v-list-tile-action>
+            <v-icon :color="items[5].color">{{items[5].icon}}</v-icon>
+          </v-list-tile-action>
+
+          <v-list-tile-content>
+            <v-list-tile-title>{{items[5].title}}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar color="#0e2737" app fixed clipped-left flat class="white--text">
@@ -118,10 +136,12 @@ export default {
     return {
       loaded: false,
       items: [
-        { icon: "home", title: "Home" },
-        { icon: "business", title: "Your Rooms" },
-        { icon: "grade", title: "Service" },
-        { icon: "grade", title: "Order" }
+        { icon: "home", color:"black",title: "Home" },
+        { icon: "business", color:"black", title: "Your Rooms" },
+        { icon: "grade", color:"black", title: "Service" },
+        { icon: "grade", color:"black", title: "Order" },
+        { icon: "monetization_on", color:"brown", title: "Khuyến Mãi" },
+        { icon: "message", color:"purple", title: "Khách hàng hỏi" },
       ],
       drawer: null,
       userID: 1,

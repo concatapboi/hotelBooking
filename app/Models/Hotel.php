@@ -41,12 +41,12 @@ class Hotel extends Model
   public function RoomMode()
   {
     $temp = [];
-    foreach($this->Room as $room){
+    foreach ($this->Room as $room) {
       $temp[] = $room->room_mode_id;
     }
     $roomMode = [];
     $roomModeIds = array_unique($temp);
-    foreach($roomModeIds as $roomModeId){
+    foreach ($roomModeIds as $roomModeId) {
       $roomMode[] = RoomMode::find($roomModeId);
     }
     return $roomMode;
@@ -89,7 +89,7 @@ class Hotel extends Model
       // $r->avatar = UserImage::where('user_id', $r->customer_id)->where('is_primary', 1)->first();
       if ($id != null) {
         $customerReview = $r->CustomerReview($id, $r->id);
-        if ($customerReview !=null && $customerReview->useful != 0) $r->useful = true;
+        if ($customerReview != null && $customerReview->useful != 0) $r->useful = true;
       }
     }
     return $reviews;
@@ -98,7 +98,7 @@ class Hotel extends Model
   public function questionList()
   {
     $question = Question::where('hotel_id', $this->id)->get();
-    foreach($question as $q){
+    foreach ($question as $q) {
       $q->customer = $q->Customer();
       $q->Reply;
     }
@@ -176,35 +176,49 @@ class Hotel extends Model
   }
   public function Policy()
   {
-    return $this->hasOne('App\Models\Policy','hotel_id','id');
+    return $this->hasOne('App\Models\Policy', 'hotel_id', 'id');
+  }
+  public function countRoomByTypes($roomTypesID)
+  {
+    $hotel = $this->where('id', $this->id)->with(['Room' => function ($query) {
+      $query = $query->with('RoomType');
+    }])->first();
+    // $data = collect($hotel->room)->groupBy('room_type_id');
+    // foreach($data->toArray() as $key => $value){
+    //   if(in_array($key,$roomTypesID)) $count++;
+    // }
+    $data = collect($hotel->room)->groupBy('room_type_id')->filter(function ($value, $key) use ($roomTypesID) {
+      if (in_array($key, $roomTypesID)) return $value;
+    });
+    return $data->count();
   }
 
   public function paymentMethods()
   {
     $policy = $this->Policy;
     $paymentMethods = array();
-    switch($policy->cancelable){
+    switch ($policy->cancelable) {
       case 0:
         $tempCase0 = array();
         $tempCase0['method'] = PaymentMethod::find(1);
-        $tempCase0['content'] ="Booking cannot be canceled.";
+        $tempCase0['content'] = 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng.';
         $paymentMethods[] = $tempCase0;
-      break;
+        break;
       default:
-      for($i =1;$i<=2;$i++){
-        $tempDefault = array();
-        $tempDefault['method'] = PaymentMethod::find($i);
-        $tempDefault['content'] ="Booking can be canceled before the check-in date ".$policy->cancelable." days";
-        if($i == 2){
-          if($policy->can_refund ==0){
-            $tempDefault['content'] ="Booking can be canceled, and has no refund.";
-          }else{
-            $tempDefault['content'] ="Booking can be canceled, and has ".$policy->can_refund."% back to you.";
+        for ($i = 1; $i <= 2; $i++) {
+          $tempDefault = array();
+          $tempDefault['method'] = PaymentMethod::find($i);
+          $tempDefault['content'] = 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In ' . $policy->cancelable . ' ngày.';
+          if ($i == 2) {
+            if ($policy->can_refund == 0) {
+              $tempDefault['content'] = $tempDefault['content'] . ' Tuy nhiên, bạn sẽ không được hoàn trả phía đã thanh toán.';
+            } else {
+              $tempDefault['content'] = $tempDefault['content'] . '  Chúng tôi chấp nhận hoàn trả ' . $policy->can_refund . '% các chi phí mà bạn đã thanh toán.';
+            }
           }
-        }        
-        $paymentMethods[] = $tempDefault;
-      }
-      break;
+          $paymentMethods[] = $tempDefault;
+        }
+        break;
     }
     return $paymentMethods;
   }

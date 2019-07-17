@@ -14,10 +14,13 @@ class DatabaseSeeder extends Seeder
         // $this->call(UsersTableSeeder::class);
 
         //có thể thay đổi
-        static $userNum = 25, $mnNum = 5, $adNum = 3, $hotelNum = 15;
+        static $userNum = 25, $mnNum = 5, $adNum = 3, $hotelNum = 15, $questionNum = 40;
 
         //không thể thay đổi
-        static $hotelType = 7, $roomMode = 4,  $roomType= 6, $bedType = 5, $roomService = 5, $feature = 8, $bookingStatus = 5, $paymentMethod = 2;
+        static $hotelType = 7, $roomMode = 4,  $roomType= 4, $bedType = 5, $roomService = 5, $feature = 8, $bookingStatus = 5, $paymentMethod = 2;
+
+        //Dữ liệu
+        static $userAddress = ['Long An','Hà Nội','Hồ Chí Minh','Quãng Ngải','Đà Nẵng','Cà Mau','Hải Phòng'];
 
         //User:
         factory(App\Models\User::class, $userNum)->create();
@@ -33,7 +36,7 @@ class DatabaseSeeder extends Seeder
             DB::table('customer')->insert([
                 'user_id' => $cus,
                 'coin' => rand(100, 100000),
-                'address' => 'Long An',
+                'address' => $userAddress[rand(0,6)],
             ]);
         }
 
@@ -43,12 +46,12 @@ class DatabaseSeeder extends Seeder
         //Hotel type: 7
         DB::table('hotel_type')->insert([
             'id' => 1,
-            'name' => 'Business Hotel',
+            'name' => 'Bình Dân',
             'meta_name' => 'business-hotel',
         ]);
         DB::table('hotel_type')->insert([
             'id' => 2,
-            'name' => 'Resort Hotel',
+            'name' => 'Khách Sạn Nghỉ Dưỡng',
             'meta_name' => 'resort-hotel',
         ]);
         DB::table('hotel_type')->insert([
@@ -58,12 +61,12 @@ class DatabaseSeeder extends Seeder
         ]);
         DB::table('hotel_type')->insert([
             'id' => 4,
-            'name' => 'Airport Hotel',
+            'name' => 'Khách Sạn Sân Bay',
             'meta_name' => 'airport-hotel',
         ]);
         DB::table('hotel_type')->insert([
             'id' => 5,
-            'name' => 'Mini Hotel',
+            'name' => 'Khách Sạn Thu Nhỏ',
             'meta_name' => 'mini-hotel',
         ]);
         DB::table('hotel_type')->insert([
@@ -73,14 +76,15 @@ class DatabaseSeeder extends Seeder
         ]);
         DB::table('hotel_type')->insert([
             'id' => 7,
-            'name' => 'Serviced Apartment',
+            'name' => 'Căn Hộ Dịch Vụ',
             'meta_name' => 'serviced-apartment',
         ]);
 
         //User image:
         for ($j = 1; $j <= $userNum; $j++) {
+            $img = rand(1,25);
             DB::table('user_image')->insert([
-                'image_link' => 'http://localhost:8000/img/dog2.png',
+                'image_link' => $img.'.png',
                 'name' => 'dog2',
                 'is_primary' => 1,
                 'user_id' => $j
@@ -89,81 +93,81 @@ class DatabaseSeeder extends Seeder
 
         //Room Mode: 4
         DB::table('room_mode')->insert([
-            'name' => 'Solo traveler',
+            'name' => 'Du Lịch Một Mình',
             'status' => 1,
         ]);
         DB::table('room_mode')->insert([
-            'name' => 'Couple/Pair',
+            'name' => 'Dành Cho Cặp Đôi',
             'status' => 1,
         ]);
         DB::table('room_mode')->insert([
-            'name' => 'Family travelers',
+            'name' => 'Dành Cho Gia Đình',
             'status' => 1,
         ]);
         DB::table('room_mode')->insert([
-            'name' => 'Group travelers',
+            'name' => 'Dành Cho Tập Thể',
             'status' => 1,
         ]);
 
-        //Room type: 6
+        //Room type: 4
         DB::table('room_type')->insert([
-            'name' => 'Standard',
+            'name' => 'Tiêu Chuẩn',
             'description' => 'Standard',
             'status' => 1,
         ]);
         DB::table('room_type')->insert([
-            'name' => 'Superior',
+            'name' => 'Hạng Trung',
             'description' => 'Superior',
             'status' => 1,
         ]);
         DB::table('room_type')->insert([
-            'name' => 'Deluxe',
+            'name' => 'Cao Cấp',
             'description' => 'Deluxe',
             'status' => 1,
         ]);
         DB::table('room_type')->insert([
-            'name' => 'Suite',
+            'name' => 'Hạng Sang',
             'description' => 'Suite',
             'status' => 1,
         ]);
-        DB::table('room_type')->insert([
-            'name' => 'Economy ',
-            'description' => 'economy ',
-            'status' => 1,
-        ]);
-        DB::table('room_type')->insert([
-            'name' => 'Business  ',
-            'description' => 'business  ',
-            'status' => 1,
-        ]);
+        // DB::table('room_type')->insert([
+        //     'name' => 'Economy ',
+        //     'description' => 'economy ',
+        //     'status' => 1,
+        // ]);
+        // DB::table('room_type')->insert([
+        //     'name' => 'Business',
+        //     'description' => 'business  ',
+        //     'status' => 1,
+        // ]);
 
         //Bed Type: 5
         DB::table('bed_type')->insert([
-            'name' => 'Single bed',
+            'name' => 'Giường Đơn',
             'width' => '120',
             'length' => '190',
             'status' => 1,
         ]);
         DB::table('bed_type')->insert([
-            'name' => 'Double bed',
+            'name' => 'Giường Đôi',
             'width' => '150',
             'length' => '190',
             'status' => 1,
         ]);
         DB::table('bed_type')->insert([
-            'name' => 'Queen bed',
+            'name' => 'Queen Bed',
             'width' => '160',
             'length' => '200',
             'status' => 1,
         ]);
         DB::table('bed_type')->insert([
-            'name' => 'King bed',
+            'name' => 'King Bed',
             'width' => '180',
             'length' => '200',
             'status' => 1,
         ]);
         DB::table('bed_type')->insert([
-            'name' => 'Bunk bed',
+            'name' => 'Bunk Bed',
             'width' => '120',
             'length' => '190',
             'status' => 1,
@@ -171,13 +175,13 @@ class DatabaseSeeder extends Seeder
 
         //Room services: 5
         DB::table('service')->insert([
-            'name' => 'Free Wi-Fi',
+            'name' => 'Wi-Fi Miễn Phí',
             'meta_name' => 'free-wifi',
             'icon' => 'wifi',
             'status' => true,
         ]);
         DB::table('service')->insert([
-            'name' => 'Free breakfast',
+            'name' => 'Bữa Sáng Miễn Phí',
             'meta_name' => 'free-breakfast',
             'icon' => 'utensils',
             'status' => true,
@@ -189,13 +193,13 @@ class DatabaseSeeder extends Seeder
             'status' => true,
         ]);
         DB::table('service')->insert([
-            'name' => 'Laundry rooms',
+            'name' => 'Giặc Ủi',
             'meta_name' => 'laundry',
             'icon' => 'caret-square-down',
             'status' => true,
         ]);
         DB::table('service')->insert([
-            'name' => '24-Hour Front Desk',
+            'name' => 'Lễ Tân Phục Vụ 24/24',
             'meta_name' => 'front-desk',
             'icon' => 'concierge-bell',
             'status' => true,
@@ -203,22 +207,22 @@ class DatabaseSeeder extends Seeder
 
         //Feature: 8
         DB::table('feature')->insert([
-            'name' => 'Televison',
+            'name' => 'Tivi',
             'meta_name' => 'tv',
             'status' => true,
         ]);
         DB::table('feature')->insert([
-            'name' => 'Air conditioning',
+            'name' => 'Điều Hòa',
             'meta_name' => 'ac',
             'status' => true,
         ]);
         DB::table('feature')->insert([
-            'name' => 'Safety Box',
+            'name' => 'Có Két Sắt',
             'meta_name' => 'safety-box',
             'status' => true,
         ]);
         DB::table('feature')->insert([
-            'name' => 'Hair dryer',
+            'name' => 'Máy Sấy Tóc',
             'meta_name' => 'hair-dryer',
             'status' => true,
         ]);
@@ -228,17 +232,17 @@ class DatabaseSeeder extends Seeder
             'status' => true,
         ]);
         DB::table('feature')->insert([
-            'name' => 'Balcony',
+            'name' => 'Ban Công',
             'meta_name' => 'balcony',
             'status' => true,
         ]);
         DB::table('feature')->insert([
-            'name' => 'Refrigerator',
+            'name' => 'Tủ Lạnh',
             'meta_name' => 'refrigerator',
             'status' => true,
         ]);
         DB::table('feature')->insert([
-            'name' => 'Writing Desks',
+            'name' => 'Bàn Học/Làm Việc',
             'meta_name' => 'writing-desks',
             'status' => true,
         ]);
@@ -253,15 +257,33 @@ class DatabaseSeeder extends Seeder
             $rand = rand(0,sizeOf($arr)-1);
             factory(App\Models\Hotel::class)->create([
                 'ward_id' => $arr[$rand],
-                'address' => 'Ha Noi',
+                'address' => 'Hà Nội',
             ]);
             $cancel = rand (0,7);
             if($cancel ==0) $refund = 0;
             else $refund = rand(0,15);
+            $content = '';
+            $check_in = '08:00';
+            $check_out = '17:00';
+            switch($cancel){
+                case 0:
+                    $content = $content.'Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng. ';
+                    break;
+                default:
+                    if($refund == 0){
+                        $content = $content.'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In '.$cancel.' ngày. Tuy nhiên, bạn sẽ không được hoàn trả phía đã thanh toán.';
+                    }else{
+                        $content = $content.'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In '.$cancel.' ngày. Chúng tôi chấp nhận hoàn trả '.$refund.'% các chi phí mà bạn đã thanh toán.';
+                    }
+                break;
+            }
             factory(App\Models\Policy::class)->create([
                 'hotel_id' => $i,
+                'check_in' => $check_in.':00',
+                'check_out' => $check_out.':00',
                 'cancelable' => $cancel,
-                'can_refund' => $refund
+                'can_refund' => $refund,
+                'content' => $content
             ]);
 
         }       
@@ -339,25 +361,28 @@ class DatabaseSeeder extends Seeder
         //Booking status
         factory(App\Models\BookingStatus::class)->create([]);
         factory(App\Models\BookingStatus::class)->create([
-            'name' => 'Wait for payment'
+            'name' => 'Chờ Thanh Toán'
         ]);
         factory(App\Models\BookingStatus::class)->create([
-            'name' => 'Declined'
+            'name' => 'Bị Từ Chối'
         ]);
         factory(App\Models\BookingStatus::class)->create([
-            'name' => 'Completed'
+            'name' => 'Hoàn Thành'
         ]);
         factory(App\Models\BookingStatus::class)->create([
-            'name' => 'Canceled by user'
+            'name' => 'Khách Đã Hủy'
         ]);
         factory(App\Models\BookingStatus::class)->create([
-            'name' => 'Canceled by hotel'
+            'name' => 'Nhà Cung Cấp Đã Hủy'
+        ]);
+        factory(App\Models\BookingStatus::class)->create([
+            'name' => 'Quá Hạn'
         ]);
 
         //Booking method
         factory(App\Models\PaymentMethod::class)->create([]);
         factory(App\Models\PaymentMethod::class)->create([
-            'name' => 'Online'
+            'name' => 'Chuyển Khoản Online'
         ]);
 
         for ($uID = $mnNum + 1; $uID <= 10; $uID++) {
@@ -391,6 +416,7 @@ class DatabaseSeeder extends Seeder
         }
 
         factory(App\Models\HotelImage::class, $hotelNum)->create([]);
+        factory(App\Models\Question::class, $questionNum)->create([]);
         for($i =1;$i<=$hotelNum;$i++){
             for($j=1;$j<=4;$j++){
                 $img = rand(1,30);

@@ -42,7 +42,7 @@ color: #000;
 }
 
 .top-search{
-top:90px;
+top:58px;
 position: fixed;
 height: 40px;
 left:0;
@@ -68,7 +68,7 @@ border: 1px solid #7f8c8d;
 margin: 5px;
 padding: 10px;
 background-color: #dcdde1;
-font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+font-family: 'Niramit', sans-serif !important;
 }
 
 
@@ -78,18 +78,18 @@ border: 3px solid #EF6C00;
 .search-room-content{
 margin-bottom: 5px !important;
 background-color: #ffffff;
-font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+font-family: 'Niramit', sans-serif !important;
 }
 
 .hotel-tab{
 margin: 0 !important;
 margin-top: 5px !important;
-font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+font-family: 'Niramit', sans-serif !important;
 }
 .hotel-info-item{
 margin-bottom: 5px !important;
 margin-left: 2px !important;
-font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+font-family: 'Niramit', sans-serif !important;
 }
 
 .service-item{
@@ -118,7 +118,7 @@ width: 100%;
 word-wrap: break-word !important;
 min-height: 300px;
 background-color: yellow;
-font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+font-family: 'Niramit', sans-serif !important;
 }
 
 .booking-btn {

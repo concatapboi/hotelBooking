@@ -8,7 +8,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-avatar size="90px" tile flat color="white" v-on="on">
-                  <img :src="user.avatar.image_link" alt />
+                  <img :src="'/img/user/'+user.avatar.image_link" alt />
                 </v-avatar>
               </template>
               <span>{{user.name}}</span>
@@ -243,13 +243,13 @@
                 <template v-slot:activator="{ on }">
                   <v-icon small color="white" v-on="on" class="pointer">lock_open</v-icon>
                 </template>
-                <span>Open comment</span>
+                <span>Bình luận</span>
               </v-tooltip>
               <v-tooltip top v-else>
                 <template v-slot:activator="{ on }">
                   <v-icon small color="black" v-on="on" class="pointer">lock</v-icon>
                 </template>
-                <span>Lock comment</span>
+                <span>Khóa bình luận</span>
               </v-tooltip>
             </template>
             <v-card light min-height="120px" class="pa-1" flat tile width="800px">
@@ -331,7 +331,7 @@
                       v-else
                     >chat_bubble</v-icon>
                   </template>
-                  <span>comment</span>
+                  <span>binh luận</span>
                 </v-tooltip>
                 <span class="grey--text subheading">{{item.comments}}</span>
               </v-card-actions>
@@ -349,7 +349,7 @@
                   <v-card-title>
                     <v-avatar size="42px" color="black" flat>
                       <v-avatar size="40px" flat color="white">
-                        <img :src="value.customer.avatar.image_link" />
+                        <img :src="'/img/user/'+value.customer.avatar.image_link" />
                       </v-avatar>
                     </v-avatar>
                     <span class="pl-3">{{value.customer.name}}</span>
@@ -382,7 +382,7 @@
                           auto-grow
                           rows="2"
                           color="teal"
-                          label="New comment"
+                          label="Nhập bình luận mới tại đây..."
                           clear-icon="$vuetify.icons.clear"
                           clearable
                         ></v-textarea>
@@ -398,7 +398,7 @@
                           color="teal"
                           @click="sendComment(item.id)"
                         >
-                          <span>Send</span>
+                          <span>Gửi</span>
                         </v-btn>
                       </v-card-actions>
                     </v-flex>
@@ -410,7 +410,7 @@
         </v-layout>
       </div>
       <div v-else class="mx-3 pa-4 text-md-center border">
-        <span class="text-uppercase">no reviews yet</span>
+        <span class="text-uppercase">Chưa có bài đánh giá nào...</span>
       </div>
     </v-flex>
     <v-flex shrink md4>
@@ -421,11 +421,11 @@
           </template>
           <template v-slot:header>
             <div class="title my-3 text-uppercase font-weight-black">
-              <v-icon color="black">assignment_ind</v-icon>&nbsp;profile
+              <v-icon color="black">assignment_ind</v-icon>&nbsp;Thông Tin Tài Khoản
             </div>
           </template>
           <v-btn round depressed color="grey lighten-2" v-on:click.stop="openFormUserInfo">
-            <v-icon small>create</v-icon>&nbsp;update
+            <v-icon small>create</v-icon>&nbsp;Cập nhật
           </v-btn>
           <v-btn
             round
@@ -433,7 +433,7 @@
             color="grey lighten-2"
             v-on:click.stop="passDialog.check = true; form.pass=''"
           >
-            <v-icon small>create</v-icon>&nbsp;change password
+            <v-icon small>create</v-icon>&nbsp;Đổi Mật Khẩu
           </v-btn>
           <v-divider class="ma-0 pa-0"></v-divider>
           <v-container>
@@ -453,7 +453,7 @@
                 <i class="fas fa-signature orange--text fa-lg"></i>
               </v-flex>
               <v-flex md3>
-                <span class="font-weight-black">Name:</span>
+                <span class="font-weight-black">Họ Tên:</span>
               </v-flex>
               <v-flex md8 class="pl-2">
                 <span class="font-weight-black">{{user.name}}</span>
@@ -475,7 +475,7 @@
                 <i class="fas fa-phone green--text fa-lg"></i>
               </v-flex>
               <v-flex md3>
-                <span class="font-weight-black">Phone number:</span>
+                <span class="font-weight-black">Số Điện Thoại:</span>
               </v-flex>
               <v-flex md8 class="pl-2">
                 <span class="font-weight-black">{{user.phone_number}}</span>
@@ -486,7 +486,7 @@
                 <i class="fab fa-creative-commons-nd blue--text fa-lg"></i>
               </v-flex>
               <v-flex md3>
-                <span class="font-weight-black">Coin:</span>
+                <span class="font-weight-black">Điểm:</span>
               </v-flex>
               <v-flex md8 class="pl-2">
                 <span class="font-weight-black">{{user.customer.coin}}</span>
@@ -497,7 +497,7 @@
                 <i class="fas fa-home indigo--text fa-lg"></i>
               </v-flex>
               <v-flex md3>
-                <span class="font-weight-black">Address:</span>
+                <span class="font-weight-black">Địa Chỉ:</span>
               </v-flex>
               <v-flex md8 class="pl-2">
                 <span class="font-weight-black">{{user.customer.address}}</span>
@@ -511,12 +511,15 @@
           </template>
           <template v-slot:header>
             <div class="title my-3 text-uppercase font-weight-black">
-              <i class="fas fa-list-ol black--text"></i>&nbsp;booking list
+              <i class="fas fa-list-ol black--text"></i>&nbsp;Danh Sách Đơn
             </div>
           </template>
-          <v-btn round depressed color="grey lighten-2" @click.stop="openBookingListDialog">
-            <v-icon small>notes</v-icon>&nbsp;see all
+          <v-btn round depressed color="grey lighten-2" @click.stop="bookingListPage(0)">
+            <v-icon small>notes</v-icon>&nbsp;Xem Tất Cả
           </v-btn>
+          <!-- <v-btn round depressed color="grey lighten-2" @click.stop="openBookingListDialog">
+            <v-icon small>notes</v-icon>&nbsp;see all
+          </v-btn> -->
           <v-divider class="ma-0 pa-0"></v-divider>
           <v-container class="pa-1 ma-0">
             <v-layout
@@ -531,27 +534,27 @@
               <v-flex md6>
                 <div>
                   <div>
-                    ID:&nbsp;
+                    Mã:&nbsp;
                     <span class="font-weight-black">{{b.id}}</span>
                   </div>
                   <div>
-                    Total:&nbsp;
+                    Tổng Giá:&nbsp;
                     <span
                       class="font-weight-black"
-                    >{{ (b.room_amount*b.room_price).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
+                    >{{ (b.room_amount*b.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
                   </div>
                 </div>
               </v-flex>
               <v-flex md6>
                 <div>
                   <div>
-                    Status:&nbsp;
+                    Tình Trạng Đơn:&nbsp;
                     <span class="orange--text">{{b.status.name}}</span>
                   </div>
-                  <div>
+                  <!-- <div>
                     Method:&nbsp;
                     <span class="teal--text">{{b.payment_method.name}}</span>
-                  </div>
+                  </div> -->
                 </div>
               </v-flex>
               <v-flex md12>
@@ -559,14 +562,14 @@
               </v-flex>
               <v-flex md12 class="mt-2">
                 <div class="pl-3 body-2 font-italic" v-if="b.can_review == true">
-                  No review yet.&nbsp;
+                  Chưa đánh giá.&nbsp;
                   <span
                     class="pointer purple--text"
                     @click="openReviewForm(b)"
-                  >Review?</span>
+                  >Đánh giá?</span>
                 </div>
                 <div class="pl-3 body-2 font-italic">
-                  <span class="pointer teal--text" @click="bookingAction(b,1)">More...</span>
+                  <span class="pointer teal--text" @click.stop="bookingListPage(b.id)">Thêm...</span>
                 </div>
               </v-flex>
             </v-layout>
@@ -578,7 +581,7 @@
           </template>
           <template v-slot:header>
             <div class="title my-3 text-uppercase font-weight-black">
-              <i class="fas fa-question black--text"></i>&nbsp;question list
+              <i class="fas fa-question black--text"></i>&nbsp;Danh sách câu hỏi
             </div>
           </template>
           <v-btn
@@ -588,7 +591,7 @@
             @click.stop="openQuestionListDialog"
             v-if="user.question.length!=0"
           >
-            <v-icon small>notes</v-icon>&nbsp;see all
+            <v-icon small>notes</v-icon>&nbsp;xem tất cả
           </v-btn>
           <v-divider class="ma-0 pa-0"></v-divider>
           <v-container class="pa-1 ma-0">
@@ -604,11 +607,9 @@
               <v-flex md12>
                 <div>
                   <div>
-                    Title:&nbsp;
                     <span class="font-weight-black">{{q.title}}</span>
                   </div>
                   <div>
-                    Content:&nbsp;
                     <span class="font-weight-black">"{{q.content}}"</span>
                   </div>
                 </div>
@@ -630,23 +631,23 @@
           </template>
           <template v-slot:header>
             <div class="title my-3 text-uppercase font-weight-black">
-              <v-icon color="black">group</v-icon>&nbsp;following &amp; followers
+              <v-icon color="black">group</v-icon>&nbsp;đang theo dõi &amp; người theo dõi
             </div>
           </template>
           <v-btn round depressed color="grey lighten-2" v-on:click="followDialog = true">
-            <v-icon small>notes</v-icon>&nbsp;see all
+            <v-icon small>notes</v-icon>&nbsp;xem tất cả
           </v-btn>
           <v-tabs centered grow color="grey lighten-2" light class="ma-1">
             <v-tabs-slider color="black"></v-tabs-slider>
-            <v-tab href="#tab-1">followers</v-tab>
-            <v-tab href="#tab-2">following</v-tab>
+            <v-tab href="#tab-1">người theo dõi</v-tab>
+            <v-tab href="#tab-2">đang theo dõi</v-tab>
             <v-tab-item value="tab-1">
               <v-card light flat v-for="(item,i) in user.followers" :key="i" v-show="i<4">
                 <v-card-title>
                   <router-link :to="{name:'user',params:{id:item.follower.id}}">
                     <v-avatar size="52px" flat color="black">
                       <v-avatar size="50px" flat color="white">
-                        <img :src="item.avatar.image_link" :alt="item.follower.name" />
+                        <img :src="'/img/user/'+item.avatar.image_link" :alt="item.follower.name" />
                       </v-avatar>
                     </v-avatar>
                     <span class="pl-3 font-weight-bold">{{item.follower.name}}</span>
@@ -661,7 +662,7 @@
                   <router-link :to="{name:'user',params:{id:item.followed.id}}">
                     <v-avatar size="52px" flat color="black">
                       <v-avatar size="50px" flat color="white">
-                        <img :src="item.avatar.image_link" :alt="item.followed.name" />
+                        <img :src="'/img/user/'+item.avatar.image_link" :alt="item.followed.name" />
                       </v-avatar>
                     </v-avatar>
                     <span class="pl-3 font-weight-bold">{{item.followed.name}}</span>
@@ -678,12 +679,12 @@
       <v-card color="grey lighten-4" flat tile width="100%" class="pa-5">
         <v-form ref="form" data-vv-scope="form1">
           <v-layout row wrap align-top justify-center>
-            <v-card-title class="title text-uppercase font-weight-bold">infomation</v-card-title>
+            <v-card-title class="title text-uppercase font-weight-bold">Thông tin</v-card-title>
             <v-flex md12 pa-2>
-              <v-text-field outline name="name" color="teal" v-model="form.name" label="Name"></v-text-field>
+              <v-text-field outline name="name" color="teal" v-model="form.name" label="Họ tên"></v-text-field>
             </v-flex>
             <v-flex md12 pa-2>
-              <v-text-field outline name="phone" color="teal" v-model="form.phone" label="Phone"></v-text-field>
+              <v-text-field outline name="phone" color="teal" v-model="form.phone" label="Số điện thoại"></v-text-field>
             </v-flex>
             <v-flex md12 px-2>
               <v-textarea
@@ -693,11 +694,11 @@
                 rows="1"
                 color="teal"
                 v-model="form.address"
-                label="Address"
+                label="Địa chỉ"
               ></v-textarea>
-              <v-btn color="teal" v-on:click="submit" dark depressed>Submit</v-btn>
-              <v-btn color="grey" v-on:click="clear" dark depressed>Clear</v-btn>
-              <v-btn color="red" v-on:click="formDialog=false" dark depressed>Cancel</v-btn>
+              <v-btn color="teal" v-on:click="submit" dark depressed>Xác Nhận</v-btn>
+              <v-btn color="grey" v-on:click="clear" dark depressed>Xóa</v-btn>
+              <v-btn color="red" v-on:click="formDialog=false" dark depressed>Hủy</v-btn>
             </v-flex>
             <v-flex></v-flex>
           </v-layout>
@@ -710,13 +711,13 @@
           <v-layout row wrap align-top justify-center>
             <v-card-title
               class="title text-uppercase font-weight-bold"
-            >your present password, again!</v-card-title>
+            >nhập mật khẩu!</v-card-title>
             <v-flex md12 px-2>
               <v-text-field
                 outline
                 color="teal"
                 v-model="form.pass"
-                label="Password"
+                label="Mật khẩu"
                 type="password"
                 append-icon="visibility"
                 v-on:click:append="value = true"
@@ -726,15 +727,15 @@
                 outline
                 color="teal"
                 v-model="form.pass"
-                label="Password"
+                label="Mật khẩu"
                 type="text"
                 append-icon="visibility_off"
                 v-on:click:append="value = false"
                 v-else
               ></v-text-field>
-              <v-btn color="teal" v-on:click="checkPass" dark depressed>Submit</v-btn>
-              <v-btn color="grey" v-on:click="clear" dark depressed>Clear</v-btn>
-              <v-btn color="red" v-on:click="passDialog.check=false" dark depressed>Cancel</v-btn>
+              <v-btn color="teal" v-on:click="checkPass" dark depressed>Xác Nhận</v-btn>
+              <v-btn color="grey" v-on:click="clear" dark depressed>Xóa</v-btn>
+              <v-btn color="red" v-on:click="passDialog.check=false" dark depressed>Hủy</v-btn>
             </v-flex>
             <v-flex></v-flex>
           </v-layout>
@@ -745,7 +746,7 @@
       <v-card color="grey lighten-4" flat tile width="100%" class="pa-5">
         <v-form ref="form" data-vv-scope="form2">
           <v-layout row wrap align-top justify-center>
-            <v-card-title class="title text-uppercase font-weight-bold">new password</v-card-title>
+            <v-card-title class="title text-uppercase font-weight-bold">Mật Khẩu Mới</v-card-title>
             <v-flex md12 px-2>
               <v-text-field
                 :error-messages="errors.collect('form2.password')"
@@ -756,7 +757,7 @@
                 outline
                 color="teal"
                 v-model="form.newPass"
-                label="New password"
+                label="Nhập mật khẩu mới tại đây..."
                 append-icon="visibility"
                 v-on:click:append="value=true"
                 v-if="!value"
@@ -770,7 +771,7 @@
                 outline
                 color="teal"
                 v-model="form.newPass"
-                label="New password"
+                label="Nhập mật khẩu mới tại đây..."
                 append-icon="visibility_off"
                 v-on:click:append="value=false"
                 v-else
@@ -784,7 +785,7 @@
                 outline
                 color="teal"
                 v-model="form.rePass"
-                label="Value, again!"
+                label="Xác nhận lại!"
                 append-icon="visibility"
                 v-on:click:append="value1=true"
                 v-if="!value1"
@@ -798,14 +799,14 @@
                 outline
                 color="teal"
                 v-model="form.rePass"
-                label="Value, again!"
+                label="Xác nhận lại!"
                 append-icon="visibility_off"
                 v-on:click:append="value1=false"
                 v-else
               ></v-text-field>
-              <v-btn color="teal" v-on:click="submitPass" dark depressed>Submit</v-btn>
-              <v-btn color="grey" v-on:click="clear" dark depressed>Clear</v-btn>
-              <v-btn color="red" v-on:click="passDialog.main=false" dark depressed>Cancel</v-btn>
+              <v-btn color="teal" v-on:click="submitPass" dark depressed>Xác Nhận</v-btn>
+              <v-btn color="grey" v-on:click="clear" dark depressed>Xóa</v-btn>
+              <v-btn color="red" v-on:click="passDialog.main=false" dark depressed>Hủy</v-btn>
             </v-flex>
             <v-flex></v-flex>
           </v-layout>
@@ -816,12 +817,12 @@
       <v-card flat tile light height="400px">
         <v-card-text>
           <v-btn depressed color="red" dark v-on:click="followDialog = false">
-            <span class="text-uppercase">cancel</span>
+            <span class="text-uppercase">Hủy</span>
           </v-btn>
           <v-tabs grow color="grey lighten-2" light class="ma-1">
             <v-tabs-slider color="black"></v-tabs-slider>
-            <v-tab href="#tab-1">followers</v-tab>
-            <v-tab href="#tab-2">following</v-tab>
+            <v-tab href="#tab-1">Người theo dõi</v-tab>
+            <v-tab href="#tab-2">Đang theo dõi</v-tab>
             <v-tab-item value="tab-1">
               <v-card light flat width="100%" height="260px" style="overflow:auto">
                 <v-layout v-for="(item,i) in user.followers" :key="i">
@@ -829,7 +830,7 @@
                     <router-link :to="{name:'user',params:{id:item.follower.id}}">
                       <v-avatar size="52px" flat color="black">
                         <v-avatar size="50px" flat color="white">
-                          <img :src="item.avatar.image_link" :alt="item.follower.name" />
+                          <img :src="'/img/user/'+item.avatar.image_link" :alt="item.follower.name" />
                         </v-avatar>
                       </v-avatar>
                     </router-link>
@@ -859,7 +860,7 @@
                     <router-link :to="{name:'user',params:{id:item.followed.id}}">
                       <v-avatar size="52px" flat color="black">
                         <v-avatar size="50px" flat color="white">
-                          <img :src="item.avatar.image_link" :alt="item.followed.name" />
+                          <img :src="'/img/user/'+item.avatar.image_link" :alt="item.followed.name" />
                         </v-avatar>
                       </v-avatar>
                     </router-link>
@@ -889,11 +890,11 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="bookingList.dialog" width="700px" persistent>
+    <!-- <v-dialog v-model="bookingList.dialog" width="700px" persistent>
       <v-card flat tile light height="470px">
         <v-card-text>
           <v-btn depressed color="red" dark v-on:click="bookingList.dialog = false">
-            <span class="text-uppercase">close</span>
+            <span class="text-uppercase">Đóng</span>
           </v-btn>
           <v-card light flat width="100%" height="370px" style="overflow:auto">
             <v-data-table
@@ -916,9 +917,11 @@
                   </a>
                 </td>
                 <td class="border-left">
-                  <a href="#">
-                    <span style="word-wrap: break-word;">{{ b.item.status.name}}</span>
-                  </a>
+                  <div>
+                    <a href="#">
+                      <span style="word-wrap: break-word;">{{ b.item.status.name}}</span>
+                    </a>
+                  </div>
                 </td>
                 <td class="border-left">
                   <v-btn depressed color="teal" dark small @click="bookingAction(b.item,1)">detail</v-btn>
@@ -935,19 +938,33 @@
           </v-card>
         </v-card-text>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
     <v-dialog v-model="questionList.dialog" width="700px" persistent>
       <v-card flat tile light height="470px">
         <v-card-text>
           <v-btn depressed color="red" dark v-on:click="questionList.dialog = false">
-            <span class="text-uppercase">close</span>
+            <span class="text-uppercase">Đóng</span>
           </v-btn>
+          <template>
           <v-card light flat width="100%" height="370px" style="overflow:auto">
+            <v-card-title>
+              Kết quả tìm kiếm cho nhà cung cấp {{search}}
+              <v-spacer></v-spacer>
+              <v-text-field
+                color="teal"
+                v-model="search"
+                append-icon="search"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
             <v-data-table
               :rows-per-page-items='[2,4,6,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
               :headers="tblHeaders.question"
               hide-headers
               :items="user.question"
+              :search="search"
               class="elevation-0 border"
             >
               <template v-slot:items="q">
@@ -999,8 +1016,16 @@
                   </div>
                 </td>
               </template>
+              <template v-slot:no-results>
+                  <v-alert
+                    :value="true"
+                    color="error"
+                    icon="warning"
+                  >Không tìm thấy dữ liệu nhà cung cấp "{{ search }}".</v-alert>
+                </template>
             </v-data-table>
           </v-card>
+          </template>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -1019,7 +1044,13 @@
             </div>
             <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
               <v-flex md3>
+<<<<<<< Updated upstream
                 <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingList.detail.booking.room.image"></v-img>
+=======
+                <div class="mt-3">
+                  <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingList.detail.booking.room.image"></v-img>
+                </div>
+>>>>>>> Stashed changes
               </v-flex>
               <v-flex md9>
                 <v-layout row wrap class="pa-0 pl-4 ma-0">
@@ -1028,6 +1059,9 @@
                         :to="{name:'hotel',params:{id:bookingList.detail.booking.room.hotel.id}}"
                         target="_blank"
                       ><h2>{{bookingList.detail.booking.hotel_name}}</h2></router-link>
+                  </v-flex>
+                  <v-flex md12>
+                    <div><span>{{bookingList.detail.booking.room.hotel.type}}</span></div>
                   </v-flex>
                   <v-flex md12>
                     <v-divider class="pa-0 ma-0"></v-divider>
@@ -1080,6 +1114,8 @@
                   </v-flex>
                   <v-flex md12>
                     <v-layout row wrap class="pa-0 ma-0">
+                      <v-flex md3>Room Name:</v-flex>
+                      <v-flex md9>{{bookingList.detail.booking.room.room_name}}</v-flex>
                       <v-flex md3>Room Type:</v-flex>
                       <v-flex
                         md9
@@ -1101,17 +1137,20 @@
               <div>
                 <div>
                   <span
-                    class="font-weight-black red--text font-italic"
+                    class="font-weight-black red--text font-italic subheading"
                   >{{bookingList.detail.booking.status.name}}</span>
                 </div>
                 <div>
                   <v-btn
                     :disabled="!bookingList.detail.booking.cancel_status"
-                    @click="bookingAction(bookingList.detail.booking,0)"
+                    @click="confirmAction(bookingList.detail.booking)"
                     small
                     depressed
                     color="orange"
                   >cancel</v-btn>
+                </div>
+                <div>
+                  <span class="font-italic">{{bookingList.detail.booking.payment_method.content}}</span>
                 </div>
               </div>
             </v-layout>
@@ -1128,7 +1167,7 @@
               </v-flex>
               <v-flex
                 md4
-              >{{bookingList.detail.booking.room.price.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+              >{{bookingList.detail.booking.room_price.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
               <v-flex md8>
                 <span>Amount</span>
               </v-flex>
@@ -1151,15 +1190,21 @@
                   </v-flex>
                 </v-layout>
               </v-flex>
+              <v-flex md8>
+                <span>Payment Method</span>
+              </v-flex>
+              <v-flex md4>{{bookingList.detail.booking.payment_method.name}}</v-flex>
               <v-flex md12>
                 <v-divider></v-divider>
               </v-flex>
               <v-flex md8>
-                <span>Total price</span>
+                <span class="headline orange--text">Total price</span>
               </v-flex>
               <v-flex
                 md4
-              >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price*((100-bookingList.detail.booking.discount_value)/100)).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
+              ><span class="headline orange--text">{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price*((100-bookingList.detail.booking.discount_value)/100)).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}
+                </span>
+              </v-flex>
             </v-layout>
           </v-flex>
         </v-layout>
@@ -1174,9 +1219,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="green darken-1" flat="flat" @click="confirm.dialog = false">Cancel</v-btn>
+          <v-btn color="green darken-1" flat="flat" @click="confirm.dialog = false">Hủy</v-btn>
 
-          <v-btn color="green darken-1" flat="flat" @click="bookingAction(confirm.booking,0)">Sure</v-btn>
+          <v-btn color="green darken-1" flat="flat" @click="bookingAction(confirm.booking,0)">Đồng Ý</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -1278,14 +1323,15 @@ export default {
   props: {},
   data() {
     return {
+      search :"",
       tblHeaders: {
         booking: [
           {
             text: "ID",
-            value: 0,
+            value: 'id',
             align: "center",
             class: "red--text",
-            sortable: false
+            sortable: true
           },
           {
             text: "Total",
@@ -1296,10 +1342,10 @@ export default {
           },
           {
             text: "Status",
-            value: "",
+            value: "status.id",
             align: "center",
             class: "red--text border-left",
-            sortable: false
+            sortable: true
           },
           {
             text: "Action",
@@ -1311,8 +1357,8 @@ export default {
         ],
         question: [
           {
-            text: "Question",
-            value: 0,
+            text: "Câu Hỏi",
+            value: "hotel.name",
             align: "center",
             class: "red--text",
             sortable: false
@@ -1327,9 +1373,9 @@ export default {
       confirm: {
         dialog: false,
         booking: {},
-        title: "Are you sure?",
+        title: "Bạn có chắc chắn?",
         content:
-          "By clicking this button, you acknowledge that you have read and agree to Hotel's Terms & Conditions and Privacy Policy."
+          "Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan."
       },
       bookingList: {
         dialog: false,
@@ -1339,11 +1385,15 @@ export default {
             cancel_status: [],
             status: {},
             payment_method: {},
+            room_price:0,
             room: {
               price: 0,
               room_mode: {},
               room_type: {},
-              hotel: {}
+              hotel: {
+                id:0
+              },
+              image:"default.png"
             }
           }
         }
@@ -1351,23 +1401,23 @@ export default {
       questionList: {
         dialog: false
       },
-      bookingList: {
-        dialog: false,
-        detail: {
-          dialog: false,
-          booking: {
-            cancel_status: [],
-            status: {},
-            payment_method: {},
-            room: {
-              price: 0,
-              room_mode: {},
-              room_type: {},
-              hotel: {}
-            }
-          }
-        }
-      },
+      // bookingList: {
+      //   dialog: false,
+      //   detail: {
+      //     dialog: false,
+      //     booking: {
+      //       cancel_status: [],
+      //       status: {},
+      //       payment_method: {},
+      //       room: {
+      //         price: 0,
+      //         room_mode: {},
+      //         room_type: {},
+      //         hotel: {}
+      //       }
+      //     }
+      //   }
+      // },
       followDialog: false,
       value: false,
       value1: false,
@@ -1392,25 +1442,25 @@ export default {
       },
       dictionary: {
         attributes: {
-          email: "Email Address"
+          email: "Dường như đây hông phải là một địa chỉ Email"
         },
         custom: {
           email: {
-            required: () => "Email can not be empty"
+            required: () => "Email không được bỏ trống"
           },
           password: {
-            required: () => "Password can not be empty",
-            min: "Password can not be under 4 characters"
+            required: () => "Mật khẩu không được bỏ trống",
+            min: "Mật khẩu phải nhiều hơn 3 ký tự"
           },
           password_confirmation: {
-            required: () => "Can not be empty",
-            confirmed: "Not match"
+            required: () => "Không được bỏ trống",
+            confirmed: "Không khớp, nhập lại"
           },
           title: {
-            required: () => "Title can not be empty"
+            required: () => "Tiêu đề không được bỏ trống"
           },
           content: {
-            required: () => "Content can not be empty"
+            required: () => "Nội dung không được bỏ trống"
           }
         }
       },
@@ -1512,10 +1562,10 @@ export default {
     confirmAction: function(booking) {
       this.confirm.dialog = true;
       this.confirm.booking = booking;
-      this.confirm.title = "Are you sure?";
+      this.confirm.title = "bạn có chắc chắn?";
       if (booking.status.id == 4)
         this.confirm.content =
-          "By clicking this button, you acknowledge that you have read the Refund Policy of this Hotel.";
+          "Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan.";
     },
     openFormUserInfo: function() {
       this.formDialog = true;
@@ -1559,7 +1609,7 @@ export default {
             this.comment.content = "";
             this.comment.review_id = 0;
           } else {
-            this.$emit("loadSnackbar", "Something wrong!");
+            this.$emit("loadSnackbar", "Thao tác lỗi, thử lại?");
           }
         })
         .catch(error => {
@@ -1594,11 +1644,11 @@ export default {
             if (res.data.status == true) {
               this.getInfo();
               this.$emit("loadLogin");
-              this.$emit("loadSnackbar", "Updated!");
+              // this.$emit("loadSnackbar", "Updated!");
               this.formDialog = false;
               return;
             } else {
-              this.$emit("loadSnackbar", "Something wrong!");
+              this.$emit("loadSnackbar", "Thao tác lỗi, thử lại!");
               this.$validator.reset();
             }
           });
@@ -1667,7 +1717,7 @@ export default {
                 this.reviewForm.dialog = false;
                 this.$validator.reset();
               } else {
-                this.$emit("loadSnackbar", "Something wrong!");
+                this.$emit("loadSnackbar", "Thao tác lỗi, thử lại!");
               }
             })
             .catch(error => {
@@ -1723,7 +1773,7 @@ export default {
           this.$validator.reset();
           return;
         }
-        this.$emit("loadSnackbar", "Wrong password!");
+        this.$emit("loadSnackbar", "Sai mật khẩu!");
         return;
       });
     },
@@ -1741,13 +1791,13 @@ export default {
           }).then(res => {
             console.log(res.data.status);
             if (res.data.status == false) {
-              this.$emit("loadSnackbar", "Something wrong!");
+              // this.$emit("loadSnackbar", "Something wrong!");
               this.form.pass = this.form.rePass = "";
               return;
             }
             this.getInfo();
             this.$emit("loadLogin");
-            this.$emit("loadSnackbar", "Updated new password!");
+            this.$emit("loadSnackbar", "Đổi mật khẩu thành công!");
             this.passDialog.main = false;
             return;
           });
@@ -1763,6 +1813,13 @@ export default {
       if (!date) return null;
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
+    },
+    bookingListPage: function(val){
+      if(val != 0){
+      alert(val);
+        this.$router.push({path:'booking-list',query:{code:val}});
+      }else
+        this.$router.push({name:'booking-list'});
     }
   }
 };

@@ -42,7 +42,7 @@ class Booking extends Model
       $today = Carbon::createMidnightDate($todayExplode[0], $todayExplode[1], $todayExplode[2]);
       if (!$today->lessThan($bookingCheckIn)) {
         $this->update([
-          'status_id' => 4
+          'status_id' => 7
         ]);
       }
     }
@@ -99,6 +99,7 @@ class Booking extends Model
   {
     $this->checkInRequired();
     $status = false;
+    $policy = $this->Hotel()->Policy;
     switch ($this->Status->id) {
       case 1:
         $status = true;
@@ -107,7 +108,8 @@ class Booking extends Model
         $status = true;
         break;
       case 4:
-        $status = true;
+      if($policy->cancelable == 0) $status = false;
+      else     $status = true;
         break;
       default:
         $status = false;

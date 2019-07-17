@@ -74,10 +74,22 @@ class User extends Authenticatable implements JWTSubject
     foreach ($bookingList as $b) {
       $b->cancel_status = $b->cancelAble();
       $b->status = new BookingStatusResource($b->Status);
-      $b->PaymentMethod;
-      $b->Room->RoomMode;
-      $b->Room->RoomType;
-      $b->Room->Hotel->HotelType;
+      $hotel = $b->Room->Hotel;      
+      $b->room->room_mode = $b->Room->RoomMode;
+      $b->room->room_type = $b->Room->RoomType;      
+      foreach($hotel->paymentMethods() as $p){
+        if($p['method']->id == $b->payment_method_id) $b->payment_method = [
+          'id' =>$p['method']->id,
+          'name' =>$p['method']->name,
+          'content' =>$p['content'],
+          ];
+      }
+      $temp = array();
+      $temp['id'] = $hotel->id; 
+      $temp['name'] = $hotel->name; 
+      $temp['type'] = $hotel->HotelType->name; 
+      $b->room->hotel = $temp; 
+      $b->room->image = RoomImage::where('room_id',$b->room->id)->where('is_primary',1)->first()->image_link;
       $b->Review;
       $b->can_review = $b->reviewAble();
     }
