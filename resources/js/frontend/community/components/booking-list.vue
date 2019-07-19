@@ -28,7 +28,7 @@
                         <span
                           style="word-wrap: break-word;"
                           class="caption"
-                        >{{ (b.item.room_amount*b.item.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
+                        >{{ b.item.total.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
                       </a>
                     </td>
                     <td class="border-left">
@@ -40,8 +40,6 @@
                           >{{ b.item.status.name}}</span>
                         </a>
                       </div>
-                    </td>
-                    <td>
                       <div>
                         <div v-if="b.item.review!=null">
                           <span style="word-wrap: break-word;" class="caption">Bạn đã đánh giá.</span>
@@ -50,13 +48,13 @@
                             class="blue--text"
                             v-if="!b.expanded || item.detail"
                             @click="b.expanded = true; getReview(b.item)"
-                          >Thêm...</a>
+                          >Xem đánh giá...</a>
                           <a
                           v-else
                             href="#"
                             class="orange--text"
                             @click="getDetail(b.item)"
-                          >Chi tiết...</a>
+                          >Chi tiết đơn...</a>
                         </div>
                         <div v-if="b.item.can_review == true">
                           <span style="word-wrap: break-word;" class="caption">Bây giờ, bạn đã có thể </span>
@@ -64,7 +62,7 @@
                             href="#"
                             class="purple--text"
                             @click="b.expanded = true; formReview(b.item)"
-                          >đánh</a> nhà cung cấp này.
+                          >đánh giá</a> <span class="caption">nhà cung cấp này.</span>
                         </div>
                       </div>
                     </td>
@@ -213,11 +211,11 @@
                               </v-flex>
                               <v-flex md12>
                                 <v-layout row wrap class="pa-0 ma-0">
-                                  <v-flex md3>Tên Phòng:</v-flex>
-                                  <v-flex md9>{{booking.room.room_name}}</v-flex>
-                                  <v-flex md3>Loại Phòng:</v-flex>
+                                  <v-flex md5>Tên Phòng:</v-flex>
+                                  <v-flex md7>{{booking.room.room_name}}</v-flex>
+                                  <v-flex md5>Loại Phòng:</v-flex>
                                   <v-flex
-                                    md9
+                                    md7
                                   >{{booking.room.room_type.name}}</v-flex>
                                   <v-flex md5>Số Lượng:</v-flex>
                                   <v-flex md7>{{booking.room_amount}}</v-flex>
@@ -263,6 +261,10 @@
                               <span>Số Lượng</span>
                             </v-flex>
                             <v-flex md4>{{booking.room_amount}}</v-flex>
+                            <v-flex md8>
+                              <span>Số Đêm Ở</span>
+                            </v-flex>
+                            <v-flex md4>{{booking.days}}</v-flex>
                             <v-flex md12 v-if="booking.discount_value!=0">
                               <v-layout row wrap class="pa-0 ma-0">
                                 <v-flex md8>
@@ -292,7 +294,7 @@
                             <v-flex md4>
                               <span
                                 class="headline orange--text"
-                              >{{(booking.room_amount*booking.room_price*((100-booking.discount_value)/100)).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
+                              >{{booking.total.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
                             </v-flex>
                           </v-layout>
                         </div>
@@ -525,6 +527,7 @@ export default {
       pureBookingList: [],
       sortedBookingList: [],
       booking: {
+        total:0,
         status: {},
         room_price: 0,
         room: {
@@ -543,7 +546,7 @@ export default {
       tblHeaders: [
         {
           text: "Mã",
-          value: "id",
+          value: "slug",
           align: "",
           class: "orange--text",
           sortable: false,
@@ -566,14 +569,6 @@ export default {
         {
           text: "",
           value: "check_in",
-          align: "center",
-          class: "orange--text",
-          sortable: false,
-          width: "3%"
-        },
-        {
-          text: "",
-          value: 0,
           align: "center",
           class: "orange--text",
           sortable: false,

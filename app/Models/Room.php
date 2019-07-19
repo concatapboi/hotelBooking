@@ -86,7 +86,12 @@ class Room extends Model
 
   public function Feature()
   {
-    return $this->belongsToMany('App\Models\Feature','room_feature', 'feature_id','room_id');
+    return $this->hasMany('App\Models\RoomFeature','room_id','id');
+  }
+
+  public function roomFeature()
+  {
+    return RoomFeature::where('room_id',$this->id)->get();
   }
 
   public function availableRoomAmount($check_in, $check_out)

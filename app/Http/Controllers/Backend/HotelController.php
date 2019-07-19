@@ -486,11 +486,9 @@ class HotelController extends Controller
                 // }]);
             }]);
         }])->get();
-        return $hotel;
         $data = [];
         foreach ($hotel as $h) {
             if ($h->ward->district->province->id == 1) {
-
                 $data[] = $h;
             }
         }

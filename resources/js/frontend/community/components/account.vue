@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap class="mx-3">
     <v-flex shrink md8>
-      <v-img :aspect-ratio="16/4" src="/blog/img/slider/default.png" class="mr-2 radius mb-3">
+      <v-img :aspect-ratio="16/4" src="/blog/img/slider/slider.png" class="mr-2 radius mb-3">
         <v-layout row wrap fill-height class="lightbox white--text mt-5 mb-1 pl-5">
           <!-- <v-spacer></v-spacer> -->
           <v-flex md9 shrink class="pl-5">
@@ -269,7 +269,7 @@
                       <v-list-tile-title>Get notification</v-list-tile-title>
                     </v-list-tile>
                   </v-list>
-                </v-menu> -->
+                </v-menu>-->
 
                 <v-card-text>
                   <span class="headline">{{item.title}}</span>
@@ -286,7 +286,43 @@
                       <v-card-text class="font-weight-bold font-italic">{{item.content}}</v-card-text>
                     </v-card>
                   </v-layout>
-                  <span class="grey--text">&nbsp;21/12/2019</span>
+                  <span class="grey--text pl-2">-{{formatDate(item.created_at)}}</span>
+                  <v-layout
+                    row
+                    wrap
+                    class="pa-0 ma-0 mt-2 ml-3 pl-3 border-left border-bottom"
+                    align-center
+                  >
+                    <v-flex md3>
+                      <v-img :aspect-ratio="1" :src="'/blog/img/hotel/'+item.hotel.image"></v-img>
+                    </v-flex>
+                    <v-flex md8 offset-md1 class="pa-3 border-left">
+                      <v-layout row wrap class="pa-0 ma-0">
+                        <v-flex md12>
+                          <div>
+                            <router-link
+                              :to="{name:'hotel',params:{id:item.hotel.id}}"
+                              target="_blank"
+                            >
+                              <span class="font-weight-bold body-2">{{item.hotel.name}}</span>
+                            </router-link>
+                            &nbsp;({{item.hotel.stars_num}}&nbsp;sao)
+                          </div>
+                          <div>Tại&nbsp;{{item.hotel.address}}</div>
+                        </v-flex>
+                        <v-flex md4 v-for="(ser,i) in item.hotel.services" :key="i" class="pa-1">
+                          <div class="text-md-center border pa-2">
+                            <div>
+                              <i :class="'fa-lg fas fa-'+ser.icon"></i>
+                            </div>
+                            <div>
+                              <span class="caption font-italic">{{ser.name}}</span>
+                            </div>
+                          </div>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
                 </v-card-text>
               </v-card-title>
               <v-card-actions>
@@ -311,7 +347,7 @@
                   </template>
                   <span>like</span>
                 </v-tooltip>
-                <span class="grey--text subheading">{{item.likes}}</span> -->
+                <span class="grey--text subheading">{{item.likes}}</span>-->
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-icon
@@ -519,7 +555,7 @@
           </v-btn>
           <!-- <v-btn round depressed color="grey lighten-2" @click.stop="openBookingListDialog">
             <v-icon small>notes</v-icon>&nbsp;see all
-          </v-btn> -->
+          </v-btn>-->
           <v-divider class="ma-0 pa-0"></v-divider>
           <v-container class="pa-1 ma-0">
             <v-layout
@@ -541,7 +577,7 @@
                     Tổng Giá:&nbsp;
                     <span
                       class="font-weight-black"
-                    >{{ (b.room_amount*b.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
+                    >{{ b.total.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
                   </div>
                 </div>
               </v-flex>
@@ -554,7 +590,7 @@
                   <!-- <div>
                     Method:&nbsp;
                     <span class="teal--text">{{b.payment_method.name}}</span>
-                  </div> -->
+                  </div>-->
                 </div>
               </v-flex>
               <v-flex md12>
@@ -569,7 +605,7 @@
                   >Đánh giá?</span>
                 </div>
                 <div class="pl-3 body-2 font-italic">
-                  <span class="pointer teal--text" @click.stop="bookingListPage(b.id)">Thêm...</span>
+                  <span class="pointer teal--text" @click.stop="bookingListPage(b.id)">Xem...</span>
                 </div>
               </v-flex>
             </v-layout>
@@ -684,7 +720,13 @@
               <v-text-field outline name="name" color="teal" v-model="form.name" label="Họ tên"></v-text-field>
             </v-flex>
             <v-flex md12 pa-2>
-              <v-text-field outline name="phone" color="teal" v-model="form.phone" label="Số điện thoại"></v-text-field>
+              <v-text-field
+                outline
+                name="phone"
+                color="teal"
+                v-model="form.phone"
+                label="Số điện thoại"
+              ></v-text-field>
             </v-flex>
             <v-flex md12 px-2>
               <v-textarea
@@ -709,9 +751,7 @@
       <v-card color="grey lighten-4" flat tile width="100%" class="pa-5">
         <v-form ref="form">
           <v-layout row wrap align-top justify-center>
-            <v-card-title
-              class="title text-uppercase font-weight-bold"
-            >nhập mật khẩu!</v-card-title>
+            <v-card-title class="title text-uppercase font-weight-bold">nhập mật khẩu!</v-card-title>
             <v-flex md12 px-2>
               <v-text-field
                 outline
@@ -842,7 +882,7 @@
                         </v-btn>
                       </template>
                       <span>unfollowing</span>
-                    </v-tooltip> -->
+                    </v-tooltip>-->
                     <v-card-text class="pa-0 ma-0 mt-2">
                       <router-link :to="{name:'user',params:{id:item.follower.id}}">
                         <span class="font-weight-bold">{{user.name}}</span>
@@ -872,7 +912,7 @@
                         </v-btn>
                       </template>
                       <span>unfollowing</span>
-                    </v-tooltip> -->
+                    </v-tooltip>-->
                     <v-card-text class="pa-0 ma-0 mt-2">
                       <router-link :to="{name:'user',params:{id:item.followed.id}}">
                         <span class="font-weight-bold">{{item.followed.name}}</span>
@@ -938,7 +978,7 @@
           </v-card>
         </v-card-text>
       </v-card>
-    </v-dialog> -->
+    </v-dialog>-->
     <v-dialog v-model="questionList.dialog" width="700px" persistent>
       <v-card flat tile light height="470px">
         <v-card-text>
@@ -946,85 +986,90 @@
             <span class="text-uppercase">Đóng</span>
           </v-btn>
           <template>
-          <v-card light flat width="100%" height="370px" style="overflow:auto">
-            <v-card-title>
-              Kết quả tìm kiếm cho nhà cung cấp {{search}}
-              <v-spacer></v-spacer>
-              <v-text-field
-                color="teal"
-                v-model="search"
-                append-icon="search"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
-            </v-card-title>
-            <v-data-table
-              :rows-per-page-items='[2,4,6,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
-              :headers="tblHeaders.question"
-              hide-headers
-              :items="user.question"
-              :search="search"
-              class="elevation-0 border"
-            >
-              <template v-slot:items="q">
-                <td>
-                  <div class="ma-2">
-                    <div>
-                      <span
-                        class="font-weight-black"
-                        style="word-wrap: break-word;"
-                      >{{q.item.title}}</span>
-                      <span class="caption grey--text">-&nbsp;12/07/2019</span>
+            <v-card light flat width="100%" height="370px" style="overflow:auto">
+              <v-card-title>
+                Kết quả tìm kiếm cho nhà cung cấp {{search}}
+                <v-spacer></v-spacer>
+                <v-text-field
+                  color="teal"
+                  v-model="search"
+                  append-icon="search"
+                  label="Search"
+                  single-line
+                  hide-details
+                ></v-text-field>
+              </v-card-title>
+              <v-data-table
+                :rows-per-page-items='[2,4,6,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
+                :headers="tblHeaders.question"
+                hide-headers
+                :items="user.question"
+                :search="search"
+                class="elevation-0 border"
+              >
+                <template v-slot:items="q">
+                  <td>
+                    <div class="ma-2">
+                      <div>
+                        <span
+                          class="font-weight-black"
+                          style="word-wrap: break-word;"
+                        >{{q.item.title}}</span>
+                        <span class="caption grey--text">-&nbsp;{{formatDate(q.item.created_at)}}</span>
+                      </div>
+                      <div>
+                        <span
+                          class="font-italic"
+                          style="word-wrap: break-word;"
+                        >"{{q.item.content}}"</span>
+                      </div>
                     </div>
-                    <div>
-                      <span class="font-italic" style="word-wrap: break-word;">"{{q.item.content}}"</span>
+                    <v-divider class="pa-0 ma-0"></v-divider>
+                    <div class="ma-2" v-if="q.item.reply !=null">
+                      <div>
+                        <span class="font-weight-black" style="word-wrap: break-word;">
+                          <router-link
+                            :to="{name:'hotel', params:{id:q.item.hotel.id}}"
+                            target="_blank"
+                          >{{q.item.hotel.name}}</router-link>
+                        </span>
+                      </div>
+                      <div>
+                        <span
+                          class="font-italic"
+                          style="word-wrap: break-word;"
+                        >"{{q.item.reply.content}}"</span>
+                      </div>
+                      <div class="pl-3">
+                        <span
+                          class="caption grey--text"
+                        >-&nbsp;{{formatDate(q.item.reply.created_at)}}</span>
+                      </div>
                     </div>
-                  </div>
-                  <v-divider class="pa-0 ma-0"></v-divider>
-                  <div class="ma-2" v-if="q.item.reply !=null">
-                    <div>
-                      <span class="font-weight-black" style="word-wrap: break-word;">
-                        <router-link
-                          :to="{name:'hotel', params:{id:q.item.hotel.id}}"
-                          target="_blank"
-                        >{{q.item.hotel.name}}</router-link>
-                      </span>
+                    <div class="ma-2" v-else>
+                      <div>
+                        <span class="font-weight-black" style="word-wrap: break-word;">
+                          <router-link
+                            :to="{name:'hotel', params:{id:q.item.hotel.id}}"
+                            target="_blank"
+                          >{{q.item.hotel.name}}</router-link>
+                        </span>
+                      </div>
+                      <div>
+                        <span class="font-italic" style="word-wrap: break-word;">Chưa phản hồi...</span>
+                      </div>
                     </div>
-                    <div>
-                      <span
-                        class="font-italic"
-                        style="word-wrap: break-word;"
-                      >"{{q.item.reply.content}}"</span>
-                    </div>
-                    <div class="pl-3">
-                      <span class="caption grey--text">-&nbsp;12/07/2019</span>
-                    </div>
-                  </div>
-                  <div class="ma-2" v-else>
-                    <div>
-                      <span class="font-weight-black" style="word-wrap: break-word;">
-                        <router-link
-                          :to="{name:'hotel', params:{id:q.item.hotel.id}}"
-                          target="_blank"
-                        >{{q.item.hotel.name}}</router-link>
-                      </span>
-                    </div>
-                    <div>
-                      <span class="font-italic" style="word-wrap: break-word;">No answer yet...</span>
-                    </div>
-                  </div>
-                </td>
-              </template>
-              <template v-slot:no-results>
+                  </td>
+                </template>
+                <template v-slot:no-results>
                   <v-alert
                     :value="true"
                     color="error"
                     icon="warning"
                   >Không tìm thấy dữ liệu nhà cung cấp "{{ search }}".</v-alert>
                 </template>
-            </v-data-table>
-          </v-card>
+              </v-data-table>
+            </v-card>
           </template>
         </v-card-text>
       </v-card>
@@ -1044,24 +1089,27 @@
             </div>
             <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
               <v-flex md3>
-<<<<<<< Updated upstream
-                <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingList.detail.booking.room.image"></v-img>
-=======
                 <div class="mt-3">
-                  <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingList.detail.booking.room.image"></v-img>
+                  <v-img
+                    :aspect-ratio="1"
+                    :src="'/blog/img/room/'+bookingList.detail.booking.room.image"
+                  ></v-img>
                 </div>
->>>>>>> Stashed changes
               </v-flex>
               <v-flex md9>
                 <v-layout row wrap class="pa-0 pl-4 ma-0">
                   <v-flex md12>
                     <router-link
-                        :to="{name:'hotel',params:{id:bookingList.detail.booking.room.hotel.id}}"
-                        target="_blank"
-                      ><h2>{{bookingList.detail.booking.hotel_name}}</h2></router-link>
+                      :to="{name:'hotel',params:{id:bookingList.detail.booking.room.hotel.id}}"
+                      target="_blank"
+                    >
+                      <h2>{{bookingList.detail.booking.hotel_name}}</h2>
+                    </router-link>
                   </v-flex>
                   <v-flex md12>
-                    <div><span>{{bookingList.detail.booking.room.hotel.type}}</span></div>
+                    <div>
+                      <span>{{bookingList.detail.booking.room.hotel.type}}</span>
+                    </div>
                   </v-flex>
                   <v-flex md12>
                     <v-divider class="pa-0 ma-0"></v-divider>
@@ -1200,10 +1248,10 @@
               <v-flex md8>
                 <span class="headline orange--text">Total price</span>
               </v-flex>
-              <v-flex
-                md4
-              ><span class="headline orange--text">{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price*((100-bookingList.detail.booking.discount_value)/100)).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}
-                </span>
+              <v-flex md4>
+                <span
+                  class="headline orange--text"
+                >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price*((100-bookingList.detail.booking.discount_value)/100)).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
               </v-flex>
             </v-layout>
           </v-flex>
@@ -1219,9 +1267,9 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn color="green darken-1" flat="flat" @click="confirm.dialog = false">Hủy</v-btn>
+          <v-btn round color="green darken-1" flat="flat" @click="confirm.dialog = false">Hủy</v-btn>
 
-          <v-btn color="green darken-1" flat="flat" @click="bookingAction(confirm.booking,0)">Đồng Ý</v-btn>
+          <v-btn round color="green darken-1" flat="flat" @click="bookingAction(confirm.booking,0)">Đồng Ý</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -1231,8 +1279,9 @@
           <span class="ml-5 font-weight-bold title">Review form</span>
           <v-spacer></v-spacer>
           <div class="mr-3">
-            <v-btn color="teal" depressed class="white--text" @click="sendReview">send</v-btn>
+            <v-btn round color="teal" depressed class="white--text" @click="sendReview">send</v-btn>
             <v-btn
+              round
               color="red"
               depressed
               class="white--text"
@@ -1257,7 +1306,7 @@
                           empty-icon="$vuetify.icons.ratingFull"
                           hover
                           :length="10"
-                          ></v-rating>
+                        ></v-rating>
                       </v-flex>
                       <v-flex md2>({{reviewForm.star}}/10)</v-flex>
                       <v-flex md6>
@@ -1323,12 +1372,12 @@ export default {
   props: {},
   data() {
     return {
-      search :"",
+      search: "",
       tblHeaders: {
         booking: [
           {
             text: "ID",
-            value: 'id',
+            value: "id",
             align: "center",
             class: "red--text",
             sortable: true
@@ -1385,15 +1434,15 @@ export default {
             cancel_status: [],
             status: {},
             payment_method: {},
-            room_price:0,
+            room_price: 0,
             room: {
               price: 0,
               room_mode: {},
               room_type: {},
               hotel: {
-                id:0
+                id: 0
               },
-              image:"default.png"
+              image: "default.png"
             }
           }
         }
@@ -1604,7 +1653,8 @@ export default {
             console.log(res.data.comment);
             var comment = res.data.comment;
             this.user.review[index].comment.push(comment);
-            this.user.review[index].comments = this.user.review[index].comments+1;
+            this.user.review[index].comments =
+              this.user.review[index].comments + 1;
             this.comment.able = false;
             this.comment.content = "";
             this.comment.review_id = 0;
@@ -1811,15 +1861,17 @@ export default {
     },
     formatDate: function(date) {
       if (!date) return null;
+      date = date.substr(0, 10);
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
-    bookingListPage: function(val){
-      if(val != 0){
-      alert(val);
-        this.$router.push({path:'booking-list',query:{code:val}});
-      }else
-        this.$router.push({name:'booking-list'});
+    bookingListPage: function(val) {
+      if (val != 0) {
+        this.$router.push({
+          path: "booking-list",
+          query: { code: "bookingcode" + val }
+        });
+      } else this.$router.push({ name: "booking-list" });
     }
   }
 };

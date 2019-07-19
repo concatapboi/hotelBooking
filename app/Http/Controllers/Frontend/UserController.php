@@ -187,7 +187,7 @@ class UserController extends Controller
         }
         $user->customerFollowings = $customerFollowings;
         $user->hotelFollowings = $user->HotelFollowings();
-        if ($user->id == Auth::user()->id)
+        if ($id == Auth::user()->id)
             return response()->json([
                 'status' => false,
                 'user' => $user,

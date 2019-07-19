@@ -27,6 +27,7 @@ Route::group(['prefix' => '/manager'], function () {
         Route::post('logout', 'Backend\AuthController@logout');
         Route::resource('hotel', 'Backend\HotelController');
         Route::resource('question', 'Backend\QuestionController');
+        Route::resource('reply', 'Backend\ReplyController');
         Route::resource('coupon-code', 'Backend\CouponCodeController');
         Route::resource('room', 'Backend\RoomController');
         Route::get('all-room', 'Backend\RoomController@getAllRoomByHotelId');
@@ -62,6 +63,7 @@ Route::group(['prefix' => '/manager'], function () {
 });
 
 Route::resource('/hotel', 'Frontend\HotelController');
+Route::resource('/test-search', 'Frontend\SearchController');
 Route::get('/hotel-rooms', 'Frontend\HotelController@roomByHotel');
 Route::get('/get-top5-hotel', 'Frontend\HotelController@getTop5');
 Route::resource('/user', 'Frontend\UserController');

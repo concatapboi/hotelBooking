@@ -19,7 +19,7 @@
                         <v-flex md2>
                           <v-avatar color="black" size="52px">
                             <v-avatar color="white" size="50px">
-                              <img :src="q.item.customer.avatar.image_link" alt />
+                              <img :src="'/img/user/'+q.item.customer.avatar.image_link" alt />
                             </v-avatar>
                           </v-avatar>
                         </v-flex>
@@ -50,7 +50,7 @@
                         >Xem...</a>
                         <a
                           href="#"
-                          @click="q.expanded = false; closeQues"
+                          @click="q.expanded = false; closeQues()"
                           class="red--text"
                           v-else
                         >Hủy.</a>
@@ -64,7 +64,7 @@
                         >Hồi đáp?</a>
                         <a
                           href="#"
-                          @click="q.expanded = false;closeQues"
+                          @click="q.expanded = false;closeQues()"
                           class="red--text"
                           v-else
                         >Hủy.</a>
@@ -99,7 +99,7 @@
                         ></v-textarea>
                       </v-flex>
                       <v-flex md3 offset-md1>
-                        <v-btn :disabled="text.length ==0" round depressed large color="orange" class="white--text">gửi</v-btn>
+                        <v-btn :disabled="text.length ==0" round depressed large color="orange" class="white--text" @click="replyQuestion(q.item.id)">gửi</v-btn>
                       </v-flex>
                     </v-layout>
                   </v-card>
@@ -123,9 +123,6 @@
     <v-flex md4 offset-md1>
       <v-card light flat tile>
         <v-card-title>
-          <div class="title my-3 text-uppercase font-weight-black">
-            <v-icon color="purple">fiber_manual_record</v-icon>&nbsp;dành cho bạn
-          </div>
           <v-layout row wrap class="pa-0 ma-2">
             <v-flex md12>
               <v-radio-group v-model="radio">
@@ -136,7 +133,7 @@
                   <v-flex md4>
                     <v-layout row wrap class="pa-0 ma-0" align-center>
                       <v-flex md2>
-                        <v-radio :value="0" @click="radio = 0" color="brown"></v-radio>
+                        <v-radio :value="0" @click="radio = 0" color="black"></v-radio>
                       </v-flex>
                       <v-flex md8 offset-md1 class="caption">Tất cả</v-flex>
                     </v-layout>
@@ -160,6 +157,19 @@
                 </v-layout>
               </v-radio-group>
             </v-flex>
+            <v-flex md12>
+              <div>
+                <div class="mb-1">
+                  <span class="body-1 purple--text">Lựa chọn khác</span>
+                </div>
+                <div>
+                  <input type="text" v-model="search" class="pa-2 border" style="width:100%"/>
+                </div>
+                <div class="mt-1">
+                  <span class="grey--text cption font-italic">*nhập tiêu đề câu hỏi...</span>
+                </div>
+              </div>
+            </v-flex>
           </v-layout>
         </v-card-title>
       </v-card>
@@ -171,7 +181,7 @@
 export default {
   data() {
     return {
-        text:'',
+      text:'',
       radio: 0,
       search: "",
       tblHeaders: [
@@ -204,6 +214,7 @@ export default {
     };
   },
   created() {
+    this.$emit("chooseHotel", this.hotelId);
     // if (Object.keys(this.$route.query).length == 0) {
     //   this.$router.push({ name: "home" });
     // }
@@ -225,10 +236,10 @@ export default {
     }
   },
   methods: {
-    open: function(val) {
+    openQues: function(val) {
       this.search = val;
     },
-    close: function() {
+    closeQues: function() {
       this.search = "";
     },
     load: function() {
@@ -268,6 +279,50 @@ export default {
       date = date.substr(0, 10);
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
+    },
+    getIndex(arr,id) {
+      var index = 0;
+      if (arr.length != 0) {
+        arr.forEach((element, i) => {
+          if (element.id == id) index = i;
+        });
+      }
+      return index;
+    },
+    replyQuestion: function(id){
+      var questionIndex = this.getIndex(this.newQuestionList,id);
+      axios({
+        method: "post",
+        url: "http://localhost:8000/api/manager/reply",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("api_token")
+        },
+        data: {
+          hotel_id: this.hotelId,
+          question_id: id,
+          text: this.text,
+        }
+      })
+        .then(res => {
+          console.log(res.data);
+          if (res.data.status == true) {
+            this.newQuestionList.splice(questionIndex,1);
+            this.questionList.splice(this.getIndex(this.questionList,id),1);
+            this.oldQuestionList.push(res.data.question);
+            this.questionList.push(res.data.question);
+            this.data  = this.oldQuestionList;
+            this.openQues(res.data.question.title);
+          } else {
+            // this.$router.push({ name: "home" });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          console.log(error.response);
+          if (error.response.status == 401) {
+            // this.router.push({ name: "login" });
+          }
+        });
     }
   }
 };

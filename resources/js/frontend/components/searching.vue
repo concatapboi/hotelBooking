@@ -267,7 +267,6 @@
           <v-progress-circular :size="70" :width="7" color="blue" indeterminate></v-progress-circular>
         </div>
         <div v-else>
-
           <v-card v-if="noData == true" light flat tile>Không tìm thấy dữ liệu phù hợp :'(</v-card>
           <v-card v-else light flat tile>
             <v-layout class="search-item" v-for="(hotel,index) in data" :key="index">
@@ -488,8 +487,9 @@ export default {
           } else {
             this.loading = false;
             this.noData = false;
-            console.log(response);
+            console.log(response.data.data);
             this.data = response.data.data;
+            console.log(this.data);
             this.getDisctrict();
           }
         })

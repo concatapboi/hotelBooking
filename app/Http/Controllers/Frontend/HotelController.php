@@ -120,6 +120,7 @@ class HotelController extends Controller
         $hotel = Hotel::find($id);
         if($hotel == null){
             return response()->json([
+                'status' => $req->hotel_id,
                 'room' => array()
             ]);
         }
@@ -136,10 +137,13 @@ class HotelController extends Controller
             $checkoutExplode = explode("-", $req->check_out);
             $checkIn = Carbon::createMidnightDate($checkinExplode[0], $checkinExplode[1], $checkinExplode[2]);
             $checkOut = Carbon::createMidnightDate($checkoutExplode[0], $checkoutExplode[1], $checkoutExplode[2]);
+            $r->days = $checkIn->diffInDays($checkOut);
             $r->amount = $r->availableRoomAmount($checkIn, $checkOut);
-            foreach ($r->Feature as $f) {
-                $f->Feature;
-            };
+            $temp = array();
+            foreach($r->roomFeature() as $f){
+                $temp[] = $f->FeatureResource();
+            }
+            $r->feature = $temp;
             $servicesRoomType = ServiceRoomType::where('room_type_id', $tempRoomType->id)->where('hotel_id', $id)->get();
             $teampService = null;
             foreach ($servicesRoomType as $sRT) {

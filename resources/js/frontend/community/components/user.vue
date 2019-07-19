@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap class="mx-3">
     <v-flex shrink md8>
-      <v-img :aspect-ratio="16/4" src="/blog/img/slider/default.png" class="mr-2 mb-3 radius">
+      <v-img :aspect-ratio="16/4" src="/blog/img/slider/slider.png" class="mr-2 mb-3 radius">
         <v-layout row wrap fill-height class="lightbox white--text mt-5 mb-1 pl-5">
           <v-spacer></v-spacer>
           <v-flex md9 shrink class="pl-5">
@@ -92,7 +92,43 @@
                       <v-card-text class="font-weight-bold font-italic">{{item.content}}</v-card-text>
                     </v-card>
                   </v-layout>
-                  <span class="grey--text">&nbsp;21/12/2019</span>
+                  <span class="grey--text pl-2">-{{formatDate(item.created_at)}}</span>
+                  <v-layout
+                    row
+                    wrap
+                    class="pa-0 ma-0 mt-2 ml-3 pl-3 border-left border-bottom"
+                    align-center
+                  >
+                    <v-flex md3>
+                      <v-img :aspect-ratio="1" :src="'/blog/img/hotel/'+item.hotel.image"></v-img>
+                    </v-flex>
+                    <v-flex md8 offset-md1 class="pa-3 border-left">
+                      <v-layout row wrap class="pa-0 ma-0">
+                        <v-flex md12>
+                          <div>
+                            <router-link
+                              :to="{name:'hotel',params:{id:item.hotel.id}}"
+                              target="_blank"
+                            >
+                              <span class="font-weight-bold body-2">{{item.hotel.name}}</span>
+                            </router-link>
+                            &nbsp;({{item.hotel.stars_num}}&nbsp;sao)
+                          </div>
+                          <div>Tại&nbsp;{{item.hotel.address}}</div>
+                        </v-flex>
+                        <v-flex md4 v-for="(ser,i) in item.hotel.services" :key="i" class="pa-1">
+                          <div class="text-md-center border pa-2">
+                            <div>
+                              <i :class="'fa-lg fas fa-'+ser.icon"></i>
+                            </div>
+                            <div>
+                              <span class="caption font-italic">{{ser.name}}</span>
+                            </div>
+                          </div>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
                 </v-card-text>
               </v-card-title>
               <v-card-actions>
@@ -463,9 +499,6 @@
 export default {
   props: {},
   mounted() {},
-  watch: {
-    $route: "getData"
-  },
   data() {
     return {
       user: {},
@@ -499,9 +532,10 @@ export default {
     };
   },
   created() {
-    this.load();
+    this.getData();
   },
   watch: {
+    $route: "getData",
     "comment.content": function(val) {
       if (val.length == 0) {
         this.comment.able = false;
@@ -513,32 +547,32 @@ export default {
     }
   },
   methods: {
-    load: function() {
-      if (localStorage.getItem("login_token") != null) {
-        axios({
-          method: "get",
-          url: "http://localhost:8000/api/getUserLogin",
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("login_token")
-          }
-        })
-          .then(res => {
-            console.log(res.data.user);
-            this.user = res.data.user;
-            this.getData();
-          })
-          .catch(error => {
-            console.log(error.response);
-            if (error.response.status == 401) {
-              localStorage.removeItem("login_token");
-              this.user = {};
-              this.$emit("loadLogin");
-            }
-          });
-      } else {
-        this.$emit("loadLogin");
-      }
-    },
+    // load: function() {
+    //   if (localStorage.getItem("login_token") != null) {
+    //     axios({
+    //       method: "get",
+    //       url: "http://localhost:8000/api/getUserLogin",
+    //       headers: {
+    //         Authorization: "Bearer " + localStorage.getItem("login_token")
+    //       }
+    //     })
+    //       .then(res => {
+    //         console.log(res.data.user);
+    //         this.user = res.data.user;
+    //         this.getData();
+    //       })
+    //       .catch(error => {
+    //         console.log(error.response);
+    //         if (error.response.status == 401) {
+    //           localStorage.removeItem("login_token");
+    //           this.user = {};
+    //           this.$emit("loadLogin");
+    //         }
+    //       });
+    //   } else {
+    //     this.$emit("loadLogin");
+    //   }
+    // },
     getData: function() {
       // if (this.user.id == this.$route.params.id) {
       //   this.$router.push({ name: "account" });
@@ -556,7 +590,7 @@ export default {
         }
       })
         .then(res => {
-          if (!res.data.status) {
+          if (res.data.status == false) {
             this.$router.push({ name: "account" });
             return;
           }
@@ -679,7 +713,13 @@ export default {
             this.$router.push({ name: "login" });
           }
         });
-    }
+    },
+    formatDate: function(date) {
+      if (!date) return null;
+      date = date.substr(0, 10);
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
+    },
   }
 };
 </script>

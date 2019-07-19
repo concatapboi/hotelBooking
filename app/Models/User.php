@@ -76,7 +76,9 @@ class User extends Authenticatable implements JWTSubject
       $b->status = new BookingStatusResource($b->Status);
       $hotel = $b->Room->Hotel;      
       $b->room->room_mode = $b->Room->RoomMode;
-      $b->room->room_type = $b->Room->RoomType;      
+      $b->room->room_type = $b->Room->RoomType;   
+      $b->days =  Carbon::parse($b->check_in)->diffInDays( Carbon::parse($b->check_out));   
+      $b->total = ($b->days-1)*($b->room_amount*$b->room_price*((100-$b->discount_value)/100));
       foreach($hotel->paymentMethods() as $p){
         if($p['method']->id == $b->payment_method_id) $b->payment_method = [
           'id' =>$p['method']->id,
@@ -92,6 +94,7 @@ class User extends Authenticatable implements JWTSubject
       $b->room->image = RoomImage::where('room_id',$b->room->id)->where('is_primary',1)->first()->image_link;
       $b->Review;
       $b->can_review = $b->reviewAble();
+      $b->slug = 'bookingcode'.$b->id;
     }
     return $bookingList;
   }
@@ -168,6 +171,9 @@ class User extends Authenticatable implements JWTSubject
     foreach ($reviews as $r) {
       $r->customer_review = $r->CustomerReview($this->id, $r->id);
       $r->model = false;
+      $r->Hotel;
+      $r->hotel->image = HotelImage::where('hotel_id',$r->hotel->id)->where('is_primary',1)->first()->image_link;
+      $r->hotel->services = $r->hotel->ServiceResource();
       foreach ($r->Comment as $c) {
         $c->customer = $c->Customer();
       };

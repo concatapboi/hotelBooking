@@ -84,6 +84,7 @@ class Hotel extends Model
   {
     $reviews = Review::where('hotel_id', $this->id)->get();
     foreach ($reviews as $r) {
+      $r->booking= $r->bookingDetail();
       $r->useful = false;
       $r->customer = $r->Customer();
       // $r->avatar = UserImage::where('user_id', $r->customer_id)->where('is_primary', 1)->first();

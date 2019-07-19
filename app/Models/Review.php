@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Review extends Model
 {
@@ -45,5 +46,29 @@ class Review extends Model
 
   public function CustomerReview($customerID,$reviewID){
     return CustomerReview::where('customer_id', $customerID)->where('review_id', $reviewID)->first();
+  }
+
+  public function Booking()
+  {
+    return $this->belongsTo('App\Models\Booking', 'booking_id', 'id');
+  }
+  public function bookingDetail()
+  {
+    $booking= Booking::find($this->booking_id);
+    $data = [];
+    $data['id'] = $booking->id;
+    $data['check_in'] = $booking->check_in;
+    $data['check_out'] = $booking->check_out;
+    $data['days'] = Carbon::parse($booking->check_in)->diffInDays(Carbon::parse($booking->check_out));
+    $data['discount_value'] = $booking->discount_value;
+    $data['room_amount'] = $booking->room_amount;
+    $room = $booking->Room;
+    $temp = array();
+    foreach($room->roomFeature() as $f){
+      $temp[] = $f->FeatureResource();
+    }
+    $room->feature = $temp;
+    $data['room'] = $room;
+    return $data;
   }
 }
