@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use Carbon\Carbon;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -17,6 +19,7 @@ use App\Models\CustomerReview;
 use App\Models\UserImage;
 use App\Models\HotelImage;
 use App\Http\Resources\HotelResource;
+use App\Models\CouponCode;
 
 class ReviewController extends Controller
 {
@@ -25,38 +28,54 @@ class ReviewController extends Controller
     {
         $arr = array();
         if (Auth::check()) {
-            $user = Auth::user();            
-            foreach($user->reViewList() as $review){
+            $user = Auth::user();
+            foreach ($user->reViewList() as $review) {
                 $temp = $review;
                 $temp->customer = $user;
-                $temp->customer->avatar = UserImage::where('user_id',$user->id)->where('is_primary', 1)->first();
+                // $temp->Hotel;
+                // $temp->hotel->image = HotelImage::where('hotel_id', $temp->hotel->id)->where('is_primary', 1)->first()->image_link;
+                // $temp->hotel->services = $temp->hotel->ServiceResource();
+                $temp->customer->avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
                 $arr[] = $temp;
             }
             $followings = $user->Followings();
-            if(sizeOf($followings)!=0){
-                foreach($followings as $f){
-                    foreach($f->followed->reViewList() as $review){
+            if (sizeOf($followings) != 0) {
+                foreach ($followings as $f) {
+                    foreach ($f->followed->reViewList() as $review) {
                         $temp = $review;
-                        $temp->isHotel = false;
+                        // $temp->Hotel;
+                        // $temp->hotel->image = HotelImage::where('hotel_id', $temp->hotel->id)->where('is_primary', 1)->first()->image_link;
+                        // $temp->hotel->services = $temp->hotel->ServiceResource();
                         $temp->customer = $f->followed;
-                        $temp->customer->avatar = UserImage::where('user_id',$f->followed->id)->where('is_primary', 1)->first();
+                        $temp->customer->avatar = UserImage::where('user_id', $f->followed->id)->where('is_primary', 1)->first();
                         $arr[] = $temp;
                     }
                 }
             }
             $tempArr = array();
             $hotelFollowings = $user->HotelFollowings();
-            if(sizeOf($hotelFollowings)!=0){
-                foreach($hotelFollowings as $h){
-                    $h->Hotel->CouponCode;
-                    $h->hotel->isHotel = true;
-                    $h->hotel->image = HotelImage::where('hotel_id', $h->hotel->id)->where('is_primary', 1)->first()->image_link;
-                    $tempArr[] = $h->hotel;
+            if (sizeOf($hotelFollowings) != 0) {
+                foreach ($hotelFollowings as $h) {
+                    $h->Hotel;
+                    $hotelTemp = $h->Hotel;
+                    $hotelTemp->image = HotelImage::where('hotel_id', $h->hotel->id)->where('is_primary', 1)->first()->image_link;;
+                    foreach ($h->hotel->CouponCode as $couponCode) {
+                        $couponCode->hotel = $hotelTemp;
+                        if ($couponCode->start_at != null && !Carbon::now()->lessThan(Carbon::parse($couponCode->start_at))) {
+                            if ($couponCode->end_at == null || ($couponCode->end_at != null && Carbon::now()->lessThan(Carbon::parse($couponCode->end_at)))) {
+                                $couponCode->days = Carbon::now()->diffInDays($couponCode->start_at);
+                                $tempArr[] = $couponCode;
+                            }
+                        }
+                    }
                 }
             }
         }
+        $data = array_merge($arr, $tempArr);
+        $collection = collect($data)->sortBy('created_at');
+        $data = $collection->values()->all();
         return response()->json([
-            'data' => $this->filterByRoomType([new HotelResource(Hotel::find(1)),new HotelResource(Hotel::find(2))],[4]),
+            'data' => $data,
         ]);
     }
     public function filterByRoomType($array, $roomTypes)
@@ -64,7 +83,7 @@ class ReviewController extends Controller
         $data = array();
         foreach ($array as $hotel) {
             $temp = $hotel;
-            if($hotel->countRoomByTypes($roomTypes) >0){ 
+            if ($hotel->countRoomByTypes($roomTypes) > 0) {
                 $temp->count = $hotel->countRoomByTypes($roomTypes);
                 $data[] = $temp;
             }
@@ -97,7 +116,7 @@ class ReviewController extends Controller
             ]);
         }
         $b = Booking::find($req->booking_id);
-        if ($b == null || $b->reviewAble() == false || Hotel::find($req->hotel_id) == null){
+        if ($b == null || $b->reviewAble() == false || Hotel::find($req->hotel_id) == null) {
             return response()->json([
                 'status' => false,
                 'errors' => $validateData->errors(),

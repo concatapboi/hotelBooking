@@ -19,10 +19,10 @@ class BookingController extends Controller
 {
     //get booking
     public function index()
-    { 
+    {
         $user = Auth::user();
         $bookingList = $user->bookingList();
-        if(sizeOf($bookingList) == 0){
+        if (sizeOf($bookingList) == 0) {
             return response()->json([
                 'status' => false,
                 'data' => $bookingList
@@ -66,7 +66,7 @@ class BookingController extends Controller
                 $mess = 'Sucessfully!';
                 $coupon_code = CouponCode::find($b['coupon_code_id']);
                 $discount = 0;
-                if($coupon_code !=null){
+                if ($coupon_code != null) {
                     $discount = $coupon_code->discount_value;
                     $coupon_code = $coupon_code->code;
                 }
@@ -92,15 +92,15 @@ class BookingController extends Controller
                 $booking->Status;
                 $booking->cancel_status = $booking->Hotel()->CancelableStatus();;
                 $booking->PaymentMethod;
-                $hotel = $booking->Room->Hotel;      
+                $hotel = $booking->Room->Hotel;
                 $booking->room->room_mode = $booking->Room->RoomMode;
                 $booking->room->room_type = $booking->Room->RoomType;
                 $temp = array();
-                $temp['id'] = $hotel->id; 
-                $temp['name'] = $hotel->name; 
-                $temp['type'] = $hotel->HotelType->name; 
-                $booking->room->hotel = $temp; 
-                $booking->room->image = RoomImage::where('room_id',$booking->room->id)->where('is_primary',1)->first()->image_link;
+                $temp['id'] = $hotel->id;
+                $temp['name'] = $hotel->name;
+                $temp['type'] = $hotel->HotelType->name;
+                $booking->room->hotel = $temp;
+                $booking->room->image = RoomImage::where('room_id', $booking->room->id)->where('is_primary', 1)->first()->image_link;
             }
         } else return response()->json(['status' => $status, 'mess' => $validateData->errors()]);
         return response()->json(['status' => $status, 'mess' => $mess, 'booking' => $booking]);

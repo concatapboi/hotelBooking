@@ -145,7 +145,7 @@
     </v-navigation-drawer>
     <v-toolbar :color="drawer.color" app fixed clipped-right clipped-left flat>
       <v-toolbar-side-icon v-on:click="drawer.state = !drawer.state" class="teal accent-4"></v-toolbar-side-icon>
-      <a class="title ml-3 mr-5 white--text text-uppercase" href="/" target="_blank">Trang Chủ</a>
+      <a class="title ml-3 mr-5 white--text text-uppercase" href="/community" >Trang Chủ</a>
       <v-text-field
         solo
         label="who's you want to find?"
@@ -293,8 +293,8 @@
                     v-on:click:append="login.value=false"
                     v-else
                   ></v-text-field>
-                  <v-btn color="teal" v-on:click="submitLogin" dark depressed>Đăng Nhập</v-btn>
-                  <v-btn color="grey" v-on:click="clear" dark depressed>Xóa</v-btn>
+                  <v-btn round color="teal" v-on:click="submitLogin" dark depressed>Đăng Nhập</v-btn>
+                  <v-btn round color="grey" v-on:click="clear" dark depressed>Xóa</v-btn>
                 </v-form>
               </v-flex>
             </v-layout>
@@ -486,6 +486,7 @@ export default {
               this.clear();
               localStorage.login_token = res.data.token;
               this.getLogin();
+              this.$router.push({name:'account'});
               return;
             })
             .catch(error => {

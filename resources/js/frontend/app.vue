@@ -93,7 +93,7 @@
                       <i class="fas fa-question teal--text fa-lg"></i>
                     </v-list-tile-action>
                     <v-list-tile-content>Question List</v-list-tile-content>
-                  </v-list-tile>
+                  </v-list-tile>-->
                   <v-divider></v-divider>
                   <v-list-tile>
                     <v-btn dark depressed color="teal" large @click="logOut">

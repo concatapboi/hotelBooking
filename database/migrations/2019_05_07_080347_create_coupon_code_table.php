@@ -19,9 +19,10 @@ class CreateCouponCodeTable extends Migration
             $table->integer('discount_value');
             $table->string('title');
             $table->text('content')->nullable();
-            $table->timestamp('start_at')->nullable();
-            $table->timestamp('end_at')->nullable();
+            $table->date('start_at')->nullable();
+            $table->date('end_at')->nullable();
             $table->integer('apply_amount');
+            $table->integer('applied_amount')->default(0);
             $table->integer('hotel_id')->unsigned();
             $table->timestamps();
             $table->foreign('hotel_id')

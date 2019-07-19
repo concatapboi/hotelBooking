@@ -253,7 +253,7 @@
                         </div>
                         <v-divider></v-divider>
                         <div v-for="(feature,i) in room.feature" :key="i">
-                          <span>{{feature.feature.name}}</span>
+                          <span>{{feature.name}}</span>
                         </div>
                       </v-flex>
                     </v-layout>
@@ -508,17 +508,40 @@
                                           target="_blank"
                                         >{{r.customer.name}}</router-link>
                                       </span>
-                                      <span class="grey--text">&nbsp;-&nbsp;21/12/2017</span>
+                                      <span class="grey--text">&nbsp;-{{formatDate(r.created_at)}}</span>
                                     </div>
                                     <div>
                                       <div>
-                                        <span class="pl-2 headline">{{r.title}}</span>
+                                        <span class="pl-2 subheading">{{r.title}}</span>
                                       </div>
                                       <div>
-                                        <span class="ml-3 pl-4 title border-left">"{{r.content}}"</span>
+                                        <span class="ml-3 pl-4 caption border-left">"{{r.content}}"</span>
                                       </div>
                                     </div>
                                   </div>
+                                </v-flex>
+                                <v-flex md12 class="my-3 border pa-3">
+                                  <v-layout row wrap class="pa-0 ma-0 caption">
+                                    <v-flex class="border-right pr-4">
+                                      <div>Đã ở&nbsp;{{r.booking.days}}&nbsp;ngày.</div>
+                                      <div>Check-In:&nbsp;{{r.booking.check_in}}</div>
+                                      <div>Check-Out:&nbsp;{{r.booking.check_out}}</div>
+                                      <v-layout row wrap class="pa-0 ma-0">
+                                        <v-flex md4>Tên Phòng:</v-flex>
+                                        <v-flex md8>{{r.booking.room.room_name}}</v-flex>
+                                        <v-flex md4>Số Lượng:</v-flex>
+                                        <v-flex md8>{{r.booking.room_amount}}</v-flex>
+                                        <v-flex md12 v-if="r.booking.discount_value >0">
+                                          <span class="font-italic">"Nhận được giảm giá&nbsp;{{r.booking.discount_value}}%"</span>
+                                        </v-flex>
+                                      </v-layout>
+                                    </v-flex>
+                                    <v-flex offset-md1>
+                                      <v-layout row wrap class="pa-0 ma-0">
+                                        <v-flex md4 v-for="(feature,i) in r.booking.room.feature" :key="i">{{feature.name}}</v-flex>
+                                      </v-layout>
+                                    </v-flex>
+                                  </v-layout>
                                 </v-flex>
                               </v-layout>
                             </v-card-text>
@@ -604,7 +627,7 @@
                                         target="_blank"
                                       >{{q.customer.name}}</router-link>
                                     </span>
-                                    <span class="grey--text">&nbsp;-&nbsp;21/12/2017</span>
+                                    <span class="grey--text">&nbsp;-&nbsp;{{formatDate(q.created_at)}}</span>
                                   </div>
                                   <div>
                                     <div>
@@ -618,7 +641,7 @@
                                 <div class="pl-3 border-left border-warning" v-if="q.reply !=null">
                                   <div>
                                     <span class="font-weight-bold">{{data.name}}</span>
-                                    <span class="grey--text">&nbsp;-&nbsp;21/12/2019</span>
+                                    <span class="grey--text">&nbsp;-&nbsp;{{formatDate(q.reply.created_at)}}</span>
                                   </div>
                                   <div class="pl-3">"{{q.reply.content}}"</div>
                                 </div>
@@ -703,7 +726,7 @@
                   </div>
                   <v-divider></v-divider>
                   <div v-for="(feature,i) in bookingDialog.room.feature" :key="i">
-                    <span>{{feature.feature.name}}</span>
+                    <span>{{feature.name}}</span>
                   </div>
                 </v-flex>
                 <v-flex md12>
@@ -893,13 +916,17 @@
                           <span>Số Lượng</span>
                         </v-flex>
                         <v-flex md4>{{bookingDialog.room.bookingAmount}}</v-flex>
+                        <v-flex md8>
+                          <span>Số Đêm Ở</span>
+                        </v-flex>
+                        <v-flex md4>{{bookingDialog.room.days-1}}</v-flex>
                         <v-flex md12>
                           <v-divider></v-divider>
                         </v-flex>
                         <v-flex md12>
                           <v-layout row wrap class="pa-0 ma-0" align-center>
                             <v-flex md8>
-                              <v-text-field label="nhập mã giảm giá tại đây..." v-model="text" class="my-2 ma-0" color="teal" outline></v-text-field>
+                              <v-text-field label="nhập mã giảm giá tại đây..." v-model="text" class="mt-2 ma-0" color="teal" outline></v-text-field>
                             </v-flex>
                             <v-flex md4>
                               <v-btn
@@ -909,7 +936,7 @@
                                 @click="applyCouponCode"
                               >Áp dụng</v-btn>
                             </v-flex>
-                            <v-flex md12><span class="red--text font-italic">{{bookingDialog.couponCode.mess}}</span></v-flex>
+                            <v-flex md12 v-if="bookingDialog.couponCode.mess.length >0"><span class="red--text font-italic">{{bookingDialog.couponCode.mess}}</span></v-flex>
                           </v-layout>
                         </v-flex>
                         <v-flex md12>
@@ -1026,9 +1053,9 @@
                             </v-flex>
                             <v-flex md12>
                               <v-layout row wrap class="pa-0 ma-0" align-center>
-                                <v-flex md3>Loại Phòng:</v-flex>
+                                <v-flex md5>Loại Phòng:</v-flex>
                                 <v-flex
-                                  md9
+                                  md7
                                 >{{bookingDialog.room.room_type.name}}</v-flex>
                                 <v-flex md5>Số Lượng Đặt:</v-flex>
                                 <v-flex md7>{{bookingDialog.room.bookingAmount}}</v-flex>
@@ -1064,6 +1091,10 @@
                           <span>Số Lượng Đặt</span>
                         </v-flex>
                         <v-flex md4>{{bookingDialog.room.bookingAmount}}</v-flex>
+                        <v-flex md8>
+                          <span>Số Đêm Ở</span>
+                        </v-flex>
+                        <v-flex md4>{{bookingDialog.room.days-1}}</v-flex>
                         <v-flex md12>
                           <v-divider></v-divider>
                         </v-flex>
@@ -1515,7 +1546,7 @@ export default {
     getHotelRooms: function() {
       axios({
         method: "get",
-        url: "http://localhost:8000/api/hotel-rooms/",
+        url: "http://localhost:8000/api/hotel-rooms",
         params: {
           hotel_id: this.id,
           check_in: this.checkInVal,
@@ -1551,6 +1582,7 @@ export default {
     },
     formatDate: function(date) {
       if (!date) return null;
+      date = date.substr(0, 10);
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
     },
@@ -1559,7 +1591,7 @@ export default {
       this.bookingDialog.room.image = room.image;
       this.bookingDialog.state = true;
       this.bookingDialog.accept = false;
-      this.bookingDialog.totalPrice = room.bookingAmount * room.price;
+      this.bookingDialog.totalPrice = room.bookingAmount * room.price *(room.days-1);
       this.bookingDialog.step = 1;
       this.bookingDialog.couponCode.check = false;
       this.text = "";

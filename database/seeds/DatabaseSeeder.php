@@ -252,7 +252,7 @@ class DatabaseSeeder extends Seeder
 
         //Hotel: 15
         //length 16
-        $arr = [1,3,16,21,22,23,28,29,32,33,35,36,37,38,39,40];
+        $arr = [1,3,16,28,29,32,33,35,40,87,98,106,109];
         for($i = 1;$i<=$hotelNum;$i++){
             $rand = rand(0,sizeOf($arr)-1);
             factory(App\Models\Hotel::class)->create([

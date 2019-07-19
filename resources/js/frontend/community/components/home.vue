@@ -2,7 +2,7 @@
   <v-layout row wrap class="mx-3">
     <v-flex shrink md8 v-if="feeds.length !=0">
       <v-layout class="row wrap mx-3 mb-5" v-for="(r,index) in feeds" :key="index">
-        <v-badge left overlap :color="color.badge">
+        <v-badge left overlap :color="color.badge" v-if="!r.code">
           <template v-slot:badge>
             <v-tooltip top v-if="r.can_comment == 1">
               <template v-slot:activator="{ on }">
@@ -63,7 +63,37 @@
                   <v-card-text class="font-weight-bold font-italic">{{r.content}}</v-card-text>
                 </v-card>
               </v-layout>
-              <span class="grey--text">&nbsp;{{formatDate(r.created_at)}}</span>
+              <span class="grey--text pl-2">-{{formatDate(r.created_at)}}</span>
+              <v-layout row wrap class="pa-0 ma-0 mt-2 ml-3 pl-3 border-left border-bottom" align-center>
+                <v-flex md3>
+                  <v-img :aspect-ratio="1" :src="'/blog/img/hotel/'+r.hotel.image">
+                  </v-img>
+                </v-flex>
+                <v-flex md8 offset-md1 class="pa-3 border-left">
+                  <v-layout row wrap class="pa-0 ma-0">
+                    <v-flex md12>
+                      <div>
+                        <router-link
+                        :to="{name:'hotel',params:{id:r.hotel.id}}"
+                        target="_blank"
+                      >
+                      <span class="font-weight-bold body-2">{{r.hotel.name}}</span>
+                        </router-link>&nbsp;({{r.hotel.stars_num}}&nbsp;sao)</div>
+                      <div>Tại&nbsp;{{r.hotel.address}}</div>
+                    </v-flex>
+                    <v-flex md4 v-for="(ser,i) in r.hotel.services" :key="i" class="pa-1">
+                      <div class="text-md-center border pa-2">
+                        <div>
+                          <i :class="'fa-lg fas fa-'+ser.icon"></i>
+                        </div>
+                        <div>
+                          <span class="caption font-italic">{{ser.name}}</span>
+                        </div>
+                      </div>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
             </v-card-text>
             <v-card-actions>
               <!-- <v-tooltip top>
@@ -124,11 +154,15 @@
               >
                 <v-card-title>
                   <v-avatar size="42px" color="black" flat>
+                    <router-link :to="{name:'user',params:{id:c.customer.id}}">
                     <v-avatar size="40px" flat color="white">
                       <img :src="'/img/user/'+c.customer.avatar.image_link" />
                     </v-avatar>
+                    </router-link>
                   </v-avatar>
+                  <router-link :to="{name:'user',params:{id:c.customer.id}}">
                   <span class="pl-3">{{c.customer.name}}</span>
+                  </router-link>
                 </v-card-title>
                 <v-card-text>
                   <v-layout>
@@ -167,6 +201,46 @@
             </v-layout>
           </v-card>
         </v-badge>
+        <v-card light min-height="120px" class="pa-1" flat tile width="800px" v-else>
+          <v-card-title>
+              <v-avatar size="72px" color="black" flat>
+                <v-avatar size="70px" color="white">
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <img :src="'/blog/img/hotel/'+r.hotel.image" v-on="on" />
+                    </template>
+                    <span>{{r.hotel.name }}</span>
+                  </v-tooltip>
+                </v-avatar>
+              </v-avatar>
+              <span class="title pl-3 font-weight-light">{{r.hotel.name}}</span>
+              <v-spacer></v-spacer>
+          </v-card-title>
+          <v-divider class="m-0 p-0"></v-divider>
+          <v-card-text>
+            <v-layout row wrap class="pa-2 ma-0 grey lighten-2 radius" align-center>
+              <v-flex md3 class="text-md-center">
+                <div>
+                  <div>Mã</div>
+                  <div>
+                    <span class="display-1 font-weight-bold indigo--text">{{r.code}}</span>
+                  </div>
+                </div>
+              </v-flex>
+              <v-flex md9 class="pa-2 border-left border-light">
+                <div>
+                  <div><span class="headline">{{r.title}}</span></div>
+                  <div><span class="font-weight-bold font-italic">"{{r.content}}"</span></div>
+                  <div class="body-2 font-weight-bold">{{formatDate(r.start_at)}}&nbsp;-&nbsp;{{formatDate(r.end_at)}}</div>
+                  <div>
+                    <span class="red--text body-2" v-if="r.days>0">Đã diễn ra&nbsp;{{r.days}}&nbsp;ngày</span>
+                    <span class="red--text body-2" v-else>Đang diễn ra.</span>
+                  </div>
+                </div>
+              </v-flex>
+            </v-layout>
+          </v-card-text>
+        </v-card>
       </v-layout>
       <!-- <v-layout
         class="row wrap mx-3 mb-5"
@@ -362,7 +436,7 @@
     </v-flex>
     <v-flex shrink md4>
       <v-expansion-panel light class="elevation-0" expand v-model="expand">
-        <v-expansion-panel-content class="mb-3">
+        <!-- <v-expansion-panel-content class="mb-3">
           <template v-slot:actions>
             <v-icon>expand_more</v-icon>
           </template>
@@ -433,7 +507,7 @@
               </v-list-tile-action>
             </v-list-tile>
           </v-list>
-        </v-expansion-panel-content>
+        </v-expansion-panel-content> -->
         <v-expansion-panel-content class="mb-3">
           <template v-slot:actions>
             <v-icon>expand_more</v-icon>
@@ -851,15 +925,9 @@ export default {
           console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
-<<<<<<< Updated upstream
-            this.$emit("loadSnackbar", "Something wrong!");
-          }
-          this.$emit("loadSnackbar", "Following " + value.name);
-=======
             this.$emit("loadSnackbar", "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?");
           }
           // this.$emit("loadSnackbar", "Following " + value.name);
->>>>>>> Stashed changes
         })
         .catch(error => {
           flag = false;
@@ -893,15 +961,9 @@ export default {
           console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
-<<<<<<< Updated upstream
-            this.$emit("loadSnackbar", "Something wrong!");
-          }
-          this.$emit("loadSnackbar", "Unfollowing " + value.name);
-=======
             this.$emit("loadSnackbar", "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?");
           }
           // this.$emit("loadSnackbar", "Unfollowing " + value.name);
->>>>>>> Stashed changes
         })
         .catch(error => {
           flag = false;
@@ -935,15 +997,9 @@ export default {
           console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
-<<<<<<< Updated upstream
-            this.$emit("loadSnackbar", "Something wrong!");
-          }
-          this.$emit("loadSnackbar", "Following " + value.name);
-=======
             this.$emit("loadSnackbar", "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?");
           }
           // this.$emit("loadSnackbar", "Following " + value.name);
->>>>>>> Stashed changes
         })
         .catch(error => {
           flag = false;
@@ -977,15 +1033,9 @@ export default {
           console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
-<<<<<<< Updated upstream
-            this.$emit("loadSnackbar", "Something wrong!");
-          }
-          this.$emit("loadSnackbar", "Unfollowing " + value.name);
-=======
             this.$emit("loadSnackbar", "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?");
           }
           // this.$emit("loadSnackbar", "Unfollowing " + value.name);
->>>>>>> Stashed changes
         })
         .catch(error => {
           flag = false;
@@ -999,18 +1049,6 @@ export default {
         if(!flag){
           this.top5Hotel[index].follow = true;
         }
-<<<<<<< Updated upstream
-    },
-    getIndex(id) {
-      var index = -1;
-      if (this.feeds.length != 0) {
-        this.feeds.forEach((element, i) => {
-          if (element.id == id) index = i;
-        });
-      }
-      return index;
-=======
->>>>>>> Stashed changes
     },
     getIndex(id) {
       var index = -1;
