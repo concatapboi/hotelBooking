@@ -20,21 +20,17 @@ class RoomTypeController extends Controller
     {
         // return $request->hotelId;
         $roomModeId = $request->roomModeId;
-        $hotel = Hotel::find($request->hotelId)->first();
-        $arrayRoomType = RoomType::all()->toArray();
-        foreach ($hotel->Room as $hotelRoom) {
-            $roomMode = $hotelRoom->room_mode_id;
-            if ($roomMode == (int)$roomModeId) {
-                foreach ($arrayRoomType as $key => $roomType) {
-                    if ($roomType['id'] == $hotelRoom->room_type_id) {
-                        array_splice($arrayRoomType, $key, 1);
-                    }
-                }
+        $hotel = Hotel::where("id",$request->hotelId)->with("Room")->get();
+        $temp = [];
+        foreach($hotel[0]->room as $room){
+            if($room->room_mode_id == $roomModeId){
+                $temp[] = $room->room_type_id;
             }
         }
+        $data = RoomType::whereNotIn("id",$temp)->get();
         return response()->json([
             "status" => true,
-            "data" => $arrayRoomType,
+            "data" => $data,
         ]);
     }
 

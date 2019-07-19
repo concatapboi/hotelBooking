@@ -23,11 +23,11 @@
           </template>
           <v-list-tile class="style-link" :to="{name:'room',query :{hotelId : hotelId}}">
             <i class="ma-1 fa-lg fas fa-bed"></i>
-            <v-list-tile-title>Rooms</v-list-tile-title>
+            <v-list-tile-title>Quản lý Phòng</v-list-tile-title>
           </v-list-tile>
           <v-list-tile class="style-link" :to="{name:'room-facility',query :{hotelId : hotelId}}">
             <i class="ma-1 fa-lg fas fa-tools"></i>
-            <v-list-tile-title>Room facility</v-list-tile-title>
+            <v-list-tile-title>Cơ sở vật chất</v-list-tile-title>
           </v-list-tile>
         </v-list-group>
         <v-list-tile class="style-link" :to="{name:'service',query :{hotelId : hotelId}}">
@@ -41,7 +41,7 @@
         </v-list-tile>
         <v-list-tile class="style-link" :to="{name:'order',query :{hotelId : hotelId}}">
           <v-list-tile-action>
-            <v-icon>{{items[3].icon}}</v-icon>
+            <i class="fas fa-calendar-day"></i>
           </v-list-tile-action>
 
           <v-list-tile-content>
@@ -82,7 +82,7 @@
       </div>-->
       <div v-if="hotelName === ''"></div>
       <div v-else>
-        Currently working with
+        Đang thao tác với khách sạn 
         <v-btn @click="logout" dark depressed round small>{{hotelName}}</v-btn>
       </div>
       <v-toolbar-items class="hidden-sm-and-down">
@@ -166,9 +166,11 @@ export default {
       hotel_stars_num: 2,
       currentProperties: "",
       showMenu: false,
-      api_token: ""
+      api_token: "",
+      
     };
   },
+  
   watch: {
     $route: function(to, from) {
       if (to.name == "home") {

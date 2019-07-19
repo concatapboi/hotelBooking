@@ -145,7 +145,7 @@
             <v-card flat>
               <v-card-title class="pa-0 ma-0">
                 <h5>Mức giá</h5>
-                <span>({{price[0].toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{price[1].toLocaleString('en-US', {style: 'currency',currency: 'USD',})}})</span>
+                <span>({{price[0].toLocaleString('vi', {style: 'currency',currency: 'VND',})}}&nbsp;-&nbsp;{{price[1].toLocaleString('vi', {style: 'currency',currency: 'VND',})}})</span>
               </v-card-title>
               <v-card-text class="pa-0 ma-0 mt-3">
                 <v-layout row justify-center align-center>
@@ -276,7 +276,8 @@
                   :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
                   target="_blank"
                 >
-                  <v-img :aspect-ratio="4/3" :src="'/blog/img/hotel/'+hotel.image"></v-img>
+                  <v-img :aspect-ratio="4/3" :src="hotel.image"></v-img>
+
                 </router-link>
               </v-flex>
               <v-flex xs9>
@@ -310,7 +311,7 @@
                           <div>
                             <div>
                               Mức giá:
-                              <span>{{hotel.minPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
+                              <span>{{hotel.minPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
                             </div>
                             <div v-if="hotel.count">Số Lượng Phòng: {{hotel.count}}</div>
                           </div>
@@ -372,9 +373,9 @@ export default {
       hotelTypeSeleted: [],
       RoomTypeSeleted: [],
       starsSeleted: [],
-      price: [400, 100000],
+      price: [10, 100000000],
       priceMin: 10,
-      priceMax: 100000,
+      priceMax: 100000000,
       number: 5,
       stars: {
         1: false,

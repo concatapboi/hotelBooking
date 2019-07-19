@@ -27,12 +27,13 @@ class RoomResource extends JsonResource
         $service = [];
         $temp = $this->RoomType->ServiceRoomTypeByHotel($this->hotel_id);
         foreach($temp as $t){
-            $service[] = $t->ServiceResource();
+            // $service[] = $t->ServiceResource();
+            $service[] = new ServiceResource($t);
         }
         $feature = [];
         $temp = $this->Feature;
         foreach($temp as $t){
-            $feature[] = $t->FeatureResource();
+            $feature[] = new FeatureResource($t);
         }
 
         $arrayData = [

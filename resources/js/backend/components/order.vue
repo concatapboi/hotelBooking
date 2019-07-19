@@ -5,7 +5,7 @@
         <v-card width="100%">
           <span v-if="filterId == true">
             <v-card-title>
-              <h5>Filter by Id :</h5>
+              <h5>Lọc theo Id :</h5>
             </v-card-title>
             <v-card-text>
               <v-form ref="formFilterById">
@@ -21,12 +21,12 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn round depressed color="primary" @click="filterById">Filter</v-btn>
+              <v-btn round depressed color="primary" @click="filterById">Lọc</v-btn>
             </v-card-actions>
           </span>
           <span v-else-if="filterDate == true">
             <v-card-title>
-              <h5>Filter by Date :</h5>
+              <h5>Lọc theo ngày :</h5>
             </v-card-title>
 
             <v-card-text>
@@ -48,7 +48,7 @@
                       <template v-slot:activator="{ on }">
                         <v-text-field
                           v-model="checkin"
-                          label="From"
+                          label="Từ"
                           prepend-icon="event"
                           required
                           readonly
@@ -57,12 +57,12 @@
                       </template>
                       <v-date-picker v-model="checkin" no-title scrollable>
                         <v-spacer></v-spacer>
-                        <v-btn flat color="primary" @click="menuCheckin = false">Cancel</v-btn>
+                        <v-btn flat color="primary" @click="menuCheckin = false">Hủy</v-btn>
                         <v-btn
                           flat
                           color="primary"
                           @click="$refs.menuCheckin.save(checkin);minDate = checkin;"
-                        >OK</v-btn>
+                        >Xác nhận</v-btn>
                       </v-date-picker>
                     </v-menu>
                   </v-flex>
@@ -82,7 +82,7 @@
                       <template v-slot:activator="{ on }">
                         <v-text-field
                           v-model="checkout"
-                          label="From"
+                          label="Đến"
                           prepend-icon="event"
                           readonly
                           required
@@ -91,8 +91,8 @@
                       </template>
                       <v-date-picker v-model="checkout" :min="minDate" no-title scrollable>
                         <v-spacer></v-spacer>
-                        <v-btn flat color="primary" @click="menuCheckout = false">Cancel</v-btn>
-                        <v-btn flat color="primary" @click="$refs.menuCheckout.save(checkout)">OK</v-btn>
+                        <v-btn flat color="primary" @click="menuCheckout = false">Hủy</v-btn>
+                        <v-btn flat color="primary" @click="$refs.menuCheckout.save(checkout)">Xác nhận</v-btn>
                       </v-date-picker>
                     </v-menu>
                   </v-flex>
@@ -100,7 +100,7 @@
               </v-form>
               <v-layout row>
                 <v-spacer></v-spacer>
-                <v-btn round depressed color="primary" @click="filterByDate">Filter</v-btn>
+                <v-btn round depressed color="primary" @click="filterByDate">Lọc</v-btn>
               </v-layout>
             </v-card-text>
           </span>
@@ -114,14 +114,14 @@
           <v-spacer></v-spacer>
           <v-menu v-if="filterDate == false && filterId == false" offset-y>
             <template v-slot:activator="{ on }">
-              <v-btn color="primary" class="elevation-0" round dark v-on="on">Action</v-btn>
+              <v-btn color="primary" class="elevation-0" round dark v-on="on">Tủy chọn</v-btn>
             </template>
             <v-list>
               <v-list-tile>
-                <v-list-tile-title @click="openFilterById">Filter by Id</v-list-tile-title>
+                <v-list-tile-title @click="openFilterById">Lọc theo Id</v-list-tile-title>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-title @click="openFilterByDate">Filter by Date</v-list-tile-title>
+                <v-list-tile-title @click="openFilterByDate">Lọc theo ngày</v-list-tile-title>
               </v-list-tile>
             </v-list>
             <!-- <v-text-field v-model="search" hint="insert Id"></v-text-field> -->
@@ -141,7 +141,7 @@
             <td class="text-xs-center">{{booking.item.room_name}}</td>
             <td class="text-xs-center">{{booking.item.check_in}}</td>
             <td class="text-xs-center">{{booking.item.check_out}}</td>
-            <td class="text-xs-center">{{booking.item.room_price * booking.item.room_amount}} $</td>
+            <td class="text-xs-center">{{(booking.item.room_price * booking.item.room_amount).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</td>
             <td class="text-xs-center">
               <!-- <v-btn round color="warning" :ripple="false" depressed small></v-btn> -->
               <span v-if="booking.item.status_id == 1">
@@ -172,23 +172,23 @@
                   <v-flex md12>
                     <v-dialog v-model="dialog" max-width="80%">
                       <template v-slot:activator="{ on }">
-                        <v-btn
+                        <v-chip
                           round
                           color="primary"
                           small
                           depressed
                           v-on="on"
                           @click="ShowDetailBooking(booking.item)"
-                        >detail</v-btn>
+                        >Chi tiết</v-chip>
                       </template>
                       <v-card>
                         <v-card-text>
                           <v-layout>
                             <v-flex md19 class="m-3">
-                              <h3>Order #{{detailBooking.id}}</h3>
+                              <h3>Đơn #{{detailBooking.id}}</h3>
                             </v-flex>
                             <v-flex md3>
-                              <b>Status :</b>
+                              <b>Trạng thái :</b>
                               <span v-if="detailBooking.status_id == 1">
                                 <v-chip outline disabled text-color="warning">
                                   <b>{{detailBooking.status}}</b>
@@ -222,10 +222,10 @@
                             </v-flex>
                           </v-layout>
 
-                          <h5>Customer's info</h5>
+                          <h5>Thông tin khách hàng</h5>
                           <v-layout row wrap>
                             <v-flex md2 offset-md1>
-                              <b>Name</b>
+                              <b>Tên</b>
                             </v-flex>
                             <v-flex md9>: {{detailBooking.contact_name}}</v-flex>
                           </v-layout>
@@ -237,24 +237,24 @@
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex md2 offset-md1>
-                              <b>Phone</b>
+                              <b>Số điện thoại</b>
                             </v-flex>
                             <v-flex md9>: {{detailBooking.contact_phone}}</v-flex>
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex md2 offset-md1>
-                              <b>Address</b>
+                              <b>địa chỉ</b>
                             </v-flex>
                             <v-flex md9>: {{detailBooking.contact_address}}</v-flex>
                           </v-layout>
                           <v-layout v-if="detailBooking.special_request != null" row wrap>
                             <v-flex md2 offset-md1>
-                              <b>Special request</b>
+                              <b>Yêu cầu đặc biệt</b>
                             </v-flex>
                             <v-flex md9>: {{detailBooking.special_request}}</v-flex>
                           </v-layout>
                           <v-divider></v-divider>
-                          <h5>Booking's Detail</h5>
+                          <h5>Thông tin Đơn</h5>
                           <v-layout>
                             <v-flex md4 class>
                               <span v-for="(image,index) in detailBooking.room_images" :key="index">
@@ -285,19 +285,19 @@
                               </v-layout>
                               <v-layout row wrap>
                                 <v-flex md2 offset-md1>
-                                  <b>Room name</b>
+                                  <b>Tên phòng</b>
                                 </v-flex>
                                 <v-flex md9>: {{detailBooking.room_name}}</v-flex>
                               </v-layout>
                               <v-layout row wrap>
                                 <v-flex md2 offset-md1>
-                                  <b>Room price</b>
+                                  <b>Giá phòng</b>
                                 </v-flex>
-                                <v-flex md9>: {{detailBooking.room_price}} $</v-flex>
+                                <v-flex md9>: {{(detailBooking.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</v-flex>
                               </v-layout>
                               <v-layout row wrap>
                                 <v-flex md2 offset-md1>
-                                  <b>Room amount</b>
+                                  <b>Số lượng phòng</b>
                                 </v-flex>
                                 <v-flex md9>: {{detailBooking.room_amount}}</v-flex>
                               </v-layout>
@@ -311,13 +311,13 @@
                               </v-layout>-->
                               <v-layout row wrap>
                                 <v-flex md2 offset-md1>
-                                  <b>room Id</b>
+                                  <b>Mã phòng</b>
                                 </v-flex>
                                 <v-flex md9>: {{detailBooking.room_id}}</v-flex>
                               </v-layout>
                               <v-layout row wrap>
                                 <v-flex md2 offset-md1>
-                                  <b>Payment method</b>
+                                  <b>Phương thức thanh toán</b>
                                 </v-flex>
                                 <v-flex md9>: {{detailBooking.payment_method}}</v-flex>
                               </v-layout>
@@ -368,56 +368,56 @@
                   </v-flex>
                   <span row wrap v-if="booking.item.status_id == 1">
                     <v-flex md12>
-                      <v-btn
+                      <v-chip
                         round
                         depressed
                         small
                         color="success"
                         @click="acceptBooking(booking.item)"
-                      >accept</v-btn>
+                      >Chấp nhận</v-chip>
                     </v-flex>
                     <v-flex md12>
-                      <v-btn
+                      <v-chip
                         round
                         depressed
                         small
                         color="error"
                         @click="declineBooking(booking.item)"
-                      >decline</v-btn>
+                      >Từ chối</v-chip>
                     </v-flex>
                   </span>
                   <span v-else-if="booking.item.status_id == 2">
                     <v-flex md12>
-                      <v-btn
+                      <v-chip
                         round
                         depressed
                         small
                         color="blue"
                         class="white--text"
                         @click="confirmBooking(booking.item)"
-                      >Confirm payment</v-btn>
+                      >Xác nhận</v-chip>
                     </v-flex>
                     <v-flex md12>
-                      <v-btn
+                      <v-chip
                         round
                         depressed
                         small
                         color="red"
                         class="white--text"
                         @click="showConfirmDialog(booking.item)"
-                      >cancel</v-btn>
+                      >Hủy đơn</v-chip>
                     </v-flex>
                   </span>
                   <span v-else-if="booking.item.status_id == 4">
                     <v-flex md12>
-                      <v-btn
+                      <v-chip
                         round
                         depressed
                         small
                         color="red"
                         class="white--text"
                         @click="showConfirmDialog(booking.item)"
-                      >cancel</v-btn>
+                      >Hủy đơn</v-chip>
                     </v-flex>
                   </span>
                 </v-layout>
@@ -477,16 +477,18 @@ export default {
       menuCheckout: false,
       checkin: null,
       checkout: null,
-      detailBooking: {},
+      detailBooking: {
+        room_price : 0,
+      },
       bookingList: [],
       search: "",
       headers: [
         { text: "Id", value: "id", sortable: false, align: "center" },
-        { text: "Room Name", value: 0, sortable: false, align: "center" },
+        { text: "Tên phòng", value: 0, sortable: false, align: "center" },
         { text: "Check in", value: 0, sortable: false, align: "center" },
         { text: "Check out", value: 0, sortable: false, align: "center" },
-        { text: "Total price", value: 0, sortable: false, align: "center" },
-        { text: "status", value: 0, sortable: false, align: "center" },
+        { text: "Tổng giá", value: 0, sortable: false, align: "center" },
+        { text: "Trạng thái", value: 0, sortable: false, align: "center" },
         { text: "Action", value: 0, sortable: false, align: "center" }
       ],
       hotelId: this.$route.query.hotelId,

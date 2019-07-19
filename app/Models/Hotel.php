@@ -119,7 +119,8 @@ class Hotel extends Model
   public function Service()
   {
     // return $this->hasMany('App\Models\ServiceRoomType', 'hotel_id', 'id');
-    return $this->belongsToMany('App\Models\Service','service_room_type', 'service_id', 'hotel_id');
+    // return $this->belongsToMany('App\Models\Service','service_room_type', 'service_id', 'hotel_id');
+    return $this->belongsToMany('App\Models\Service','service_room_type','hotel_id', 'service_id');
   }
   public function ServiceRoomType()
   {

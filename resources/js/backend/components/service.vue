@@ -3,7 +3,7 @@
     <v-container>
       <v-card class="blue-grey darken-4 p-2">
         <v-expansion-panel v-model="panel" v-bind:popout="popout" expand class="elevation-0">
-          <h1 class="white--text">Service</h1>
+          <h1 class="white--text">Quản lý dịch vụ</h1>
           <v-expansion-panel-content
             v-for="(service,index) in services"
             :key="index"
@@ -31,10 +31,10 @@
             <v-container class="grey lighten-3">
               <v-layout justify-center row wrap>
                 <v-radio-group v-model="service.room.radio" row>
-                  <v-radio color="primary" @change="chooseAll(index,service.service.id)" label="All room modes" value="all"></v-radio>
+                  <v-radio color="primary" @change="chooseAll(index,service.service.id)" label="Áp dụng cho tất cả loại phòng" value="all"></v-radio>
                   <v-radio
                     color="primary"
-                    label="Some room modes"
+                    label="Áp dụng cho 1 số loại phòng"
                     value="some"
                     @change="chooseSome(service.service.id)"
                   ></v-radio>
