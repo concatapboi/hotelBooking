@@ -103,10 +103,8 @@ class Room extends Model
       return $number;
     }
     foreach ($bookings as $booking) {
-      $bookingCheckinExplode = explode("-", $booking->check_in);
-      $bookingCheckoutExplode = explode("-", $booking->check_out);
-      $bookingCheckIn = Carbon::createMidnightDate($bookingCheckinExplode[0], $bookingCheckinExplode[1], $bookingCheckinExplode[2]);
-      $bookingCheckOut = Carbon::createMidnightDate($bookingCheckoutExplode[0], $bookingCheckoutExplode[1], $bookingCheckoutExplode[2]);
+      $bookingCheckIn = Carbon::createMidnightDate($booking->check_in);
+      $bookingCheckOut = Carbon::createMidnightDate($booking->check_out);
       if ($check_in->lessThan($bookingCheckIn)) {
         if ($check_out <= $bookingCheckIn) {
           // duoc dat phong

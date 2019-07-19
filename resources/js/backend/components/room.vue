@@ -11,7 +11,7 @@
             flat
             v-on="on"
             @click="addNewTitle();"
-          >New Room</v-btn>
+          >Tạo Phòng mới</v-btn>
         </template>
         <v-layout>
           <v-flex>
@@ -30,7 +30,7 @@
 
               <v-card-text height="100px">
                 <v-form ref="formNewRoom" class="px-5">
-                  <h3>Gerneral Infomation</h3>
+                  <h3>Thông tin chung</h3>
                   <v-layout row>
                     <v-text-field
                       v-validate="'required'"
@@ -38,7 +38,7 @@
                       data-vv-name="roomName"
                       outline
                       class="pr-3"
-                      label="Room name"
+                      label="Tên Phòng"
                       v-model="room.room_name"
                     ></v-text-field>
                     <v-text-field
@@ -48,7 +48,8 @@
                       outline
                       type="number"
                       class="pl-3"
-                      label="Number of rooms this type"
+                      min="1"
+                      label="Số lượng phòng"
                       v-model="room.amount"
                     ></v-text-field>
                   </v-layout>
@@ -58,7 +59,7 @@
                       v-validate="'required'"
                       :error-messages="errors.collect('description')"
                       data-vv-name="description"
-                      label="Room's description"
+                      label="Mô tả phòng"
                       v-model="room.description"
                     ></v-textarea>
                   </v-layout>
@@ -69,7 +70,7 @@
                       data-vv-name="roomMode"
                       outline
                       class="pr-3"
-                      label="Room mode"
+                      label="Kiểu phòng"
                       v-model="defaultRoomMode"
                       :items="arrayRoomMode"
                       item-text="name"
@@ -82,7 +83,7 @@
                       data-vv-name="roomType"
                       outline
                       class="pl-3"
-                      label="Room Type"
+                      label="Loại phòng"
                       v-model="defaultRoomType"
                       :items="arrayRoomType"
                       item-text="name"
@@ -100,7 +101,7 @@
                         type="number"
                         min="1"
                         class="pr-3"
-                        label="Max number of adults"
+                        label="Số lượng người lớn tối đa"
                         v-model="room.max_adult_amount"
                       ></v-text-field>
                     </v-flex>
@@ -110,7 +111,7 @@
                         type="number"
                         min="1"
                         class="pl-3"
-                        label="Max number of children"
+                        label="Số lượng trẻ em tối đa"
                         v-model="room.max_child_amount"
                         @change="chooseMaxChildAmount"
                       ></v-text-field>
@@ -121,7 +122,7 @@
                         type="number"
                         min="1"
                         class="pl-3"
-                        label="Number of free children"
+                        label="Số lượng trẻ em được miễn phí"
                         v-model="room.free_child_amount"
                       ></v-text-field>
                     </v-flex>
@@ -133,15 +134,15 @@
                           </v-btn>
                         </template>
                         <span>
-                          number of children won't be charge
+                          Số lượng trẻ em được miễn phí
                           <br />
-                          for this room if they under {{room.child_age}} years old
+                          cho phòng này nếu dưới {{room.child_age}} tuổi
                         </span>
                       </v-tooltip>
                     </v-flex>
                   </v-layout>
                   <v-divider></v-divider>
-                  <h3>Images</h3>
+                  <h3>Hình ảnh</h3>
                   <v-layout row wrap align-space-between justify-start>
                     <!-- <v-flex style="height : 200px;" v-if="images" md3> -->
                     <v-flex v-for="(image,i) in images" :key="i" md3>
@@ -189,7 +190,7 @@
                     </v-flex>
                   </v-layout>
                   <v-divider></v-divider>
-                  <h3>Bed Infomation</h3>
+                  <h3>Thông tin giường</h3>
                   <!-- <v-layout row>
                     <v-text-field
                       class="pr-3"
@@ -213,11 +214,8 @@
                     <v-flex md-6>
                       <!-- <v-flex md-2> -->
                       <v-text-field
-                        v-validate="'required'"
-                        :error-messages="errors.collect('numberOfBed')"
-                        data-vv-name="numberOfBed"
                         outline
-                        label="Number of beds"
+                        label="Số lượng giường"
                         type="number"
                         min="1"
                         max="10"
@@ -228,11 +226,8 @@
                     <!-- <v-flex md-11 class="pl-5"> -->
                     <v-flex md-6 class="pl-5">
                       <v-select
-                        v-validate="'required'"
-                        :error-messages="errors.collect('bedType')"
-                        data-vv-name="bedType"
                         outline
-                        label="Bed Type"
+                        label="Loại giường"
                         v-model="b.bedTypeId"
                         :items="arrayBedType"
                         item-text="name"
@@ -247,11 +242,11 @@
                   </v-layout>
                   <v-layout>
                     <v-btn round flat class="primary" @click="addBed">
-                      <v-icon class="m-2">add_circle</v-icon>add another
+                      <v-icon class="m-2">add_circle</v-icon>Thêm loại giường
                     </v-btn>
                   </v-layout>
                   <v-divider></v-divider>
-                  <h3>Features</h3>
+                  <h3>Chi tiết</h3>
                   <v-layout row>
                     <v-flex class="no-spinners">
                       <v-text-field
@@ -262,7 +257,7 @@
                         type="number"
                         outline
                         suffix="m²"
-                        label="Room size"
+                        label="Diện tích phòng"
                         v-model="room.room_size"
                       ></v-text-field>
                     </v-flex>
@@ -272,9 +267,9 @@
                         :error-messages="errors.collect('price')"
                         data-vv-name="price"
                         outline
-                        append-icon="attach_money"
+                        suffix="VND"
                         class="pl-3"
-                        label="Price"
+                        label="Giá phòng"
                         v-model="room.price"
                       ></v-text-field>
                     </v-flex>
@@ -296,7 +291,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                  v-if="formTitle != 'Edit Room'"
+                  v-if="formTitle != 'Sửa thông tin phòng'"
                   color="blue darken-1"
                   flat
                   round
@@ -312,7 +307,7 @@
                   depressed
                   type="submit"
                   @click="editRoom(roomId)"
-                >Update</v-btn>
+                >Cập nhật</v-btn>
                 <v-btn
                   color="blue darken-1"
                   flat
@@ -320,7 +315,7 @@
                   depressed
                   @click="$refs.formNewRoom.reset()"
                 >Reset</v-btn>
-                <v-btn color="blue darken-1" flat round depressed @click="cancel">Cancel</v-btn>
+                <v-btn color="blue darken-1" flat round depressed @click="cancel">Hủy</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -344,7 +339,7 @@
           <h1>Let's create your first room !!!</h1>-->
 
           <v-expansion-panel v-model="panelIndex" v-bind:popout="popout" expand class="elevation-0">
-            <h1 class="white--text">Your rooms</h1>
+            <h1 class="white--text">Phòng</h1>
             <v-expansion-panel-content v-for="(el,index) in arrayRoom" :key="index" class="primary">
               <template v-slot:header>
                 <div>
@@ -361,13 +356,13 @@
                       <v-layout row>
                         <v-spacer></v-spacer>
 
-                        <v-btn class="warning" flat round depressed @click="showEdit(el.room_mode.name,r.id)">edit</v-btn>
+                        <v-btn class="warning" flat round depressed @click="showEdit(el.room_mode.name,r.id)">Sửa</v-btn>
                         <v-btn class="red white--text"
                           flat
                           round
                           depressed
                           @click="deleteConfirm(el.room_mode.name,r.id)"
-                        >delete</v-btn>
+                        >Xóa</v-btn>
                       </v-layout>
                       <v-layout>
                         <v-flex md4>
@@ -378,21 +373,30 @@
                         <v-flex md8 class="m-5 mt-2">
                           <v-layout row wrap>
                             <v-flex md12>
-                              <h3>Gerneral information</h3>
+                              <h3>Thông tin chung</h3>
                             </v-flex>
                             <v-flex md12>
                               <v-container>
                                 <v-layout row wrap>
                                   <v-flex md5>
-                                    <h5>Room price :</h5>
+                                    <h5>Tên phòng :</h5>
                                   </v-flex>
-                                  <v-flex md7>{{r.price}} $</v-flex>
+                                  <v-flex md7><h4>{{r.room_name}}</h4></v-flex>
                                   <v-flex md5>
-                                    <h5>Room Size :</h5>
+                                    <h5>Giá phòng :</h5>
+                                  </v-flex>
+                                  <v-flex md7><span class="body-2 orange--text">{{(r.price).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span></v-flex>
+                                  <v-flex md5>
+                                    <h5>Mô tả phòng :</h5>
+                                  </v-flex>
+                                  <v-flex md7>{{r.description}}</v-flex>
+                                  
+                                  <v-flex md5>
+                                    <h5>Diện tích phòng :</h5>
                                   </v-flex>
                                   <v-flex md7>{{r.room_size}} m²</v-flex>
                                   <v-flex md5>
-                                    <h5>Room maximum capacity :</h5>
+                                    <h5>Sức chứa :</h5>
                                   </v-flex>
                                   <v-flex md7 align-items-center>
                                     {{r.max_adult_amount}} x
@@ -402,14 +406,14 @@
                                       class="fas fa-child"
                                     ></i>
                                     <span v-if="r.free_child_amount!=0 && r.child_age!=0">
-                                      ({{r.free_child_amount}} child under {{r.child_age}} years stay
+                                      ({{r.free_child_amount}} trẻ em dưới {{r.child_age}} tuổi sẽ được ở
                                       <span
                                         class="green--text"
-                                      >Free!!!</span>)
+                                      >Miễn phí !!!</span>)
                                     </span>
                                   </v-flex>
                                   <v-flex md5>
-                                    <h5>Number of rooms this type</h5>
+                                    <h5>Số lượng phòng</h5>
                                   </v-flex>
                                   <v-flex md7>{{r.amount}}</v-flex>
                                   <v-flex md5></v-flex>
@@ -420,7 +424,7 @@
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex md12>
-                              <h3>Services</h3>
+                              <h3>Dịch vụ</h3>
                             </v-flex>
                             <v-flex md12>
                               <v-container class="pa-0">
@@ -436,7 +440,7 @@
                           </v-layout>
                           <v-layout row wrap>
                             <v-flex md12>
-                              <h3>Features</h3>
+                              <h3>Cơ sở vật chất</h3>
                             </v-flex>
                             <v-flex md12>
                               <v-container class="pa-0">
@@ -461,13 +465,13 @@
           <v-dialog width="30%" v-model="confirmDialog">
             <v-card>
               <v-card-title>
-                <h3>Confirmation</h3>
+                <h3>Xác nhận</h3>
               </v-card-title>
-              <v-card-text>Do you really want to delete this Room</v-card-text>
+              <v-card-text>Bạn có muốn xóa loại phòng này</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn class="grey white--text" flat round depressed @click="cancel">cancel</v-btn>
-                <v-btn class="red white--text" flat round depressed @click="deleteRoom">delete</v-btn>
+                <v-btn class="grey white--text" flat round depressed @click="cancel">Hủy</v-btn>
+                <v-btn class="red white--text" flat round depressed @click="deleteRoom">Xóa</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -537,17 +541,21 @@ export default {
       dictionary: {
         custom: {
           roomName: {
-            required: "The room name field is required"
+            required: "Tên phòng không được để trống"
           },
           numberOfRoom: {
             numeric:
-              "The Number of room type field only accept positive integer"
+              "Số phòng không được bé hơn 1"
+          },
+          description: {
+            required:
+              "Mô tả phòng không được để trống"
           },
           roomSize: {
-            decimal: "The Room Size field only accept positive float"
+            decimal: "Kích thước phòng ko hợp lệ"
           },
           price: {
-            decimal: "The Price field only accept positive float"
+            decimal: "Giá phòng ko hợp lệ"
           }
         }
       },
@@ -831,7 +839,7 @@ export default {
       this.roomModeWorkingOn = roomMode;
 
       this.dialog = true;
-      this.formTitle = "Edit Room";
+      this.formTitle = "Sửa thông tin phòng";
       this.roomId = roomId;
       axios
         .get("http://localhost:8000/api/manager/room/" + roomId, {
@@ -848,7 +856,7 @@ export default {
             this.room.room_name = room.room_name;
             this.room.amount = room.amount;
             this.room.description = room.description;
-            if (this.room.child_age != null) {
+            if (this.room.max_child_amount != 0) {
               this.showAmount = true;
               this.showFreeAmount = true;
             } else {

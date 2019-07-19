@@ -41,7 +41,7 @@
             depressed
             v-on="on"
             @click="addNewTitle;images = [];"
-          >New hotel</v-btn>
+          >Tạo khách sạn</v-btn>
         </template>
         <v-layout row>
           <v-flex>
@@ -60,14 +60,14 @@
               </v-card-title>-->
               <v-card-text height="100px">
                 <v-form ref="formNewHotel" class="px-5">
-                  <h3 class="my-5">General information</h3>
+                  <h3 class="my-5">Thông tin chung</h3>
                   <v-layout row>
                     <v-text-field
                       v-validate="'required'"
                       :error-messages="errors.collect('hotelName')"
                       data-vv-name="hotelName"
                       class="pr-3"
-                      label="Hotel name"
+                      label="Tên khách sạn"
                       v-model="newHotelData.name"
                       required
                       outline
@@ -80,13 +80,14 @@
                       item-text="name"
                       item-value="id"
                       :items="arrayHotelType"
-                      label="Hotel type"
+                      label="Loại khách sạn"
                       v-model="defaultHotelType"
                       required
                       outline
                     ></v-select>
                   </v-layout>
-                  <v-layout row>
+                  <v-layout row align-center>
+                    <b>Tiêu chuẩn khách sạn : </b>
                     <v-rating
                       v-model="newHotelData.rating"
                       hover
@@ -99,7 +100,7 @@
                       v-validate="'required'"
                       :error-messages="errors.collect('description')"
                       data-vv-name="description"
-                      label="Hotel Description"
+                      label="Mô tả khách sạn"
                       v-model="newHotelData.description"
                       required
                       outline
@@ -112,7 +113,7 @@
                       data-vv-name="province"
                       item-text="name"
                       :items="arrayProvince"
-                      label="Province"
+                      label="Tỉnh/Thành phố"
                       item-value="id"
                       v-model="defaultProvince"
                       @change="provinceSelected"
@@ -127,7 +128,7 @@
                       :items="arrayDistrict"
                       item-text="name"
                       item-value="id"
-                      label="District"
+                      label="Quận/Huyện"
                       :disabled="districtDisabled"
                       v-model="defaultDistrict"
                       @change="districtSelected"
@@ -141,7 +142,7 @@
                       :items="arrayWard"
                       item-text="name"
                       item-value="id"
-                      label="Ward"
+                      label="Xã/Phường"
                       v-model="defaultWard"
                       :disabled="wardDisabled"
                       required
@@ -150,7 +151,7 @@
                   </v-layout>
                   <v-layout row>
                     <v-text-field
-                      label="Address"
+                      label="Địa chỉ"
                       v-validate="'required'"
                       class="pr-3"
                       :error-messages="errors.collect('address')"
@@ -160,7 +161,7 @@
                       outline
                     ></v-text-field>
                     <v-text-field
-                      label="Credit Card"
+                      label="Số thẻ tín dụng"
                       v-validate="'required'"
                       class="pl-3"
                       :error-messages="errors.collect('credit_card')"
@@ -173,7 +174,7 @@
                   </v-layout>
                   <v-layout row>
                     <v-text-field
-                      label="Phone number"
+                      label="Số điện thoại"
                       v-validate="'required'"
                       class="pr-3"
                       :error-messages="errors.collect('phone')"
@@ -181,9 +182,10 @@
                       v-model="newHotelData.phone"
                       required
                       outline
+                      mask="##########"
                     ></v-text-field>
                     <v-text-field
-                      label="Fax number"
+                      label="Số Fax"
                       v-validate="'required'"
                       class="pl-3"
                       :error-messages="errors.collect('fax_number')"
@@ -194,7 +196,7 @@
                   </v-layout>
                   <v-layout row>
                     <v-text-field
-                      label="Tax code"
+                      label="Mã số thuế"
                       class="pr-3"
                       v-validate="'required'"
                       :error-messages="errors.collect('tax_code')"
@@ -204,9 +206,9 @@
                       outline
                     ></v-text-field>
                     <v-text-field
-                      label="email"
+                      label="Email"
                       class="pl-3"
-                      v-validate="'required'"
+                      v-validate="'required|email'"
                       :error-messages="errors.collect('email')"
                       data-vv-name="email"
                       v-model="newHotelData.email"
@@ -215,7 +217,7 @@
                     ></v-text-field>
                   </v-layout>
                   <v-divider></v-divider>
-                  <h3 class="my-5">Images</h3>
+                  <h3 class="my-5">Hình ảnh</h3>
                   <v-layout row wrap align-space-between justify-start>
                     <!-- <v-flex style="height : 200px;" v-if="images" md3> -->
                     <v-flex v-for="(image,i) in images" :key="i" md3>
@@ -263,7 +265,7 @@
                     </v-flex>
                   </v-layout>
                   <v-divider></v-divider>
-                  <h3 class="my-5">Policies</h3>
+                  <h3 class="my-5">Chính sách</h3>
                   <v-layout row>
                     <v-flex offset-md1 md3>
                       <v-menu
@@ -336,7 +338,7 @@
                   <v-layout row>
                     <v-flex offset-md1 md3>
                       <v-checkbox
-                        label="Cancelable ?"
+                        label="Có thể hủy phòng ?"
                         v-model="newHotelData.cancelable"
                         color="primary"
                       ></v-checkbox>
@@ -345,9 +347,9 @@
                   <v-layout>
                     <v-flex md3 offset-md1>
                       <v-text-field
-                        suffix="day(s)"
+                        suffix="ngày"
                         v-if="newHotelData.cancelable == true"
-                        label="Refund before"
+                        label="có thể hủy trước"
                         v-model="newHotelData.cancel_day"
                         mask="###"
                       ></v-text-field>
@@ -356,15 +358,18 @@
                       <v-text-field
                         suffix="%"
                         v-if="newHotelData.cancelable == true"
-                        label="Refund rate"
+                        label="% hoàn trả"
                         v-model="newHotelData.refundRate"
                         mask="##"
                       ></v-text-field>
                     </v-flex>
-                    <v-flex xs4>
+                    <v-flex md3 offset-md1>
                       <v-select
                         outline
-                        label="Child's age"
+                        v-validate="'required'"
+                        :error-messages="errors.collect('child_age')"
+                        data-vv-name="child_age"
+                        label="Độ tuổi xem là trẻ em"
                         :items="arrayAge"
                         item-text="text"
                         item-value="value"
@@ -375,7 +380,7 @@
                   <v-layout row>
                     <v-flex offset-md1 md11>
                       <v-textarea
-                        label="Detail Policy"
+                        label="Chính sách chi tiết"
                         v-model="newHotelData.detailPolicy"
                         auto-grow
                         box
@@ -387,7 +392,7 @@
               <v-card-actions class="mt-5">
                 <v-spacer></v-spacer>
                 <v-btn
-                  v-if="formTitle != 'Edit Hotel'"
+                  v-if="formTitle != 'Sửa thông tin khách sạn'"
                   color="blue darken-1"
                   flat
                   @click="validate"
@@ -415,31 +420,31 @@
     <v-dialog max-width="40%" v-model="confirmDialog">
       <v-card>
         <v-card-title>
-          <h5>Confirmation</h5>
+          <h5>Xác nhận</h5>
         </v-card-title>
         <v-card-text v-if="bookingListCantDelete == null">{{confirmDialogText}}</v-card-text>
         <v-card-text v-else>
-          You can't delete this Hotel right now because :
+          Bạn không thể xóa khách sạn này vì :
           <ul>
             <li v-for="(booking,i) in bookingListCantDelete.sau" :key="i">
-              {{booking.reason}} -- order# {{booking.id}}
-              <v-btn small depressed round @click="detailOrder(booking.id)">detail</v-btn>
+              {{booking.reason}} -- Đơn # {{booking.id}}
+              <v-btn small depressed round @click="detailOrder(booking.id)">Chi tiết</v-btn>
             </li>
           </ul>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="grey" flat round depressed @click="cancel">Cancel</v-btn>
-          <v-btn color="red" flat round depressed @click.stop="deleteHotelConfirm()">Confirm</v-btn>
+          <v-btn color="grey" flat round depressed @click="cancel">Hủy</v-btn>
+          <v-btn color="red" flat round depressed @click.stop="deleteHotelConfirm()">Xác nhận</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-layout class="m-5">
       <v-card width="100%" dark flat color="blue-grey darken-4" class="p-2">
-        <v-expansion-panel  class="elevation-0" v-model="panel" expand>
+        <v-expansion-panel class="elevation-0" v-model="panel" expand>
           <!-- focusable expand -->
-          <h1>Yours hotels</h1>
+          <h1>Khách sạn</h1>
           <v-expansion-panel-content
             hide-actions
             class="primary"
@@ -451,7 +456,7 @@
               <div>
                 <v-layout>
                   <v-flex md8>
-                    <h3 class="black--text">Hotel {{hotel.name}}</h3>
+                    <h3 class="black--text">{{hotel.name}}</h3>
                   </v-flex>
                   <v-flex md4 class="text-right">
                     <!-- <v-btn icon @click.stop="editHotel(arrayHotel[i].id)">
@@ -467,14 +472,14 @@
                       round
                       depressed
                       @click="editHotel(arrayHotel[i].id)"
-                    >edit</v-btn>
+                    >Sửa</v-btn>
                     <v-btn
                       class="red white--text"
                       flat
                       round
                       depressed
                       @click="deleteHotel(arrayHotel[i].id)"
-                    >delete</v-btn>
+                    >Xóa</v-btn>
                   </v-flex>
                 </v-layout>
               </div>
@@ -513,37 +518,37 @@
                   <v-divider></v-divider>
                   <v-layout row>
                     <v-flex xs3 offset-xs1>
-                      <h5>Hotel Type</h5>
+                      <h5>Loại khách sạn</h5>
                     </v-flex>
                     <v-flex xs8>{{hotel.hotel_type}}</v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex xs3 offset-xs1>
-                      <h5>Hotel Description</h5>
+                      <h5>Mô tả</h5>
                     </v-flex>
                     <v-flex xs8>{{hotel.description}}</v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex xs3 offset-xs1>
-                      <h5>Hotel Tax code</h5>
+                      <h5>Mã số thuế</h5>
                     </v-flex>
                     <v-flex xs8>{{hotel.tax_code}}</v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex xs3 offset-xs1>
-                      <h5>Review point</h5>
+                      <h5>Điểm đánh giá</h5>
                     </v-flex>
                     <v-flex xs8>{{hotel.review_point}}</v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex xs3 offset-xs1>
-                      <h5>Fax number</h5>
+                      <h5>Số Fax</h5>
                     </v-flex>
                     <v-flex xs8>{{hotel.fax_number}}</v-flex>
                   </v-layout>
                   <v-layout row>
                     <v-flex xs3 offset-xs1>
-                      <h5>Coin</h5>
+                      <h5>Xu</h5>
                     </v-flex>
                     <v-flex xs8>{{hotel.coin}}</v-flex>
                   </v-layout>
@@ -647,8 +652,54 @@ export default {
         { text: "16", value: 16 },
         { text: "17", value: 17 }
       ],
-      bookingListCantDelete: null
+      bookingListCantDelete: null,
+      dictionary: {
+        custom: {
+          hotelName: {
+            required: () => "tên khách sạn không được để trống"
+          },
+          hotelType: {
+            required: () => "Vui lòng chọn loại khách sạn"
+          },
+          description: {
+            required: () => "Mô tả khách sạn"
+          },
+          province: {
+            required: () => "Tỉnh/Thành phố không được để trống"
+          },
+          district: {
+            required: () => "Quận/Huyện không được để trống"
+          },
+          ward: {
+            required: () => "Xã/Phường không được để trống"
+          },
+          address: {
+            required: () => "Địa chỉ không được để trống"
+          },
+          credit_card: {
+            required: () => "Số thẻ tín dụng không được để trống"
+          },
+          phone: {
+            required: () => "Số điện thoại không được để trống"
+          },
+          fax_number: {
+            required: () => "Số Fax không được để trống"
+          },
+          tax_code: {
+            required: () => "Mã số thuế không được để trống"
+          },
+          email: {
+            required: () => "Email không được bỏ trống"
+          },
+          child_age: {
+            required: () => "Vui lòng cho biết độ tuổi được xem là trẻ em"
+          }
+        }
+      }
     };
+  },
+  mounted() {
+    this.$validator.localize("en", this.dictionary);
   },
   created() {},
   watch: {
@@ -675,7 +726,7 @@ export default {
   },
   computed: {
     addNewTitle: function() {
-      this.formTitle = "NEW HOTEL";
+      this.formTitle = "Tạo khách sạn";
       this.defaultHotelType = this.arrayHotelType[0];
       this.newHotelData = {};
       this.$refs.formNewHotel.reset();
@@ -990,7 +1041,7 @@ export default {
       this.wardDisabled = false;
       this.dialog = true;
       this.selectedId = hotelId;
-      this.formTitle = "Edit Hotel";
+      this.formTitle = "Sửa thông tin khách sạn";
       var _this = this;
       var address = {};
       var hotel = {};
@@ -1103,7 +1154,7 @@ export default {
       this.confirmDialog = true;
       this.selectedId = hotelId;
       this.confirmDialogText =
-        "Are you really want to delete this Hotel " + "?";
+        "Bạn có muốn xóa khách sạn này " + "?";
     },
     deleteHotelConfirm: function() {
       var _this = this;

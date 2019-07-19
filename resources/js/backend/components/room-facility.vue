@@ -4,7 +4,7 @@
       {{test}}
       <v-card class="blue-grey darken-4 p-2">
         <v-expansion-panel v-model="panel" v-bind:popout="popout" expand class="elevation-0">
-          <h1 class="white--text">Room Facility</h1>
+          <h1 class="white--text">Cơ sở vật chất</h1>
           <v-expansion-panel-content
             v-for="(feature,index) in features"
             :key="index"
@@ -35,12 +35,12 @@
                   <v-radio
                     color="primary"
                     @change="chooseAll(index,feature.feature.id)"
-                    label="All room modes"
+                    label="Áp dụng cho tất cả phòng"
                     value="all"
                   ></v-radio>
                   <v-radio
                     color="primary"
-                    label="Some room modes"
+                    label="Áp dụng cho 1 số phòng :"
                     value="some"
                     @change="chooseSome(index,feature.feature.id)"
                   ></v-radio>

@@ -5,9 +5,15 @@ namespace App\Http\Controllers\Backend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Room;
+use App\Models\RoomImage;
 use App\Models\Hotel;
 use App\Http\Resources\BookingResource;
 use Carbon\Carbon;
+use Mail;
+use App\Mail\AcceptOrderOnline;
+use App\Mail\AcceptOrderOffline;
+use App\Models\Customer;
 
 class BookingController extends Controller
 {
@@ -110,16 +116,22 @@ class BookingController extends Controller
     public function acceptBooking(Request $request)
     {
         $booking = Booking::find($request->bookingId);
-        if ($booking->PaymentMethod->id == 1) {
-            $booking->update(["status_id" => 4]);
-        } elseif ($booking->PaymentMethod->id == 2) {
-            $booking->update(["status_id" => 2]);
-        }
-        return response()->json([
-            "status" => true,
-            // "data" => new BookingResource($booking),
-            "data" => $booking->Hotel()->booking(),
-        ]);
+        $room = Room::find($booking->room_id);
+        $room_image = RoomImage::where("room_id",$room->id)->where("is_primary",1)->first();
+        $customer = Customer::find($booking->customer_id)->ofUser;
+        return (new AcceptOrderOffline($booking,$room,$room_image))->render(); 
+        // if ($booking->PaymentMethod->id == 1) {
+        //     $booking->update(["status_id" => 4]);
+        //     Mail::to($request->user())->queue(new AcceptOrderOffline($booking));
+        // } elseif ($booking->PaymentMethod->id == 2) {
+        //     $booking->update(["status_id" => 2]);
+        //     Mail::to($request->user())->queue(new AcceptOrderOnline($booking));
+        // }
+        // return response()->json([
+        //     "status" => true,
+        //     // "data" => new BookingResource($booking),
+        //     "data" => $booking->Hotel()->booking(),
+        // ]);
     }
     public function declineBooking(Request $request)
     {

@@ -23,7 +23,7 @@ class EmailController extends Controller
 
         // return Hotel::with("HotelType")->get();
         // return Hotel::all();
-        $user = User::find(2);
-        Mail::to($user)->send(new AcceptOrder($user)); 
+        // $user = User::find(2);
+        // Mail::to($user)->send(new AcceptOrder($user)); 
     }
 }

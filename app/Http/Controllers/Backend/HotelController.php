@@ -21,10 +21,12 @@ use App\Models\RoomType;
 use Hash;
 use Carbon\Carbon;
 use Auth;
+use DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Models\Policy;
+use App\Http\Resources\HotelCollection;
 
 class HotelController extends Controller
 {
@@ -301,11 +303,11 @@ class HotelController extends Controller
                         if ($bookingCheckIn->greaterThan($today)) {
 
                             if ($booking->status_id == 1 || $booking->status_id == 2) {
-                                $booking->reason = "Order need to confirm";
+                                $booking->reason = "Đơn đặt phòng cần xử lý";
                                 $bookingCantDelete["sau"][] = $booking;
                             }
                             if ($booking->status_id == 4) {
-                                $booking->reason = "Order need to cancel";
+                                $booking->reason = "Đơn đặt phòng cần hủy";
                                 $bookingCantDelete["sau"][] = $booking;
                             }
                         }
@@ -389,14 +391,13 @@ class HotelController extends Controller
                 ]
             );
         }
-        
     }
     public function checkIfExist($request)
     {
         $hotel = Hotel::find($request->hotelId);
         $allServiceRoomType = ServiceRoomType::where("hotel_id", $hotel->id)->where("service_id", $request->serviceId);
         $count = count($allServiceRoomType->get());
-        if($count == 0){
+        if ($count == 0) {
             $hotel->update(["rank_point" => $hotel->rank_point + 1]);
         }
         $allServiceRoomType->delete();
@@ -438,6 +439,7 @@ class HotelController extends Controller
     }
     public function search(Request $request)
     {
+        // return $request->all();
         $place = $request->place;
         $checkIn = $request->checkIn;
         $checkOut = $request->checkOut;
@@ -447,309 +449,115 @@ class HotelController extends Controller
         $hotelTypes = $request->hotelType;
         $price = $request->price;
         $roomTypes = $request->roomType;
-        //---------------------------------
-        $checkinExplode = explode("-", $checkIn);
-        $checkoutExplode = explode("-", $checkOut);
-        $checkIn = Carbon::createMidnightDate($checkinExplode[0], $checkinExplode[1], $checkinExplode[2]);
-        $checkOut = Carbon::createMidnightDate($checkoutExplode[0], $checkoutExplode[1], $checkoutExplode[2]);
+        $checkIn = Carbon::createMidnightDate($checkIn);
+        $checkOut = Carbon::createMidnightDate($checkOut);
         $data = [];
-        //------Loc theo province neu du lieu province it
-        // $province = Province::where("name", $place)->with(["District" => function ($query) {
-        //     $query->with(["Ward" => function ($query) {
-        //         $query->with(["Hotel"]);
-        //     }]);
-        // }])->get();
-        // if (sizeof($province) == 0) {
-        //     return response()->json([
-        //         "status" => false,
-        //         "message" => "Can't find any hotel :'(",
-        //     ]);
-        // }
-        // $arrayDistrict = $province[0]->district;
-        // foreach ($arrayDistrict as $district) {
-        //     foreach ($district->ward as $ward) {
-        //         $arrayHotels = $ward->hotel;
-        //         if (sizeOf($arrayHotels) > 0) {
-        //             foreach ($arrayHotels as $hotel) {
-        //                 $data[] = new HotelResource($hotel);
-        //             }
-        //         }
-        //     }
-        // }
-        //------
-        //Loc theo Hotel neu du lieu hotel it
-        $hotel = Hotel::with(["Ward" => function ($query) {
-            $query->with(["District" => function ($query) {
-                $query->with(["Province"]);
-                // function ($query) {
-                //     $query->where("id", 2);
-                // }]);
-            }]);
-        }])->get();
-        $data = [];
-        foreach ($hotel as $h) {
-            if ($h->ward->district->province->id == 1) {
-                $data[] = $h;
-            }
+
+
+        $query = Hotel::whereHas("Ward", function ($query)   use ($place) {
+            $query->whereHas("District", function ($query)   use ($place) {
+                $query->whereHas("Province", function ($query)   use ($place) {
+                    $query->where("name", $place);
+                });
+            });
+        });
+        $query = $this->filterByDate($query, $checkIn, $checkOut);
+        if (is_array($districts) && sizeOf($districts) > 0) {
+            $query = $this->filterByDistrict($query, $districts);
         }
-        //-------
-        // $data = $this->filterByDate($data, $checkIn, $checkOut, $roomTypes);
-
-        // if (is_array($districts) && sizeOf($districts) > 0) {
-        //     $data = $this->filterByDistrict($data, $districts);
-        // }
-
-        // if (is_array($stars) && sizeOf($stars) > 0) {
-        //     $data = $this->filterByStar($data, $stars);
-        // }
-
-        // if (is_array($services) && sizeOf($services) > 0) {
-        //     $data = $this->filterByService($data, $services);
-        // }
-        // if (is_array($hotelTypes) && sizeOf($hotelTypes) > 0) {
-        //     $data = $this->filterByHotelType($data, $hotelTypes);
-        // }
-        // if (is_array($price) && sizeOf($price) > 0) {
-        //     $data = $this->filterByPrice($data, $price);
-        // }
-        // if (is_array($roomTypes) && sizeOf($roomTypes) > 0) {
-        //     $data = $this->filterByRoomType($data, $roomTypes);
-        // }
-        // $data = $this->filterByRankPoint($data);
-        $temp = array();
-        foreach ($data as $h) {
-            $temp[] =  new HotelResource($h);
+        if (is_array($stars) && sizeOf($stars) > 0) {
+            $query = $this->filterByStar($query, $stars);
         }
-        $data = $this->filterByRankPoint($data);
+        if (is_array($services) && sizeOf($services) > 0) {
+            $query = $this->filterByService($query, $services);
+        }
+        if (is_array($hotelTypes) && sizeOf($hotelTypes) > 0) {
+            $query = $this->filterByHotelType($query, $hotelTypes);
+        }
+        if (is_array($roomTypes) && sizeOf($roomTypes) > 0) {
+            $query = $this->filterByRoomType($query, $roomTypes,$price);
+        }
+        if (is_array($price) && sizeOf($price) > 0) {
+            $query = $this->filterByPrice($query, $price);
+        }
+        $query = $this->filterByRankPoint($query);
+        // $query = $this->where($query);
         return response()->json([
             "status" => true,
-            "data" => $data,
+            "data" => new HotelCollection($query->get()),
         ]);
     }
-    public function filterByDate($data, $checkIn, $checkOut, $roomTypes)
+    public function filterByDate($query, $checkIn, $checkOut)
     {
-        $temp = [];
-        if ($checkIn->lessThan($checkOut) && $checkIn->notEqualTo($checkOut)) {
-            foreach ($data as $hotel) {
-                foreach ($hotel->Room as $room) {
-                    if ($room->availableRoomAmount($checkIn, $checkOut) > 0) {
-                        if (is_array($roomTypes) && sizeOf($roomTypes) > 0) {
-                            foreach ($roomTypes as $roomType) {
-                                if ($room->room_type_id == $roomType) {
-                                    $temp[] = $hotel->id;
-                                }
-                            }
-                        } else {
-                            $temp[] = $hotel->id;
-                        }
+        $hotelIds = $query->get("id");
+        $roomHaveBooking = Room::whereIn("hotel_id", $hotelIds)
+            ->with("Booking")
+            ->WhereHas("Booking")
+            ->get();
+        $ValidRoom = [];
+        foreach ($roomHaveBooking as $room) {
+            $room_amount = $room->amount;
+            foreach ($room->booking as $booking) {
+                $bookingCheckin = Carbon::createMidnightDate($booking->check_in);
+                $bookingCheckout = Carbon::createMidnightDate($booking->check_out);
+                if ($checkIn->lessThanOrEqualTo($bookingCheckin)) {
+                    if ($checkOut->lessThanOrEqualTo($bookingCheckin)) {
+                        $room_amount++;
                     }
                 }
-            }
-            $temp = array_count_values($temp);
-            $collection = collect($data);
-            $data = $collection->whereIn("id", $temp)->all();
-            return $data;
-            // $tempData = [];
-            // foreach ($temp as $hotelId => $value) {
-            //     foreach ($data as $hotel) {
-            //         if ($hotel->id == $hotelId) {
-            //             $tempData[] = new HotelResource($hotel);
-            //         }
-            //     }
-            // }
-
-            // $data = $tempData;
-            // return $data;
-        } else {
-            return response()->json([
-                "status" => false,
-                "message" => "please choose valid date",
-            ]);
-        }
-    }
-    public function filterByDistrict($array, $districts)
-    {
-        $temp = [];
-        foreach ($array as $hotel) {
-            foreach ($districts as $district) {
-                if ($hotel->Ward->district->id == $district) {
-                    $temp[] = $hotel;
+                if ($checkIn->greaterThanOrEqualTo($bookingCheckout)) {
+                    if ($checkOut->greaterThanOrEqualTo($bookingCheckout)) {
+                        $room_amount++;
+                    }
                 }
+                $room_amount -= $booking->room_amount;
+            }
+            $room->amount = $room_amount;
+            if ($room->amount != 0) {
+                $ValidRoom[] = $room->id;
             }
         }
-        return $temp;
-        // foreach ($district as $districtId) {
-        //     foreach (District::find($districtId)->Ward as $ward) {
-        //         $arrayHotels = $ward->Hotel;
-        //         if (sizeOf($arrayHotels) > 0) {
-        //             foreach ($arrayHotels as $hotel) {
-        //                 $temp[] = $hotel->id;
-        //             }
-        //         }
-        //     }
-        // }
-        // $data = [];
-        // foreach ($array as $hotel) {
-        //     foreach ($temp as $hotelId) {
-        //         if ($hotel->id == $hotelId) {
-        //             $data[] = $hotel;
-        //         }
-        //     }
-        // }
-        // return $data;
+        return $query->whereHas("Room", function ($query) use ($ValidRoom) {
+            $query->whereIn("id", $ValidRoom);
+        });
     }
-    public function filterByStar($array, $stars)
+    public function filterByDistrict($query, $districts)
     {
-
-        $collection = collect($array);
-        $data = $collection->whereIn("stars_num", $stars)->all();
-        return $data;
+        return $query->whereHas("Ward", function ($query) use ($districts) {
+            $query->whereHas("District", function ($query) use ($districts) {
+                $query->whereIn("id", $districts);
+            });
+        });
     }
-    public function filterByService($array, $services)
+    public function filterByStar($query, $stars)
     {
-        $temp = [];
-        foreach ($array as $hotel) {
-            $id = $hotel->id;
-            foreach ($services as $serviceId) {
-                $a = ServiceRoomType::where("hotel_id", $id)->where("service_id", $serviceId)->first();
-                if ($a != null) {
-                    $temp[] = $hotel->id;
-                }
-            }
-        }
-        // chi can co 1 se hien thi
-        //------------------------------------
-        // $temp = array_unique($temp);
-        //------------------------------------
-        //phai co du moi hien thi
-        //------------------------------------
-        $arrayCountValue  = array_count_values($temp);
-        $temp = [];
-        foreach ($arrayCountValue as $key => $value) {
-            if ($value == sizeOf($services)) {
-                $temp[] = $key;
-            }
-        }
-        //------------------------------------
-        // $data = [];
-        // foreach ($array as $hotel) {
-        //     foreach ($temp as $hotelId) {
-        //         if ($hotel->id == $hotelId) {
-        //             $data[] = new HotelResource($hotel);
-        //         }
-        //     }
-        // }
-        $collection = collect($array);
-        $data = $collection->whereIn("id", $temp)->all();
-        return $data;
+        return $query->whereIn("stars_num", $stars);
     }
-    public function filterByHotelType($array, $hotelTypes)
+    public function filterByService($query, $services)
     {
-        $collection = collect($array);
-        $data = $collection->whereIn("hotel_type_id", $hotelTypes)->all();
-        return $data;
+        return $query->whereHas("Service", function ($query) use ($services) {
+            $query->whereIn("service_id", $services);
+        });
     }
-    public function filterByRoomType($array, $roomTypes)
+    public function filterByHotelType($query, $hotelTypes)
     {
-        $data = array();
-        foreach ($array as $hotel) {
-            $temp = $hotel;
-            if ($hotel->countRoomByTypes($roomTypes) > 0) {
-                $temp->count = $hotel->countRoomByTypes($roomTypes);
-                $data[] = $temp;
-            }
-        }
-        $data = collect($data)->sortByDesc('count');
-        return $data->values();
+        return $query->whereIn("hotel_type_id", $hotelTypes);
     }
-    public function filterByPrice($array, $price)
+    public function filterByRoomType($query, $roomTypes,$price)
     {
-        $priceMin = $price[0];
-        $priceMax = $price[1];
-        $temp = [];
-        foreach ($array as $hotel) {
-            // foreach ($hotel->Room as $room) {
-            //     if ($room->price > $priceMin && $room->price < $priceMax) {
-            //         $temp[] = $hotel->id;
-            //     }
-            // }
-            if ($hotel->minPrice() >= $priceMin && $hotel->maxPrice() <= $priceMax) {
-                $temp[] = $hotel->id;
-            }
-        }
-        $temp = array_unique($temp);
-        // $data = [];
-        // foreach ($array as $hotel) {
-        //     foreach ($temp as $hotelId) {
-        //         if ($hotel->id == $hotelId) {
-        //             $data[] = new HotelResource($hotel);
-        //         }
-        //     }
-        // }
-        $collection = collect($array);
-        $data = $collection->whereIn("id", $temp)->values();
-        return $this->getSort($data);
-        // return $data;
+        return $query->whereHas("Room", function ($query) use ($roomTypes,$price) {
+            $query->whereIn("room_type_id", $roomTypes)->whereBetween("price",$price);
+        });
     }
-    public function getSort($arr)
+    public function filterByPrice($query, $price)
     {
-        $tempArr = $arr;
-        if (sizeOf($arr) == 0) return $tempArr;
-        $number = 0;
-        do {
-            $min = $tempArr[$number]->minPrice();
-            $index = $number;
-            for ($i = $number; $i < sizeOf($tempArr); $i++) {
-                if ($tempArr[$i]->minPrice() < $min) {
-                    $min = $tempArr[$i]->minPrice();
-                    $index = $i;
-                }
-            }
-            $temp = $tempArr[$number];
-            $tempArr[$number] = $tempArr[$index];
-            $tempArr[$index] = $temp;
-            $number++;
-        } while ($number < sizeOf($tempArr));
-        return $tempArr;
+        // return $query->with("Room")->whereHas("Room",function($query) use ($price){
+        return $query->whereHas("Room", function ($query) use ($price) {
+            $query->whereBetween("price", $price);
+        });
     }
-    public function filterByRankPoint($array)
+    public function filterByRankPoint($query)
     {
-        $collection = collect($array);
-        $data = $collection->sortByDesc("rank_point")->values();
-        return $data;
+        return $query->orderBy("rank_point", "desc");
     }
-    // public function remove_duplicate_hotel_in_array($array, $numberOfService)
-    // {
-    //     $temp = [];
-    //     //--------------van show khi match 1 trong cac service
-    //     // foreach($array as $hotel){
-    //     //     if(empty($temp)){
-    //     //         $temp[] = $hotel;
-    //     //     }else{
-    //     //         foreach($temp as $t){
-    //     //             if($t->id != $hotel->id){
-    //     //                 $temp[] = $hotel;
-    //     //             }
-    //     //         }
-    //     //     }
-    //     // }
-    //     //---------------chi show khi match tat ca cac service
-    //     $data = [];
-    //     $number = 0;
-    //     $childTemp = [];
-    //     for ($i = 0; $i < sizeOf($array); $i++) {
-    //         $childTemp[$array[$i]->id] = 0;
-    //     }
-    //     for ($i = 0; $i < sizeOf($array); $i++) {
-    //         $idToCheck = $array[$i]->id;
-    //         if ($array[$i]->id == $idToCheck) {
-    //             $childTemp[$array[$i]->id]++;
-    //         }
-    //         if ($i == sizeOf($array) - 1) {
-    //             $number = 0;
-    //         }
-    //         $temp[] = $childTemp;
-    //     }
-    //     return $temp;
-    // }
 }
