@@ -7,6 +7,7 @@ import hotel  from '@/js/frontend/community/components/hotel';
 import user  from '@/js/frontend/community/components/user';
 import news  from '@/js/frontend/community/components/news';
 import login  from '@/js/frontend/community/components/login';
+import review  from '@/js/frontend/community/components/review';
 import bookingList  from '@/js/frontend/community/components/booking-list';
 
 Vue.use(VueRouter);
@@ -33,6 +34,11 @@ const router = new VueRouter({
 			path: '/community/account',
 			name: 'account',
 			component: account
+		},
+		{
+			path: '/community/review',
+			name: 'review',
+			component: review
 		},
 		{
 			path: '/hotel/:id',

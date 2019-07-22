@@ -81,33 +81,33 @@ class UserController extends Controller
     {
         $f = null;
         if ($req->type == 0) {
-            if (User::find($req->id) && User::find($req->followed)) {
+            if (User::find($req->followed)) {
                 $f = CustomerFollowing::create([
-                    'follower_id' => $req->id,
+                    'follower_id' => Auth::user()->id,
                     'followed_id' => $req->followed
                 ]);
             }
         } else {
-            if (User::find($req->id) && Hotel::find($req->followed)) {
+            if (Hotel::find($req->followed)) {
                 $f = HotelFollowing::create([
-                    'customer_id' => $req->id,
+                    'customer_id' => Auth::user()->id,
                     'hotel_id' => $req->followed
                 ]);
             }
         }
-        return response()->json(['data' => true]);
+        return response()->json(['data' => $f]);
     }
 
     //unfollow
     public function unfollow(Request $req)
     {
         if ($req->type == 0) {
-            if (User::find($req->id) && User::find($req->followed)) {
-                CustomerFollowing::where('follower_id', $req->id)->where('followed_id', $req->followed)->delete();
+            if (User::find($req->followed)) {
+                CustomerFollowing::where('follower_id', Auth::user()->id)->where('followed_id', $req->followed)->delete();
             }
         } else {
-            if (User::find($req->id) && Hotel::find($req->followed)) {
-                HotelFollowing::where('customer_id', $req->id)->where('hotel_id', $req->followed)->delete();
+            if (Hotel::find($req->followed)) {
+                HotelFollowing::where('customer_id',Auth::user()->id)->where('hotel_id', $req->followed)->delete();
             }
         }
         return response()->json(['data' => true]);

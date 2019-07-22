@@ -60,23 +60,9 @@
               </v-tooltip>
             </template>
             <v-card light min-height="120px" class="pa-1" flat tile width="800px">
+              <router-link class="pointer" :to="{name:'review',query:{id:item.id}}" target="_blank">
               <v-card-title>
                 <v-spacer></v-spacer>
-                <!-- <v-menu bottom right>
-                  <template v-slot:activator="{ on }">
-                    <v-btn fab icon v-on="on">
-                      <v-icon color="black">more_vert</v-icon>
-                    </v-btn>
-                  </template>
-                  <v-list dark>
-                    <v-list-tile v-if="item.customer_review.status ==1">
-                      <v-list-tile-title>Off notification</v-list-tile-title>
-                    </v-list-tile>
-                    <v-list-tile v-else>
-                      <v-list-tile-title>Get notification</v-list-tile-title>
-                    </v-list-tile>
-                  </v-list>
-                </v-menu> -->
                 <v-card-text>
                   <span class="headline">{{item.title}}</span>
                   <v-layout>
@@ -131,29 +117,8 @@
                   </v-layout>
                 </v-card-text>
               </v-card-title>
+              </router-link>
               <v-card-actions>
-                <!-- <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-icon
-                      v-on="on"
-                      class="ml-3 mr-1"
-                      large
-                      :color="color.heart"
-                      v-on:click=";"
-                      v-if="item.customer_review.like == 0"
-                    >favorite_border</v-icon>
-                    <v-icon
-                      v-on="on"
-                      class="ml-3 mr-1"
-                      large
-                      :color="color.heart"
-                      v-on:click=";"
-                      v-else
-                    >favorite</v-icon>
-                  </template>
-                  <span>like</span>
-                </v-tooltip>
-                <span class="grey--text subheading">{{item.likes}}</span> -->
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-icon
@@ -604,6 +569,8 @@ export default {
         });
     },
     followUser: function(value) {
+      console.log(value);
+      console.log(this.user.id);
       this.data.follow = true;
       var flag = true;
       axios({

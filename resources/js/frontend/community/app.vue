@@ -146,13 +146,13 @@
     <v-toolbar :color="drawer.color" app fixed clipped-right clipped-left flat>
       <v-toolbar-side-icon v-on:click="drawer.state = !drawer.state" class="teal accent-4"></v-toolbar-side-icon>
       <a class="title ml-3 mr-5 white--text text-uppercase" href="/community" >Trang Chủ</a>
-      <v-text-field
+      <!-- <v-text-field
         solo
         label="who's you want to find?"
         :color="drawer.iconColor"
         prepend-inner-icon="search"
         class="mt-2"
-      ></v-text-field>
+      ></v-text-field> -->
       <v-spacer></v-spacer>
       <!-- <v-badge overlap color="red" class="mr-5">
         <template v-slot:badge>

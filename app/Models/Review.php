@@ -33,7 +33,6 @@ class Review extends Model
     $customer->avatar = UserImage::where('user_id', $this->customer_id)->where('is_primary', 1)->first();
     return $customer;
   }
-
   public function Comment()
   {
     return $this->hasMany('App\Models\Comment', 'review_id', 'id');

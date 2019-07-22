@@ -27,6 +27,7 @@ use Illuminate\Http\File;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Models\Policy;
 use App\Http\Resources\HotelCollection;
+use Carbon\Carbon as CarbonCarbon;
 
 class HotelController extends Controller
 {
@@ -452,8 +453,6 @@ class HotelController extends Controller
         $checkIn = Carbon::createMidnightDate($checkIn);
         $checkOut = Carbon::createMidnightDate($checkOut);
         $data = [];
-
-
         $query = Hotel::whereHas("Ward", function ($query)   use ($place) {
             $query->whereHas("District", function ($query)   use ($place) {
                 $query->whereHas("Province", function ($query)   use ($place) {

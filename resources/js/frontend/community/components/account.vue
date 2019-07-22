@@ -253,6 +253,7 @@
               </v-tooltip>
             </template>
             <v-card light min-height="120px" class="pa-1" flat tile width="800px">
+              <router-link class="pointer" :to="{name:'review',query:{id:item.id}}" target="_blank">
               <v-card-title>
                 <v-spacer></v-spacer>
                 <!-- <v-menu bottom right>
@@ -270,7 +271,6 @@
                     </v-list-tile>
                   </v-list>
                 </v-menu>-->
-
                 <v-card-text>
                   <span class="headline">{{item.title}}</span>
                   <v-layout>
@@ -325,6 +325,7 @@
                   </v-layout>
                 </v-card-text>
               </v-card-title>
+              </router-link>
               <v-card-actions>
                 <!-- <v-tooltip top>
                   <template v-slot:activator="{ on }">

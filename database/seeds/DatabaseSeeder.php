@@ -391,6 +391,7 @@ class DatabaseSeeder extends Seeder
             for ($b = 1; $b <= $bNo; $b++) {
                 $m = rand(1, 8);
                 $d = rand(10, 25);
+                if($m == 2 && $d==23) $d = 22;
                 factory(App\Models\Booking::class)->create([
                     'customer_id' => $uID,
                     'check_in' => '2019-0' . $m . '-' . $d,

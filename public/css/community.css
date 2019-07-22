@@ -8,6 +8,14 @@ a:hover {
   text-decoration: none;
 }
 
+.pointer{
+  cursor: pointer;
+}
+.pointer:hover {
+  color: #000 !important;
+  text-decoration: none;
+}
+
 .moveInUp-enter-active{
 animation: fadeIn 1s ease-in;
 }@keyframes fadeIn{
