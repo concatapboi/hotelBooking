@@ -18,6 +18,7 @@
             </v-tooltip>
           </template>
           <v-card light min-height="120px" class="pa-1" flat tile width="800px">
+            <router-link class="pointer" :to="{name:'review',query:{id:r.id}}" target="_blank">
             <v-card-title>
               <v-avatar size="72px" color="black" flat>
                 <v-avatar size="70px" color="white">
@@ -95,6 +96,7 @@
                 </v-flex>
               </v-layout>
             </v-card-text>
+            </router-link>
             <v-card-actions>
               <!-- <v-tooltip top>
                 <template v-slot:activator="{ on }">
@@ -415,6 +417,9 @@
           </v-card>
         </v-badge>
       </v-layout>-->
+      <infinite-loading @distance="1" @infinite="loadFeeds">
+        <span class="caption font-italic" slot="no-more">Bạn đã đến cuối trang...</span>
+      </infinite-loading>
     </v-flex>
     <v-flex shrink md8 v-else-if="flag == true">
       <v-img src="/blog/img/slider/oops.png">
@@ -508,7 +513,7 @@
             </v-list-tile>
           </v-list>
         </v-expansion-panel-content> -->
-        <v-expansion-panel-content class="mb-3">
+        <!-- <v-expansion-panel-content class="mb-3">
           <template v-slot:actions>
             <v-icon>expand_more</v-icon>
           </template>
@@ -554,7 +559,7 @@
               </v-list-tile-action>
             </v-list-tile>
           </v-list>
-        </v-expansion-panel-content>
+        </v-expansion-panel-content> -->
       </v-expansion-panel>
     </v-flex>
   </v-layout>
@@ -570,6 +575,7 @@ export default {
   mounted() {},
   data() {
     return {
+      page:1,
       comment: {
         review_id: 0,
         content: "",
@@ -861,6 +867,9 @@ export default {
       axios({
         method: "get",
         url: "http://localhost:8000/api/review",
+        params:{
+          page:this.page,
+        },
         headers: {
           Authorization: "Bearer " + localStorage.getItem("login_token")
         }
@@ -878,6 +887,32 @@ export default {
             this.login.token = localStorage.getItem("login_token");
             this.$router.push({ name: "login" });
           }
+        });
+    },
+    loadFeeds($state) {
+      this.page = this.page + 1;
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/review",
+        params: {
+          page: this.page,
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          console.log(res.data.data);
+          if (res.data.data.length != 0) {
+            this.feeds = this.feeds.concat(res.data.data);
+            $state.loaded();
+          } else {
+            $state.complete();
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+          console.log(error);
         });
     },
     getTop5Hotel: function() {

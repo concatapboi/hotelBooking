@@ -76,12 +76,13 @@ class HotelController extends Controller
                 $hotel->image = HotelImage::where('hotel_id', $hotel->id)->where('is_primary', 1)->first()->image_link;
                 $hotel->images = HotelImage::where('hotel_id', $hotel->id)->get();
                 $hotel->question = $hotel->questionList();
+                $hotel->review_point = $hotel->getReviewPoint();
                 $status = true;
                 $hotel->hotel_type = $hotel->HotelTypeResource();
                 $hotel->service = $hotel->ServiceResource();
                 $hotel->followed = false;
                 $hotel->review = $hotel->reviewList($req->userID);
-                $hotel->CouponCode;
+                $hotel->coupon_code = $hotel->getCouponCode();
                 if ($req->userID != null) {
                     if (HotelFollowing::where('customer_id', $req->userID)->where('hotel_id', $hotel->id)->first() != null)
                         $hotel->followed = true;
@@ -124,7 +125,8 @@ class HotelController extends Controller
                 'room' => array()
             ]);
         }
-        $rooms = $hotel->Room;
+        // $rooms = $hotel->Room;
+        $rooms = Room::where('hotel_id',$hotel->id)->orderBy('price')->paginate(2);
         foreach ($rooms as $r) {
             $r->couponCode = $r->couponCode();
             $r->image = RoomImage::where('room_id', $r->id)->where('is_primary', 1)->first()->image_link;
@@ -156,7 +158,7 @@ class HotelController extends Controller
             'room' => $rooms
         ]);
     }
-
+    // public functio
     //hotels/{hotels}/edit
     public function edit($id)
     {

@@ -269,8 +269,8 @@
         <div v-else>
           <v-card v-if="noData == true" light flat tile>Không tìm thấy dữ liệu phù hợp :'(</v-card>
           <v-card v-else light flat tile>
-            <v-layout class="search-item" v-for="(hotel,index) in data" :key="index">
-              <v-flex xs3>
+            <v-layout class="search-item" v-for="(hotel,index) in data" :key="index" align-center>
+              <v-flex xs2>
                 <router-link
                   tag="a"
                   :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
@@ -279,44 +279,78 @@
                   <v-img :aspect-ratio="4/3" :src="hotel.image"></v-img>
                 </router-link>
               </v-flex>
-              <v-flex xs9>
+              <v-flex xs10>
                 <router-link
+                  class="pointer"
                   tag="a"
                   :to="{path: 'hotel/'+hotel.id, query: { place: place.replace(/\s/g,'-'), check_in : checkIn, check_out:checkOut }}"
                   target="_blank"
                 >
                   <v-card-title>
-                    <v-card flat tile width="100%">
-                      <v-list two-line class="grey lighten-2">
-                        <v-list-tile class="pa-0 ma-0">
-                          <v-list-tile-content>
-                            <div>
-                              <span class="headline">{{hotel.name}}</span>
-                              <v-tooltip right>
-                                <template v-slot:activator="{ on }">
-                                  <i
-                                    class="blue--text fas fa-check-circle"
-                                    v-on="on"
-                                    v-show="hotel.verified!=0"
-                                  ></i>
-                                </template>
-                                <span>đã kiểm chứng</span>
-                              </v-tooltip>
-                            </div>
-                            <v-list-tile-title>{{hotel.description}}</v-list-tile-title>
-                          </v-list-tile-content>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <div>
-                            <div>
-                              Mức giá:
-                              <!-- <span>{{hotel.minPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span> -->
-                            </div>
-                            <div v-if="hotel.count">Số Lượng Phòng: {{hotel.count}}</div>
-                          </div>
-                        </v-list-tile>
-                      </v-list>
-                    </v-card>
+                    <v-layout row wrap class="pa-0 ma-0">
+                      <v-flex md12 class="mb-2 pb-2 border-bottom border-light">
+                        <span class="headline">{{hotel.name}}</span>
+                        <v-tooltip right>
+                          <template v-slot:activator="{ on }">
+                            <i
+                              class="blue--text fas fa-check-circle"
+                              v-on="on"
+                              v-show="hotel.verified!=0"
+                            ></i>
+                          </template>
+                          <span>đã kiểm chứng</span>
+                        </v-tooltip>
+                      </v-flex>
+                      <v-flex md5 class="caption">
+                        <div>
+                          <span>
+                            Loại hình:&nbsp;
+                            <span
+                              class="body-2 font-weight-bold"
+                            >{{hotel.hotel_type}}</span>
+                          </span>
+                        </div>
+                        <div v-if="hotel.stars_num >0">
+                          <v-icon class="mx-2" color="orange" small v-for="i in hotel.stars_num" :key="i">star</v-icon>
+                        </div>
+                        <div>Độ tuổi của trẻ em để nhận ưu đãi là dưới&nbsp;{{hotel.child_age}}&nbsp;tuổi.</div>
+                        <div>E-mail:&nbsp;{{hotel.email}}</div>
+                        <div>
+                          Phòng giá thấp nhất&nbsp;
+                          <span
+                            class="body-2 font-weight-bold"
+                          >{{hotel.minPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
+                        </div>
+                        <div>
+                          Phòng giá cao nhất&nbsp;
+                          <span
+                            class="body-2 font-weight-bold"
+                          >{{hotel.maxPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
+                        </div>
+                      </v-flex>
+                      <v-flex md6 class="caption border-left border-light pl-4 ml-3">
+                        <div>Chính sách đặt/hủy phòng:</div>
+                        <div class="pl-2">-&nbsp;{{hotel.policy.detailPolicy}}</div>
+                        <div class="pl-2">- Thời gian Check-In:&nbsp;{{hotel.policy.check_in}}</div>
+                        <div class="pl-2">- Thời gian Check-Out:&nbsp;{{hotel.policy.check_out}}</div>
+                        <div class="pl-2" v-if="hotel.policy.refundRate >0">
+                          - Hoàn tiền:&nbsp;
+                          <span
+                            class="body-2 font-weight-bold"
+                          >{{hotel.policy.refundRate}}%</span>
+                        </div>
+                        <div class="pl-2" v-else>- Khách hủy đặt phòng sẽ không được hoàn tiền.</div>
+                      </v-flex>
+                      <v-flex class="mt-2 border-top border-light pt-2">
+                        <div v-if="hotel.review_point > 0">
+                          Đánh giá:&nbsp;
+                          <v-chip dark color="grey"><span
+                            class="body-2 font-weight-black"
+                          >{{hotel.review_point}}/10</span></v-chip>
+                        </div>
+                        <div v-else>Chưa có đánh giá.</div>
+                      </v-flex>
+                    </v-layout>
                   </v-card-title>
                 </router-link>
               </v-flex>
@@ -324,7 +358,7 @@
             <infinite-loading spinner="waveDots" @distance="1" @infinite="infiniteHandler">
             <!-- <infinite-loading :identifier="infiniteId" spinner="waveDots" @distance="1" @infinite="infiniteHandler"> -->
 
-              <div slot="no-more">----End----</div>
+              <div slot="no-more">Bạn đã đến cuối trang...</div>
               <div slot="no-results">Không thể tìm khách sạn nào :(</div>
             </infinite-loading>
           </v-card>
@@ -565,6 +599,7 @@ export default {
         .catch(error => {
           this.loading = false;
           console.log(error.response);
+          console.log(error);
         });
     },
     initialize: function() {

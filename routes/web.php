@@ -1,5 +1,6 @@
 <?php
-
+use App\Events\MessagePosted;
+use App\Notifications\MessageNotification;
 //Start routes Frontend
 
 
@@ -26,5 +27,4 @@ Route::group(['prefix' => ''], function(){
     Route::get('/', 'PageController@index');
     Route::get('/{string}', 'PageController@index')->where('string','.*'); 
 });
-
 

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\HotelTypeResource;
 use App\Models\Booking;
@@ -75,6 +77,19 @@ class Hotel extends Model
   {
     return $this->hasMany('App\Models\CouponCode', 'hotel_id', 'id');
   }
+  public function getCouponCode()
+  {
+    $couponCodes = $this->CouponCode;
+    $temp = array();
+    foreach ($couponCodes as $couponCode) {
+      if (!Carbon::now()->lessThan(Carbon::parse($couponCode->start_at))) {
+        if ($couponCode->end_at == null || Carbon::now()->lessThan(Carbon::parse($couponCode->end_at))) {
+          $temp[] = $couponCode;
+        }
+      }
+    }
+    return $temp;
+  }
   public function RoomByPrice()
   {
     return $this->hasMany('App\Models\Room', 'hotel_id', 'id')->orderBy('price');
@@ -84,7 +99,7 @@ class Hotel extends Model
   {
     $reviews = Review::where('hotel_id', $this->id)->get();
     foreach ($reviews as $r) {
-      $r->booking= $r->bookingDetail();
+      $r->booking = $r->bookingDetail();
       $r->useful = false;
       $r->customer = $r->Customer();
       // $r->avatar = UserImage::where('user_id', $r->customer_id)->where('is_primary', 1)->first();
@@ -120,7 +135,7 @@ class Hotel extends Model
   {
     // return $this->hasMany('App\Models\ServiceRoomType', 'hotel_id', 'id');
     // return $this->belongsToMany('App\Models\Service','service_room_type', 'service_id', 'hotel_id');
-    return $this->belongsToMany('App\Models\Service','service_room_type','hotel_id', 'service_id');
+    return $this->belongsToMany('App\Models\Service', 'service_room_type', 'hotel_id', 'service_id');
   }
   public function ServiceRoomType()
   {
@@ -129,7 +144,7 @@ class Hotel extends Model
   public function RoomType()
   {
     // return $this->hasMany('App\Models\ServiceRoomType', 'hotel_id', 'id');
-    return $this->belongsToMany('App\Models\RoomType','service_room_type', 'room_type_id', 'hotel_id');
+    return $this->belongsToMany('App\Models\RoomType', 'service_room_type', 'room_type_id', 'hotel_id');
   }
 
   public function maxPrice()
@@ -240,8 +255,25 @@ class Hotel extends Model
   }
   public function BookingList($id)
   {
-    return $this->where("id",$id)->with(["Room" => function($query){
+    return $this->where("id", $id)->with(["Room" => function ($query) {
       $query->with("Booking");
     }])->get();
+  }
+  public function Review()
+  {
+    return $this->hasMany('App\Models\Review', 'hotel_id', 'id');
+  }
+  public function getReviewPoint()
+  {
+    $reviews = Review::where('hotel_id',$this->id)->get();
+    $count = sizeOf($reviews);
+    $point = 0;
+    foreach ($reviews as $review) {
+      $point += $review->point;
+    }
+    if ($count != 0)
+      return $point / $count;
+    else
+      return 0;
   }
 }

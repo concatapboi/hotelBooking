@@ -90,10 +90,11 @@
       </v-img>
       <v-layout row wrap class="hotel-info-item" align-center>
         <v-flex md4>
-          <span>Điểm đánh giá:</span>
+          <span>Đánh giá:</span>
         </v-flex>
         <v-flex md7 class="pl-2">
-          <span>{{data.review_point}}</span>
+          <span v-if="data.review_point>0">{{data.review_point}}/10</span>
+          <span v-else>Chưa có đánh giá.</span>
         </v-flex>
       </v-layout>
       <v-layout row wrap class="hotel-info-item" align-center>
@@ -166,11 +167,7 @@
                   <v-flex class="pa-1" md6>
                     <v-img :aspect-ratio="1" :src="'/blog/img/room/'+room.images[3].image_link">
                       <v-layout fill-height justify-center align-center>
-                        <a
-                          href="#"
-                          @click="openImagesDialog(1,room)"
-                          class="red--text"
-                        >Thêm...</a>
+                        <a href="#" @click="openImagesDialog(1,room)" class="red--text">Thêm...</a>
                       </v-layout>
                     </v-img>
                   </v-flex>
@@ -181,7 +178,9 @@
                 <v-card-title>
                   <div>
                     <div class="headline">{{room.room_name}}</div>
-                    <div><v-divider></v-divider></div>
+                    <div>
+                      <v-divider></v-divider>
+                    </div>
                     <div>
                       Mức Giá:&nbsp;
                       <span
@@ -270,9 +269,7 @@
                   @click.stop="openDialog(room)"
                   class="white--text"
                 >Chọn</v-btn>
-                <div class=" font-weight-bold red--text body-2">
-                  Còn&nbsp;{{room.amount}}&nbsp;phòng
-                </div>
+                <div class="font-weight-bold red--text body-2">Còn&nbsp;{{room.amount}}&nbsp;phòng</div>
               </v-flex>
               <!-- <v-flex md12>
                         <v-card dark>
@@ -280,6 +277,9 @@
                         </v-card>
               </v-flex>-->
             </v-layout>
+            <infinite-loading @distance="1" @infinite="loadRoom">
+              <span class="caption font-italic" slot="no-more">Bạn đã đến cuối trang...</span>
+            </infinite-loading>
           </v-card>
           <v-card light flat tile width="100%" v-else>
             <div class="text-md-center">
@@ -482,7 +482,7 @@
                             </v-card-title>
                             <v-card-text class="pa-0 ma-0">
                               <v-layout row wrap align-center class="pa-0 ma-0">
-                                <v-flex md3 class="border-right pa-1 mr-2">
+                                <v-flex md2 class="border-right pa-1 mr-4">
                                   <v-avatar size="110px" color="black">
                                     <v-avatar size="100px" color="blue">
                                       <div class="white--text text-md-center title">{{r.point}}/10</div>
@@ -490,56 +490,58 @@
                                   </v-avatar>
                                 </v-flex>
                                 <v-flex md8>
-                                  <div>
-                                    <div>
-                                      <v-avatar size="42px" color="black">
-                                        <router-link
-                                          :to="{name:'user',params:{id:r.customer.id}}"
-                                          target="_blank"
-                                        >
-                                          <v-avatar size="40px" color="white">
-                                            <img :src="'/img/user/'+r.customer.avatar.image_link" alt />
-                                          </v-avatar>
-                                        </router-link>
-                                      </v-avatar>
-                                      <span class="subheading">
-                                        <router-link
-                                          :to="{name:'user',params:{id:r.customer.id}}"
-                                          target="_blank"
-                                        >{{r.customer.name}}</router-link>
-                                      </span>
-                                      <span class="grey--text">&nbsp;-{{formatDate(r.created_at)}}</span>
-                                    </div>
+                                  <router-link
+                                    class="pointer"
+                                    :to="{name:'review',query:{id:r.id}}"
+                                    target="_blank"
+                                  >
                                     <div>
                                       <div>
-                                        <span class="pl-2 subheading">{{r.title}}</span>
+                                        <v-avatar size="42px" color="black">
+                                          <router-link
+                                            :to="{name:'user',params:{id:r.customer.id}}"
+                                            target="_blank"
+                                          >
+                                            <v-avatar size="40px" color="white">
+                                              <img
+                                                :src="'/img/user/'+r.customer.avatar.image_link"
+                                                alt
+                                              />
+                                            </v-avatar>
+                                          </router-link>
+                                        </v-avatar>
+                                        <span class="subheading">
+                                          <router-link
+                                            :to="{name:'user',params:{id:r.customer.id}}"
+                                            target="_blank"
+                                          >{{r.customer.name}}</router-link>
+                                        </span>
+                                        <span class="grey--text">&nbsp;-{{formatDate(r.created_at)}}</span>
                                       </div>
                                       <div>
-                                        <span class="ml-3 pl-4 caption border-left">"{{r.content}}"</span>
+                                        <div>
+                                          <span class="pl-2 subheading">{{r.title}}</span>
+                                        </div>
+                                        <div class="ml-3 pl-4 caption border-left">
+                                          <span>"{{r.content}}"</span>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  </router-link>
                                 </v-flex>
-                                <v-flex md12 class="my-3 border pa-3">
-                                  <v-layout row wrap class="pa-0 ma-0 caption">
-                                    <v-flex class="border-right pr-4">
-                                      <div>Đã ở&nbsp;{{r.booking.days}}&nbsp;ngày.</div>
-                                      <div>Check-In:&nbsp;{{r.booking.check_in}}</div>
-                                      <div>Check-Out:&nbsp;{{r.booking.check_out}}</div>
-                                      <v-layout row wrap class="pa-0 ma-0">
-                                        <v-flex md4>Tên Phòng:</v-flex>
-                                        <v-flex md8>{{r.booking.room.room_name}}</v-flex>
-                                        <v-flex md4>Số Lượng:</v-flex>
-                                        <v-flex md8>{{r.booking.room_amount}}</v-flex>
-                                        <v-flex md12 v-if="r.booking.discount_value >0">
-                                          <span class="font-italic">"Nhận được giảm giá&nbsp;{{r.booking.discount_value}}%"</span>
-                                        </v-flex>
-                                      </v-layout>
-                                    </v-flex>
-                                    <v-flex offset-md1>
-                                      <v-layout row wrap class="pa-0 ma-0">
-                                        <v-flex md4 v-for="(feature,i) in r.booking.room.feature" :key="i">{{feature.name}}</v-flex>
-                                      </v-layout>
+                                <v-flex md12 class="my-3 border py-3 pl-5">
+                                  <div>Đã ở&nbsp;{{r.booking.days}}&nbsp;ngày.</div>
+                                  <div>Check-In:&nbsp;{{r.booking.check_in}}</div>
+                                  <div>Check-Out:&nbsp;{{r.booking.check_out}}</div>
+                                  <v-layout row wrap class="pa-0 ma-0">
+                                    <v-flex md3>Tên Phòng:</v-flex>
+                                    <v-flex md9>{{r.booking.room.room_name}}</v-flex>
+                                    <v-flex md3>Số Lượng:</v-flex>
+                                    <v-flex md9>{{r.booking.room_amount}}</v-flex>
+                                    <v-flex md12 v-if="r.booking.discount_value >0">
+                                      <span
+                                        class="font-italic"
+                                      >"Nhận được giảm giá&nbsp;{{r.booking.discount_value}}%"</span>
                                     </v-flex>
                                   </v-layout>
                                 </v-flex>
@@ -627,7 +629,9 @@
                                         target="_blank"
                                       >{{q.customer.name}}</router-link>
                                     </span>
-                                    <span class="grey--text">&nbsp;-&nbsp;{{formatDate(q.created_at)}}</span>
+                                    <span
+                                      class="grey--text"
+                                    >&nbsp;-&nbsp;{{formatDate(q.created_at)}}</span>
                                   </div>
                                   <div>
                                     <div>
@@ -641,7 +645,9 @@
                                 <div class="pl-3 border-left border-warning" v-if="q.reply !=null">
                                   <div>
                                     <span class="font-weight-bold">{{data.name}}</span>
-                                    <span class="grey--text">&nbsp;-&nbsp;{{formatDate(q.reply.created_at)}}</span>
+                                    <span
+                                      class="grey--text"
+                                    >&nbsp;-&nbsp;{{formatDate(q.reply.created_at)}}</span>
                                   </div>
                                   <div class="pl-3">"{{q.reply.content}}"</div>
                                 </div>
@@ -926,7 +932,13 @@
                         <v-flex md12>
                           <v-layout row wrap class="pa-0 ma-0" align-center>
                             <v-flex md8>
-                              <v-text-field label="nhập mã giảm giá tại đây..." v-model="text" class="mt-2 ma-0" color="teal" outline></v-text-field>
+                              <v-text-field
+                                label="nhập mã giảm giá tại đây..."
+                                v-model="text"
+                                class="mt-2 ma-0"
+                                color="teal"
+                                outline
+                              ></v-text-field>
                             </v-flex>
                             <v-flex md4>
                               <v-btn
@@ -936,7 +948,9 @@
                                 @click="applyCouponCode"
                               >Áp dụng</v-btn>
                             </v-flex>
-                            <v-flex md12 v-if="bookingDialog.couponCode.mess.length >0"><span class="red--text font-italic">{{bookingDialog.couponCode.mess}}</span></v-flex>
+                            <v-flex md12 v-if="bookingDialog.couponCode.mess.length >0">
+                              <span class="red--text font-italic">{{bookingDialog.couponCode.mess}}</span>
+                            </v-flex>
                           </v-layout>
                         </v-flex>
                         <v-flex md12>
@@ -993,13 +1007,18 @@
                       <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
                         <v-flex md4>
                           <div class="mt-3">
-                            <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingDialog.room.image"></v-img>
+                            <v-img
+                              :aspect-ratio="1"
+                              :src="'/blog/img/room/'+bookingDialog.room.image"
+                            ></v-img>
                           </div>
                         </v-flex>
                         <v-flex md8>
                           <v-layout row wrap class="pa-0 pl-4 ma-0">
                             <v-flex md12>
-                              <div><h2>{{data.name}}</h2></div>
+                              <div>
+                                <h2>{{data.name}}</h2>
+                              </div>
                               <div>{{data.hotel_type.name}}</div>
                             </v-flex>
                             <v-flex md12>
@@ -1054,9 +1073,7 @@
                             <v-flex md12>
                               <v-layout row wrap class="pa-0 ma-0" align-center>
                                 <v-flex md5>Loại Phòng:</v-flex>
-                                <v-flex
-                                  md7
-                                >{{bookingDialog.room.room_type.name}}</v-flex>
+                                <v-flex md7>{{bookingDialog.room.room_type.name}}</v-flex>
                                 <v-flex md5>Số Lượng Đặt:</v-flex>
                                 <v-flex md7>{{bookingDialog.room.bookingAmount}}</v-flex>
                                 <v-flex md5>Yêu Cầu Đặt Biệt:</v-flex>
@@ -1357,7 +1374,7 @@ export default {
           price: 1,
           service: {},
           fearure: {},
-          image: 'default.png',
+          image: "default.png",
           room_bed_type: {},
           room_type: {
             name: ""
@@ -1392,7 +1409,7 @@ export default {
           }
         }
       },
-      rooms:[],
+      rooms: [],
       id: this.$route.params.id,
       data: {
         followed: false,
@@ -1414,6 +1431,7 @@ export default {
         menu1: false,
         menu2: false
       },
+      page: 1,
       placeVal: "",
       checkInVal: "",
       checkInFormattedVal: "",
@@ -1459,7 +1477,8 @@ export default {
           }
         });
         if (this.bookingDialog.couponCode.check == false) {
-          this.bookingDialog.couponCode.mess = "Mã không chính xác hoặc không tồn tại! Thử lại?!";
+          this.bookingDialog.couponCode.mess =
+            "Mã không chính xác hoặc không tồn tại! Thử lại?!";
         }
       }
     },
@@ -1482,7 +1501,7 @@ export default {
     checkInVal: "loadSearchData",
     checkIn: "setSearchValue",
     checkOutVal: "loadSearchData",
-    checkOut: "setSearchValue",
+    checkOut: "setSearchValue"
   },
   methods: {
     load: function() {
@@ -1509,8 +1528,8 @@ export default {
           });
       } else {
         this.$emit("loadLogin");
-        this.userLogin = {};       
-        this.getHotelDetail(); 
+        this.userLogin = {};
+        this.getHotelDetail();
       }
     },
     getHotelDetail: function() {
@@ -1554,14 +1573,62 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.room);
-          if (res.data.room.length!=0) {
-            this.rooms = res.data.room;
+          console.log(res.data.room.data);
+          if (res.data.room.data.length != 0) {
+            this.rooms = res.data.room.data;
             return;
           }
         })
         .catch(error => {
           console.log(error.response);
+        });
+    },
+    getHotelReviews:function(){
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/hotel-review",
+        params: {
+          hotel_id: this.id,
+          user_id: this.userLogin.id,          
+        }
+      })
+        .then(res => {
+          console.log(res.data.review.data);
+          if (res.data.review.data.length != 0) {
+            this.rooms = res.data.review.data;
+            return;
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+    },
+    loadRoom($state) {
+      this.page = this.page + 1;
+      console.log(this.page);
+      console.log(this.rooms);
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/hotel-rooms",
+        params: {
+          page: this.page,
+          hotel_id: this.id,
+          check_in: this.checkInVal,
+          check_out: this.checkOutVal
+        }
+      })
+        .then(res => {
+          console.log(res.data.room.data);
+          if (res.data.room.data.length != 0) {
+            this.rooms = this.rooms.concat(res.data.room.data);
+            $state.loaded();
+          } else {
+            $state.complete();
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+          console.log(error);
         });
     },
     loadSearchData: function() {
@@ -1591,7 +1658,8 @@ export default {
       this.bookingDialog.room.image = room.image;
       this.bookingDialog.state = true;
       this.bookingDialog.accept = false;
-      this.bookingDialog.totalPrice = room.bookingAmount * room.price *(room.days-1);
+      this.bookingDialog.totalPrice =
+        room.bookingAmount * room.price * (room.days - 1);
       this.bookingDialog.step = 1;
       this.bookingDialog.couponCode.check = false;
       this.text = "";
@@ -1674,9 +1742,9 @@ export default {
           if (res.data.status == true) {
             console.log(res.data.booking);
             this.bookingDialog.state = false;
-            this.load();
             this.$emit("loadLogin");
             this.$emit("loadBookingDetail", res.data.booking, 1);
+            this.getHotelRooms();
           } else {
             console.log(res.data.mess);
           }
@@ -1730,7 +1798,10 @@ export default {
                 this.$validator.reset();
               } else {
                 flag = false;
-                this.$emit("loadSnackbar", "Rất tiếc, thực hiện không thành công!");
+                this.$emit(
+                  "loadSnackbar",
+                  "Rất tiếc, thực hiện không thành công!"
+                );
               }
             })
             .catch(error => {
@@ -1742,7 +1813,10 @@ export default {
                 this.action.dialog = false;
                 return;
               }
-              this.$emit("loadSnackbar", "Rất tiếc, thực hiện không thành công!");
+              this.$emit(
+                "loadSnackbar",
+                "Rất tiếc, thực hiện không thành công!"
+              );
               return;
             });
           this.action.dialog = false;
@@ -1823,8 +1897,9 @@ export default {
       }
       this.images.dialog = true;
     },
-    takeUseful: function(reviewID,index) {
-      if(this.data.review[index].useful) this.data.review[index].useful = false;
+    takeUseful: function(reviewID, index) {
+      if (this.data.review[index].useful)
+        this.data.review[index].useful = false;
       else this.data.review[index].useful = true;
       var flag = true;
       axios({
@@ -1842,7 +1917,6 @@ export default {
             flag = false;
 
             this.$emit("loadSnackbar", "Rất tiếc, thực hiện không thành công!");
-
           }
         })
         .catch(error => {
@@ -1853,10 +1927,11 @@ export default {
             this.$emit("loadLoginDialog", true, 1);
           }
         });
-        if(!flag){
-          if(this.data.review[index].useful) this.data.review[index].useful = true;
-      else this.data.review[index].useful = false;
-        }
+      if (!flag) {
+        if (this.data.review[index].useful)
+          this.data.review[index].useful = true;
+        else this.data.review[index].useful = false;
+      }
     },
     getSearch: function() {
       this.$router.push({

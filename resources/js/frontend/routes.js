@@ -13,6 +13,7 @@ import user  from '@/js/frontend/components/user';
 import contact  from '@/js/frontend/components/contact';
 import searching  from '@/js/frontend/components/searching';
 import policy  from '@/js/frontend/components/policy';
+import review  from '@/js/frontend/community/components/review';
 
 Vue.use(VueRouter);
 
@@ -48,6 +49,11 @@ const router = new VueRouter({
 			path: '/community/user/:id',
 			name: 'user',
 			component: user
+		},
+		{
+			path: '/community/review/',
+			name: 'review',
+			component: review
 		},
 		{
 			path: '/booking.html',

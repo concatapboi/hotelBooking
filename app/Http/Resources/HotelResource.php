@@ -30,7 +30,7 @@ class HotelResource extends JsonResource
             "description" => $this->description,
             "meta_name" => $this->meta_name,
             "credit_card" => $this->credit_card,
-            "review_point" => $this->review_point,
+            // "review_point" => $this->getReviewPoint(),
             "fax_number" => $this->fax_number,
             "tax_code" => $this->tax_code,
             "hotel_type" => $this->HotelType->name,
