@@ -484,7 +484,8 @@ class HotelController extends Controller
         // $query = $this->where($query);
         return response()->json([
             "status" => true,
-            "data" => new HotelCollection($query->get()),
+            // "data" => $query->paginate(4),
+            "data" => new HotelCollection($query->paginate(3)),
         ]);
     }
     public function filterByDate($query, $checkIn, $checkOut)

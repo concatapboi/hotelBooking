@@ -145,7 +145,7 @@
             <v-card flat>
               <v-card-title class="pa-0 ma-0">
                 <h5>Mức giá</h5>
-                <span>({{price[0].toLocaleString('vi', {style: 'currency',currency: 'VND',})}}&nbsp;-&nbsp;{{price[1].toLocaleString('vi', {style: 'currency',currency: 'VND',})}})</span>
+                <!-- <span>({{price[0].toLocaleString('vi', {style: 'currency',currency: 'VND',})}}&nbsp;-&nbsp;{{price[1].toLocaleString('vi', {style: 'currency',currency: 'VND',})}})</span> -->
               </v-card-title>
               <v-card-text class="pa-0 ma-0 mt-3">
                 <v-layout row justify-center align-center>
@@ -277,7 +277,6 @@
                   target="_blank"
                 >
                   <v-img :aspect-ratio="4/3" :src="hotel.image"></v-img>
-
                 </router-link>
               </v-flex>
               <v-flex xs9>
@@ -311,7 +310,7 @@
                           <div>
                             <div>
                               Mức giá:
-                              <span>{{hotel.minPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
+                              <!-- <span>{{hotel.minPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}&nbsp;-&nbsp;{{hotel.maxPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span> -->
                             </div>
                             <div v-if="hotel.count">Số Lượng Phòng: {{hotel.count}}</div>
                           </div>
@@ -322,6 +321,12 @@
                 </router-link>
               </v-flex>
             </v-layout>
+            <infinite-loading spinner="waveDots" @distance="1" @infinite="infiniteHandler">
+            <!-- <infinite-loading :identifier="infiniteId" spinner="waveDots" @distance="1" @infinite="infiniteHandler"> -->
+
+              <div slot="no-more">----End----</div>
+              <div slot="no-results">Không thể tìm khách sạn nào :(</div>
+            </infinite-loading>
           </v-card>
         </div>
       </div>
@@ -387,7 +392,9 @@ export default {
       arrayHotel: [],
       loading: false,
       noData: false,
-      firstTime: true
+      firstTime: true,
+      page: 1,
+      // infiniteId: +new Date()
     };
   },
   created() {
@@ -396,21 +403,21 @@ export default {
     this.checkInFormattedVal = this.formatDate(this.$route.query.check_in);
     this.checkOutVal = this.$route.query.check_out;
     this.checkOutFormattedVal = this.formatDate(this.$route.query.check_out);
-    this.getData();
+    this.addFilter();
   },
   watch: {
-    $route: "getData",
+    $route: "addFilter",
     placeVal: "loadSearchData",
     checkInVal: "loadSearchData",
     checkIn: "setSearchValue",
     checkOutVal: "loadSearchData",
     checkOut: "setSearchValue",
-    starsSeleted: "getData",
-    districtSeleted: "getData",
-    serviceSeleted: "getData",
-    hotelTypeSeleted: "getData",
+    starsSeleted: "addFilter",
+    districtSeleted: "addFilter",
+    serviceSeleted: "addFilter",
+    hotelTypeSeleted: "addFilter",
     // price: "getData",
-    RoomTypeSeleted: "getData",
+    RoomTypeSeleted: "addFilter",
     firstTime: function(newValue, oldValue) {
       if (oldValue != newValue) {
         this.initialize();
@@ -418,6 +425,63 @@ export default {
     }
   },
   methods: {
+    addFilter() {
+      this.page = 1;
+      this.data = [];
+      // this.infiniteId += 1;
+    // this.infiniteHandler();
+    this.getData();
+    },
+    infiniteHandler: function($state) {
+              this.page += 1;
+      console.log(this.infiniteId);
+      console.log(this.page);
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/manager/searching",
+        params: {
+          place: this.placeVal,
+          checkIn: this.checkIn,
+          checkOut: this.checkOut,
+          stars: this.starsSeleted,
+          service: this.serviceSeleted,
+          district: this.districtSeleted,
+          hotelType: this.hotelTypeSeleted,
+          price: this.price,
+          roomType: this.RoomTypeSeleted,
+          page: this.page
+        }
+      })
+        .then(response => {
+          console.log(response.data.data.data);
+          this.firstTime = false;
+          if (response.data.status == false) {
+            this.loading = false;
+            this.noData = true;
+          } else {
+            if (response.data.data.data.length) {
+              // this.page += 1;
+              response.data.data.data.forEach(element => {
+                this.data.push(element);
+              });
+              $state.loaded();
+            } else {
+              $state.complete();
+            }
+            // this.loading = false;
+            // this.noData = false;
+            // console.log(response);
+            // console.log(response.data.data);
+            // this.data = response.data.data;
+            // console.log(this.data);
+            // this.getDisctrict();
+          }
+        })
+        .catch(error => {
+          this.loading = false;
+          console.log(error.response);
+        });
+    },
     chooseStar: function(i) {
       this.stars[i] = !this.stars[i];
     },
@@ -465,6 +529,8 @@ export default {
     },
     getData: function() {
       this.loading = true;
+    // this.addFilter();
+    console.log(this.page);
       axios({
         method: "get",
         url: "http://localhost:8000/api/manager/searching",
@@ -477,7 +543,8 @@ export default {
           district: this.districtSeleted,
           hotelType: this.hotelTypeSeleted,
           price: this.price,
-          roomType: this.RoomTypeSeleted
+          roomType: this.RoomTypeSeleted,
+          page: this.page
         }
       })
         .then(response => {
@@ -488,8 +555,9 @@ export default {
           } else {
             this.loading = false;
             this.noData = false;
-            console.log(response.data.data);
-            this.data = response.data.data;
+            console.log(response);
+            // console.log(response.data.data);
+            this.data = response.data.data.data;
             console.log(this.data);
             this.getDisctrict();
           }
