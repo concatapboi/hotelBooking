@@ -1592,13 +1592,13 @@ export default {
           console.log(error.response);
         });
     },
-    getHotelReviews:function(){
+    getHotelReviews: function() {
       axios({
         method: "get",
         url: "http://localhost:8000/api/hotel-review",
         params: {
           hotel_id: this.id,
-          user_id: this.userLogin.id,          
+          user_id: this.userLogin.id
         }
       })
         .then(res => {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Comment;
+use App\Events\MessageSentEvent;
 use App\Models\User;
 use App\Models\Review;
 use App\Models\UserImage;
@@ -15,6 +16,8 @@ use Validator;
 use Hash;
 use Session;
 use App\Models\CustomerReview;
+use Illuminate\Notifications\Notification;
+use App\Notifications\CommentNotification;
 
 class CommentController extends Controller
 {
@@ -42,6 +45,11 @@ class CommentController extends Controller
             'comments' =>$review->comments+1,
         ]);
         $comment->customer = $comment->Customer();
+        $user = array();
+        $user['name'] = Auth::user()->name;
+        $user['avatar'] = $comment->customer->avatar->image_link;
+        broadcast(new MessageSentEvent($user,$comment->content));
+        Auth::user()->notify(new CommentNotification($user,$comment));
         return response()->json([
             'status' => true,
             'comment' => $comment

@@ -88,80 +88,54 @@
       </v-list>
     </v-navigation-drawer>
     <v-navigation-drawer v-model="notifications.state" fixed clipped class="grey lighten-4" right>
-      <v-list dense class="grey lighten-4">
-        <template>
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon :color="notifications.iconColor">{{notifications.commentIcon}}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title :class="textClass.black">
-                <span>New comment!</span>
-              </v-list-tile-title>
-              <v-list-tile-sub-title
-                :class="textClass.grey"
-              >John do smth. He wants you to know that....</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </template>
-        <v-divider></v-divider>
-        <template>
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon :color="notifications.iconColor">{{notifications.followingIcon}}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title :class="textClass.black">New following!</v-list-tile-title>
-              <v-list-tile-sub-title :class="textClass.grey">John is now following you...</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </template>
-        <v-divider></v-divider>
-        <template>
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon :color="notifications.iconColor">{{notifications.systemMessageIcon}}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title :class="textClass.black">New message!</v-list-tile-title>
-              <v-list-tile-sub-title :class="textClass.grey">System wants you to...</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </template>
-        <v-divider></v-divider>
-        <template>
-          <v-list-tile>
-            <v-list-tile-action>
-              <v-icon :color="notifications.iconColor">{{notifications.newsIcon}}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title :class="textClass.black">News!: {{hello}}</v-list-tile-title>
-              <v-list-tile-sub-title :class="textClass.grey">Hotel is uploading a new...</v-list-tile-sub-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </template>
-        <v-divider></v-divider>
-      </v-list>
+      <v-layout row wrap fill-height class="pa-0 ma-0 noti-margin-top">
+        <v-flex md12 v-if="notifications.list.length>0">
+          <v-layout row wrap class="pa-0 ma-0 mx-1" v-for="(notification,i) in notifications.list" :key="i">
+            <v-flex md4 class="ml-2">
+              <v-avatar>
+                <img :src="'/img/user/'+notification.user.avatar" />
+              </v-avatar>
+            </v-flex>
+            <v-flex md7 class="ml-1">
+              <div>{{notification.user.name}}</div>
+              <div>{{notifications.kind[notification.kind]}}</div>
+            </v-flex>
+            <v-flex md12 class="ml-2" v-if="notification.kind !=1">
+              <div>"{{notification.message}}"</div>
+            </v-flex>
+            <v-flex md12 v-if="i<notifications.list.length-1"><v-divider></v-divider></v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex md12 v-else>
+          <div class="text-md-center">
+            <span class="font-italic black--text caption">Không có thông báo...</span>
+          </div>
+        </v-flex>
+      </v-layout>
     </v-navigation-drawer>
     <v-toolbar :color="drawer.color" app fixed clipped-right clipped-left flat>
       <v-toolbar-side-icon v-on:click="drawer.state = !drawer.state" class="teal accent-4"></v-toolbar-side-icon>
-      <a class="title ml-3 mr-5 white--text text-uppercase" href="/community" >Trang Chủ</a>
+      <a class="title ml-3 mr-5 white--text text-uppercase" href="/community">Trang Chủ</a>
       <!-- <v-text-field
         solo
         label="who's you want to find?"
         :color="drawer.iconColor"
         prepend-inner-icon="search"
         class="mt-2"
-      ></v-text-field> -->
+      ></v-text-field>-->
       <v-spacer></v-spacer>
-      <!-- <v-badge overlap color="red" class="mr-5">
+      <v-badge overlap color="red" class="mr-5" v-if="notifications.list.length>0">
         <template v-slot:badge>
-          <span>3+</span>
+          <span v-if="notifications.list.length <=3">{{notifications.list.length}}</span>
+          <span v-else>{{notifications.list.length}}+</span>
         </template>
         <v-avatar :color="drawer.iconColor" size="40px">
           <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
         </v-avatar>
-      </v-badge> -->
+      </v-badge>
+      <v-avatar :color="drawer.iconColor" size="40px" class="mr-5" v-else>
+        <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
+      </v-avatar>
     </v-toolbar>
     <div id="top"></div>
     <v-content>
@@ -312,7 +286,7 @@ export default {
   },
   data() {
     return {
-      flag:false,
+      flag: false,
       dictionary: {
         custom: {
           username: {
@@ -346,7 +320,7 @@ export default {
         teal: "teal--text"
       },
       user: {
-        id:0,
+        id: 0,
         customer: {},
         avatar: {},
         followers: [],
@@ -364,20 +338,31 @@ export default {
         logoutIcon: "logout"
       },
       notifications: {
+        kind:[
+          'Đã bình luận',//index 0
+          'Đang theo dõi bạn',//index 1
+        ],
         state: false,
         iconColor: "#1cc3b2",
         commentIcon: "message",
         followingIcon: "person_add",
         systemMessageIcon: "announcement",
-        newsIcon: "fas fa-poll-h"
+        newsIcon: "fas fa-poll-h",
+        list: []
       }
     };
   },
   created() {
+    console.log("created");
     this.getLogin();
   },
   mounted() {
     this.$validator.localize("en", this.dictionary);
+    window.Echo.channel("message").listen(".send-mess", e => {
+      alert(e.message);
+      this.notifications.list.push(e);
+      console.log(e);
+    });
   },
   watch: {
     // call again the method if the route changes
@@ -448,7 +433,7 @@ export default {
             }
           });
       } else {
-        this.flag =true;
+        this.flag = true;
         this.$router.push({ name: "login" });
         this.login.check = false;
         this.login.dialog = true;
@@ -486,7 +471,7 @@ export default {
               this.clear();
               localStorage.login_token = res.data.token;
               this.getLogin();
-              this.$router.push({name:'account'});
+              this.$router.push({ name: "account" });
               return;
             })
             .catch(error => {
@@ -521,5 +506,8 @@ export default {
 }
 .v-menu__content {
   box-shadow: none !important;
+}
+.noti-margin-top {
+  margin-top: 70px !important;
 }
 </style>

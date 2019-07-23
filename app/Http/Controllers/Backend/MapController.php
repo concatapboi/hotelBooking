@@ -11,7 +11,7 @@ class MapController extends Controller
     public $key = "11f82a7e50bc28";
     public function getLocation(Request $request)
     {
-        $client = new Client();
+        $client = new Client(['verify' => false]);
         $location = $request->address;
         $query = "https://us1.locationiq.com/v1/search.php?key=" . $this->key . "&q=" . $location . "&format=json";
         // $data = json_decode(file_get_contents($query), true);

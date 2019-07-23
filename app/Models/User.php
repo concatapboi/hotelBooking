@@ -5,10 +5,8 @@ namespace App\Models;
 use Carbon\Carbon;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Models\HotelManager;
 use App\Http\Resources\BookingStatusResource;
 
 class User extends Authenticatable implements JWTSubject
