@@ -289,6 +289,7 @@
                   <v-card-title>
                     <v-layout row wrap class="pa-0 ma-0">
                       <v-flex md12 class="mb-2 pb-2 border-bottom border-light">
+                        <div>
                         <span class="headline">{{hotel.name}}</span>
                         <v-tooltip right>
                           <template v-slot:activator="{ on }">
@@ -300,6 +301,8 @@
                           </template>
                           <span>đã kiểm chứng</span>
                         </v-tooltip>
+                        </div>
+                        <div><v-icon small color="pink">room</v-icon><span>{{hotel.address}}</span></div>
                       </v-flex>
                       <v-flex md5 class="caption">
                         <div>

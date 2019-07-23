@@ -37,11 +37,42 @@ Vue.use(InfiniteLoading)
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+// import Echo from "laravel-echo"
+
+// window.Pusher = require('pusher-js');
+
+// window.Echo = new Echo({
+//     authEndpoint:"broadcasting/auth",
+//   broadcaster: 'pusher',
+//   key: '48a13fe2e169bc928a4e',
+//   cluster: 'ap1',
+//   forceTLS: true,
+//   encrypted: true
+// });
 
 const app = new Vue({
     el: '#app',
+    // created() {
+    //     window.Echo.private('message')
+    //         .listen('MessageSentEvent', (e) => {
+    //             console.log(e);
+    //             app.$forceUpdate();
+    //         });
+    // },
     router: Routes,
     render: h => h(App),
 });
+// import Echo from "laravel-echo"
 
+// window.Echo = new Echo({
+//   broadcaster: 'pusher',
+//   key: '48a13fe2e169bc928a4e',
+//   cluster: 'ap1',
+//   forceTLS: true
+// });
+
+// var channel = Echo.private('message');
+// channel.listen('MessageSentEvent', function(data) {
+//   alert(JSON.stringify(data));
+// });
 export default app;

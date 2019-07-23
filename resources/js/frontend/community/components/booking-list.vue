@@ -11,7 +11,7 @@
               <v-card-title v-if="search !=0 && item.review ==true">Chi tiết đánh giá của bạn...</v-card-title>
               <v-data-table
                 :search="search"
-                :rows-per-page-items='[5,10,15,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
+                :rows-per-page-items='[10,15,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
                 :headers="tblHeaders"
                 :items="bookingList"
                 class="elevation-0 border"
@@ -264,7 +264,7 @@
                             <v-flex md8>
                               <span>Số Đêm Ở</span>
                             </v-flex>
-                            <v-flex md4>{{booking.days}}</v-flex>
+                            <v-flex md4>{{booking.days-1}}</v-flex>
                             <v-flex md12 v-if="booking.discount_value!=0">
                               <v-layout row wrap class="pa-0 ma-0">
                                 <v-flex md8>
@@ -622,6 +622,11 @@ export default {
     formReview: function(booking) {
       this.search = booking.check_in;
       console.log(this.search);
+      this.reviewData.title= "";
+      this.reviewData.content ="";
+      this.reviewData.point = 0;
+      this.reviewData.can_comment = true;
+      this.reviewData.notification = true;
       this.item.form = true;
       this.item.review = false;
       this.item.detail = false;

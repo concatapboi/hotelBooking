@@ -29,9 +29,11 @@ class ReviewResource extends JsonResource
             "title" => $this->title, 
             "content" => $this->content, 
             "point" => $this->point, 
+            "comments" => $this->comments, 
             "customer" => $this->Customer(), 
             "model" => false, 
             "comment" => $comments,
+            "can_comment" => $this->can_comment,
             "hotel" => $hotel, 
             "customer_review" => CustomerReview::where("customer_id",Auth::user()->id)
             ->where("review_id",$this->id)->first(),

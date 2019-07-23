@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\Events\MessagePosted;
+use App\Notifications\MessageNotification;
 /*
 |--------------------------------------------------------------------------
 | API Routes
