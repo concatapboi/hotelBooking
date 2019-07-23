@@ -2,7 +2,9 @@
 use App\Events\MessagePosted;
 use App\Notifications\MessageNotification;
 //Start routes Frontend
-
+header('Access-Control-Allow-Origin:  *');
+header('Access-Control-Allow-Methods:  POST, GET, OPTIONS, PUT, DELETE');
+header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Authorization,  X-Requested-With, x-xsrf-token');
 
 Route::group(['prefix' => '/manager'], function(){
     Route::get('/', 'PageController@managerIndex');

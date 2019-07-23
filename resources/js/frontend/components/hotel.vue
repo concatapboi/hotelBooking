@@ -153,6 +153,7 @@
         <v-tab href="#tab-2">Thông tin</v-tab>
         <v-tab href="#tab-3">Đánh giá</v-tab>
         <v-tab href="#tab-4">Đặt câu hỏi</v-tab>
+        <v-tab href="#tab-5">Map</v-tab>
         <v-tab-item value="tab-1">
           <v-card light flat tile v-if="rooms.length !=0">
             <v-layout class="search-item" row wrap v-for="(room,index) in rooms" :key="index">
@@ -669,6 +670,9 @@
               </v-flex>
             </v-layout>
           </v-card>
+        </v-tab-item>
+        <v-tab-item value="tab-5">
+          <component-map v-bind:hotelAddress="data.address"></component-map>
         </v-tab-item>
       </v-tabs>
     </v-flex>
@@ -1299,7 +1303,11 @@
 </template>
 
 <script>
+import map from '@/js/frontend/components/map'
 export default {
+  components :{
+    "component-map" :map
+  },
   $_veeValidate: {
     validator: "new"
   },
@@ -1416,6 +1424,7 @@ export default {
         name: "",
         room: [],
         images: [],
+        address: "",
         image: "default.png",
         review: [],
         question: [],

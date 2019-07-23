@@ -18,11 +18,28 @@
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
       <link rel="stylesheet" href="{{asset('css/app.css')}}">
       <link rel="stylesheet" href="{{asset('css/community.css')}}">
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+      <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+      <script src="https://tiles.unwiredmaps.com/js/leaflet-unwired.js"></script>
+
+
+
+        <style>
+    #mapid { height: 180px; }
+        #map {
+  margin: auto;
+  padding: 10px;
+  border: 1px solid black;
+  width: 100%;
+  height: 50vh;
+}</style>
+
     </head>
     <body>
         <div id="app"></div>
         <!-- **** All JS Files ***** -->
         <!-- jQuery 2.2.4 -->
         <script src="{{asset('js/app.js')}}"></script> 
+        
     </body>
 </html>
