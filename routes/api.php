@@ -17,8 +17,10 @@ use App\Http\Controllers\Controller;
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->all();
 // });
+
 Route::group(['prefix' => '/manager'], function () {
     Route::get('test', 'Backend\EmailController@ship');
+    Route::get('map', 'Backend\MapController@getLocation');
     Route::post('login', 'Backend\AuthController@login');
     Route::post('register', 'Backend\AuthController@register');
     Route::post('country', 'Backend\AddressController@postCountries');

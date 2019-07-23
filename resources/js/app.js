@@ -20,6 +20,7 @@ Vue.use(Vuetify);
 Vue.use(VeeValidate);
 Vue.use(InfiniteLoading)
 
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
