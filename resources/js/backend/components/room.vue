@@ -678,7 +678,9 @@ export default {
           }
         })
         .then(response => {
+          console.log(response.data);
           if (response.data.status == true) {
+            
             this.arrayRoom = response.data.data;
           }
         })

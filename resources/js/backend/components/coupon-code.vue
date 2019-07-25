@@ -236,6 +236,7 @@
       <v-layout class="pa-0 ma-0" justify-center align-center v-else>
         <div v-if="!createForm">
           <span>{{flag.text}}</span>
+          
         </div>
         <v-flex md12 v-else>
           <v-form ref="form" data-vv-scope="form1" class="pa-1 brown lighten-2">
@@ -657,6 +658,7 @@ export default {
     this.load();
   },
   mounted() {
+    console.log(this);
     this.$validator.localize("en", this.dictionary);
   },
   watch: {

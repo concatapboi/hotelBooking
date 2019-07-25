@@ -37,7 +37,7 @@ class HotelResource extends JsonResource
             "coin" => $this->coin,
             "stars_num" => $this->stars_num,
             "address" => $this->address,
-            "phone_number" => $this->phone_number,
+            "phone" => $this->phone_number,
             "images" => $arrayImage,
             "minPrice" => $this->minPrice(),
             "maxPrice" => $this->maxPrice(),

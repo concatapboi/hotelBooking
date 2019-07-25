@@ -21,8 +21,8 @@ class PolicyResource extends JsonResource
             $cancelable = true;
         } else $cancelable = false;
         $arrayData = [
-            "check_in" => Carbon::parse($this->check_in)->format('H:i'),
-            "check_out" => Carbon::parse($this->check_out)->format('H:i'),
+            "checkin" => Carbon::parse($this->check_in)->format('H:i'),
+            "checkout" => Carbon::parse($this->check_out)->format('H:i'),
             "cancel_day" => $this->cancelable,
             "refundRate" => $this->can_refund,
             "detailPolicy" => $this->content,

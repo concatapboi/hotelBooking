@@ -40,7 +40,7 @@
             round
             depressed
             v-on="on"
-            @click="addNewTitle;images = [];"
+            @click="addNewTitle;newHotelData.images = [];"
           >Tạo khách sạn</v-btn>
         </template>
         <v-layout row>
@@ -87,7 +87,7 @@
                     ></v-select>
                   </v-layout>
                   <v-layout row align-center>
-                    <b>Tiêu chuẩn khách sạn : </b>
+                    <b>Tiêu chuẩn khách sạn :</b>
                     <v-rating
                       v-model="newHotelData.rating"
                       hover
@@ -220,7 +220,7 @@
                   <h3 class="my-5">Hình ảnh</h3>
                   <v-layout row wrap align-space-between justify-start>
                     <!-- <v-flex style="height : 200px;" v-if="images" md3> -->
-                    <v-flex v-for="(image,i) in images" :key="i" md3>
+                    <v-flex v-for="(image,i) in newHotelData.images" :key="i" md3>
                       <div class="img-box" v-if="image.is_primary == 1" id="primaryBox">
                         <div class="ribbon text-center">
                           <h5>PRIMARY</h5>
@@ -273,7 +273,7 @@
                         v-model="menuCheckin"
                         :close-on-content-click="false"
                         :nudge-right="40"
-                        :return-value.sync="newHotelData.checkin"
+                        :return-value.sync="newHotelData.policy.checkin"
                         lazy
                         transition="scale-transition"
                         offset-y
@@ -283,7 +283,7 @@
                       >
                         <template v-slot:activator="{ on }">
                           <v-text-field
-                            v-model="newHotelData.checkin"
+                            v-model="newHotelData.policy.checkin"
                             label="Check-in"
                             prepend-icon="access_time"
                             readonly
@@ -292,11 +292,11 @@
                         </template>
                         <v-time-picker
                           v-if="menuCheckin"
-                          v-model="newHotelData.checkin"
+                          v-model="newHotelData.policy.checkin"
                           full-width
                           value="24hr hh:mm"
                           format="24hr"
-                          @click:minute="$refs.checkin.save(newHotelData.checkin)"
+                          @click:minute="$refs.checkin.save(newHotelData.policy.checkin)"
                         ></v-time-picker>
                       </v-menu>
                     </v-flex>
@@ -306,7 +306,7 @@
                         v-model="menuCheckout"
                         :close-on-content-click="false"
                         :nudge-right="40"
-                        :return-value.sync="newHotelData.checkout"
+                        :return-value.sync="newHotelData.policy.checkout"
                         lazy
                         transition="scale-transition"
                         offset-y
@@ -316,7 +316,7 @@
                       >
                         <template v-slot:activator="{ on }">
                           <v-text-field
-                            v-model="newHotelData.checkout"
+                            v-model="newHotelData.policy.checkout"
                             label="Check-out"
                             prepend-icon="access_time"
                             readonly
@@ -325,11 +325,11 @@
                         </template>
                         <v-time-picker
                           v-if="menuCheckout"
-                          v-model="newHotelData.checkout"
+                          v-model="newHotelData.policy.checkout"
                           full-width
                           value="24hr hh:mm"
                           format="24hr"
-                          @click:minute="$refs.checkout.save(newHotelData.checkout)"
+                          @click:minute="$refs.checkout.save(newHotelData.policy.checkout)"
                         ></v-time-picker>
                       </v-menu>
                     </v-flex>
@@ -339,7 +339,7 @@
                     <v-flex offset-md1 md3>
                       <v-checkbox
                         label="Có thể hủy phòng ?"
-                        v-model="newHotelData.cancelable"
+                        v-model="newHotelData.policy.cancelable"
                         color="primary"
                       ></v-checkbox>
                     </v-flex>
@@ -348,18 +348,18 @@
                     <v-flex md3 offset-md1>
                       <v-text-field
                         suffix="ngày"
-                        v-if="newHotelData.cancelable == true"
+                        v-if="newHotelData.policy.cancelable == true"
                         label="có thể hủy trước"
-                        v-model="newHotelData.cancel_day"
+                        v-model="newHotelData.policy.cancel_day"
                         mask="###"
                       ></v-text-field>
                     </v-flex>
                     <v-flex md3 offset-md1>
                       <v-text-field
                         suffix="%"
-                        v-if="newHotelData.cancelable == true"
+                        v-if="newHotelData.policy.cancelable == true"
                         label="% hoàn trả"
-                        v-model="newHotelData.refundRate"
+                        v-model="newHotelData.policy.refundRate"
                         mask="##"
                       ></v-text-field>
                     </v-flex>
@@ -381,7 +381,7 @@
                     <v-flex offset-md1 md11>
                       <v-textarea
                         label="Chính sách chi tiết"
-                        v-model="newHotelData.detailPolicy"
+                        v-model="newHotelData.policy.detailPolicy"
                         auto-grow
                         box
                       ></v-textarea>
@@ -599,13 +599,17 @@ export default {
         phone: "",
         tax_code: "",
         fax_number: "",
-        checkin: null,
-        checkout: null,
-        cancelable: false,
-        cancel_day: 0,
-        refundRate: 0,
-        detailPolicy: "",
-        child_age: ""
+        images: [],
+        policy: {
+          checkin: "",
+          checkout: "",
+          cancelable: false,
+          cancel_day: 0,
+          refundRate: 0,
+          detailPolicy: ""
+        },
+        child_age: "",
+        
       },
       menuCheckin: false,
       menuCheckout: false,
@@ -629,7 +633,6 @@ export default {
       confirmDialogText: "",
       panel: [],
       firstTime: true,
-      images: [],
       primaryImage: 0,
       hotel_id: 0,
       arrayAge: [
@@ -728,7 +731,17 @@ export default {
     addNewTitle: function() {
       this.formTitle = "Tạo khách sạn";
       this.defaultHotelType = this.arrayHotelType[0];
-      this.newHotelData = {};
+      this.newHotelData = {
+        images : [],
+        policy: {
+          checkin: "",
+          checkout: "",
+          cancelable: false,
+          cancel_day: 0,
+          refundRate: 0,
+          detailPolicy: ""
+        }
+      };
       this.$refs.formNewHotel.reset();
       return this.formTitle;
     }
@@ -745,7 +758,7 @@ export default {
           this.panel[i] = false;
         }
         this.hotel_id = this.arrayHotel[index].id;
-        this.hotel_stars_num = this.arrayHotel[index].stars_num;
+        // this.hotel_stars_num = this.arrayHotel[index].stars_num;
         this.$emit("chooseHotel", this.hotel_id);
         this.$emit("panelIndex", index);
       }
@@ -773,15 +786,15 @@ export default {
               phone: this.newHotelData.phone,
               fax_number: this.newHotelData.fax_number,
               tax_code: this.newHotelData.tax_code,
-              images: this.images,
+              images: this.newHotelData.images,
               primaryId: this.primaryImage,
-              checkin: this.newHotelData.checkin,
-              checkout: this.newHotelData.checkout,
-              cancelable: this.newHotelData.cancelable,
-              cancel_day: this.newHotelData.cancel_day,
-              refundRate: this.newHotelData.refundRate,
+              checkin: this.newHotelData.policy.checkin,
+              checkout: this.newHotelData.policy.checkout,
+              cancelable: this.newHotelData.policy.cancelable,
+              cancel_day: this.newHotelData.policy.cancel_day,
+              refundRate: this.newHotelData.policy.refundRate,
               child_age: this.newHotelData.child_age,
-              detailPolicy: this.newHotelData.detailPolicy
+              detailPolicy: this.newHotelData.policy.detailPolicy
             },
             headers: {
               Authorization: "Bearer " + this.api_token
@@ -803,30 +816,32 @@ export default {
                 }
                 var hotel = {
                   id: response.data.id,
-                  address: this.newHotelData.address,
+                  address: response.data.hotel.address,
                   coin: 0,
-                  credit_card: this.newHotelData.credit_card,
-                  description: this.newHotelData.description,
-                  fax_number: this.newHotelData.fax_number,
+                  credit_card: response.data.hotel.credit_card,
+                  description: response.data.hotel.description,
+                  fax_number: response.data.hotel.fax_number,
+                  email: response.data.hotel.email,
                   hotel_type: temp_hotel_type,
-                  name: this.newHotelData.name,
-                  images: this.images,
-                  phone_number: this.newHotelData.phone,
-                  stars_num: this.newHotelData.rating,
-                  tax_code: this.newHotelData.tax_code,
-                  child_age: this.newHotelData.child_age,
+                  name: response.data.hotel.name,
+                  images: response.data.hotel.images,
+                  phone: response.data.hotel.phone,
+                  stars_num: response.data.hotel.rating,
+                  tax_code: response.data.hotel.tax_code,
+                  child_age: response.data.hotel.child_age,
                   policy: {
-                    check_in: this.newHotelData.checkin,
-                    check_out: this.newHotelData.checkout,
-                    cancelable: this.newHotelData.cancelable,
-                    cancel_day: this.newHotelData.cancel_day,
-                    refundRate: this.newHotelData.refundRate,
-                    detailPolicy: this.newHotelData.detailPolicy
+                    checkin: response.data.hotel.policy.checkin,
+                    checkout: response.data.hotel.policy.checkout,
+                    cancelable: response.data.hotel.policy.cancelable,
+                    cancel_day: response.data.hotel.policy.cancel_day,
+                    refundRate: response.data.hotel.policy.refundRate,
+                    detailPolicy: response.data.hotel.policy.detailPolicy
                   }
                 };
                 _this.arrayHotel.push(hotel);
               }
-              // console.log(_this.arrayHotel);
+              console.log(hotel);
+              console.log(_this.arrayHotel);
               this.$emit("changeArrayHotel", _this.arrayHotel);
             })
             .catch(error => {
@@ -848,23 +863,23 @@ export default {
         var temp = {};
         temp.image_link = e.target.result;
         // console.log(_this.images.length);
-        if (_this.images.length == 0) {
+        if (_this.newHotelData.images.length == 0) {
           temp.is_primary = 1;
-          this.primaryImage = 1;
+          // this.primaryImage = 1;
         } else {
           temp.is_primary = 0;
         }
         temp.id = -1;
-        _this.images.push(temp);
+        _this.newHotelData.images.push(temp);
       };
       reader.readAsDataURL(file);
       // console.log(this.primaryImage);
     },
     choosePrimary(index) {
-      for (var i = 0; i < this.images.length; i++) {
-        this.images[i].is_primary = 0;
+      for (var i = 0; i < this.newHotelData.images.length; i++) {
+        this.newHotelData.images[i].is_primary = 0;
         if (i == index) {
-          this.images[i].is_primary = 1;
+          this.newHotelData.images[i].is_primary = 1;
         }
       }
       console.log(index);
@@ -931,7 +946,8 @@ export default {
     },
     updateHotel: function() {
       var _this = this;
-      console.log(this.images);
+      console.log(this.newHotelData.images);
+      debugger;
       this.$validator.validate().then(valid => {
         if (!valid) {
         } else {
@@ -954,14 +970,14 @@ export default {
               fax_number: this.newHotelData.fax_number,
               tax_code: this.newHotelData.tax_code,
               child_age: this.newHotelData.child_age,
-              images: this.images,
+              images: this.newHotelData.images,
               primaryId: this.primaryImage,
-              checkin: this.newHotelData.checkin,
-              checkout: this.newHotelData.checkout,
-              cancelable: this.newHotelData.cancelable,
-              cancel_day: this.newHotelData.cancel_day,
-              refundRate: this.newHotelData.refundRate,
-              detailPolicy: this.newHotelData.detailPolicy
+              checkin: this.newHotelData.policy.checkin,
+              checkout: this.newHotelData.policy.checkout,
+              cancelable: this.newHotelData.policy.cancelable,
+              cancel_day: this.newHotelData.policy.cancel_day,
+              refundRate: this.newHotelData.policy.refundRate,
+              detailPolicy: this.newHotelData.policy.detailPolicy
             },
             headers: {
               Authorization: "Bearer " + this.api_token
@@ -983,39 +999,32 @@ export default {
                 for (var i = 0; i < _this.arrayHotel.length; i++) {
                   if (_this.arrayHotel[i].id == _this.selectedId) {
                     console.log(_this.arrayHotel[i]);
-                    _this.arrayHotel[i].name = this.newHotelData.name;
-                    _this.arrayHotel[i].stars_num = this.newHotelData.rating;
+                    _this.arrayHotel[i].name = response.data.hotel.name;
+                    _this.arrayHotel[i].stars_num = response.data.hotel.stars_num;
                     for (var j = 0; j < _this.arrayHotelType.length; j++) {
                       if (_this.arrayHotelType[j].id == this.defaultHotelType)
                         _this.arrayHotel[i].hotel_type =
                           _this.arrayHotelType[j].name;
                     }
-                    _this.arrayHotel[i].address = this.newHotelData.address;
+                    _this.arrayHotel[i].address = response.data.hotel.address;
+                    _this.arrayHotel[i].description = response.data.hotel.description;
+                    _this.arrayHotel[i].email = response.data.hotel.email;
+                    _this.arrayHotel[i].email = response.data.hotel.email;
                     _this.arrayHotel[i].coin = 0;
-                    _this.arrayHotel[
-                      i
-                    ].credit_card = this.newHotelData.credit_card;
-                    _this.arrayHotel[i].phone_number = this.newHotelData.phone;
-                    _this.arrayHotel[
-                      i
-                    ].credit_card = this.newHotelData.credit_card;
-                    _this.arrayHotel[i].tax_code = this.newHotelData.tax_code;
-                    _this.arrayHotel[
-                      i
-                    ].fax_number = this.newHotelData.fax_number;
-                    _this.arrayHotel[i].child_age = this.newHotelData.child_age;
-                    _this.arrayHotel[
-                      i
-                    ].policy.cancel_day = this.newHotelData.cancel_day;
-                    _this.arrayHotel[
-                      i
-                    ].policy.check_in = this.newHotelData.checkin;
-                    _this.arrayHotel[
-                      i
-                    ].policy.check_out = this.newHotelData.checkout;
-                    _this.arrayHotel[
-                      i
-                    ].policy.refundRate = this.newHotelData.refundRate;
+                    _this.arrayHotel[i].credit_card = response.data.hotel.credit_card;
+                    _this.arrayHotel[i].phone_number = response.data.hotel.phone;
+                    _this.arrayHotel[i].credit_card = response.data.hotel.credit_card;
+                    _this.arrayHotel[i].tax_code = response.data.hotel.tax_code;
+                    _this.arrayHotel[i].fax_number = response.data.hotel.fax_number;
+                    _this.arrayHotel[i].images = response.data.hotel.images;
+                    _this.arrayHotel[i].child_age = response.data.hotel.child_age;
+                    _this.arrayHotel[i].policy.cancel_day = response.data.hotel.policy.cancel_day;
+                    _this.arrayHotel[i].policy.cancelable = response.data.hotel.policy.cancelable;
+                    _this.arrayHotel[i].policy.checkin = response.data.hotel.policy.checkin;
+                    _this.arrayHotel[i].policy.checkout = response.data.hotel.policy.checkout;
+                    _this.arrayHotel[i].policy.refundRate = response.data.hotel.policy.refundRate;
+                    _this.arrayHotel[i].policy.detailPolicy = response.data.hotel.policy.detailPolicy;
+                    console.log(_this.arrayHotel[i]);
                   }
                 }
                 this.dialog = false;
@@ -1036,7 +1045,7 @@ export default {
       console.log(this.newHotelData);
     },
     editHotel: function(hotelId) {
-      console.log(this.images);
+      console.log(this.newHotelData.images);
       this.districtDisabled = false;
       this.wardDisabled = false;
       this.dialog = true;
@@ -1048,7 +1057,7 @@ export default {
       for (var i = 0; i < _this.arrayHotel.length; i++) {
         if (_this.arrayHotel[i].id == this.selectedId) {
           hotel = _this.arrayHotel[i];
-          this.images = _this.arrayHotel[i].images;
+          this.newHotelData.images = _this.arrayHotel[i].images;
           for (var j = 0; j < _this.arrayHotelType.length; j++) {
             if (hotel.hotel_type == _this.arrayHotelType[j].name) {
               _this.defaultHotelType = _this.arrayHotelType[j].id;
@@ -1063,16 +1072,17 @@ export default {
       this.newHotelData.child_age = hotel.child_age;
       this.newHotelData.email = hotel.email;
       if (hotel.policy.cancel_day > 0 && hotel.policy.cancel_day != null) {
-        this.newHotelData.cancelable = true;
+        this.newHotelData.policy.cancelable = true;
       } else {
-        this.newHotelData.cancelable = false;
+        this.newHotelData.policy.cancelable = false;
       }
-      this.newHotelData.checkin = hotel.policy.check_in;
-      this.newHotelData.checkout = hotel.policy.check_out;
-      this.newHotelData.cancel_day = hotel.policy.cancel_day;
-      this.newHotelData.detailPolicy = hotel.policy.detailPolicy;
-      this.newHotelData.refundRate = hotel.policy.refundRate;
-      console.log(hotel.policy);
+      this.newHotelData.policy.checkin = hotel.policy.checkin;
+      this.newHotelData.policy.checkout = hotel.policy.checkout;
+      this.newHotelData.policy.cancel_day = hotel.policy.cancel_day;
+      this.newHotelData.policy.detailPolicy = hotel.policy.detailPolicy;
+      this.newHotelData.policy.refundRate = hotel.policy.refundRate;
+      this.newHotelData.images = hotel.images;
+      console.log(hotel);
       console.log(this.newHotelData);
       axios
         .get("http://localhost:8000/api/manager/hotel-address", {
@@ -1146,15 +1156,14 @@ export default {
       this.newHotelData.address = hotel.address;
       this.newHotelData.email = hotel.email;
       this.newHotelData.credit_card = hotel.credit_card;
-      this.newHotelData.phone = hotel.phone_number;
+      this.newHotelData.phone = hotel.phone;
       this.newHotelData.fax_number = hotel.fax_number;
       this.newHotelData.tax_code = hotel.tax_code;
     },
     deleteHotel: function(hotelId) {
       this.confirmDialog = true;
       this.selectedId = hotelId;
-      this.confirmDialogText =
-        "Bạn có muốn xóa khách sạn này " + "?";
+      this.confirmDialogText = "Bạn có muốn xóa khách sạn này " + "?";
     },
     deleteHotelConfirm: function() {
       var _this = this;
@@ -1210,7 +1219,7 @@ export default {
       location.href = "login";
     },
     deleteImage: function(i) {
-      this.images.splice(i, 1);
+      this.newHotelData.images.splice(i, 1);
     },
     detailOrder: function(id) {
       this.$router.push({

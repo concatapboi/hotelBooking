@@ -92,7 +92,11 @@
                       <v-date-picker v-model="checkout" :min="minDate" no-title scrollable>
                         <v-spacer></v-spacer>
                         <v-btn flat color="primary" @click="menuCheckout = false">Hủy</v-btn>
-                        <v-btn flat color="primary" @click="$refs.menuCheckout.save(checkout)">Xác nhận</v-btn>
+                        <v-btn
+                          flat
+                          color="primary"
+                          @click="$refs.menuCheckout.save(checkout)"
+                        >Xác nhận</v-btn>
                       </v-date-picker>
                     </v-menu>
                   </v-flex>
@@ -109,12 +113,185 @@
 
         <!-- <v-card> -->
       </v-dialog>
+      <v-dialog v-model="bookingDialog" max-width="40%">
+        <v-card>
+          <v-card-title>
+            <h3>Thêm booking</h3>
+          </v-card-title>
+          <v-card-text>
+            <div v-show="ask">
+              <h5>Người dùng có tải khoản trên hệ thống hay không</h5>
+              <v-btn class="orange" row flat @click="withUser = true;ask = false">Có</v-btn>
+              <v-btn class="orange" row flat @click="withoutUser = true;ask = false">Không</v-btn>
+            </div>
+            <v-alert v-show="emailError != null" type="error">{{emailError}}</v-alert>
+            <v-form class="px-5">
+              <v-layout row wrap align-center justify-center v-show="ask == false">
+                <v-flex md6>
+                  <v-menu
+                    ref="menuCheckin2"
+                    v-model="menuCheckin2"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    :return-value.sync="checkin2"
+                    lazy
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="checkin2"
+                        label="Từ"
+                        prepend-icon="event"
+                        required
+                        readonly
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="checkin2" no-title scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn flat color="primary" @click="menuCheckin2 = false">Hủy</v-btn>
+                      <v-btn
+                        flat
+                        color="primary"
+                        @click="$refs.menuCheckin2.save(checkin2);minDate2 = checkin2;"
+                      >Xác nhận</v-btn>
+                    </v-date-picker>
+                  </v-menu>
+                </v-flex>
+                <v-flex md6>
+                  <v-menu
+                    ref="menuCheckout2"
+                    v-model="menuCheckout2"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    :return-value.sync="checkout2"
+                    lazy
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        v-model="checkout2"
+                        label="Đến"
+                        prepend-icon="event"
+                        readonly
+                        required
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="checkout2" :min="minDate2" no-title scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn flat color="primary" @click="menuCheckout2 = false">Hủy</v-btn>
+                      <v-btn
+                        flat
+                        color="primary"
+                        @click="$refs.menuCheckout2.save(checkout2)"
+                      >Xác nhận</v-btn>
+                    </v-date-picker>
+                  </v-menu>
+                </v-flex>
+                <v-flex md12 v-if="withUser == true" class="px-3">
+                  <v-layout align-center justify-center row wrap>
+                    <v-flex md6>Email</v-flex>
+                    <v-flex md6>
+                      <v-text-field
+                        v-model="email"
+                        v-validate="'required|email'"
+                        :error-messages="errors.collect('email')"
+                        data-vv-name="email"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+                <v-flex md12 v-if="withoutUser == true" class="px-3">
+                  <v-layout align-center justify-center row wrap>
+                    <v-flex md6>Tên</v-flex>
+                    <v-flex md6>
+                      <v-text-field
+                        v-model="name"
+                        v-validate="'required'"
+                        :error-messages="errors.collect('name')"
+                        data-vv-name="name"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex md6>Email</v-flex>
+                    <v-flex md6>
+                      <v-text-field
+                        v-model="email"
+                        v-validate="'required|email'"
+                        :error-messages="errors.collect('email')"
+                        data-vv-name="email"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex md6>Số điện thoại</v-flex>
+                    <v-flex md6>
+                      <v-text-field
+                        v-model="phone"
+                        v-validate="'required'"
+                        :error-messages="errors.collect('phone')"
+                        data-vv-name="phone"
+                      ></v-text-field>
+                    </v-flex>
+                    <v-flex md6>Địa chỉ</v-flex>
+                    <v-flex md6>
+                      <v-text-field
+                        v-model="address"
+                        v-validate="'required'"
+                        :error-messages="errors.collect('address')"
+                        data-vv-name="address"
+                      ></v-text-field>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+                <v-flex md6>Loại phòng</v-flex>
+                <v-flex md6>
+                  <v-select
+                    v-model="roomChosen"
+                    :items="arrayRoom"
+                    item-text="full_name"
+                    item-value="id"
+                    required
+                  ></v-select>
+                </v-flex>
+                <v-flex md6>Số lượng phòng</v-flex>
+                <v-flex md6>
+                  <v-text-field
+                    v-model="roomAmount"
+                    type="number"
+                    min="1"
+                    v-validate="'required|numeric'"
+                    :error-messages="errors.collect('amount')"
+                    data-vv-name="amount"
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-form>
+          </v-card-text>
+          <v-card-actions v-show="ask == false">
+            <v-btn>reset</v-btn>
+            <v-btn>cancel</v-btn>
+            <v-btn @click="addBooking">Thêm</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-card>
         <v-card-title>
           <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            class="elevation-0"
+            @click="openAddBookingDialog"
+            round
+            dark
+          >Thêm booking</v-btn>
           <v-menu v-if="filterDate == false && filterId == false" offset-y>
             <template v-slot:activator="{ on }">
-              <v-btn color="primary" class="elevation-0" round dark v-on="on">Tủy chọn</v-btn>
+              <v-btn color="primary" class="elevation-0" round dark v-on="on">Tùy chọn</v-btn>
             </template>
             <v-list>
               <v-list-tile>
@@ -141,7 +318,9 @@
             <td class="text-xs-center">{{booking.item.room_name}}</td>
             <td class="text-xs-center">{{booking.item.check_in}}</td>
             <td class="text-xs-center">{{booking.item.check_out}}</td>
-            <td class="text-xs-center">{{(booking.item.room_price * booking.item.room_amount).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</td>
+            <td
+              class="text-xs-center"
+            >{{(booking.item.room_price * booking.item.room_amount).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</td>
             <td class="text-xs-center">
               <!-- <v-btn round color="warning" :ripple="false" depressed small></v-btn> -->
               <span v-if="booking.item.status_id == 1">
@@ -164,6 +343,9 @@
               </span>
               <span v-else-if="booking.item.status_id == 7">
                 <v-chip disabled color="grey" text-color="white">{{booking.item.status}}</v-chip>
+              </span>
+              <span v-else-if="booking.item.status_id == 8">
+                <v-chip disabled color="blue" text-color="white">{{booking.item.status}}</v-chip>
               </span>
             </td>
             <td class="text-xs-center action-width">
@@ -216,6 +398,16 @@
                               </span>
                               <span v-else-if="detailBooking.status_id == 6">
                                 <v-chip outline disabled text-color="red">
+                                  <b>{{detailBooking.status}}</b>
+                                </v-chip>
+                              </span>
+                              <span v-else-if="detailBooking.status_id == 7">
+                                <v-chip outline disabled text-color="grey">
+                                  <b>{{detailBooking.status}}</b>
+                                </v-chip>
+                              </span>
+                              <span v-else-if="detailBooking.status_id == 8">
+                                <v-chip outline disabled text-color="blue">
                                   <b>{{detailBooking.status}}</b>
                                 </v-chip>
                               </span>
@@ -293,7 +485,9 @@
                                 <v-flex md2 offset-md1>
                                   <b>Giá phòng</b>
                                 </v-flex>
-                                <v-flex md9>: {{(detailBooking.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</v-flex>
+                                <v-flex
+                                  md9
+                                >: {{(detailBooking.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</v-flex>
                               </v-layout>
                               <v-layout row wrap>
                                 <v-flex md2 offset-md1>
@@ -475,10 +669,14 @@ export default {
       dialog: false,
       menuCheckin: false,
       menuCheckout: false,
+      menuCheckin2: false,
+      menuCheckout2: false,
       checkin: null,
       checkout: null,
+      checkin2: null,
+      checkout2: null,
       detailBooking: {
-        room_price : 0,
+        room_price: 0
       },
       bookingList: [],
       search: "",
@@ -504,15 +702,45 @@ export default {
       dictionary: {
         custom: {
           idList: {
-            regex: "ex : 1,2,3"
-          }
+            regex: "Vd : 1,2,3"
+          },
+          name: {
+            required: "Tên không được để trống"
+          },
+          email: {
+            email: "Email phải là kiểu email.Vd : abc@gmail.com",
+            required: "Email không được để trống",
+          },
+          phone: {
+            required: "Số điện thoại không được để trống"
+          },
+          address: {
+            required: "Địa chỉ không được để trống"
+          },
+          address: {
+            required: "Số lượng phòng không được để trống",
+            numeric: "Số lượng phòng phải là số nguyên không âm"
+          },
         }
       },
       temp: null,
       flagFilterId: false,
       flagFilterDate: false,
       today: null,
-      minDate: null
+      minDate: null,
+      minDate2: null,
+      bookingDialog: false,
+      withUser: false,
+      withoutUser: false,
+      ask: true,
+      arrayRoom: [],
+      roomChosen: null,
+      roomAmount: 1,
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      emailError: null
     };
   },
   mounted() {
@@ -772,6 +1000,70 @@ export default {
       this.filterId = false;
       this.filterDate = false;
       this.bookingList = this.temp;
+    },
+    openAddBookingDialog: function() {
+      this.bookingDialog = true;
+      this.roomChosen = null;
+      this.ask = true;
+      this.emailError = null;
+      this.withUser = false;
+      this.withoutUser = false;
+      axios
+        .get("http://localhost:8000/api/manager/all-room", {
+          params: {
+            hotelId: this.hotelId
+          },
+          headers: {
+            Authorization: "Bearer " + this.api_token
+          }
+        })
+        .then(response => {
+          console.log(response);
+          this.arrayRoom = response.data.data;
+        })
+        .catch(function(error) {
+          console.log(error.response);
+        });
+    },
+    addBooking: function() {
+      axios({
+        method: "post",
+        url: "http://localhost:8000/api/manager/booking",
+        headers: {
+          Authorization: "Bearer " + this.api_token
+        },
+        data: {
+          withUser: this.withUser,
+          hotelId: this.hotelId,
+          checkin: this.checkin2,
+          checkout: this.checkout2,
+          name: this.name,
+          email: this.email,
+          name: this.name,
+          phone: this.phone,
+          address: this.address,
+          roomChosen: this.roomChosen,
+          roomAmount: this.roomAmount
+        }
+      })
+        .then(response => {
+          if (response.status == 401) {
+            this.logout;
+          }
+          console.log(response);
+          if (response.data.status == false) {
+            this.emailError = response.data.message;
+            console.log("sai");
+            console.log(this.emailError);
+          } else {
+            this.bookingList.push(response.data.booking);
+            this.bookingDialog = false;
+            console.log("dung");
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
     },
     logout: function() {
       axios({
