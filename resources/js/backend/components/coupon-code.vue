@@ -234,9 +234,153 @@
         </v-flex>
       </v-layout>
       <v-layout class="pa-0 ma-0" justify-center align-center v-else>
-        <div>
+        <div v-if="!createForm">
           <span>{{flag.text}}</span>
         </div>
+        <v-flex md12 v-else>
+          <v-form ref="form" data-vv-scope="form1" class="pa-1 brown lighten-2">
+            <v-layout row wrap class="pa-2 ma-0 white" align-center>
+              <v-flex md12>
+                <div
+                  class="ma-3 font-weight-black headline text-md-center text-uppercase brown--text"
+                >tạo mã coupon</div>
+              </v-flex>
+              <v-flex md12>
+                <v-divider class="brown"></v-divider>
+              </v-flex>
+              <v-flex md6>
+                <span class="caption">Ngày bắt đầu:&nbsp;</span>
+                <v-menu
+                  ref="start"
+                  v-model="mn.menu1"
+                  :return-value.sync="code.start_at"
+                  :close-on-content-click="false"
+                  lazy
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  max-width="290px"
+                  min-width="290px"
+                  :nudge-top="-10"
+                >
+                  <template v-slot:activator="{ on }">
+                    <input
+                      style="width:150px"
+                      class="text-md-center border pa-2 mb-3"
+                      type="text"
+                      v-model="startFormatted"
+                      readonly
+                      v-on="on"
+                    />
+                  </template>
+                  <v-date-picker light no-title scrollable v-model="code.start_at" :min="now">
+                    <v-spacer></v-spacer>
+                    <v-btn flat v-on:click="mn.menu1 = false">Hủy</v-btn>
+                    <v-btn flat v-on:click="$refs.start.save(code.start_at)">OK</v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-flex>
+              <v-flex md5 offset-md1>
+                <span class="caption">Ngày kết thúc:&nbsp;</span>
+                <v-menu
+                  ref="end"
+                  v-model="mn.menu2"
+                  :return-value.sync="code.end_at"
+                  :close-on-content-click="false"
+                  lazy
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  max-width="290px"
+                  min-width="290px"
+                  :nudge-top="-10"
+                >
+                  <template v-slot:activator="{ on }">
+                    <input
+                      style="width:150px"
+                      class="text-md-center border pa-2 mb-3"
+                      type="text"
+                      v-model="endFormatted"
+                      readonly
+                      v-on="on"
+                    />
+                  </template>
+                  <v-date-picker
+                    light
+                    no-title
+                    scrollable
+                    v-model="code.end_at"
+                    :min="code.start_at+1"
+                  >
+                    <v-spacer></v-spacer>
+                    <v-btn flat @click="mn.menu2 = false">Hủy</v-btn>
+                    <v-btn flat @click="$refs.end.save(code.end_at)">OK</v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-flex>
+              <v-flex md4>
+                <v-text-field
+                  :error-messages="errors.collect('form1.code')"
+                  data-vv-name="code"
+                  v-validate="'required'"
+                  type="text"
+                  outline
+                  color="brown"
+                  v-model="code.code"
+                  label="Nhập mã coupon tại đây..."
+                ></v-text-field>
+              </v-flex>
+              <v-flex md7 offset-md1>
+                <v-textarea
+                  :error-messages="errors.collect('form1.title')"
+                  data-vv-name="title"
+                  v-validate="'required'"
+                  type="text"
+                  outline
+                  auto-grown
+                  rows="2"
+                  color="brown"
+                  v-model="code.title"
+                  label="Nhập tiêu đề khuyến mãi tại đây..."
+                ></v-textarea>
+              </v-flex>
+              <v-flex md5 mb-3>
+                <span class="subheading">Mức giảm (%):&nbsp;</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  v-model="code.discount"
+                  class="text-md-center pa-2 border"
+                  style="width:100px"
+                />
+              </v-flex>
+              <v-flex md5 offset-md1 mb-3>
+                <span class="subheading">Số lượng:&nbsp;</span>
+                <input
+                  type="number"
+                  min="1"
+                  v-model="code.amount"
+                  class="text-md-center pa-2 border"
+                  style="width:100px"
+                />
+              </v-flex>
+              <v-flex m12>
+                <v-textarea
+                  :error-messages="errors.collect('form1.content')"
+                  data-vv-name="content"
+                  v-validate="'required'"
+                  outline
+                  auto-grow
+                  rows="6"
+                  color="brown"
+                  v-model="code.content"
+                  label="Nhập nội dung chương trình tại đây..."
+                ></v-textarea>
+              </v-flex>
+            </v-layout>
+          </v-form>
+        </v-flex>
       </v-layout>
     </v-flex>
     <v-flex md8 v-else>

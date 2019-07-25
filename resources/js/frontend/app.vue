@@ -2,45 +2,11 @@
   <v-app>
     <v-toolbar :color="drawer.color" app fixed flat height="60px">
       <v-layout row wrap fill-height>
-        <!-- <v-flex shrink md12 class="mt-2">
-          <v-layout row wrap>
-            <v-flex md6 class="text-md-left white--text">
-              <v-icon small color="teal lighten-2" class="ml-3">phone</v-icon>&nbsp;
-              <span>1234567890</span>
-              <v-icon small color="teal lighten-2" class="ml-3">email</v-icon>&nbsp;
-              <span>xxx@gmail.com</span>
-              <v-icon small color="teal lighten-2" class="ml-3">av_timer</v-icon>&nbsp;
-              <span>{{time}}</span>
-            </v-flex>
-            <v-flex md6 class="text-md-right white--text">
-              <a href="https://www.instagram.com/" target="_blank">
-                <i class="fab fa-instagram white--text mr-4"></i>
-              </a>
-              <a href="https://www.facebook.com/" target="_blank">
-                <i class="fab fa-facebook-f white--text mr-4"></i>
-              </a>
-              <a href="https://www.youtube.com/" target="_blank">
-                <i class="fab fa-youtube white--text mr-4"></i>
-              </a>
-              <a href="https://www.twitter.com/" target="_blank">
-                <i class="fab fa-twitter white--text mr-4"></i>
-              </a>
-              <a href="https://plus.google.com/" target="_blank">
-                <i class="fab fa-google-plus-g white--text mr-4"></i>
-              </a>
-            </v-flex>
-          </v-layout>
-        </v-flex> -->
         <v-flex shrink md12 style="height:50px" class="mt-1">
           <v-layout row wrap class="white text-md-center" fill-height align-center>
             <v-flex md2>
               <router-link :to="{name:'home'}">
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <img src="/blog/./img/core-img/logo.png" v-on="on" />
-                  </template>
-                  <span>trang chủ</span>
-                </v-tooltip>
+                <img src="/blog/./img/core-img/logo.png" v-on="on" />
               </router-link>
             </v-flex>
             <v-flex md2>
@@ -342,7 +308,7 @@
               :items="login.user.booking"
               class="elevation-0 border"
             >
-            <template v-slot:items="b">
+              <template v-slot:items="b">
                 <td>
                   <a href="#">
                     <span style="word-wrap: break-word;">{{ b.item.id }}</span>
@@ -361,15 +327,25 @@
                   </a>
                 </td>
                 <td class="border-left">
-                  <div><a href="#">
-                    <span style="word-wrap: break-word;">{{formatDate(b.item.check_in)}}</span>
-                  </a></div>
-                  <div><a href="#">
-                    <span style="word-wrap: break-word;">{{formatDate(b.item.check_out)}}</span>
-                  </a></div>
+                  <div>
+                    <a href="#">
+                      <span style="word-wrap: break-word;">{{formatDate(b.item.check_in)}}</span>
+                    </a>
+                  </div>
+                  <div>
+                    <a href="#">
+                      <span style="word-wrap: break-word;">{{formatDate(b.item.check_out)}}</span>
+                    </a>
+                  </div>
                 </td>
                 <td class="border-left">
-                  <v-btn depressed color="teal" dark small @click="bookingAction(b.item,1)">Xem chi tiết</v-btn>
+                  <v-btn
+                    depressed
+                    color="teal"
+                    dark
+                    small
+                    @click="bookingAction(b.item,1)"
+                  >Xem chi tiết</v-btn>
                   <v-btn
                     :disabled="!b.item.cancel_status"
                     depressed
@@ -401,13 +377,13 @@
                     @click="confirmAction(b.item)"
                   >cancel</v-btn>
                 </td>
-              </template> -->
+              </template>-->
             </v-data-table>
           </v-card>
         </v-card-text>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="bookingList.detail.dialog" width="750px" persistent="">
+    <v-dialog v-model="bookingList.detail.dialog" width="750px" persistent>
       <v-card flat tile light>
         <v-layout class="pa-5 ma-0" row wrap>
           <v-flex md>
@@ -420,9 +396,13 @@
           <v-spacer></v-spacer>
           <v-flex>
             <div class="mr-2">
-              <v-btn round color="red" dark depressed @click="bookingList.detail.dialog =false;">
-                Đóng
-              </v-btn>
+              <v-btn
+                round
+                color="red"
+                dark
+                depressed
+                @click="bookingList.detail.dialog =false;"
+              >Đóng</v-btn>
             </div>
           </v-flex>
           <v-flex md12>
@@ -433,19 +413,26 @@
             <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
               <v-flex md4>
                 <div class="mt-3">
-                  <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingList.detail.booking.room.image"></v-img>
+                  <v-img
+                    :aspect-ratio="1"
+                    :src="'/blog/img/room/'+bookingList.detail.booking.room.image"
+                  ></v-img>
                 </div>
               </v-flex>
               <v-flex md8>
                 <v-layout row wrap class="pa-0 pl-4 ma-0">
                   <v-flex md12>
                     <router-link
-                        :to="{name:'hotel',params:{id:bookingList.detail.booking.room.hotel.id}}"
-                        target="_blank"
-                      ><h2>{{bookingList.detail.booking.hotel_name}}</h2></router-link>
+                      :to="{name:'hotel',params:{id:bookingList.detail.booking.room.hotel.id}}"
+                      target="_blank"
+                    >
+                      <h2>{{bookingList.detail.booking.hotel_name}}</h2>
+                    </router-link>
                   </v-flex>
                   <v-flex md12>
-                    <div><span>{{bookingList.detail.booking.room.hotel.type}}</span></div>
+                    <div>
+                      <span>{{bookingList.detail.booking.room.hotel.type}}</span>
+                    </div>
                   </v-flex>
                   <v-flex md12>
                     <v-divider class="pa-0 ma-0"></v-divider>
@@ -532,7 +519,7 @@
                     depressed
                     color="orange"
                   >cancel</v-btn>
-                </div> -->
+                </div>-->
                 <div>
                   <span class="font-italic">{{bookingList.detail.booking.payment_method.content}}</span>
                 </div>
@@ -584,10 +571,10 @@
               <v-flex md8>
                 <span class="headline orange--text">Tổng Giá</span>
               </v-flex>
-              <v-flex
-                md4
-              ><span class="headline orange--text">{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price*((100-bookingList.detail.booking.discount_value)/100)).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}
-                </span>
+              <v-flex md4>
+                <span
+                  class="headline orange--text"
+                >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price*((100-bookingList.detail.booking.discount_value)/100)).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
               </v-flex>
             </v-layout>
           </v-flex>
@@ -742,7 +729,7 @@
             </v-layout>
           </v-flex>
         </v-layout>
-      </v-card> -->
+      </v-card>-->
     </v-dialog>
     <!-- <v-dialog v-model="questionList.dialog" width="700px" persistent>
       <v-card flat tile light height="470px">
@@ -785,7 +772,7 @@
           </v-card>
         </v-card-text>
       </v-card>
-    </v-dialog> -->
+    </v-dialog>-->
     <!-- <v-dialog
       persistent
       v-model="confirm.dialog"
@@ -818,7 +805,7 @@
           </v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog> -->
+    </v-dialog>-->
     <v-snackbar
       v-model="snackbar.state"
       multi-line="multi-line"
@@ -844,28 +831,57 @@ export default {
       confirm: {
         dialog: false,
         booking: {},
-        title:"Bạn có chắc chắn?",
-        content:"Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan"
+        title: "Bạn có chắc chắn?",
+        content:
+          "Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan"
       },
-      loginCheck:false,
+      loginCheck: false,
       tblHeaders: {
-        booking:[
-          { text: "Mã", value: 'id',align: 'center', class:'red--text',sortable: true },
-          { text: "Tổng Giá", value: 0,align: 'center', class:'red--text border-left',sortable: false },
-          { text: "Tình Trạng Đơn", value: "status.id",align: 'center', class:'red--text border-left',sortable: true },
-          { text: "Ngày", value: "check_in",align: 'center', class:'red--text border-left',sortable: true },
-          { text: "Chức Năng", value: 0,align: 'center', class:'red--text border-left',sortable: false }
+        booking: [
+          {
+            text: "Mã",
+            value: "id",
+            align: "center",
+            class: "red--text",
+            sortable: true
+          },
+          {
+            text: "Tổng Giá",
+            value: 0,
+            align: "center",
+            class: "red--text border-left",
+            sortable: false
+          },
+          {
+            text: "Tình Trạng Đơn",
+            value: "status.id",
+            align: "center",
+            class: "red--text border-left",
+            sortable: true
+          },
+          {
+            text: "Ngày",
+            value: "check_in",
+            align: "center",
+            class: "red--text border-left",
+            sortable: true
+          },
+          {
+            text: "Chức Năng",
+            value: 0,
+            align: "center",
+            class: "red--text border-left",
+            sortable: false
+          }
         ],
-        question:[
-          
-        ]
+        question: []
       },
       bookingList: {
         dialog: false,
         detail: {
           dialog: false,
           booking: {
-            cancel_status:[],
+            cancel_status: [],
             status: {},
             payment_method: {},
             room_price: 0,
@@ -873,16 +889,16 @@ export default {
               price: 0,
               room_mode: {},
               room_type: {},
-              hotel:{
-                id:0
+              hotel: {
+                id: 0
               },
-              image: 'default.png'
+              image: "default.png"
             }
           }
         }
       },
-      questionList:{
-        dialog: false,
+      questionList: {
+        dialog: false
       },
       time:
         new Date().getHours() +
@@ -1198,12 +1214,13 @@ export default {
         this.questionList.dialog = true;
       }
     },
-    confirmAction: function(booking){
+    confirmAction: function(booking) {
       this.confirm.dialog = true;
       this.confirm.booking = booking;
-      this.confirm.title = 'Bạn có chắc chắn?';
-      if(booking.status.id == 4)
-        this.confirm.content = "Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan.";
+      this.confirm.title = "Bạn có chắc chắn?";
+      if (booking.status.id == 4)
+        this.confirm.content =
+          "Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan.";
     },
     bookingAction: function(booking, cmd) {
       console.log(booking);
@@ -1211,25 +1228,27 @@ export default {
         this.bookingList.detail.booking = booking;
         this.bookingList.detail.dialog = true;
       } else {
-        if(this.confirm.dialog === true) this.confirm.dialog = false;
+        if (this.confirm.dialog === true) this.confirm.dialog = false;
         axios({
-            method: "put",
-            url: "http://localhost:8000/api/booking/"+booking.id,
-            params: {
-              action: 'cancel'
-            },
-            headers: {
+          method: "put",
+          url: "http://localhost:8000/api/booking/" + booking.id,
+          params: {
+            action: "cancel"
+          },
+          headers: {
             Authorization: "Bearer " + this.login.token
-            }
-          }).then(res=>{
+          }
+        })
+          .then(res => {
             console.log(res.data.status);
-            if(res.data.status){
+            if (res.data.status) {
               // this.eventSnackbar('Updated Successfully!');
               this.getLogin();
-            }else{
+            } else {
               // this.eventSnackbar('Updated Fail!');
             }
-          }).catch(error => {
+          })
+          .catch(error => {
             console.log(error.response);
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");

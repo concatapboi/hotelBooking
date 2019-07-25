@@ -465,9 +465,7 @@ export default {
     addFilter() {
       this.page = 1;
       this.data = [];
-      // this.infiniteId += 1;
-    // this.infiniteHandler();
-    this.getData();
+      this.getData();
     },
     infiniteHandler: function($state) {
               this.page += 1;
@@ -566,8 +564,7 @@ export default {
     },
     getData: function() {
       this.loading = true;
-    // this.addFilter();
-    console.log(this.page);
+      console.log(this.page);
       axios({
         method: "get",
         url: "http://localhost:8000/api/manager/searching",
@@ -673,22 +670,6 @@ export default {
           console.log(error);
         });
     }
-    // search: function() {
-    //   axios
-    //     .get("http://localhost:8000/api/hotel-type", {
-    //       params: {
-    //         province: this.placeVal
-    //       }
-    //     })
-    //     .then(response => {
-    //       this.loading = false;
-    //       console.log(response);
-    //     })
-    //     .catch(function(error) {
-    //       this.loading = false;
-    //       console.log(error);
-    //     });
-    // }
   }
 };
 </script>

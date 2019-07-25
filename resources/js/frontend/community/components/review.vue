@@ -215,7 +215,9 @@ export default {
     };
   },
   mounted() {
-    console.log("Component mounted.");
+    window.Echo.channel("message").listen(".send-mess", e => {
+      if(e.link.id == this.id) this.load();
+    });
   },
   watch: {
     $route: "load",

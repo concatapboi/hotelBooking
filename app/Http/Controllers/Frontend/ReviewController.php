@@ -86,7 +86,7 @@ class ReviewController extends Controller
         $followingCustomer = CustomerFollowing::where("follower_id", $user->id)->pluck("followed_id");
         $followingCustomer[] = $user->id;
         $reviewList = Review::whereIn("customer_id", $followingCustomer);        
-        $data = new ReviewCollection($reviewList->paginate(1));        
+        $data = new ReviewCollection($reviewList->paginate(2));        
         return $data;
     }
     public function filterByRoomType($array, $roomTypes)

@@ -91,6 +91,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::get('/getUser', 'Frontend\UserController@getUser');
     Route::get('/userInfo', 'Frontend\UserController@getUserInfo');
     Route::resource('/booking', 'Frontend\BookingController');
+    Route::resource('/notifications', 'Frontend\NotificationsController');
     Route::resource('/review', 'Frontend\ReviewController');
     Route::resource('/question', 'Frontend\QuestionController');
     Route::resource('/comment', 'Frontend\CommentController');

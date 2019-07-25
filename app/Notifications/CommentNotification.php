@@ -10,17 +10,17 @@ use Illuminate\Notifications\Messages\MailMessage;
 class CommentNotification extends Notification
 {
     use Queueable;
-    private $comment;
+    private $review_id;
     private $user;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($user,$comment)
+    public function __construct($user,$review_id)
     {
         $this->user = $user;
-        $this->comment = $comment;
+        $this->review_id = $review_id;
     }
 
     /**
@@ -58,9 +58,9 @@ class CommentNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'kind' => 0,
             'user' => $this->user,
-            'message' => $this->comment['content']
+            'link' => ['name'=>'review','id'=>$this->review_id],
+            'message' => 'Đã kèm một bình luận.'
         ];
     }
 
