@@ -46,7 +46,9 @@ class Review extends Model
   public function CustomerReview($customerID,$reviewID){
     return CustomerReview::where('customer_id', $customerID)->where('review_id', $reviewID)->first();
   }
-
+  public function UserReview(){
+    return $this->hasMany('App\Models\CustomerReview','review_id','id')->where('customer_id','<>','customer_id');
+  }
   public function Booking()
   {
     return $this->belongsTo('App\Models\Booking', 'booking_id', 'id');

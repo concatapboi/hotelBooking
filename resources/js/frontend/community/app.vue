@@ -88,22 +88,31 @@
       </v-list>
     </v-navigation-drawer>
     <v-navigation-drawer v-model="notifications.state" fixed clipped class="grey lighten-4" right>
-      <v-layout row wrap fill-height class="pa-0 ma-0 noti-margin-top">
+      <v-layout row wrap class="pa-0 ma-0 noti-margin-top">
         <v-flex md12 v-if="notifications.list.length>0">
-          <v-layout row wrap class="pa-0 ma-0 mx-1" v-for="(notification,i) in notifications.list" :key="i">
-            <v-flex md4 class="ml-2">
-              <v-avatar>
-                <img :src="'/img/user/'+notification.user.avatar" />
-              </v-avatar>
+          <v-layout
+            row
+            wrap
+            class="pl-3 ma-0 mx-1"
+            v-for="(notification,i) in notifications.list"
+            :key="i"
+          >
+            <v-flex md12 class="ml-2">
+              <router-link :to="{name:notification.link.name,query:{id:notification.link.id}}">
+                <v-avatar size="42px" color="black">
+                  <v-avatar size="40px" color="white">
+                    <img :src="'/img/user/'+notification.user.avatar" />
+                  </v-avatar>
+                </v-avatar>
+                <div>
+                  <div>{{notification.user.name}}</div>
+                  <div>"{{notification.message}}"</div>
+                </div>
+              </router-link>
             </v-flex>
-            <v-flex md7 class="ml-1">
-              <div>{{notification.user.name}}</div>
-              <div>{{notifications.kind[notification.kind]}}</div>
+            <v-flex md12 v-if="i<notifications.list.length-1">
+              <v-divider></v-divider>
             </v-flex>
-            <v-flex md12 class="ml-2" v-if="notification.kind !=1">
-              <div>"{{notification.message}}"</div>
-            </v-flex>
-            <v-flex md12 v-if="i<notifications.list.length-1"><v-divider></v-divider></v-flex>
           </v-layout>
         </v-flex>
         <v-flex md12 v-else>
@@ -116,25 +125,40 @@
     <v-toolbar :color="drawer.color" app fixed clipped-right clipped-left flat>
       <v-toolbar-side-icon v-on:click="drawer.state = !drawer.state" class="teal accent-4"></v-toolbar-side-icon>
       <a class="title ml-3 mr-5 white--text text-uppercase" href="/community">Trang Chủ</a>
-      <!-- <v-text-field
-        solo
-        label="who's you want to find?"
-        :color="drawer.iconColor"
-        prepend-inner-icon="search"
-        class="mt-2"
-      ></v-text-field>-->
       <v-spacer></v-spacer>
-      <v-badge overlap color="red" class="mr-5" v-if="notifications.list.length>0">
-        <template v-slot:badge>
-          <span v-if="notifications.list.length <=3">{{notifications.list.length}}</span>
-          <span v-else>{{notifications.list.length}}+</span>
+      <v-speed-dial
+        v-model="fab"
+        :transition="`slide-x-reverse-transition`"
+        :direction="`left`"
+        v-if="notifications.list.length>0"
+      >
+        <template v-slot:activator>
+          <v-badge overlap color="red" class="mr-5">
+            <template v-slot:badge>
+              <span>{{notifications.list.length}}</span>
+            </template>
+            <v-avatar :color="drawer.iconColor" size="40px">
+              <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
+            </v-avatar>
+          </v-badge>
         </template>
-        <v-avatar :color="drawer.iconColor" size="40px">
-          <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
-        </v-avatar>
-      </v-badge>
+        <v-btn fab dark small color="green">
+          <v-icon>edit</v-icon>
+        </v-btn>
+        <v-btn fab dark small color="indigo">
+          <v-icon>add</v-icon>
+        </v-btn>
+        <v-btn fab dark small color="red">
+          <v-icon>delete</v-icon>
+        </v-btn>
+      </v-speed-dial>
       <v-avatar :color="drawer.iconColor" size="40px" class="mr-5" v-else>
-        <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
+        <v-icon
+          dark
+          v-on:click="notifications.state = !notifications.state"
+          v-if="!fab"
+        >notifications</v-icon>
+        <v-icon v-else v-on:click="notifications.state = !notifications.state">close</v-icon>
       </v-avatar>
     </v-toolbar>
     <div id="top"></div>
@@ -184,7 +208,7 @@
       persistent
     >
       <v-card title light width="100%" height="100%">
-        <v-layout fill-height row wrap justify-center align-center class="pa-0 ma-0">
+        <v-layout fill-height row wrap justify-center align-center class="pa-0 ma-0 login-background">
           <div class="text-md-center" v-if="flag === false">
             <div>
               <v-icon large color="#9980FA">fas fa-circle-notch fa-spin</v-icon>
@@ -202,13 +226,14 @@
               <span class="font-weight-black teal--text">.</span>
             </div>
           </div>
-          <v-flex md9 v-else>
+          <v-flex md8 v-else>
+            <v-hover v-slot:default="{ hover }">
             <v-layout
               row
               wrap
               justify-center
               align-center
-              class="pa-5 ma-0 border border-warning rounded"
+              :class="hover? `pa-5 ma-0 white elevation-20`:`pa-5 ma-0 white elevation-5`"
             >
               <v-flex md5 mr-2>
                 <v-img :aspect-ratio="4/3" src="/blog/img/slider/slider.png" class="radius">
@@ -272,6 +297,7 @@
                 </v-form>
               </v-flex>
             </v-layout>
+            </v-hover>
           </v-flex>
         </v-layout>
       </v-card>
@@ -286,6 +312,7 @@ export default {
   },
   data() {
     return {
+      fab: false,
       flag: false,
       dictionary: {
         custom: {
@@ -338,9 +365,9 @@ export default {
         logoutIcon: "logout"
       },
       notifications: {
-        kind:[
-          'Đã bình luận',//index 0
-          'Đang theo dõi bạn',//index 1
+        kind: [
+          "Đã bình luận", //index 0
+          "Đang theo dõi bạn" //index 1
         ],
         state: false,
         iconColor: "#1cc3b2",
@@ -359,14 +386,15 @@ export default {
   mounted() {
     this.$validator.localize("en", this.dictionary);
     window.Echo.channel("message").listen(".send-mess", e => {
-      alert(e.message);
-      this.notifications.list.push(e);
-      console.log(e);
+      this.getNotifications();
     });
   },
   watch: {
     // call again the method if the route changes
-    $route: "getLogin"
+    $route: function() {
+      this.getLogin();
+      this.notifications.state = false;
+    }
   },
   methods: {
     accountPage: function() {
@@ -406,6 +434,7 @@ export default {
       this.login.token = localStorage.getItem("login_token");
       console.log(this.login.token);
       if (this.login.token != null) {
+        console.log("token != null");
         axios({
           method: "get",
           url: "http://localhost:8000/api/getUser",
@@ -417,6 +446,8 @@ export default {
             this.user = res.data.user;
             this.login.check = true;
             this.login.dialog = false;
+            console.log("login");
+            this.getNotifications();
             if (this.$route.name == "login")
               this.$router.push({ name: "home" });
             console.log(this.user);
@@ -442,6 +473,28 @@ export default {
     clear: function() {
       this.$refs.form.reset();
       this.$validator.reset();
+    },
+    getNotifications: function() {
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/notifications",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          console.log(res.data.data);
+          console.log(this.notifications.list);
+          this.notifications.list = res.data.data;
+          console.log(this.notifications.list);
+        })
+        .catch(error => {
+          // console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
     },
     submitLogin: function() {
       console.log(this.login);

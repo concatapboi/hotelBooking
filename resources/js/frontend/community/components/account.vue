@@ -1451,23 +1451,6 @@ export default {
       questionList: {
         dialog: false
       },
-      // bookingList: {
-      //   dialog: false,
-      //   detail: {
-      //     dialog: false,
-      //     booking: {
-      //       cancel_status: [],
-      //       status: {},
-      //       payment_method: {},
-      //       room: {
-      //         price: 0,
-      //         room_mode: {},
-      //         room_type: {},
-      //         hotel: {}
-      //       }
-      //     }
-      //   }
-      // },
       followDialog: false,
       value: false,
       value1: false,
@@ -1854,11 +1837,6 @@ export default {
           });
         }
       });
-    },
-    hello2: function() {
-      this.hello = "new 2";
-      this.$emit("helloEdited", this.hello);
-      alert(this.hello);
     },
     formatDate: function(date) {
       if (!date) return null;

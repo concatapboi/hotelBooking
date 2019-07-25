@@ -15,16 +15,16 @@ class MessageSentEvent  implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     
-    public $user, $message,$kind;
+    public $user, $message,$link;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($user,$message)
+    public function __construct($user,$link,$message)
     {
-        $this->kind = 0;
         $this->user = $user;
+        $this->link = $link;
         $this->message = $message;
     }
 
