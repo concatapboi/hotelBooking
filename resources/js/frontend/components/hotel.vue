@@ -153,7 +153,7 @@
         <v-tab href="#tab-2">Thông tin</v-tab>
         <v-tab href="#tab-3">Đánh giá</v-tab>
         <v-tab href="#tab-4">Đặt câu hỏi</v-tab>
-        <v-tab href="#tab-5">Map</v-tab>
+        <v-tab href="#tab-5" @click="getAddress(data.address)">Map</v-tab>
         <v-tab-item value="tab-1">
           <v-card light flat tile v-if="rooms.length !=0">
             <v-layout class="search-item" row wrap v-for="(room,index) in rooms" :key="index">
@@ -672,7 +672,45 @@
           </v-card>
         </v-tab-item>
         <v-tab-item value="tab-5">
-          <component-map v-bind:hotelAddress="data.address"></component-map>
+          <v-card light flat tile>
+            <v-layout justify-center align-center row wrap class="hotel-tab">
+              <v-flex md12 class="mb-3">
+                <div id="map"></div>
+              </v-flex>
+              <v-flex md3>
+                <h3 class="blue--text">
+                  <i class="far fa-credit-card"></i> ATM
+                </h3>
+                <ul>
+                  <li v-for="(item,i) in atm" :key="i">{{item.name}}</li>
+                </ul>
+              </v-flex>
+              <v-flex md3>
+                <h3 class="orange--text">
+                  <i class="fas fa-utensils"></i> Nhà hàng
+                </h3>
+                <ul>
+                  <li v-for="(item,i) in restaurant" :key="i">{{item.name}}</li>
+                </ul>
+              </v-flex>
+              <v-flex md3>
+                <h3 class="pink--text">
+                  <i class="fas fa-cocktail"></i> Pub
+                </h3>
+                <ul>
+                  <li v-for="(item,i) in pub" :key="i">{{item.name}}</li>
+                </ul>
+              </v-flex>
+              <v-flex md3>
+                <h3 class="green--text">
+                  <i class="fas fa-shopping-basket"></i> Siêu thị
+                </h3>
+                <ul>
+                  <li v-for="(item,i) in supermarket" :key="i">{{item.name}}</li>
+                </ul>
+              </v-flex>
+            </v-layout>
+          </v-card>
         </v-tab-item>
       </v-tabs>
     </v-flex>
@@ -1303,10 +1341,10 @@
 </template>
 
 <script>
-import map from '@/js/frontend/components/map'
+import map from "@/js/frontend/components/map";
 export default {
-  components :{
-    "component-map" :map
+  components: {
+    "component-map": map
   },
   $_veeValidate: {
     validator: "new"
@@ -1445,16 +1483,29 @@ export default {
       checkInVal: "",
       checkInFormattedVal: "",
       checkOutVal: "",
-      checkOutFormattedVal: ""
+      checkOutFormattedVal: "",
       // place: this.$route.query.place.replace(/\-/g,' '),
       // checkIn: this.$route.query.check_in,
       // checkInFormatted: this.formatDate(this.$route.query.check_in),
       // checkOut: this.$route.query.check_out,
       // checkOutFormatted: this.formatDate(this.$route.query.check_out),
+      //---------------------
+      count: 0,
+      bounds: null,
+      address: null,
+      location: null,
+      atm: null,
+      restaurant: null,
+      pub: null,
+      supermarket: null,
+      firstTime: true,
+      active: false,
+      map: null
     };
   },
   mounted() {
     this.$validator.localize("en", this.bookingDialog.dictionary);
+    this.active = true;
   },
   created() {
     // console.log(Object.keys(this.$route.query).length);
@@ -1511,6 +1562,7 @@ export default {
     checkIn: "setSearchValue",
     checkOutVal: "loadSearchData",
     checkOut: "setSearchValue"
+    //-------------
   },
   methods: {
     load: function() {
@@ -1950,6 +2002,86 @@ export default {
           check_in: this.checkIn,
           check_out: this.checkOut
         }
+      });
+    },
+    formatKey: function(string) {
+      return string.replace(/\s/g, "+");
+      console.log(this.address);
+    },
+    getAddress: function(address) {
+      this.formatKey(address);
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/manager/map",
+        params: {
+          address: this.formatKey(address)
+        }
+      })
+        .then(response => {
+          console.log(response);
+          if (response.data.status == true) {
+            this.location = response.data.location.data;
+            this.atm = response.data.location.atm;
+            this.restaurant = response.data.location.restaurant;
+            this.pub = response.data.location.pub;
+            this.supermarket = response.data.location.supermarket;
+            var key = "11f82a7e50bc28";
+            var ll = [
+              response.data.location.data.lat,
+              response.data.location.data.lon
+            ];
+            var streets = L.tileLayer(
+              "https://{s}-tiles.locationiq.com/v2/obk/r/{z}/{x}/{y}.png?key=11f82a7e50bc28"
+            );
+            var map = L.map("map", {
+              center: ll,
+              zoom: 15,
+              layers: [streets]
+            });
+            setTimeout(function() {
+              map.invalidateSize();
+            }, 0);
+            L.control.scale().addTo(map);
+            L.control
+              .layers({
+                Streets: streets
+              })
+              .addTo(map);
+            var tooltip = L.tooltip({ direction: top }).setTooltipContent("hi");
+            // var marker = L.marker(ll)
+            //   .addTo(map)
+            //   .bindTooltip(this.data.name)
+            //   .openTooltip();
+
+            var redMarker = L.ExtraMarkers.icon({
+              icon: "fa-home",
+              markerColor: "red",
+              shape: "circle",
+              prefix: "fa"
+            });
+            L.marker(ll, { icon: redMarker }).addTo(map);
+            this.addMarker(map, this.atm, "credit-card" , "blue-dark");
+            this.addMarker(map, this.restaurant, "utensils" , "orange");
+            this.addMarker(map, this.pub, "cocktail" , "pink");
+            this.addMarker(map, this.supermarket, "shopping-basket" , "green");
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+    },
+    addMarker: function(map, array, type , color) {
+      array.forEach(element => {
+        var icon = "fa-" + type;
+        var marker = L.ExtraMarkers.icon({
+          icon: icon,
+          markerColor: color,
+          shape: "circle",
+          prefix: "fa"
+        });
+        L.marker([element.lat, element.lon], { icon: marker })
+          .addTo(map)
+          .bindTooltip(element.name);
       });
     }
   }

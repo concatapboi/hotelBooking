@@ -198,6 +198,18 @@ export default {
     }
     this.initialize();
   },
+  mounted(){
+    // window.Echo.channel("manager").listen(".accept-booking", e => {
+    //   // alert(e.message);
+    //   // this.notifications.list.push(e);
+    //   console.log(e);
+    // });
+    window.Echo.channel("message").listen(".send-mess", e => {
+      // alert(e.message);
+      // this.notifications.list.push(e);
+      console.log(e);
+    });
+  },
   methods: {
     initialize() {
       var _this = this;

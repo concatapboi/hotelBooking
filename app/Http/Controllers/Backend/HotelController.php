@@ -70,6 +70,7 @@ class HotelController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request->all();
         $data = [
             "name" => $request->name,
             "email" => $request->email,
@@ -142,6 +143,7 @@ class HotelController extends Controller
         return response()->json([
             "status" => true,
             "id" => $hotel->id,
+            "hotel" => new HotelResource($hotel),
             "message" => "Hotel Created !!!",
         ]);
     }
@@ -177,6 +179,7 @@ class HotelController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // return $request->all();
         $data = [
             "name" => $request->name,
             "email" => $request->email,
@@ -241,17 +244,17 @@ class HotelController extends Controller
                 if ($images[$i]["is_primary"] == 1) {
                     $primary = 1;
                 }
-                HotelImage::create([
+                $realImage = HotelImage::create([
                     "image_link" => $image->filename,
                     "is_primary" => $primary,
                     "hotel_id" => $hotel->id,
                 ]);
+                $temp[] = $name;
             }
         }
         $oldImage = HotelImage::where("hotel_id", $hotel->id)
             ->whereNotIn("image_link", $temp)
             ->delete();
-        $hotel = Hotel::find(2);
         $policy = [
             "hotel_id" => $hotel->id,
             "check_in" => $request->checkin,
@@ -268,6 +271,7 @@ class HotelController extends Controller
         $hotel->Policy->update($policy);
         return response()->json([
             "status" => true,
+            "hotel" => new HotelResource($hotel),
             "message" => "Hotel updated !!!",
         ]);
     }

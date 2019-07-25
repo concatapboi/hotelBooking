@@ -17,3 +17,6 @@
 Broadcast::channel('message', function () {
     return true;
 });
+Broadcast::channel('manager', function () {
+    return true;
+});
