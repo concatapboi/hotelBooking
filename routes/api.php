@@ -61,6 +61,8 @@ Route::group(['prefix' => '/manager'], function () {
         Route::Resource('room-type', 'Backend\RoomTypeController');
         Route::get('room-types', 'Backend\HotelController@getAllRoomType');
         Route::Resource('bed-type', 'Backend\BedTypeController');
+        Route::get('notification', 'Backend\NotificationController@getAllNotification');
+        Route::post('mark-as-read', 'Backend\NotificationController@markAsRead');
        
     });
 });

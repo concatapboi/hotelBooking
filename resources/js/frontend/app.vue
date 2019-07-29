@@ -6,7 +6,7 @@
           <v-layout row wrap class="white text-md-center" fill-height align-center>
             <v-flex md2>
               <router-link :to="{name:'home'}">
-                <img src="/blog/./img/core-img/logo.png" v-on="on" />
+                <img src="/blog/./img/core-img/logo.png"/>
               </router-link>
             </v-flex>
             <v-flex md2>

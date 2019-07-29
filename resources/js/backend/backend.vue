@@ -32,7 +32,7 @@
         </v-list-group>
         <v-list-tile class="style-link" :to="{name:'service',query :{hotelId : hotelId}}">
           <v-list-tile-action>
-            <i class=" ma-1 fas fa-lg fa-concierge-bell"></i>
+            <i class="ma-1 fas fa-lg fa-concierge-bell"></i>
           </v-list-tile-action>
 
           <v-list-tile-content>
@@ -68,7 +68,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar color="#0e2737" app fixed clipped-left flat class="white--text">
+    <v-toolbar color="#0e2737" app fixed clipped-left clipped-right flat class="white--text">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" class="teal accent-4">
         <v-icon>dehaze</v-icon>
       </v-toolbar-side-icon>
@@ -82,7 +82,7 @@
       </div>-->
       <div v-if="hotelName === ''"></div>
       <div v-else>
-        Đang thao tác với khách sạn 
+        Đang thao tác với khách sạn
         <v-btn @click="logout" dark depressed round small>{{hotelName}}</v-btn>
       </div>
       <v-toolbar-items class="hidden-sm-and-down">
@@ -90,6 +90,41 @@
         <!-- <v-avatar class="mt-2" @click="logout">
           <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
         </v-avatar>-->
+        <!-- <v-speed-dial :transition="`slide-x-reverse-transition`" :direction="`left`">
+          <template v-slot:activator>
+            <v-badge overlap color="red" class="mr-5">
+              <template v-slot:badge>
+                <span>{{notifications.list.length}}</span>
+              </template>
+              <v-avatar :color="'blue'" size="40px">
+                <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
+              </v-avatar>
+            </v-badge>
+          </template>
+          <v-btn fab dark small color="green">
+            <v-icon>edit</v-icon>
+          </v-btn>
+          <v-btn fab dark small color="indigo">
+            <v-icon>add</v-icon>
+          </v-btn>
+          <v-btn fab dark small color="red">
+            <v-icon>delete</v-icon>
+          </v-btn>
+        </v-speed-dial>-->
+        <span class="mt-2 mr-3">
+          <v-badge v-if="notifications.list.length >0" overlap color="red">
+            <template v-slot:badge>
+              <span>{{notifications.list.length}}</span>
+            </template>
+            <v-avatar :color="'blue'">
+              <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
+            </v-avatar>
+          </v-badge>
+          <v-avatar v-else :color="'blue'">
+            <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
+          </v-avatar>
+        </span>
+
         <v-menu offset-y>
           <template v-slot:activator="{ on }">
             <!-- <v-btn color="primary" dark v-on="on">Dropdown</v-btn> -->
@@ -111,7 +146,94 @@
         </v-menu>
       </v-toolbar-items>
     </v-toolbar>
+    <v-navigation-drawer
+      
+      v-model="notifications.state"
+      clipped
+      temporary
+      absolute
+      class="grey lighten-4"
+      right
+    >
+      <v-layout row wrap class="pa-0 ma-0">
+        <!-- {{notifications.list}} -->
+        <v-flex md12>
+          <v-list two-line>
+            
+            <span v-for="(notification,i) in notifications.list" :key="i">
+              <v-list-tile v-if="notification.read_at == null" class="white">
+                <a
+                  @click="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
+                  @contextmenu="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
+                  :href="'order?hotelId='+hotelId"
+                >
+                  <v-list-tile-content>
+                    <v-list-tile-title>
+                      <h5>Đơn đặt phòng mới</h5>
+                    </v-list-tile-title>
+                    <v-list-tile-sub-title>Đơn {{notification.data.booking.id}} đang chờ bạn xác nhận</v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </a>
+              </v-list-tile>
 
+              <v-list-tile v-else class="light-grey">
+                <a
+                  @click="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
+                  @contextmenu="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
+                  :href="'order?hotelId='+hotelId"
+                >
+                  <v-list-tile-content>
+                    <v-list-tile-title>
+                      <h5>Đơn đặt phòng mới</h5>
+                    </v-list-tile-title>
+                    <v-list-tile-sub-title>Đơn {{notification.data.booking.id}} đang chờ bạn xác nhận</v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </a>
+              </v-list-tile>
+              <v-divider></v-divider>
+            </span>
+
+            <!-- </v-list-group> -->
+            <!-- <span v-if="notification.read_at === null">
+              <a
+                @click="showOrderDetail(notification.id,$event)"
+                @contextmenu="showOrderDetail(notification.id,$event)"
+                :href="'order?hotelId='+hotelId"
+                class="red"
+              >
+                <v-list-tile-title class="red">
+                  <h5>Đơn đặt phòng mới</h5>
+                </v-list-tile-title>
+                <v-list-tile-title class="red">Đơn {{notification.data.booking.id}} đang chờ bạn xác nhận</v-list-tile-title>
+                <v-divider></v-divider>
+              </a>
+            </span>
+            <span v-else>
+              "doc roi"
+              <a
+                @click="showOrderDetail(notification.id,$event)"
+                @contextmenu="showOrderDetail(notification.id,$event)"
+                :href="'order?hotelId='+hotelId"
+                class="blue"
+              >
+                <v-list-tile-title>
+                  <h5>Đơn đặt phòng mới</h5>
+                </v-list-tile-title>
+                <v-list-tile-title>Đơn {{notification.data.booking.id}} đang chờ bạn xác nhận</v-list-tile-title>
+                <v-divider></v-divider>
+              </a>
+            </span>-->
+          </v-list>
+        </v-flex>
+        <!-- <v-flex md12 v-else>
+          <div class="text-md-center">
+            <span class="font-italic black--text caption">Không có thông báo...</span>
+          </div>
+        </v-flex>-->
+
+        <v-flex></v-flex>
+      </v-layout>
+    </v-navigation-drawer>
     <v-content class="grey lighten-4">
       <v-container fluid>
         <!-- <router-view :is="currentComponent" v-bind="currentProperties"></router-view> -->
@@ -123,8 +245,10 @@
           v-bind:arrayProvince="arrayProvince"
           v-bind:arrayService="arrayService"
           v-bind:api_token="api_token"
+          v-bind:errorMessage="errorMessage"
           v-on:changeArrayHotel="update($event)"
           v-on:chooseHotel="chooseHotel($event)"
+          v-on:onErrorMessage="onErrorMessage($event)"
           v-on:panelIndex="panelIndex($event)"
         ></router-view>
       </v-container>
@@ -138,12 +262,12 @@ export default {
     return {
       loaded: false,
       items: [
-        { icon: "home", color:"black",title: "Trang chủ" },
-        { icon: "business", color:"black", title: "Quản lý phòng" },
-        { icon: "grade", color:"black", title: "Quản lý dịch vụ" },
-        { icon: "grade", color:"black", title: "Quản lý đơn" },
-        { icon: "monetization_on", color:"brown", title: "Khuyến Mãi" },
-        { icon: "message", color:"purple", title: "Khách hàng hỏi" },
+        { icon: "home", color: "black", title: "Trang chủ" },
+        { icon: "business", color: "black", title: "Quản lý phòng" },
+        { icon: "grade", color: "black", title: "Quản lý dịch vụ" },
+        { icon: "grade", color: "black", title: "Quản lý đơn" },
+        { icon: "monetization_on", color: "brown", title: "Khuyến Mãi" },
+        { icon: "message", color: "purple", title: "Khách hàng hỏi" }
       ],
       drawer: null,
       userID: 1,
@@ -167,10 +291,21 @@ export default {
       currentProperties: "",
       showMenu: false,
       api_token: "",
-      
+      notifications: {
+        // kind: [
+        //   "Đã bình luận", //index 0
+        //   "Đang theo dõi bạn" //index 1
+        // ],
+        data: {
+          booking: null
+        },
+        state: false,
+        list: []
+      },
+      errorMessage : null,
     };
   },
-  
+
   watch: {
     $route: function(to, from) {
       if (to.name == "home") {
@@ -187,6 +322,28 @@ export default {
     },
     api_token: function() {
       console.log(this.api_token);
+    },
+    hotelId: function() {
+      axios
+        .get("http://localhost:8000/api/manager/notification", {
+          headers: {
+            Authorization: "Bearer " + this.api_token
+          },
+          params: {
+            hotelId: this.hotelId
+          }
+        })
+        .then(response => {
+          console.log(response.data);
+          this.notifications.list = response.data;
+          console.log(this.notifications.list);
+        })
+        .catch(function(error) {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            _this.logout();
+          }
+        });
     }
   },
   created() {
@@ -198,19 +355,39 @@ export default {
     }
     this.initialize();
   },
-  mounted(){
+  mounted() {
     // window.Echo.channel("manager").listen(".accept-booking", e => {
-    //   // alert(e.message);
-    //   // this.notifications.list.push(e);
     //   console.log(e);
     // });
-    window.Echo.channel("message").listen(".send-mess", e => {
-      // alert(e.message);
-      // this.notifications.list.push(e);
-      console.log(e);
+    window.Echo.channel("manager").listen(".new-booking", e => {
+      this.notifications.list.push(e);
     });
   },
   methods: {
+    showOrderDetail: function(notificationId, $event, index, bookingId) {
+      axios({
+        method: "post",
+        url: "http://localhost:8000/api/manager/mark-as-read",
+        headers: {
+          Authorization: "Bearer " + this.api_token
+        },
+        data: {
+          notificationId: notificationId
+        }
+      })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+      $event.preventDefault();
+      this.notifications.list[index].read_at = new Date();
+      this.$router.push({
+        name: "order",
+        query: { hotelId: this.hotelId, orderId: bookingId }
+      });
+    },
     initialize() {
       var _this = this;
       axios
@@ -275,6 +452,27 @@ export default {
             _this.logout();
           }
         });
+      if (this.hotelId != 0) {
+        axios
+          .get("http://localhost:8000/api/manager/notification", {
+            headers: {
+              Authorization: "Bearer " + this.api_token
+            },
+            params: {
+              hotelId: this.hotelId
+            }
+          })
+          .then(response => {
+            console.log(response.data);
+            this.notifications.list = response.data;
+          })
+          .catch(function(error) {
+            console.log(error.response);
+            if (error.response.status == 401) {
+              _this.logout();
+            }
+          });
+      }
     },
     update: function(data) {
       // console.log("data :" + data);
@@ -320,7 +518,15 @@ export default {
       localStorage.removeItem("api_token");
       this.api_token = null;
       location.href = "login";
+    },
+    onErrorMessage : function(message){
+      this.errorMessage = message;
     }
   }
 };
 </script>
+<style scoped>
+.noti-margin-top {
+  margin-top: 70px !important;
+}
+</style>

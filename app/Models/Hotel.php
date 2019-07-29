@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\HotelTypeResource;
 use App\Models\Booking;
@@ -13,6 +14,8 @@ use App\Http\Resources\BookingResource;
 
 class Hotel extends Model
 {
+  use Notifiable;
+  
   protected $table = 'hotel';
 
   protected $fillable = [

@@ -91,7 +91,7 @@ class BookingController extends Controller
             } else {
                 $data["contact_name"] = $user->name;
                 $data["contact_phone"] = $user->phone_number;
-                $data["contact_address"] = "address";
+                $data["contact_address"] = $user->Customer->address;
                 $data["customer_id"] = $user->id;
             }
         } else {
@@ -169,7 +169,7 @@ class BookingController extends Controller
         $room_image = RoomImage::where("room_id", $room->id)->where("is_primary", 1)->first();
         $customer = Customer::find($booking->customer_id)->ofUser;
         broadcast(new AcceptBooking($booking));
-        broadcast(new MessageSentEvent(1,2,3));
+        // Hotel->notify()
         return 1;
         // return (new AcceptOrderOffline($booking, $room, $room_image))->render();
 

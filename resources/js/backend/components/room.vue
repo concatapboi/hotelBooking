@@ -18,9 +18,7 @@
             <v-card width="100%" class="pa-0">
               <v-toolbar card flat dark color="primary">
                 <v-toolbar-title class="text-uppercase">
-                  <span class="text-md-center white--text">
-                  {{formTitle}}
-                  </span>
+                  <span class="text-md-center white--text">{{formTitle}}</span>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn icon dark v-on:click="dialog =false">
@@ -356,8 +354,15 @@
                       <v-layout row>
                         <v-spacer></v-spacer>
 
-                        <v-btn class="warning" flat round depressed @click="showEdit(el.room_mode.name,r.id)">Sửa</v-btn>
-                        <v-btn class="red white--text"
+                        <v-btn
+                          class="warning"
+                          flat
+                          round
+                          depressed
+                          @click="showEdit(el.room_mode.name,r.id)"
+                        >Sửa</v-btn>
+                        <v-btn
+                          class="red white--text"
                           flat
                           round
                           depressed
@@ -381,16 +386,22 @@
                                   <v-flex md5>
                                     <h5>Tên phòng :</h5>
                                   </v-flex>
-                                  <v-flex md7><h4>{{r.room_name}}</h4></v-flex>
+                                  <v-flex md7>
+                                    <h4>{{r.room_name}}</h4>
+                                  </v-flex>
                                   <v-flex md5>
                                     <h5>Giá phòng :</h5>
                                   </v-flex>
-                                  <v-flex md7><span class="body-2 orange--text">{{(r.price).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span></v-flex>
+                                  <v-flex md7>
+                                    <span
+                                      class="body-2 orange--text"
+                                    >{{(r.price).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
+                                  </v-flex>
                                   <v-flex md5>
                                     <h5>Mô tả phòng :</h5>
                                   </v-flex>
                                   <v-flex md7>{{r.description}}</v-flex>
-                                  
+
                                   <v-flex md5>
                                     <h5>Diện tích phòng :</h5>
                                   </v-flex>
@@ -544,12 +555,10 @@ export default {
             required: "Tên phòng không được để trống"
           },
           numberOfRoom: {
-            numeric:
-              "Số phòng không được bé hơn 1"
+            numeric: "Số phòng không được bé hơn 1"
           },
           description: {
-            required:
-              "Mô tả phòng không được để trống"
+            required: "Mô tả phòng không được để trống"
           },
           roomSize: {
             decimal: "Kích thước phòng ko hợp lệ"
@@ -573,8 +582,13 @@ export default {
     };
   },
   created() {
-    this.$emit("chooseHotel", this.hotelId);
-    this.initialize();
+    if (this.$route.query.hotelId == 0) {
+      this.$router.push({ name: "home" });
+      this.$emit("onErrorMessage", "vui long chon khach san");
+    } else {
+      this.$emit("chooseHotel", this.hotelId);
+      this.initialize();
+    }
   },
   mounted() {
     this.$validator.localize("en", this.dictionary);
@@ -680,7 +694,6 @@ export default {
         .then(response => {
           console.log(response.data);
           if (response.data.status == true) {
-            
             this.arrayRoom = response.data.data;
           }
         })

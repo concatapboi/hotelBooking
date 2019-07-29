@@ -625,14 +625,14 @@
     <v-dialog max-width="30%" v-model="confirmDialog">
       <v-card>
         <v-card-title>
-          <h4>Confirmation</h4>
+          <h4>Xác nhận</h4>
         </v-card-title>
         <v-card-text>
           {{confirmDialogText}}
           <br />
           <ul>
-            <li>derank your hotel</li>
-            <li>transfer {{transferAmount}} coin ({{transferPercent}}% of this order) to the user</li>
+            <li>Thứ tự xuất hiện của khách sạn sẽ bị giảm</li>
+            <li>chuyển {{transferAmount}} xu ({{transferPercent}}% của đơn hàng này) đến khách hàng</li>
           </ul>
           <span
             v-if="cancelReminder == true"
@@ -640,7 +640,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn round depressed small class="grey white--text" flat @click="cancel">Cancel</v-btn>
+          <v-btn round depressed small class="grey white--text" flat @click="cancel">Hủy</v-btn>
           <v-btn
             round
             depressed
@@ -648,7 +648,7 @@
             class="red white--text"
             flat
             @click.stop="cancelBooking()"
-          >Confirm</v-btn>
+          >Xác nhận</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -709,7 +709,7 @@ export default {
           },
           email: {
             email: "Email phải là kiểu email.Vd : abc@gmail.com",
-            required: "Email không được để trống",
+            required: "Email không được để trống"
           },
           phone: {
             required: "Số điện thoại không được để trống"
@@ -720,7 +720,7 @@ export default {
           address: {
             required: "Số lượng phòng không được để trống",
             numeric: "Số lượng phòng phải là số nguyên không âm"
-          },
+          }
         }
       },
       temp: null,
@@ -745,6 +745,9 @@ export default {
   },
   mounted() {
     this.$validator.localize("en", this.dictionary);
+    window.Echo.channel("manager").listen(".new-booking", e => {
+      this.bookingList.push(e.booking);
+    });
   },
   created() {
     this.$emit("chooseHotel", this.hotelId);
@@ -773,6 +776,11 @@ export default {
         } else {
           this.filterDate = true;
         }
+      }
+    },
+    $route: function() {
+      if (this.$route.query.orderId != null) {
+        this.search = this.$route.query.orderId;
       }
     }
   },

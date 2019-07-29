@@ -18,7 +18,6 @@ class HotelCollection extends ResourceCollection
         $data = $this->collection->map(function ($item, $key) {
             return new HotelFrontendResource($item);
         });
-        // return $data;
         return [
             'data' => $data,
             'pagination' => [

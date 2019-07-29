@@ -11,6 +11,7 @@ import order from '@/js/backend/components/order';
 import question from '@/js/backend/components/question';
 import couponCode from '@/js/backend/components/coupon-code';
 
+
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -51,12 +52,12 @@ const router = new VueRouter({
             name: 'service',
             component: service,
         },
-        {
-            path: '/manager/login',
-            name: 'login',
-            component: login,
-            props: true,
-        },
+        // {
+        //     path: '/manager/login',
+        //     name: 'login',
+        //     component: login,
+        //     props: true,
+        // },
         {
             path: '/manager/order',
             name: 'order',
