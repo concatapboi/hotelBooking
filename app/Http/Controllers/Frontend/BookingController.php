@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Broadcast;
 use App\Events\newBooking;
 use App\Notifications\NewBooking as AppNewBooking;
 use App\Models\Notification;
+use Carbon\Carbon;
+use App\Mail\BookingCreatedConfirm;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -60,51 +63,64 @@ class BookingController extends Controller
                 'email' => 'required|email',
                 'phone' => 'required',
                 'address' => 'required',
+                'checkIn' => 'required',
+                'checkOut' => 'required',
             ]
         );
         if (!$validateData->fails()) {
-            $room = Room::find($b['roomId']);
-            if (!$room || $room->amount < $b['roomAmount']) $status = false;
-            else {
-                $status = true;
-                $mess = 'Sucessfully!';
-                $coupon_code = CouponCode::find($b['coupon_code_id']);
-                $discount = 0;
-                if ($coupon_code != null) {
-                    $discount = $coupon_code->discount_value;
-                    $coupon_code = $coupon_code->code;
+            if (Carbon::parse($b['checkIn'])->diffInDays(Carbon::parse($b['checkOut'])) > 0 && Carbon::parse($b['checkIn'])->diffInDays(Carbon::parse(substr(Carbon::now(), 0, 10))) > 0) {
+                $room = Room::find($b['roomId']);
+                if (!$room || $room->amount < $b['roomAmount']) $status = false;
+                else {
+                    $status = true;
+                    $mess = 'Thành công!';
+                    $coupon_code = CouponCode::find($b['coupon_code_id']);
+                    $discount = 0;
+                    if ($coupon_code != null) {
+                        $coupon_code->update([
+                            'apply_amount' => $coupon_code->apply_amount-1,
+                        ]);
+                        $discount = $coupon_code->discount_value;
+                        $coupon_code = $coupon_code->code;
+                    }
+                    $booking = Booking::create([
+                        'hotel_name' => $room->Hotel->name,
+                        'room_price' => $room->price,
+                        'room_amount' => $b['roomAmount'],
+                        'contact_name' => $b['name'],
+                        'contact_email' => $b['email'],
+                        'contact_phone' => $b['phone'],
+                        'contact_address' => $b['address'],
+                        'special_request' => $b['request'],
+                        'fax_number' => $room->Hotel->fax_number,
+                        'check_in' => $b['checkIn'],
+                        'check_out' => $b['checkOut'],
+                        'room_id' => $b['roomId'],
+                        'customer_id' => Auth::user()->id,
+                        'payment_method_id' => $b['payment'],
+                        'coupon_code' => $coupon_code,
+                        'discount_value' => $discount,
+                        'status_id' => 1,
+                    ]);
+                    $booking->Status;
+                    $booking->cancel_status = $booking->Hotel()->CancelableStatus();;
+                    $booking->PaymentMethod;
+                    $hotel = $booking->Room->Hotel;
+                    $booking->room->room_mode = $booking->Room->RoomMode;
+                    $booking->room->room_type = $booking->Room->RoomType;
+                    $booking->room->days = Carbon::parse($booking->check_in)->diffInDays(Carbon::parse($booking->check_out));
+                    $temp = array();
+                    $temp['id'] = $hotel->id;
+                    $temp['name'] = $hotel->name;
+                    $temp['type'] = $hotel->HotelType->name;
+                    $booking->room->hotel = $temp;
+                    $booking->room->image = RoomImage::where('room_id', $booking->room->id)->where('is_primary', 1)->first()->image_link;
+                    // Mail::to(Auth::user())->queue(new BookingCreatedConfirm(Auth::user(),$booking));
+                    // new BookingCreatedConfirm(Auth::user(),$booking);
                 }
-                $booking = Booking::create([
-                    'hotel_name' => $room->Hotel->name,
-                    'room_price' => $room->price,
-                    'room_amount' => $b['roomAmount'],
-                    'contact_name' => $b['name'],
-                    'contact_email' => $b['email'],
-                    'contact_phone' => $b['phone'],
-                    'contact_address' => $b['address'],
-                    'special_request' => $b['request'],
-                    'fax_number' => $room->Hotel->fax_number,
-                    'check_in' => $b['checkIn'],
-                    'check_out' => $b['checkOut'],
-                    'room_id' => $b['roomId'],
-                    'customer_id' => Auth::user()->id,
-                    'payment_method_id' => $b['payment'],
-                    'coupon_code' => $coupon_code,
-                    'discount_value' => $discount,
-                    'status_id' => 1,
-                ]);
-                $booking->Status;
-                $booking->cancel_status = $booking->Hotel()->CancelableStatus();;
-                $booking->PaymentMethod;
-                $hotel = $booking->Room->Hotel;
-                $booking->room->room_mode = $booking->Room->RoomMode;
-                $booking->room->room_type = $booking->Room->RoomType;
-                $temp = array();
-                $temp['id'] = $hotel->id;
-                $temp['name'] = $hotel->name;
-                $temp['type'] = $hotel->HotelType->name;
-                $booking->room->hotel = $temp;
-                $booking->room->image = RoomImage::where('room_id', $booking->room->id)->where('is_primary', 1)->first()->image_link;
+            } else {
+                $status = false;
+                $mess = 'Lỗi dữ liệu.';
             }
         } else return response()->json(['status' => $status, 'mess' => $validateData->errors()]);
         
@@ -114,7 +130,24 @@ class BookingController extends Controller
         Broadcast(new newBooking(Booking::find($booking->id),$notificationId));
         return response()->json(['status' => $status, 'mess' => $mess, 'booking' => $booking]);
     }
-
+    public function testMail()
+    {
+        $booking = Booking::find(1);
+        $booking->Status;
+        $booking->cancel_status = $booking->Hotel()->CancelableStatus();;
+        $booking->PaymentMethod;
+        $hotel = $booking->Room->Hotel;
+        $booking->room->room_mode = $booking->Room->RoomMode;
+        $booking->room->room_type = $booking->Room->RoomType;
+        $booking->room->days = Carbon::parse($booking->check_in)->diffInDays(Carbon::parse($booking->check_out));
+        $temp = array();
+        $temp['id'] = $hotel->id;
+        $temp['name'] = $hotel->name;
+        $temp['type'] = $hotel->HotelType->name;
+        $booking->room->hotel = $temp;
+        $booking->room->image = RoomImage::where('room_id', $booking->room->id)->where('is_primary', 1)->first()->image_link;
+        return (new BookingCreatedConfirm(Auth::user(),$booking))->render();
+    }
     //get booking/{booking}
     public function show($id)
     { }

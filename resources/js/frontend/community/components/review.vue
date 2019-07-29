@@ -93,6 +93,28 @@
                     v-on="on"
                     class="ml-3 mr-1"
                     large
+                    :color="color.heart"
+                    v-on:click="likeReview(review.id)"
+                    v-if="review.customer_review.like == 0"
+                  >favorite_border</v-icon>
+                  <v-icon
+                    v-on="on"
+                    class="ml-3 mr-1"
+                    large
+                    :color="color.heart"
+                    v-on:click="likeReview(review.id)"
+                    v-else
+                  >favorite</v-icon>
+                </template>
+                <span>like</span>
+              </v-tooltip>
+              <span class="grey--text subheading">{{review.likes}}</span>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    v-on="on"
+                    class="ml-3 mr-1"
+                    large
                     :color="color.comment"
                     v-on:click="review.model = true"
                     v-if="!review.model"
@@ -164,7 +186,7 @@
                         round
                         large
                         depressed
-                        :disabled="comment.length ===0"
+                        :disabled="comment.content.length ===0"
                         color="teal"
                         class="white--text"
                         @click="sendComment()"
@@ -197,6 +219,7 @@ export default {
       review: {
         customer_review: {},
         hotel: {
+          id:0,
           image: "default.png",
           services: []
         }
@@ -308,7 +331,58 @@ export default {
             this.$router.push({ name: "login" });
           }
         });
-    }
+    },
+    likeReview: function(id) {
+      var flag = true;
+      switch (this.review.customer_review.like) {
+        case 0:
+          this.review.customer_review.like = 1;
+          this.review.likes = this.review.likes + 1;
+          break;
+        case 1:
+          this.review.customer_review.like = 0;
+          this.review.likes = this.review.likes - 1;
+          break;
+      }
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/like",
+        params: {
+          review_id: id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          if (res.data.status == false) {
+            flag = false;
+          }
+        })
+        .catch(error => {
+          flag = false;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        })
+        .then(() => {
+          if (!flag) {
+            switch (this.review.customer_review.like) {
+              case 0:
+                this.review.customer_review.like = 1;
+                this.review.likes = this.review.likes + 1;
+                break;
+              case 1:
+                this.review.customer_review.like = 0;
+                this.review.likes = this.review.likes - 1;
+                break;
+            }
+          }
+        });
+    },
   }
 };
 </script>

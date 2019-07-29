@@ -82,12 +82,13 @@ class Hotel extends Model
   }
   public function getCouponCode()
   {
-    $couponCodes = $this->CouponCode;
+    $couponCodes = CouponCode::where('hotel_id',$this->id)->get();
     $temp = array();
     foreach ($couponCodes as $couponCode) {
       if (!Carbon::now()->lessThan(Carbon::parse($couponCode->start_at))) {
         if ($couponCode->end_at == null || Carbon::now()->lessThan(Carbon::parse($couponCode->end_at))) {
-          $temp[] = $couponCode;
+          if($couponCode->apply_amount >0)
+            $temp[] = $couponCode;
         }
       }
     }
@@ -116,7 +117,7 @@ class Hotel extends Model
 
   public function questionList()
   {
-    $question = Question::where('hotel_id', $this->id)->get();
+    $question = Question::where('hotel_id', $this->id)->orderBy('created_at','desc')->get();
     foreach ($question as $q) {
       $q->customer = $q->Customer();
       $q->Reply;

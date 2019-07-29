@@ -5,13 +5,16 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Reply;
+use App\Events\HotelAnswerEvent;
 use App\Models\Question;
 use App\Models\Hotel;
+use App\Models\User;
 use Validator;
 use App\Models\RoomType;
 use Hash;
 use Carbon\Carbon;
 use Auth;
+use App\Notifications\HotelAnswerNotification;
 
 class ReplyController extends Controller
 {
@@ -44,6 +47,11 @@ class ReplyController extends Controller
         ]);
         $question->reply = $reply;
         $question->customer = $question->Customer();
+        $questionTemp = array();
+        $questionTemp['title'] = $question->title;
+        $questionTemp['content'] = $question->content;
+        broadcast(new HotelAnswerEvent($hotel->name,$questionTemp,$reply->content));
+        User::find($question->customer_id)->notify(new HotelAnswerNotification($hotel->name,$questionTemp,$reply->content));
         return response()->json([
             'status' => true,
             'question' => $question,

@@ -20,3 +20,6 @@ Broadcast::channel('message', function () {
 Broadcast::channel('manager', function () {
     return true;
 });
+Broadcast::channel('question', function () {
+    return true;
+});

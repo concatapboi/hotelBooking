@@ -30,6 +30,7 @@ class ReviewResource extends JsonResource
             "content" => $this->content, 
             "point" => $this->point, 
             "comments" => $this->comments, 
+            "likes" => $this->likes, 
             "customer" => $this->Customer(), 
             "model" => false, 
             "comment" => $comments,

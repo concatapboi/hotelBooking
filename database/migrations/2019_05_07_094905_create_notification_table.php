@@ -13,16 +13,16 @@ class CreateNotificationTable extends Migration
      */
     public function up()
     {
-        Schema::create('notification', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('customer_id')->unsigned();
-            $table->string('content');
-            $table->string('link');
-            $table->timestamps();
-            $table->foreign('customer_id')
-            ->references('user_id')->on('customer')
-            ->onDelete('cascade');
-        });
+        // Schema::create('notification', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->integer('customer_id')->unsigned();
+        //     $table->string('content');
+        //     $table->string('link');
+        //     $table->timestamps();
+        //     $table->foreign('customer_id')
+        //     ->references('user_id')->on('customer')
+        //     ->onDelete('cascade');
+        // });
     }
 
     /**
@@ -32,6 +32,6 @@ class CreateNotificationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('notification');
+        // Schema::dropIfExists('notification');
     }
 }

@@ -40,7 +40,7 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-                    <v-date-picker no-title v-model="checkInVal"></v-date-picker>
+                    <v-date-picker scrollable no-title v-model="checkInVal" :min="checkInVal"></v-date-picker>
                   </v-menu>
                 </v-flex>
                 <v-flex md2 class="ma-4 text-xs-left">
@@ -67,7 +67,7 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-                    <v-date-picker no-title v-model="checkOutVal"></v-date-picker>
+                    <v-date-picker scrollable no-title v-model="checkOutVal" :min="checkOutVal"></v-date-picker>
                   </v-menu>
                 </v-flex>
                 <v-flex md1 class="ma-4 text-xs-left">

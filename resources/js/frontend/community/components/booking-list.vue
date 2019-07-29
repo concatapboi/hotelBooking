@@ -264,7 +264,7 @@
                             <v-flex md8>
                               <span>Số Đêm Ở</span>
                             </v-flex>
-                            <v-flex md4>{{booking.days-1}}</v-flex>
+                            <v-flex md4>{{booking.days}}</v-flex>
                             <v-flex md12 v-if="booking.discount_value!=0">
                               <v-layout row wrap class="pa-0 ma-0">
                                 <v-flex md8>
@@ -693,6 +693,7 @@ export default {
         .then(res => {
           this.flag.state = true;
           this.bookingList = res.data.data;
+          console.log(this.bookingList);
           this.pureBookingList = res.data.data;
           if (res.data.status) {
             if (res.data.data.length == 0)

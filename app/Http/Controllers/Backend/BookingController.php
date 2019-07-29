@@ -17,7 +17,6 @@ use App\Mail\AcceptOrderOffline;
 use App\Models\Customer;
 use App\Events\AcceptBooking;
 use App\Events\MessageSentEvent;
-use Illuminate\Support\Facades\Broadcast;
 
 class BookingController extends Controller
 {

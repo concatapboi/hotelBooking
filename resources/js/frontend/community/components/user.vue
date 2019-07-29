@@ -125,6 +125,28 @@
                       v-on="on"
                       class="ml-3 mr-1"
                       large
+                      :color="color.heart"
+                      v-on:click="likeReview(item.id)"
+                      v-if="item.customer_review.like == 0"
+                    >favorite_border</v-icon>
+                    <v-icon
+                      v-on="on"
+                      class="ml-3 mr-1"
+                      large
+                      :color="color.heart"
+                      v-on:click="likeReview(item.id)"
+                      v-else
+                    >favorite</v-icon>
+                  </template>
+                  <span>like</span>
+                </v-tooltip>
+                <span class="grey--text subheading">{{item.likes}}</span>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-icon
+                      v-on="on"
+                      class="ml-3 mr-1"
+                      large
                       :color="color.comment"
                       v-on:click="item.model = true"
                       v-if="!item.model"
@@ -301,162 +323,8 @@
             </v-layout>
           </v-container>
         </v-expansion-panel-content>
-        <v-expansion-panel-content class="mb-3">
-          <template v-slot:actions>
-            <v-icon>expand_more</v-icon>
-          </template>
-          <template v-slot:header>
-            <div class="title my-3 text-uppercase font-weight-black">
-              <v-icon color="black">group</v-icon>&nbsp;đang theo dõi &amp; người theo dõi
-            </div>
-          </template>
-          <v-btn
-            round
-            depressed
-            color="grey lighten-2"
-            v-on:click="followDialog = true"
-            v-show="data.customerFollowings.length + data.hotelFollowings.length >0 || data.followers.length>0"
-          >
-            <v-icon small>notes</v-icon>&nbsp;xem tất cả
-          </v-btn>
-          <v-tabs
-            centered
-            grow
-            color="grey lighten-2"
-            light
-            class="ma-1"
-            v-show="data.customerFollowings.length + data.hotelFollowings.length >0 || data.followers.length>0"
-          >
-            <v-tabs-slider color="black"></v-tabs-slider>
-            <v-tab href="#tab-1">Người Theo Dõi ({{data.followers.length}})</v-tab>
-            <v-tab
-              href="#tab-2"
-            >Đang Theo Dõi ({{data.customerFollowings.length + data.hotelFollowings.length}})</v-tab>
-            <v-tab-item value="tab-1">
-              <v-card light flat v-for="(item,i) in data.followers" :key="i" v-show="i<4">
-                <v-card-title>
-                  <router-link :to="{name:'user',params:{id:item.follower.id}}">
-                    <v-avatar size="52px" flat color="black">
-                      <v-avatar size="50px" flat color="white">
-                        <img :src="'/img/user/'+item.avatar.image_link" :alt="item.follower.name" />
-                      </v-avatar>
-                    </v-avatar>
-                    <span class="pl-3 font-weight-bold">{{item.follower.name}}</span>
-                  </router-link>
-                </v-card-title>
-                <v-divider class="pa-0 ma-0" v-show="i<3 && i<(data.followers.length-1)"></v-divider>
-              </v-card>
-            </v-tab-item>
-            <v-tab-item value="tab-2">
-              <v-card light flat v-for="(item,i) in data.customerFollowings" :key="i" v-show="i<4">
-                <v-card-title>
-                  <router-link :to="{name:'user',params:{id:item.followed.id}}">
-                    <v-avatar size="52px" flat color="black">
-                      <v-avatar size="50px" flat color="white">
-                        <img :src="'/img/user/'+item.avatar.image_link" :alt="item.followed.name" />
-                      </v-avatar>
-                    </v-avatar>
-                    <span class="pl-3 font-weight-bold">{{item.followed.name}}</span>
-                  </router-link>
-                </v-card-title>
-                <v-divider class="pa-0 ma-0" v-show="i<3 && i<(data.customerFollowings.length-1)"></v-divider>
-              </v-card>
-            </v-tab-item>
-          </v-tabs>
-        </v-expansion-panel-content>
       </v-expansion-panel>
     </v-flex>
-    <v-dialog v-model="followDialog" persistent width="400px">
-      <v-card flat tile light height="400px">
-        <v-card-text>
-          <v-btn depressed color="red" dark v-on:click="followDialog = false">
-            <span class="text-uppercase">Hủy</span>
-          </v-btn>
-          <v-tabs grow color="grey lighten-2" light class="ma-1">
-            <v-tabs-slider color="black"></v-tabs-slider>
-            <v-tab href="#tab-1">Người Theo Dõi ({{data.followers.length}})</v-tab>
-            <v-tab
-              href="#tab-2"
-            >Đang Theo Dõi ({{data.customerFollowings.length + data.hotelFollowings.length}})</v-tab>
-            <v-tab-item value="tab-1">
-              <v-card light flat width="100%" height="260px" style="overflow:auto">
-                <v-layout v-for="(item,i) in data.followers" :key="i">
-                  <v-card-title style="width:100%">
-                    <router-link :to="{name:'user',params:{id:item.follower.id}}">
-                      <v-avatar size="52px" flat color="black">
-                        <v-avatar size="50px" flat color="white">
-                          <img :src="'/img/user/'+item.avatar.image_link" :alt="item.follower.name" />
-                        </v-avatar>
-                      </v-avatar>
-                    </router-link>
-                    <v-spacer></v-spacer>
-                    <!-- <v-tooltip top v-if="item.isFollowing == true">
-                      <template v-slot:activator="{ on }">
-                        <v-btn small depressed color="grey lighten-2" fab v-on="on">
-                          <i class="fas fa-user-slash"></i>
-                        </v-btn>
-                      </template>
-                      <span>unfollowing</span>
-                    </v-tooltip>
-                    <v-tooltip top v-else-if="item.isFollowing == false">
-                      <template v-slot:activator="{ on }">
-                        <v-btn small depressed color="grey lighten-2" fab v-on="on">
-                          <i class="fas fa-user-plus"></i>
-                        </v-btn>
-                      </template>
-                      <span>follow</span>
-                    </v-tooltip> -->
-                    <v-card-text class="pa-0 ma-0 mt-2">
-                      <router-link :to="{name:'user',params:{id:item.follower.id}}">
-                        <span class="font-weight-bold">{{item.follower.name}}</span>
-                      </router-link>
-                      <v-divider class="pa-0 ma-0 mt-3" v-show="i<(data.followers.length-1)"></v-divider>
-                    </v-card-text>
-                  </v-card-title>
-                </v-layout>
-              </v-card>
-            </v-tab-item>
-            <v-tab-item value="tab-2">
-              <v-card light flat width="100%" height="260px" style="overflow:auto">
-                <v-layout v-for="(item,i) in data.customerFollowings" :key="i">
-                  <v-card-title style="width:100%">
-                    <v-avatar size="52px" flat color="black">
-                      <v-avatar size="50px" flat color="white">
-                        <img :src="'/img/user/'+item.avatar.image_link" :alt="item.followed.name" />
-                      </v-avatar>
-                    </v-avatar>
-                    <v-spacer></v-spacer>
-                      <!-- <v-tooltip top v-if="item.isFollowing == true">
-                        <template v-slot:activator="{ on }">
-                          <v-btn small depressed color="grey lighten-2" fab v-on="on">
-                            <i class="fas fa-user-slash"></i>
-                          </v-btn>
-                        </template>
-                        <span>unfollowing</span>
-                      </v-tooltip>
-                    <v-tooltip top v-else-if="item.isFollowing == false">
-                      <template v-slot:activator="{ on }">
-                        <v-btn small depressed color="grey lighten-2" fab v-on="on">
-                          <i class="fas fa-user-plus"></i>
-                        </v-btn>
-                      </template>
-                      <span>follow</span>
-                    </v-tooltip> -->
-                    <v-card-text class="pa-0 ma-0 mt-2">
-                      <span class="font-weight-bold">{{item.followed.name}}</span>
-                      <v-divider
-                        class="pa-0 ma-0 mt-3"
-                        v-show="i<(data.customerFollowings.length-1)"
-                      ></v-divider>
-                    </v-card-text>
-                  </v-card-title>
-                </v-layout>
-              </v-card>
-            </v-tab-item>
-          </v-tabs>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </v-layout>
 </template>
 
@@ -480,9 +348,6 @@ export default {
       data: {
         customer: {},
         avatar: {},
-        followers: [],
-        customerFollowings: [],
-        hotelFollowings: [],
         review: []
       },
       color: {
@@ -640,6 +505,58 @@ export default {
         });
       }
       return index;
+    },
+    likeReview: function(id) {
+      var flag = true;
+      var index = this.getIndex(id);
+      switch (this.data.review[index].customer_review.like) {
+        case 0:
+          this.data.review[index].customer_review.like = 1;
+          this.data.review[index].likes = this.data.review[index].likes + 1;
+          break;
+        case 1:
+          this.data.review[index].customer_review.like = 0;
+          this.data.review[index].likes = this.data.review[index].likes - 1;
+          break;
+      }
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/like",
+        params: {
+          review_id: id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          if (res.data.status == false) {
+            flag = false;
+          }
+        })
+        .catch(error => {
+          flag = false;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        })
+        .then(() => {
+          if (!flag) {
+            switch (this.data.review[index].customer_review.like) {
+              case 0:
+                this.data.review[index].customer_review.like = 1;
+                this.data.review[index].likes = this.data.review[index].likes + 1;
+                break;
+              case 1:
+                this.data.review[index].customer_review.like = 0;
+                this.data.review[index].likes = this.data.review[index].likes - 1;
+                break;
+            }
+          }
+        });
     },
     sendComment: function(reviewID) {
       var flag = true;

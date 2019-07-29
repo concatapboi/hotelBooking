@@ -25,7 +25,7 @@
               v-on="on"
             />
           </template>
-          <v-date-picker light no-title scrollable v-model="checkInVal">
+          <v-date-picker light no-title scrollable v-model="checkInVal" :min="checkInVal">
             <v-spacer></v-spacer>
             <v-btn flat v-on:click="mn.menu2 = false">Hủy</v-btn>
             <v-btn flat v-on:click="$refs.checkIn.save(checkInVal)">OK</v-btn>
@@ -53,7 +53,7 @@
               v-on="on"
             />
           </template>
-          <v-date-picker light no-title scrollable v-model="checkOutVal">
+          <v-date-picker light no-title scrollable v-model="checkOutVal" :min="checkOutVal">
             <v-spacer></v-spacer>
             <v-btn flat @click="mn.menu1 = false">Hủy</v-btn>
             <v-btn flat @click="$refs.checkOut.save(checkOutVal)">OK</v-btn>
@@ -334,8 +334,8 @@
                       <v-flex md6 class="caption border-left border-light pl-4 ml-3">
                         <div>Chính sách đặt/hủy phòng:</div>
                         <div class="pl-2">-&nbsp;{{hotel.policy.detailPolicy}}</div>
-                        <div class="pl-2">- Thời gian Check-In:&nbsp;{{hotel.policy.check_in}}</div>
-                        <div class="pl-2">- Thời gian Check-Out:&nbsp;{{hotel.policy.check_out}}</div>
+                        <div class="pl-2">- Thời gian Check-In:&nbsp;{{hotel.policy.checkin}}</div>
+                        <div class="pl-2">- Thời gian Check-Out:&nbsp;{{hotel.policy.checkout}}</div>
                         <div class="pl-2" v-if="hotel.policy.refundRate >0">
                           - Hoàn tiền:&nbsp;
                           <span

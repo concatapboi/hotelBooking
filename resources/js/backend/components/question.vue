@@ -6,7 +6,7 @@
           <template>
             <v-card flat>
               <v-data-table
-                :rows-per-page-items='[5,10,15,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
+                :rows-per-page-items='[10,15,20,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
                 :headers="tblHeaders"
                 :search="search"
                 :items="data"

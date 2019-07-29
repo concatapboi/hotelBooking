@@ -63,7 +63,7 @@ class User extends Authenticatable implements JWTSubject
 
   public function Booking()
   {
-    return $this->hasMany('App\Models\Booking', 'customer_id', 'id');
+    return $this->hasMany('App\Models\Booking', 'customer_id', 'id')->orderBy('created_at','desc');
   }
 
   public function bookingList()
@@ -76,7 +76,7 @@ class User extends Authenticatable implements JWTSubject
       $b->room->room_mode = $b->Room->RoomMode;
       $b->room->room_type = $b->Room->RoomType;   
       $b->days =  Carbon::parse($b->check_in)->diffInDays( Carbon::parse($b->check_out));   
-      $b->total = ($b->days-1)*($b->room_amount*$b->room_price*((100-$b->discount_value)/100));
+      $b->total = ($b->days)*($b->room_amount*$b->room_price*((100-$b->discount_value)/100));
       foreach($hotel->paymentMethods() as $p){
         if($p['method']->id == $b->payment_method_id) $b->payment_method = [
           'id' =>$p['method']->id,
@@ -163,11 +163,11 @@ class User extends Authenticatable implements JWTSubject
     return $this->hasMany('App\Models\Review', 'customer_id', 'id');
   }
 
-  public function reViewList()
+  public function reViewList($id)
   {
     $reviews = Review::where('customer_id', $this->id)->get();
     foreach ($reviews as $r) {
-      $r->customer_review = $r->CustomerReview($this->id, $r->id);
+      $r->customer_review = $r->CustomerReview($id, $r->id);
       $r->model = false;
       $r->Hotel;
       $r->hotel->image = HotelImage::where('hotel_id',$r->hotel->id)->where('is_primary',1)->first()->image_link;

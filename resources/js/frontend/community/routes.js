@@ -18,6 +18,10 @@ const router = new VueRouter({
 		{
 			path: '/community/',
 			name: 'home',
+			token: localStorage.getItem('login_token'),
+			query:{
+				'token' : localStorage.getItem('login_token')
+			},
 			component: home
 		},
 		{

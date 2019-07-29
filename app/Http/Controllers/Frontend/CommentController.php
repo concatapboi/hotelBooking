@@ -56,10 +56,11 @@ class CommentController extends Controller
         $comment->customer = $comment->Customer();
         $user = array();
         $user['name'] = Auth::user()->name;
+        $user['id'] = Auth::user()->id;
         $user['avatar'] = $comment->customer->avatar->image_link;
         $link = ['name'=>'review','id'=>$review->id];
-        broadcast(new MessageSentEvent($user,$link,'Đã kèm một bình luận.'));
-        $customer_review = CustomerReview::where('review_id',$review->id)->where('customer_id','<>',Auth::user()->id)->get();
+        broadcast(new MessageSentEvent($user,$link,'Đã kèm một bình luận.',$comment->content));
+        $customer_review = CustomerReview::where('review_id',$review->id)->where('customer_id','<>',Auth::user()->id)->where('status',1)->get();
         foreach($customer_review as $customer){
             User::find($customer->customer_id)->notify(new CommentNotification($user,$comment->review_id));
         }

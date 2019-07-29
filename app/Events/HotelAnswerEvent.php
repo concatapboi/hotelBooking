@@ -11,22 +11,23 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class MessageSentEvent  implements ShouldBroadcastNow
+class HotelAnswerEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    
-    public $user, $message,$link,$content;
+
+    public $hotel,$question,$answer,$message;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($user,$link,$message,$content)
+    public function __construct($hotel, $question, $answer)
     {
-        $this->user = $user;
-        $this->content = $content;
-        $this->link = $link;
-        $this->message = $message;
+        $this->hotel = $hotel;
+        $this->question = $question;
+        $this->answer = $answer;
+        $this->message = $hotel.' đã trả lời.';
+
     }
 
     /**
@@ -36,10 +37,10 @@ class MessageSentEvent  implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('message');
+        return new Channel('question');
     }
 
     public function broadcastAs(){
-        return 'send-mess';
+        return 'hotel-answer';
     }
 }
