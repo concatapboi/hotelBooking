@@ -10,6 +10,7 @@ header('Access-Control-Allow-Headers:  Content-Type, X-Auth-Token, Origin, Autho
 Route::group(['prefix' => '/manager'], function () {
     Route::get('/', 'PageController@managerIndex');
     Route::get('/login', 'Backend\AuthController@managerLogin');
+    Route::get('/choose', 'Backend\AuthController@managerLogin');
     Route::get('/register', 'Backend\AuthController@managerLogin');
     Route::get('/{string}', 'PageController@managerIndex')->where('string', '.*');
 });

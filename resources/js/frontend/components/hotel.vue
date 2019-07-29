@@ -1813,6 +1813,7 @@ export default {
         })
         .catch(error => {
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.getLogin(1);

@@ -14,6 +14,10 @@ use Hash;
 use Session;
 use App\Models\BookingStatus;
 use App\Models\CouponCode;
+use Illuminate\Support\Facades\Broadcast;
+use App\Events\newBooking;
+use App\Notifications\NewBooking as AppNewBooking;
+use App\Models\Notification;
 
 class BookingController extends Controller
 {
@@ -103,6 +107,11 @@ class BookingController extends Controller
                 $booking->room->image = RoomImage::where('room_id', $booking->room->id)->where('is_primary', 1)->first()->image_link;
             }
         } else return response()->json(['status' => $status, 'mess' => $validateData->errors()]);
+        
+        $hotel = $booking->Room->Hotel;
+        $hotel->notify(new AppNewBooking(Booking::find($booking->id)));
+        $notificationId = $hotel->unreadNotifications->first()->id;
+        Broadcast(new newBooking(Booking::find($booking->id),$notificationId));
         return response()->json(['status' => $status, 'mess' => $mess, 'booking' => $booking]);
     }
 

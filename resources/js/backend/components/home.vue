@@ -30,6 +30,7 @@
         <v-card-text>12</v-card-text>
       </v-card>
     </v-layout>
+    <v-alert v-show="errorMessage" type="error" :value="true">{{errorMessage}}</v-alert>
     <v-layout class="m-5">
       <v-spacer></v-spacer>
       <v-dialog fullscreen scrollable v-model="dialog">
@@ -443,6 +444,7 @@
     <v-layout class="m-5">
       <v-card width="100%" dark flat color="blue-grey darken-4" class="p-2">
         <v-expansion-panel class="elevation-0" v-model="panel" expand>
+          <!-- expand -->
           <!-- focusable expand -->
           <h1>Khách sạn</h1>
           <v-expansion-panel-content
@@ -450,10 +452,10 @@
             class="primary"
             v-for="(hotel,i) in arrayHotel"
             :key="i"
-            @input="onInput($event, i)"
           >
+            <!-- @input="onInput($event, i)" -->
             <template v-slot:header>
-              <div>
+              <div @click="clickPanel(i)">
                 <v-layout>
                   <v-flex md8>
                     <h3 class="black--text">{{hotel.name}}</h3>
@@ -584,6 +586,9 @@ export default {
     },
     api_token: {
       type: String
+    },
+    errorMessage : {
+      type: String
     }
   },
   data: function() {
@@ -608,8 +613,7 @@ export default {
           refundRate: 0,
           detailPolicy: ""
         },
-        child_age: "",
-        
+        child_age: ""
       },
       menuCheckin: false,
       menuCheckout: false,
@@ -716,7 +720,7 @@ export default {
     // }
     hotelPanel: function() {
       this.panel = this.hotelPanel;
-      this.panel[0] = true;
+      // this.panel[0] = true;
     },
     arrayHotel: function(newVal) {
       this.arrayHotel = newVal;
@@ -732,7 +736,7 @@ export default {
       this.formTitle = "Tạo khách sạn";
       this.defaultHotelType = this.arrayHotelType[0];
       this.newHotelData = {
-        images : [],
+        images: [],
         policy: {
           checkin: "",
           checkout: "",
@@ -748,6 +752,10 @@ export default {
   },
   methods: {
     onInput(ev, index) {
+      alert("a");
+      console.log(ev);
+      console.log(index);
+      console.log(this.panel);
       if (ev == false) {
         for (var i = 0; i < this.panel.length; i++) {
           this.panel[i] = false;
@@ -755,13 +763,25 @@ export default {
       }
       if (ev == true) {
         for (var i = 0; i < this.panel.length; i++) {
-          this.panel[i] = false;
+          if (i != index) this.panel[i] = false;
         }
+        console.log(this.panel);
+
         this.hotel_id = this.arrayHotel[index].id;
         // this.hotel_stars_num = this.arrayHotel[index].stars_num;
         this.$emit("chooseHotel", this.hotel_id);
         this.$emit("panelIndex", index);
       }
+    },
+    clickPanel: function(index) {
+      for (var i = 0; i < this.panel.length; i++) {
+        if (i != index) this.panel[i] = false;
+        
+      }
+      this.hotel_id = this.arrayHotel[index].id;
+      // this.hotel_stars_num = this.arrayHotel[index].stars_num;
+      this.$emit("chooseHotel", this.hotel_id);
+      this.$emit("panelIndex", index);
     },
     validate() {
       var _this = this;
@@ -1000,30 +1020,43 @@ export default {
                   if (_this.arrayHotel[i].id == _this.selectedId) {
                     console.log(_this.arrayHotel[i]);
                     _this.arrayHotel[i].name = response.data.hotel.name;
-                    _this.arrayHotel[i].stars_num = response.data.hotel.stars_num;
+                    _this.arrayHotel[i].stars_num =
+                      response.data.hotel.stars_num;
                     for (var j = 0; j < _this.arrayHotelType.length; j++) {
                       if (_this.arrayHotelType[j].id == this.defaultHotelType)
                         _this.arrayHotel[i].hotel_type =
                           _this.arrayHotelType[j].name;
                     }
                     _this.arrayHotel[i].address = response.data.hotel.address;
-                    _this.arrayHotel[i].description = response.data.hotel.description;
+                    _this.arrayHotel[i].description =
+                      response.data.hotel.description;
                     _this.arrayHotel[i].email = response.data.hotel.email;
                     _this.arrayHotel[i].email = response.data.hotel.email;
                     _this.arrayHotel[i].coin = 0;
-                    _this.arrayHotel[i].credit_card = response.data.hotel.credit_card;
-                    _this.arrayHotel[i].phone_number = response.data.hotel.phone;
-                    _this.arrayHotel[i].credit_card = response.data.hotel.credit_card;
+                    _this.arrayHotel[i].credit_card =
+                      response.data.hotel.credit_card;
+                    _this.arrayHotel[i].phone_number =
+                      response.data.hotel.phone;
+                    _this.arrayHotel[i].credit_card =
+                      response.data.hotel.credit_card;
                     _this.arrayHotel[i].tax_code = response.data.hotel.tax_code;
-                    _this.arrayHotel[i].fax_number = response.data.hotel.fax_number;
+                    _this.arrayHotel[i].fax_number =
+                      response.data.hotel.fax_number;
                     _this.arrayHotel[i].images = response.data.hotel.images;
-                    _this.arrayHotel[i].child_age = response.data.hotel.child_age;
-                    _this.arrayHotel[i].policy.cancel_day = response.data.hotel.policy.cancel_day;
-                    _this.arrayHotel[i].policy.cancelable = response.data.hotel.policy.cancelable;
-                    _this.arrayHotel[i].policy.checkin = response.data.hotel.policy.checkin;
-                    _this.arrayHotel[i].policy.checkout = response.data.hotel.policy.checkout;
-                    _this.arrayHotel[i].policy.refundRate = response.data.hotel.policy.refundRate;
-                    _this.arrayHotel[i].policy.detailPolicy = response.data.hotel.policy.detailPolicy;
+                    _this.arrayHotel[i].child_age =
+                      response.data.hotel.child_age;
+                    _this.arrayHotel[i].policy.cancel_day =
+                      response.data.hotel.policy.cancel_day;
+                    _this.arrayHotel[i].policy.cancelable =
+                      response.data.hotel.policy.cancelable;
+                    _this.arrayHotel[i].policy.checkin =
+                      response.data.hotel.policy.checkin;
+                    _this.arrayHotel[i].policy.checkout =
+                      response.data.hotel.policy.checkout;
+                    _this.arrayHotel[i].policy.refundRate =
+                      response.data.hotel.policy.refundRate;
+                    _this.arrayHotel[i].policy.detailPolicy =
+                      response.data.hotel.policy.detailPolicy;
                     console.log(_this.arrayHotel[i]);
                   }
                 }

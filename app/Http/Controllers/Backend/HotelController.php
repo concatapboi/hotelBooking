@@ -465,9 +465,11 @@ class HotelController extends Controller
             });
         });
         $query = $this->filterByDate($query, $checkIn, $checkOut);
+        
         if (is_array($districts) && sizeOf($districts) > 0) {
             $query = $this->filterByDistrict($query, $districts);
         }
+        
         if (is_array($stars) && sizeOf($stars) > 0) {
             $query = $this->filterByStar($query, $stars);
         }
@@ -478,16 +480,14 @@ class HotelController extends Controller
             $query = $this->filterByHotelType($query, $hotelTypes);
         }
         if (is_array($roomTypes) && sizeOf($roomTypes) > 0) {
-            $query = $this->filterByRoomType($query, $roomTypes,$price);
+            $query = $this->filterByRoomType($query, $roomTypes, $price);
         }
         if (is_array($price) && sizeOf($price) > 0) {
             $query = $this->filterByPrice($query, $price);
         }
         $query = $this->filterByRankPoint($query);
-        // $query = $this->where($query);
         return response()->json([
             "status" => true,
-            // "data" => $query->paginate(4),
             "data" => new HotelCollection($query->paginate(3)),
         ]);
     }
@@ -498,7 +498,13 @@ class HotelController extends Controller
             ->with("Booking")
             ->WhereHas("Booking")
             ->get();
+        $roomDontHaveBooking = Room::whereIn("hotel_id", $hotelIds)
+            ->whereDoesntHave("Booking")
+            ->get("id");
         $ValidRoom = [];
+        foreach($roomDontHaveBooking as $room){
+            $ValidRoom[] = $room->id;
+        }
         foreach ($roomHaveBooking as $room) {
             $room_amount = $room->amount;
             foreach ($room->booking as $booking) {
@@ -521,6 +527,7 @@ class HotelController extends Controller
                 $ValidRoom[] = $room->id;
             }
         }
+        $ValidRoom = array_unique($ValidRoom);
         return $query->whereHas("Room", function ($query) use ($ValidRoom) {
             $query->whereIn("id", $ValidRoom);
         });
@@ -547,10 +554,12 @@ class HotelController extends Controller
     {
         return $query->whereIn("hotel_type_id", $hotelTypes);
     }
-    public function filterByRoomType($query, $roomTypes,$price)
+    public function filterByRoomType($query, $roomTypes, $price)
     {
-        return $query->whereHas("Room", function ($query) use ($roomTypes,$price) {
-            $query->whereIn("room_type_id", $roomTypes)->whereBetween("price",$price);
+        return $query->whereHas("Room", function ($query) use ($roomTypes, $price) {
+            $query->whereIn("room_type_id", $roomTypes)->whereBetween("price", $price);
+            // ->whereHas("Booking")
+            // ->doesntHave("Booking","or");
         });
     }
     public function filterByPrice($query, $price)
