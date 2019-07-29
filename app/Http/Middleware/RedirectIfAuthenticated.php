@@ -3,8 +3,10 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Auth;
 use App\Models\User;
+use JWTAuth;
+use Auth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class RedirectIfAuthenticated
 {
@@ -16,9 +18,16 @@ class RedirectIfAuthenticated
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = 'api')
+    public function handle($request, Closure $next)
     {
-        dd(Auth::guard($guard)->check());
+        dd($request->all());
+        try{
+        $user = JWTAuth::toUser($request->input('token'));
+        dd($user);
+        }catch(JWTException $e){
+            dd($e);
+        }
+        dd(Auth::guard('community')->user());
         if (!Auth::check()) {
             return redirect('/login.html');
         }

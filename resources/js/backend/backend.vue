@@ -362,6 +362,11 @@ export default {
     window.Echo.channel("manager").listen(".new-booking", e => {
       this.notifications.list.push(e);
     });
+    window.Echo.channel("manager").listen(".accept-booking", e => {
+      // alert(e.message);
+      // this.notifications.list.push(e);
+      console.log(e);
+    });
   },
   methods: {
     showOrderDetail: function(notificationId, $event, index, bookingId) {

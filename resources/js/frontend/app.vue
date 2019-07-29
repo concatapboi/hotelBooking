@@ -54,12 +54,6 @@
                     </v-list-tile-action>
                     <v-list-tile-content>Danh Sách Đơn</v-list-tile-content>
                   </v-list-tile>
-                  <!-- <v-list-tile tag="a" @click="openQuestionListDialog">
-                    <v-list-tile-action>
-                      <i class="fas fa-question teal--text fa-lg"></i>
-                    </v-list-tile-action>
-                    <v-list-tile-content>Question List</v-list-tile-content>
-                  </v-list-tile>-->
                   <v-divider></v-divider>
                   <v-list-tile>
                     <v-btn dark depressed color="teal" large @click="logOut">
@@ -295,94 +289,6 @@
         </v-form>
       </v-layout>
     </v-dialog>
-    <v-dialog v-model="bookingList.dialog" width="700px" persistent>
-      <v-card flat tile light height="470px">
-        <v-card-text>
-          <v-btn depressed color="red" dark v-on:click="bookingList.dialog = false">
-            <span class="text-uppercase">Đóng</span>
-          </v-btn>
-          <v-card light flat width="100%" height="370px" style="overflow:auto">
-            <v-data-table
-              :rows-per-page-items='[3,6,9,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
-              :headers="tblHeaders.booking"
-              :items="login.user.booking"
-              class="elevation-0 border"
-            >
-              <template v-slot:items="b">
-                <td>
-                  <a href="#">
-                    <span style="word-wrap: break-word;">{{ b.item.id }}</span>
-                  </a>
-                </td>
-                <td class="border-left">
-                  <a href="#">
-                    <span
-                      style="word-wrap: break-word;"
-                    >{{ (b.item.room_amount*b.item.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
-                  </a>
-                </td>
-                <td class="border-left">
-                  <a href="#">
-                    <span style="word-wrap: break-word;">{{ b.item.status.name}}</span>
-                  </a>
-                </td>
-                <td class="border-left">
-                  <div>
-                    <a href="#">
-                      <span style="word-wrap: break-word;">{{formatDate(b.item.check_in)}}</span>
-                    </a>
-                  </div>
-                  <div>
-                    <a href="#">
-                      <span style="word-wrap: break-word;">{{formatDate(b.item.check_out)}}</span>
-                    </a>
-                  </div>
-                </td>
-                <td class="border-left">
-                  <v-btn
-                    depressed
-                    color="teal"
-                    dark
-                    small
-                    @click="bookingAction(b.item,1)"
-                  >Xem chi tiết</v-btn>
-                  <v-btn
-                    :disabled="!b.item.cancel_status"
-                    depressed
-                    color="orange"
-                    small
-                    @click="confirmAction(b.item)"
-                  >Hủy</v-btn>
-                </td>
-              </template>
-              <!-- <template v-slot:items="b">
-                <td>
-                  <a href="#"><span style="word-wrap: break-word;">{{ b.item.id }}</span></a>
-                </td>
-                <td class="border-left">
-                  <a href="#"><span
-                    style="word-wrap: break-word;"
-                  >{{ (b.item.room_amount*b.item.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span></a>
-                </td>
-                <td class="border-left">
-                  <a href="#"><span style="word-wrap: break-word;">{{ b.item.status.name}}</span></a>
-                </td>
-                <td class="border-left">
-                  <v-btn depressed color="teal" dark small @click="bookingAction(b.item,1)">detail</v-btn>
-                  <v-btn
-                    :disabled="!b.item.cancel_status.includes(b.item.status.id)"
-                    depressed
-                    color="orange"
-                    small
-                    @click="confirmAction(b.item)"
-                  >cancel</v-btn>
-                </td>
-              </template>-->
-            </v-data-table>
-          </v-card>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
     <v-dialog v-model="bookingList.detail.dialog" width="750px" persistent>
       <v-card flat tile light>
         <v-layout class="pa-5 ma-0" row wrap>
@@ -485,16 +391,14 @@
                   </v-flex>
                   <v-flex md12>
                     <v-layout row wrap class="pa-0 ma-0">
-                      <v-flex md3>Tên Phòng:</v-flex>
-                      <v-flex md9>{{bookingList.detail.booking.room.room_name}}</v-flex>
-                      <v-flex md3>Loại:</v-flex>
-                      <v-flex
-                        md9
-                      >{{bookingList.detail.booking.room.room_mode.name}}&nbsp;{{bookingList.detail.booking.room.room_type.name}}</v-flex>
-                      <v-flex md3>Số Lượng:</v-flex>
-                      <v-flex md9>{{bookingList.detail.booking.room_amount}}</v-flex>
-                      <v-flex md3>Yêu Cầu Đặc biệt:</v-flex>
-                      <v-flex md9>{{bookingList.detail.booking.special_request}}</v-flex>
+                      <v-flex md5>Tên Phòng:</v-flex>
+                      <v-flex md7>{{bookingList.detail.booking.room.room_name}}</v-flex>
+                      <v-flex md5>Loại Phòng:</v-flex>
+                      <v-flex md7>{{bookingList.detail.booking.room.room_type.name}}</v-flex>
+                      <v-flex md5>Số Lượng:</v-flex>
+                      <v-flex md7>{{bookingList.detail.booking.room_amount}}</v-flex>
+                      <v-flex md5>Yêu Cầu Đặc biệt:</v-flex>
+                      <v-flex md7>{{bookingList.detail.booking.special_request}}</v-flex>
                     </v-layout>
                   </v-flex>
                 </v-layout>
@@ -511,15 +415,6 @@
                     class="font-weight-black red--text font-italic subheading"
                   >{{bookingList.detail.booking.status.name}}</span>
                 </div>
-                <!-- <div>
-                  <v-btn
-                    :disabled="!bookingList.detail.booking.cancel_status"
-                    @click="confirmAction(bookingList.detail.booking)"
-                    small
-                    depressed
-                    color="orange"
-                  >cancel</v-btn>
-                </div>-->
                 <div>
                   <span class="font-italic">{{bookingList.detail.booking.payment_method.content}}</span>
                 </div>
@@ -534,7 +429,7 @@
                 <v-divider></v-divider>
               </v-flex>
               <v-flex md8>
-                <span>{{bookingList.detail.booking.room.room_type.name}}&nbsp;{{bookingList.detail.booking.room.room_mode.name}}</span>
+                <span>{{bookingList.detail.booking.room.room_type.name}}</span>
               </v-flex>
               <v-flex
                 md4
@@ -543,6 +438,10 @@
                 <span>Số Lượng</span>
               </v-flex>
               <v-flex md4>{{bookingList.detail.booking.room_amount}}</v-flex>
+              <v-flex md8>
+                <span>Số Đêm Ở</span>
+              </v-flex>
+              <v-flex md4>{{bookingList.detail.booking.room.days}}</v-flex>
               <v-flex md12 v-if="bookingList.detail.booking.discount_value!=0">
                 <v-layout row wrap class="pa-0 ma-0">
                   <v-flex md8>
@@ -574,238 +473,13 @@
               <v-flex md4>
                 <span
                   class="headline orange--text"
-                >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price*((100-bookingList.detail.booking.discount_value)/100)).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
+                >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price*(bookingList.detail.booking.room.days)*((100-bookingList.detail.booking.discount_value)/100)).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
               </v-flex>
             </v-layout>
           </v-flex>
         </v-layout>
       </v-card>
-      <!-- <v-card flat tile light>
-        <v-layout class="pa-5 ma-0" row wrap>
-          <v-flex md12>
-            <div>
-              <span
-                class="font-weight-black title text-uppercase"
-              >booking code:&nbsp;{{bookingList.detail.booking.id}}</span>
-            </div>
-            <v-divider></v-divider>
-            <div>
-              <span class="font-weight-black title">Your Information</span>
-            </div>
-            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
-              <v-flex md3>
-                <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingList.detail.booking.room.image"></v-img>
-              </v-flex>
-              <v-flex md9>
-                <v-layout row wrap class="pa-0 pl-4 ma-0">
-                  <v-flex md12>
-                     <router-link
-                        :to="{name:'hotel',params:{id:bookingList.detail.booking.room.hotel.id}}"
-                        target="_blank"
-                      >
-                    <h2>{{bookingList.detail.booking.hotel_name}}</h2>
-                    </router-link>
-                  </v-flex>
-                  <v-flex md12>
-                    <v-divider class="pa-0 ma-0"></v-divider>
-                  </v-flex>
-                  <v-flex md12>
-                    <v-layout row wrap class="pa-0 ma-0">
-                      <v-flex md6 class="pa-2">
-                        <div>
-                          <div>
-                            <span class="font-weight-bold">Check-In:</span>
-                          </div>
-                          <div>
-                            <span>{{formatDate(bookingList.detail.booking.check_in)}}</span>
-                          </div>
-                        </div>
-                      </v-flex>
-                      <v-flex md6 class="pa-2">
-                        <div>
-                          <div>
-                            <span class="font-weight-bold">Check-Out:</span>
-                          </div>
-                          <div>
-                            <span>{{formatDate(bookingList.detail.booking.check_out)}}</span>
-                          </div>
-                        </div>
-                      </v-flex>
-                      <v-flex md12 class="pl-2">
-                        <span class="font-weight-bold">Guess Information</span>
-                      </v-flex>
-                      <v-flex md12 class="pl-2">
-                        <v-layout row wrap class="pa-0 ma-0">
-                          <v-flex md3>Name</v-flex>
-                          <v-flex md9>{{bookingList.detail.booking.contact_name}}</v-flex>
-                          <v-flex md3>Email</v-flex>
-                          <v-flex md9>{{bookingList.detail.booking.contact_email}}</v-flex>
-                          <v-flex md3>Mobile-number</v-flex>
-                          <v-flex md9>{{bookingList.detail.booking.contact_phone}}</v-flex>
-                          <v-flex md3>Address</v-flex>
-                          <v-flex md9>{{bookingList.detail.booking.contact_address}}</v-flex>
-                        </v-layout>
-                      </v-flex>
-                      <v-spacer></v-spacer>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex md12>
-                    <v-divider></v-divider>
-                  </v-flex>
-                  <v-flex md12>
-                    <span class="font-weight-bold">Room Details:</span>
-                  </v-flex>
-                  <v-flex md12>
-                    <v-layout row wrap class="pa-0 ma-0">
-                      <v-flex md3>Room Type:</v-flex>
-                      <v-flex
-                        md9
-                      >{{bookingList.detail.booking.room.room_mode.name}}&nbsp;{{bookingList.detail.booking.room.room_type.name}}</v-flex>
-                      <v-flex md3>No. Of Rooms:</v-flex>
-                      <v-flex md9>{{bookingList.detail.booking.room_amount}}</v-flex>
-                      <v-flex md3>Special Request:</v-flex>
-                      <v-flex md9>{{bookingList.detail.booking.special_request}}</v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-            </v-layout>
-            <div>
-              <v-divider dark></v-divider>
-              <span class="font-weight-black title">Status</span>
-            </div>
-            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
-              <div>
-                <div>
-                  <span
-                    class="font-weight-black red--text font-italic"
-                  >{{bookingList.detail.booking.status.name}}</span>
-                </div>
-                <div>
-                  <v-btn
-                    :disabled="!bookingList.detail.booking.cancel_status.includes(bookingList.detail.booking.status.id)"
-                    @click="bookingAction(bookingList.detail.booking,0)"
-                    small
-                    depressed
-                    color="orange"
-                  >cancel</v-btn>
-                </div>
-              </div>
-            </v-layout>
-            <div>
-              <v-divider dark></v-divider>
-              <span class="font-weight-black title">Cancellation Policy</span>
-            </div>
-            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
-              <span>Id soluta temporibus sint molestias sapiente dolore beatae ratione velit blanditiis maxime sunt.</span>
-            </v-layout>
-            <div>
-              <v-divider dark></v-divider>
-              <span class="font-weight-black title">Price Details</span>
-            </div>
-            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
-              <v-flex md12>
-                <v-divider></v-divider>
-              </v-flex>
-              <v-flex md8>
-                <span>{{bookingList.detail.booking.room.room_type.name}}&nbsp;{{bookingList.detail.booking.room.room_mode.name}}</span>
-              </v-flex>
-              <v-flex
-                md4
-              >{{bookingList.detail.booking.room.price.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</v-flex>
-              <v-flex md8>
-                <span>Amount</span>
-              </v-flex>
-              <v-flex md4>{{bookingList.detail.booking.room_amount}}</v-flex>
-              <v-flex md12>
-                <v-divider></v-divider>
-              </v-flex>
-              <v-flex md8>
-                <span>Total price</span>
-              </v-flex>
-              <v-flex
-                md4
-              >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</v-flex>
-            </v-layout>
-          </v-flex>
-        </v-layout>
-      </v-card>-->
     </v-dialog>
-    <!-- <v-dialog v-model="questionList.dialog" width="700px" persistent>
-      <v-card flat tile light height="470px">
-        <v-card-text>
-          <v-btn depressed color="red" dark v-on:click="questionList.dialog = false">
-            <span class="text-uppercase">Đóng</span>
-          </v-btn>
-          <v-card light flat width="100%" height="370px" style="overflow:auto">
-            <v-data-table
-              :rows-per-page-items='[5,10,15,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
-              :headers="tblHeaders.question"
-              hide-headers
-              :items="login.user.question"
-              class="elevation-0 border"
-            >
-              <template v-slot:items="b">
-                <td>
-                  <a href="#"><span style="word-wrap: break-word;">{{ b.item.id }}</span></a>
-                </td>
-                <td class="border-left">
-                  <a href="#"><span
-                    style="word-wrap: break-word;"
-                  >{{ (b.item.room_amount*b.item.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span></a>
-                </td>
-                <td class="border-left">
-                  <a href="#"><span style="word-wrap: break-word;">{{ b.item.status.name}}</span></a>
-                </td>
-                <td class="border-left">
-                  <v-btn depressed color="teal" dark small @click="bookingAction(b.item,1)">detail</v-btn>
-                  <v-btn
-                    :disabled="!b.item.cancel_status.includes(b.item.status.id)"
-                    depressed
-                    color="orange"
-                    small
-                    @click="confirmAction(b.item)"
-                  >cancel</v-btn>
-                </td>
-              </template>
-            </v-data-table>
-          </v-card>
-        </v-card-text>
-      </v-card>
-    </v-dialog>-->
-    <!-- <v-dialog
-      persistent
-      v-model="confirm.dialog"
-      max-width="290"
-    >
-      <v-card>
-        <v-card-title class="headline">{{confirm.title}}</v-card-title>
-
-        <v-card-text>
-          {{confirm.content}}
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn
-            color="green darken-1"
-            flat="flat"
-            @click="confirm.dialog = false"
-          >
-            Cancel
-          </v-btn>
-
-          <v-btn
-            color="green darken-1"
-            flat="flat"
-            @click="bookingAction(confirm.booking,0)"
-          >
-            Sure
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>-->
     <v-snackbar
       v-model="snackbar.state"
       multi-line="multi-line"
@@ -836,46 +510,6 @@ export default {
           "Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan"
       },
       loginCheck: false,
-      tblHeaders: {
-        booking: [
-          {
-            text: "Mã",
-            value: "id",
-            align: "center",
-            class: "red--text",
-            sortable: true
-          },
-          {
-            text: "Tổng Giá",
-            value: 0,
-            align: "center",
-            class: "red--text border-left",
-            sortable: false
-          },
-          {
-            text: "Tình Trạng Đơn",
-            value: "status.id",
-            align: "center",
-            class: "red--text border-left",
-            sortable: true
-          },
-          {
-            text: "Ngày",
-            value: "check_in",
-            align: "center",
-            class: "red--text border-left",
-            sortable: true
-          },
-          {
-            text: "Chức Năng",
-            value: 0,
-            align: "center",
-            class: "red--text border-left",
-            sortable: false
-          }
-        ],
-        question: []
-      },
       bookingList: {
         dialog: false,
         detail: {
@@ -887,6 +521,7 @@ export default {
             room_price: 0,
             room: {
               price: 0,
+              days: 1,
               room_mode: {},
               room_type: {},
               hotel: {
@@ -897,16 +532,6 @@ export default {
           }
         }
       },
-      questionList: {
-        dialog: false
-      },
-      time:
-        new Date().getHours() +
-        ":" +
-        new Date().getMinutes() +
-        ":" +
-        new Date().getSeconds(),
-      memberCount: 0,
       paymentMethods: [],
       register: {
         username: "",
@@ -967,11 +592,14 @@ export default {
       },
       place: "Hồ Chí Minh",
       now: new Date(),
-      checkIn: new Date().toISOString().substr(0, 10),
-      checkInFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
-      checkOut: this.getNextDate(new Date().toISOString().substr(0, 10), 1),
-      checkOutFormatted: this.formatDate(
+      checkIn: this.getNextDate(new Date().toISOString().substr(0, 10), 1),
+      // checkIn: new Date().toISOString().substr(0, 10),
+      checkInFormatted: this.formatDate(
         this.getNextDate(new Date().toISOString().substr(0, 10), 1)
+      ),
+      checkOut: this.getNextDate(new Date().toISOString().substr(0, 10), 2),
+      checkOutFormatted: this.formatDate(
+        this.getNextDate(new Date().toISOString().substr(0, 10), 2)
       )
     };
   },
@@ -1202,64 +830,11 @@ export default {
         this.registerDialog = val;
       } else this.dialog = val;
     },
-    openBookingListDialog: function() {
-      this.getLogin();
-      if (this.login.token != null) {
-        this.bookingList.dialog = true;
-      }
-    },
-    openQuestionListDialog: function() {
-      this.getLogin();
-      if (this.login.token != null) {
-        this.questionList.dialog = true;
-      }
-    },
-    confirmAction: function(booking) {
-      this.confirm.dialog = true;
-      this.confirm.booking = booking;
-      this.confirm.title = "Bạn có chắc chắn?";
-      if (booking.status.id == 4)
-        this.confirm.content =
-          "Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan.";
-    },
     bookingAction: function(booking, cmd) {
       console.log(booking);
       if (cmd == 1) {
         this.bookingList.detail.booking = booking;
         this.bookingList.detail.dialog = true;
-      } else {
-        if (this.confirm.dialog === true) this.confirm.dialog = false;
-        axios({
-          method: "put",
-          url: "http://localhost:8000/api/booking/" + booking.id,
-          params: {
-            action: "cancel"
-          },
-          headers: {
-            Authorization: "Bearer " + this.login.token
-          }
-        })
-          .then(res => {
-            console.log(res.data.status);
-            if (res.data.status) {
-              // this.eventSnackbar('Updated Successfully!');
-              this.getLogin();
-            } else {
-              // this.eventSnackbar('Updated Fail!');
-            }
-          })
-          .catch(error => {
-            console.log(error.response);
-            if (error.response.status == 401) {
-              localStorage.removeItem("login_token");
-              this.login.token = localStorage.getItem("login_token");
-              this.login.check = false;
-              this.login.user = {
-                avatar: {},
-                booking: []
-              };
-            }
-          });
       }
     }
   }

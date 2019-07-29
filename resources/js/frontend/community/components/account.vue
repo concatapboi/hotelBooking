@@ -3,7 +3,6 @@
     <v-flex shrink md8>
       <v-img :aspect-ratio="16/4" src="/blog/img/slider/slider.png" class="mr-2 radius mb-3">
         <v-layout row wrap fill-height class="lightbox white--text mt-5 mb-1 pl-5">
-          <!-- <v-spacer></v-spacer> -->
           <v-flex md9 shrink class="pl-5">
             <v-tooltip top>
               <template v-slot:activator="{ on }">
@@ -17,222 +16,6 @@
             <div class="body-1">{{user.email}}</div>
           </v-flex>
           <v-spacer></v-spacer>
-          <!-- <v-flex md3>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-btn dark large icon v-on:click="dialog = true" v-on="on">
-                  <v-icon medium color="blue darken-4">insert_photo</v-icon>
-                </v-btn>
-              </template>
-              <span>Change pictures</span>
-            </v-tooltip>
-          </v-flex>
-          <v-dialog
-            v-model="dialog"
-            fullscreen
-            hide-overlay
-            transition="dialog-bottom-transition"
-            scrollable
-          >
-            <v-card tile class="grey lighten-4">
-              <v-toolbar card flat dark :color="color.header">
-                <v-btn icon dark v-on:click="cancel">
-                  <v-icon>close</v-icon>
-                </v-btn>
-                <v-toolbar-title class="text-uppercase">cover &amp; avatar pictures</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-toolbar-items>
-                  <v-btn dark flat v-on:click="save">Save</v-btn>
-                </v-toolbar-items>
-              </v-toolbar>
-              <v-card-text class="py-0">
-                <v-layout row wrap justify-center align-center>
-                  <v-flex md12>
-                    <v-card-title class="pa-2 pt-4">
-                      <span class="text-uppercase font-weight-bold ml-5">cover gallery</span>
-                      <v-spacer></v-spacer>
-                      <v-tooltip top v-if="cover.hide">
-                        <template v-slot:activator="{ on }">
-                          <v-btn
-                            flat
-                            dark
-                            :color="color.header"
-                            class="mr-5"
-                            v-on:click="cover.hide = false"
-                            v-on="on"
-                          >
-                            <v-icon large>expand_less</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Hide</span>
-                      </v-tooltip>
-                      <v-tooltip top v-else>
-                        <template v-slot:activator="{ on }">
-                          <v-btn
-                            flat
-                            dark
-                            :color="color.header"
-                            class="mr-5"
-                            v-on:click="cover.hide = true"
-                            v-on="on"
-                          >
-                            <v-icon large>expand_more</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Show</span>
-                      </v-tooltip>
-                    </v-card-title>
-                    <v-divider></v-divider>
-                    <v-card-text v-show="cover.hide">
-                      <v-layout row wrap justify-start align-center>
-                        <v-flex md2 class="pa-2">
-                          <v-card flat tile color="teal" class="pl-3">
-                            <v-tooltip top>
-                              <template v-slot:activator="{ on }">
-                                <v-btn
-                                  large
-                                  depressed
-                                  fab
-                                  icon
-                                  flat
-                                  color="black"
-                                  class="ml-5"
-                                  v-on="on"
-                                >
-                                  <v-icon medium color="white">add_photo_alternate</v-icon>
-                                </v-btn>
-                              </template>
-                              <span>Upload</span>
-                            </v-tooltip>
-                          </v-card>
-                        </v-flex>
-                        <v-flex md3 class="pa-2" v-for="(img,i) in covers" :key="i">
-                          <v-hover>
-                            <v-card slot-scope="{ hover }">
-                              <v-img :aspect-ratio="16/9" :src="img.link">
-                                <v-expand-transition>
-                                  <div
-                                    v-if="hover"
-                                    class="v-card--reveal teal transition-fast-in-fast-out"
-                                    style="height: 100%;"
-                                  >
-                                    <v-btn large depressed fab icon flat color="black">
-                                      <v-icon
-                                        medium
-                                        :color="color.check"
-                                        v-if="cover.temp===img.link"
-                                      >check</v-icon>
-                                      <v-icon
-                                        medium
-                                        color="white"
-                                        v-else
-                                        v-on:click="cover.temp=img.link"
-                                      >check</v-icon>
-                                    </v-btn>
-                                  </div>
-                                </v-expand-transition>
-                              </v-img>
-                            </v-card>
-                          </v-hover>
-                        </v-flex>
-                      </v-layout>
-                    </v-card-text>
-                  </v-flex>
-                  <v-flex md12>
-                    <v-card-title class="pa-2 pt-4">
-                      <span class="text-uppercase font-weight-bold ml-5">avatar gallery</span>
-                      <v-spacer></v-spacer>
-                      <v-tooltip top v-if="avatar.hide">
-                        <template v-slot:activator="{ on }">
-                          <v-btn
-                            flat
-                            dark
-                            :color="color.header"
-                            class="mr-5"
-                            v-on:click="avatar.hide = false"
-                            v-on="on"
-                          >
-                            <v-icon large>expand_less</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Hide</span>
-                      </v-tooltip>
-                      <v-tooltip top v-else>
-                        <template v-slot:activator="{ on }">
-                          <v-btn
-                            flat
-                            dark
-                            :color="color.header"
-                            class="mr-5"
-                            v-on:click="avatar.hide = true"
-                            v-on="on"
-                          >
-                            <v-icon large>expand_more</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Show</span>
-                      </v-tooltip>
-                    </v-card-title>
-                    <v-divider></v-divider>
-                    <v-card-text v-show="avatar.hide">
-                      <v-layout row wrap justify-start align-center>
-                        <v-flex md2 class="pa-2">
-                          <v-card flat tile color="teal" class="pl-3">
-                            <v-tooltip top>
-                              <template v-slot:activator="{ on }">
-                                <v-btn
-                                  large
-                                  depressed
-                                  fab
-                                  icon
-                                  flat
-                                  color="black"
-                                  class="ml-5"
-                                  v-on="on"
-                                >
-                                  <v-icon medium color="white">add_photo_alternate</v-icon>
-                                </v-btn>
-                              </template>
-                              <span>Upload</span>
-                            </v-tooltip>
-                          </v-card>
-                        </v-flex>
-                        <v-flex md2 class="pa-2" v-for="(img,i) in avatars" :key="i">
-                          <v-hover>
-                            <v-card slot-scope="{ hover }">
-                              <v-img :aspect-ratio="1" :src="img.link">
-                                <v-expand-transition>
-                                  <div
-                                    v-if="hover"
-                                    class="v-card--reveal1 teal transition-fast-in-fast-out"
-                                    style="height: 100%;"
-                                  >
-                                    <v-btn large depressed fab icon flat color="black">
-                                      <v-icon
-                                        medium
-                                        :color="color.check"
-                                        v-if="avatar.temp===img.link"
-                                      >check</v-icon>
-                                      <v-icon
-                                        medium
-                                        color="white"
-                                        v-else
-                                        v-on:click="avatar.temp=img.link"
-                                      >check</v-icon>
-                                    </v-btn>
-                                  </div>
-                                </v-expand-transition>
-                              </v-img>
-                            </v-card>
-                          </v-hover>
-                        </v-flex>
-                      </v-layout>
-                    </v-card-text>
-                  </v-flex>
-                </v-layout>
-              </v-card-text>
-            </v-card>
-          </v-dialog>-->
         </v-layout>
       </v-img>
       <div v-if="user.review.length !=0">
@@ -256,21 +39,6 @@
               <router-link class="pointer" :to="{name:'review',query:{id:item.id}}" target="_blank">
               <v-card-title>
                 <v-spacer></v-spacer>
-                <!-- <v-menu bottom right>
-                  <template v-slot:activator="{ on }">
-                    <v-btn fab icon v-on="on">
-                      <v-icon color="black">more_vert</v-icon>
-                    </v-btn>
-                  </template>
-                  <v-list dark>
-                    <v-list-tile v-if="item.customer_review.status ==1">
-                      <v-list-tile-title>Off notification</v-list-tile-title>
-                    </v-list-tile>
-                    <v-list-tile v-else>
-                      <v-list-tile-title>Get notification</v-list-tile-title>
-                    </v-list-tile>
-                  </v-list>
-                </v-menu>-->
                 <v-card-text>
                   <span class="headline">{{item.title}}</span>
                   <v-layout>
@@ -327,14 +95,14 @@
               </v-card-title>
               </router-link>
               <v-card-actions>
-                <!-- <v-tooltip top>
+                <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-icon
                       v-on="on"
                       class="ml-3 mr-1"
                       large
                       :color="color.heart"
-                      v-on:click=";"
+                      v-on:click="likeReview(item.id)"
                       v-if="item.customer_review.like == 0"
                     >favorite_border</v-icon>
                     <v-icon
@@ -342,13 +110,13 @@
                       class="ml-3 mr-1"
                       large
                       :color="color.heart"
-                      v-on:click=";"
+                      v-on:click="likeReview(item.id)"
                       v-else
                     >favorite</v-icon>
                   </template>
                   <span>like</span>
                 </v-tooltip>
-                <span class="grey--text subheading">{{item.likes}}</span>-->
+                <span class="grey--text subheading">{{item.likes}}</span>
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-icon
@@ -431,7 +199,7 @@
                           round
                           large
                           depressed
-                          :disabled="!comment.able"
+                          :disabled="comment.content.length ===0"
                           color="teal"
                           @click="sendComment(item.id)"
                         >
@@ -563,10 +331,10 @@
               row
               wrap
               align-center
-              class="pa-3 ma-3 border"
+              class="pa-3 ma-3 grey lighten-2"
               v-for="(b,i) in user.booking"
               :key="i"
-              v-show="i<3"
+              v-show="i<5"
             >
               <v-flex md6>
                 <div>
@@ -583,19 +351,16 @@
                 </div>
               </v-flex>
               <v-flex md6>
-                <div>
+                <v-chip color="orange" class="white--text caption">{{b.status.name}}</v-chip>
+                <!-- <div>
                   <div>
                     Tình Trạng Đơn:&nbsp;
                     <span class="orange--text">{{b.status.name}}</span>
                   </div>
-                  <!-- <div>
-                    Method:&nbsp;
-                    <span class="teal--text">{{b.payment_method.name}}</span>
-                  </div>-->
-                </div>
+                </div> -->
               </v-flex>
               <v-flex md12>
-                <v-divider class="pa-0 ma-0"></v-divider>
+                <v-divider class="pa-0 ma-0 mt-2"></v-divider>
               </v-flex>
               <v-flex md12 class="mt-2">
                 <div class="pl-3 body-2 font-italic" v-if="b.can_review == true">
@@ -636,7 +401,7 @@
               row
               wrap
               align-center
-              class="pa-3 ma-3 border"
+              class="pa-3 ma-3 grey lighten-2 caption"
               v-for="(q,i) in user.question"
               :key="i"
               v-show="i<3"
@@ -647,68 +412,20 @@
                     <span class="font-weight-black">{{q.title}}</span>
                   </div>
                   <div>
-                    <span class="font-weight-black">"{{q.content}}"</span>
+                    <span class="font-italic">"{{q.content}}"</span>
                   </div>
                 </div>
               </v-flex>
               <v-flex md12 v-if="q.reply!=null">
-                <v-divider class="pa-0 ma-0"></v-divider>
+                <v-divider class="pa-0 ma-0 my-2"></v-divider>
               </v-flex>
               <v-flex md12 v-if="q.reply !=null">
                 <div>
-                  <span>{{q.hotel.name}}:&nbsp;"{{q.reply.content}}"</span>
+                  <span class="body-1">{{q.hotel.name}}:&nbsp;"{{q.reply.content}}"</span>
                 </div>
               </v-flex>
             </v-layout>
           </v-container>
-        </v-expansion-panel-content>
-        <v-expansion-panel-content class="mb-3">
-          <template v-slot:actions>
-            <v-icon>expand_more</v-icon>
-          </template>
-          <template v-slot:header>
-            <div class="title my-3 text-uppercase font-weight-black">
-              <v-icon color="black">group</v-icon>&nbsp;đang theo dõi &amp; người theo dõi
-            </div>
-          </template>
-          <v-btn round depressed color="grey lighten-2" v-on:click="followDialog = true">
-            <v-icon small>notes</v-icon>&nbsp;xem tất cả
-          </v-btn>
-          <v-tabs centered grow color="grey lighten-2" light class="ma-1">
-            <v-tabs-slider color="black"></v-tabs-slider>
-            <v-tab href="#tab-1">người theo dõi</v-tab>
-            <v-tab href="#tab-2">đang theo dõi</v-tab>
-            <v-tab-item value="tab-1">
-              <v-card light flat v-for="(item,i) in user.followers" :key="i" v-show="i<4">
-                <v-card-title>
-                  <router-link :to="{name:'user',params:{id:item.follower.id}}">
-                    <v-avatar size="52px" flat color="black">
-                      <v-avatar size="50px" flat color="white">
-                        <img :src="'/img/user/'+item.avatar.image_link" :alt="item.follower.name" />
-                      </v-avatar>
-                    </v-avatar>
-                    <span class="pl-3 font-weight-bold">{{item.follower.name}}</span>
-                  </router-link>
-                </v-card-title>
-                <v-divider class="pa-0 ma-0" v-show="i<3 && i<(user.followers.length-1)"></v-divider>
-              </v-card>
-            </v-tab-item>
-            <v-tab-item value="tab-2">
-              <v-card light flat v-for="(item,i) in user.customerFollowings" :key="i" v-show="i<4">
-                <v-card-title>
-                  <router-link :to="{name:'user',params:{id:item.followed.id}}">
-                    <v-avatar size="52px" flat color="black">
-                      <v-avatar size="50px" flat color="white">
-                        <img :src="'/img/user/'+item.avatar.image_link" :alt="item.followed.name" />
-                      </v-avatar>
-                    </v-avatar>
-                    <span class="pl-3 font-weight-bold">{{item.followed.name}}</span>
-                  </router-link>
-                </v-card-title>
-                <v-divider class="pa-0 ma-0" v-show="i<3 && i<(user.customerFollowings.length-1)"></v-divider>
-              </v-card>
-            </v-tab-item>
-          </v-tabs>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-flex>
@@ -854,148 +571,21 @@
         </v-form>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="followDialog" persistent width="400px">
-      <v-card flat tile light height="400px">
-        <v-card-text>
-          <v-btn depressed color="red" dark v-on:click="followDialog = false">
-            <span class="text-uppercase">Hủy</span>
-          </v-btn>
-          <v-tabs grow color="grey lighten-2" light class="ma-1">
-            <v-tabs-slider color="black"></v-tabs-slider>
-            <v-tab href="#tab-1">Người theo dõi</v-tab>
-            <v-tab href="#tab-2">Đang theo dõi</v-tab>
-            <v-tab-item value="tab-1">
-              <v-card light flat width="100%" height="260px" style="overflow:auto">
-                <v-layout v-for="(item,i) in user.followers" :key="i">
-                  <v-card-title style="width:100%">
-                    <router-link :to="{name:'user',params:{id:item.follower.id}}">
-                      <v-avatar size="52px" flat color="black">
-                        <v-avatar size="50px" flat color="white">
-                          <img :src="'/img/user/'+item.avatar.image_link" :alt="item.follower.name" />
-                        </v-avatar>
-                      </v-avatar>
-                    </router-link>
-                    <v-spacer></v-spacer>
-                    <!-- <v-tooltip top>
-                      <template v-slot:activator="{ on }">
-                        <v-btn small depressed color="grey lighten-2" fab v-on="on">
-                          <i class="fas fa-user-slash"></i>
-                        </v-btn>
-                      </template>
-                      <span>unfollowing</span>
-                    </v-tooltip>-->
-                    <v-card-text class="pa-0 ma-0 mt-2">
-                      <router-link :to="{name:'user',params:{id:item.follower.id}}">
-                        <span class="font-weight-bold">{{user.name}}</span>
-                      </router-link>
-                      <v-divider class="pa-0 ma-0 mt-3" v-show="i<(user.followers.length-1)"></v-divider>
-                    </v-card-text>
-                  </v-card-title>
-                </v-layout>
-              </v-card>
-            </v-tab-item>
-            <v-tab-item value="tab-2">
-              <v-card light flat width="100%" height="260px" style="overflow:auto">
-                <v-layout v-for="(item,i) in user.customerFollowings" :key="i">
-                  <v-card-title style="width:100%">
-                    <router-link :to="{name:'user',params:{id:item.followed.id}}">
-                      <v-avatar size="52px" flat color="black">
-                        <v-avatar size="50px" flat color="white">
-                          <img :src="'/img/user/'+item.avatar.image_link" :alt="item.followed.name" />
-                        </v-avatar>
-                      </v-avatar>
-                    </router-link>
-                    <v-spacer></v-spacer>
-                    <!-- <v-tooltip top>
-                      <template v-slot:activator="{ on }">
-                        <v-btn small depressed color="grey lighten-2" fab v-on="on">
-                          <i class="fas fa-user-slash"></i>
-                        </v-btn>
-                      </template>
-                      <span>unfollowing</span>
-                    </v-tooltip>-->
-                    <v-card-text class="pa-0 ma-0 mt-2">
-                      <router-link :to="{name:'user',params:{id:item.followed.id}}">
-                        <span class="font-weight-bold">{{item.followed.name}}</span>
-                      </router-link>
-                      <v-divider
-                        class="pa-0 ma-0 mt-3"
-                        v-show="i<(user.customerFollowings.length-1)"
-                      ></v-divider>
-                    </v-card-text>
-                  </v-card-title>
-                </v-layout>
-              </v-card>
-            </v-tab-item>
-          </v-tabs>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-    <!-- <v-dialog v-model="bookingList.dialog" width="700px" persistent>
-      <v-card flat tile light height="470px">
-        <v-card-text>
-          <v-btn depressed color="red" dark v-on:click="bookingList.dialog = false">
-            <span class="text-uppercase">Đóng</span>
-          </v-btn>
-          <v-card light flat width="100%" height="370px" style="overflow:auto">
-            <v-data-table
-              :rows-per-page-items='[5,10,15,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
-              :headers="tblHeaders.booking"
-              :items="user.booking"
-              class="elevation-0 border"
-            >
-              <template v-slot:items="b">
-                <td>
-                  <a href="#">
-                    <span style="word-wrap: break-word;">{{ b.item.id }}</span>
-                  </a>
-                </td>
-                <td class="border-left">
-                  <a href="#">
-                    <span
-                      style="word-wrap: break-word;"
-                    >{{ (b.item.room_amount*b.item.room_price).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
-                  </a>
-                </td>
-                <td class="border-left">
-                  <div>
-                    <a href="#">
-                      <span style="word-wrap: break-word;">{{ b.item.status.name}}</span>
-                    </a>
-                  </div>
-                </td>
-                <td class="border-left">
-                  <v-btn depressed color="teal" dark small @click="bookingAction(b.item,1)">detail</v-btn>
-                  <v-btn
-                    :disabled="!b.item.cancel_status"
-                    depressed
-                    color="orange"
-                    small
-                    @click="confirmAction(b.item)"
-                  >cancel</v-btn>
-                </td>
-              </template>
-            </v-data-table>
-          </v-card>
-        </v-card-text>
-      </v-card>
-    </v-dialog>-->
     <v-dialog v-model="questionList.dialog" width="700px" persistent>
       <v-card flat tile light height="470px">
         <v-card-text>
-          <v-btn depressed color="red" dark v-on:click="questionList.dialog = false">
+          <v-btn round depressed color="red" dark v-on:click="questionList.dialog = false">
             <span class="text-uppercase">Đóng</span>
           </v-btn>
           <template>
             <v-card light flat width="100%" height="370px" style="overflow:auto">
               <v-card-title>
-                Kết quả tìm kiếm cho nhà cung cấp {{search}}
                 <v-spacer></v-spacer>
                 <v-text-field
                   color="teal"
                   v-model="search"
                   append-icon="search"
-                  label="Search"
+                  label="Nhập tên nhà cung cấp bạn đã hỏi..."
                   single-line
                   hide-details
                 ></v-text-field>
@@ -1073,205 +663,6 @@
             </v-card>
           </template>
         </v-card-text>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="bookingList.detail.dialog" width="750px">
-      <v-card flat tile light>
-        <v-layout class="pa-5 ma-0" row wrap>
-          <v-flex md12>
-            <div>
-              <span
-                class="font-weight-black title text-uppercase"
-              >booking code:&nbsp;{{bookingList.detail.booking.id}}</span>
-            </div>
-            <v-divider></v-divider>
-            <div>
-              <span class="font-weight-black title">Your Information</span>
-            </div>
-            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
-              <v-flex md3>
-                <div class="mt-3">
-                  <v-img
-                    :aspect-ratio="1"
-                    :src="'/blog/img/room/'+bookingList.detail.booking.room.image"
-                  ></v-img>
-                </div>
-              </v-flex>
-              <v-flex md9>
-                <v-layout row wrap class="pa-0 pl-4 ma-0">
-                  <v-flex md12>
-                    <router-link
-                      :to="{name:'hotel',params:{id:bookingList.detail.booking.room.hotel.id}}"
-                      target="_blank"
-                    >
-                      <h2>{{bookingList.detail.booking.hotel_name}}</h2>
-                    </router-link>
-                  </v-flex>
-                  <v-flex md12>
-                    <div>
-                      <span>{{bookingList.detail.booking.room.hotel.type}}</span>
-                    </div>
-                  </v-flex>
-                  <v-flex md12>
-                    <v-divider class="pa-0 ma-0"></v-divider>
-                  </v-flex>
-                  <v-flex md12>
-                    <v-layout row wrap class="pa-0 ma-0">
-                      <v-flex md6 class="pa-2">
-                        <div>
-                          <div>
-                            <span class="font-weight-bold">Check-In:</span>
-                          </div>
-                          <div>
-                            <span>{{formatDate(bookingList.detail.booking.check_in)}}</span>
-                          </div>
-                        </div>
-                      </v-flex>
-                      <v-flex md6 class="pa-2">
-                        <div>
-                          <div>
-                            <span class="font-weight-bold">Check-Out:</span>
-                          </div>
-                          <div>
-                            <span>{{formatDate(bookingList.detail.booking.check_out)}}</span>
-                          </div>
-                        </div>
-                      </v-flex>
-                      <v-flex md12 class="pl-2">
-                        <span class="font-weight-bold">Guess Information</span>
-                      </v-flex>
-                      <v-flex md12 class="pl-2">
-                        <v-layout row wrap class="pa-0 ma-0">
-                          <v-flex md3>Name</v-flex>
-                          <v-flex md9>{{bookingList.detail.booking.contact_name}}</v-flex>
-                          <v-flex md3>Email</v-flex>
-                          <v-flex md9>{{bookingList.detail.booking.contact_email}}</v-flex>
-                          <v-flex md3>Mobile-number</v-flex>
-                          <v-flex md9>{{bookingList.detail.booking.contact_phone}}</v-flex>
-                          <v-flex md3>Address</v-flex>
-                          <v-flex md9>{{bookingList.detail.booking.contact_address}}</v-flex>
-                        </v-layout>
-                      </v-flex>
-                      <v-spacer></v-spacer>
-                    </v-layout>
-                  </v-flex>
-                  <v-flex md12>
-                    <v-divider></v-divider>
-                  </v-flex>
-                  <v-flex md12>
-                    <span class="font-weight-bold">Room Details:</span>
-                  </v-flex>
-                  <v-flex md12>
-                    <v-layout row wrap class="pa-0 ma-0">
-                      <v-flex md3>Room Name:</v-flex>
-                      <v-flex md9>{{bookingList.detail.booking.room.room_name}}</v-flex>
-                      <v-flex md3>Room Type:</v-flex>
-                      <v-flex
-                        md9
-                      >{{bookingList.detail.booking.room.room_mode.name}}&nbsp;{{bookingList.detail.booking.room.room_type.name}}</v-flex>
-                      <v-flex md3>No. Of Rooms:</v-flex>
-                      <v-flex md9>{{bookingList.detail.booking.room_amount}}</v-flex>
-                      <v-flex md3>Special Request:</v-flex>
-                      <v-flex md9>{{bookingList.detail.booking.special_request}}</v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-            </v-layout>
-            <div>
-              <v-divider dark></v-divider>
-              <span class="font-weight-black title">Status</span>
-            </div>
-            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
-              <div>
-                <div>
-                  <span
-                    class="font-weight-black red--text font-italic subheading"
-                  >{{bookingList.detail.booking.status.name}}</span>
-                </div>
-                <div>
-                  <v-btn
-                    :disabled="!bookingList.detail.booking.cancel_status"
-                    @click="confirmAction(bookingList.detail.booking)"
-                    small
-                    depressed
-                    color="orange"
-                  >cancel</v-btn>
-                </div>
-                <div>
-                  <span class="font-italic">{{bookingList.detail.booking.payment_method.content}}</span>
-                </div>
-              </div>
-            </v-layout>
-            <div>
-              <v-divider dark></v-divider>
-              <span class="font-weight-black title">Price Details</span>
-            </div>
-            <v-layout row wrap class="pa-0 pl-3 ma-0 booking-content-info-item">
-              <v-flex md12>
-                <v-divider></v-divider>
-              </v-flex>
-              <v-flex md8>
-                <span>{{bookingList.detail.booking.room.room_type.name}}&nbsp;{{bookingList.detail.booking.room.room_mode.name}}</span>
-              </v-flex>
-              <v-flex
-                md4
-              >{{bookingList.detail.booking.room_price.toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</v-flex>
-              <v-flex md8>
-                <span>Amount</span>
-              </v-flex>
-              <v-flex md4>{{bookingList.detail.booking.room_amount}}</v-flex>
-              <v-flex md12 v-if="bookingList.detail.booking.discount_value!=0">
-                <v-layout row wrap class="pa-0 ma-0">
-                  <v-flex md8>
-                    <span>Code</span>
-                  </v-flex>
-                  <v-flex md4>
-                    <span>{{bookingList.detail.booking.coupon_code}}</span>
-                  </v-flex>
-                  <v-flex md12>
-                    <div class="font-italic font-weight-black">
-                      Yout did get
-                      <span
-                        class="red--text"
-                      >{{bookingList.detail.booking.discount_value}}%</span> for discount!
-                    </div>
-                  </v-flex>
-                </v-layout>
-              </v-flex>
-              <v-flex md8>
-                <span>Payment Method</span>
-              </v-flex>
-              <v-flex md4>{{bookingList.detail.booking.payment_method.name}}</v-flex>
-              <v-flex md12>
-                <v-divider></v-divider>
-              </v-flex>
-              <v-flex md8>
-                <span class="headline orange--text">Total price</span>
-              </v-flex>
-              <v-flex md4>
-                <span
-                  class="headline orange--text"
-                >{{(bookingList.detail.booking.room_amount*bookingList.detail.booking.room_price*((100-bookingList.detail.booking.discount_value)/100)).toLocaleString('en-US', {style: 'currency',currency: 'USD',})}}</span>
-              </v-flex>
-            </v-layout>
-          </v-flex>
-        </v-layout>
-      </v-card>
-    </v-dialog>
-    <v-dialog persistent v-model="confirm.dialog" max-width="290">
-      <v-card>
-        <v-card-title class="headline">{{confirm.title}}</v-card-title>
-
-        <v-card-text>{{confirm.content}}</v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn round color="green darken-1" flat="flat" @click="confirm.dialog = false">Hủy</v-btn>
-
-          <v-btn round color="green darken-1" flat="flat" @click="bookingAction(confirm.booking,0)">Đồng Ý</v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog scrollable v-model="reviewForm.dialog" width="500px" persistent>
@@ -1375,36 +766,6 @@ export default {
     return {
       search: "",
       tblHeaders: {
-        booking: [
-          {
-            text: "ID",
-            value: "id",
-            align: "center",
-            class: "red--text",
-            sortable: true
-          },
-          {
-            text: "Total",
-            value: 0,
-            align: "center",
-            class: "red--text border-left",
-            sortable: false
-          },
-          {
-            text: "Status",
-            value: "status.id",
-            align: "center",
-            class: "red--text border-left",
-            sortable: true
-          },
-          {
-            text: "Action",
-            value: 0,
-            align: "center",
-            class: "red--text border-left",
-            sortable: false
-          }
-        ],
         question: [
           {
             text: "Câu Hỏi",
@@ -1420,34 +781,6 @@ export default {
         content: "",
         able: false
       },
-      confirm: {
-        dialog: false,
-        booking: {},
-        title: "Bạn có chắc chắn?",
-        content:
-          "Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan."
-      },
-      bookingList: {
-        dialog: false,
-        detail: {
-          dialog: false,
-          booking: {
-            cancel_status: [],
-            status: {},
-            payment_method: {},
-            room_price: 0,
-            room: {
-              price: 0,
-              room_mode: {},
-              room_type: {},
-              hotel: {
-                id: 0
-              },
-              image: "default.png"
-            }
-          }
-        }
-      },
       questionList: {
         dialog: false
       },
@@ -1458,9 +791,6 @@ export default {
         customer: {},
         avatar: {},
         booking: [],
-        customerFollowings: [],
-        hotelFollowings: [],
-        followers: [],
         question: [],
         review: []
       },
@@ -1530,6 +860,8 @@ export default {
   mounted() {
     this.$validator.localize("en", this.dictionary);
   },
+  beforeCreate(){
+  },
   created() {
     this.getInfo();
   },
@@ -1545,47 +877,6 @@ export default {
     }
   },
   methods: {
-    bookingAction: function(booking, cmd) {
-      console.log(booking);
-      if (cmd == 1) {
-        this.bookingList.detail.booking = booking;
-        this.bookingList.detail.dialog = true;
-      } else {
-        if (this.confirm.dialog === true) this.confirm.dialog = false;
-        axios({
-          method: "put",
-          url: "http://localhost:8000/api/booking/" + booking.id,
-          params: {
-            action: "cancel"
-          },
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("login_token")
-          }
-        })
-          .then(res => {
-            console.log(res.data.status);
-            if (res.data.status) {
-              this.$emit("loadSnackbar", "Updated Successfully!!");
-              this.getInfo();
-            } else {
-              this.$emit("loadSnackbar", "Updated Fail!!");
-            }
-          })
-          .catch(error => {
-            console.log(error.response);
-            if (error.response.status == 401) {
-              localStorage.removeItem("login_token");
-              this.$emit("loadLogin");
-            }
-          });
-      }
-    },
-    openBookingListDialog: function() {
-      this.getInfo();
-      if (localStorage.getItem("login_token") != null) {
-        this.bookingList.dialog = true;
-      }
-    },
     openQuestionListDialog: function() {
       this.getInfo();
       if (localStorage.getItem("login_token") != null) {
@@ -1616,6 +907,58 @@ export default {
         });
       }
       return index;
+    },
+    likeReview: function(id) {
+      var flag = true;
+      var index = this.getIndex(id);
+      switch (this.user.review[index].customer_review.like) {
+        case 0:
+          this.user.review[index].customer_review.like = 1;
+          this.user.review[index].likes = this.user.review[index].likes + 1;
+          break;
+        case 1:
+          this.user.review[index].customer_review.like = 0;
+          this.user.review[index].likes = this.user.review[index].likes - 1;
+          break;
+      }
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/like",
+        params: {
+          review_id: id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          if (res.data.status == false) {
+            flag = false;
+          }
+        })
+        .catch(error => {
+          flag = false;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        })
+        .then(() => {
+          if (!flag) {
+            switch (this.user.review[index].customer_review.like) {
+              case 0:
+                this.user.review[index].customer_review.like = 1;
+                this.user.review[index].likes = this.user.review[index].likes + 1;
+                break;
+              case 1:
+                this.user.review[index].customer_review.like = 0;
+                this.user.review[index].likes = this.user.review[index].likes - 1;
+                break;
+            }
+          }
+        });
     },
     sendComment: function(reviewID) {
       var flag = true;
@@ -1762,31 +1105,6 @@ export default {
               }
             });
         }
-      });
-    },
-    cancel: function() {
-      this.dialog = false;
-      this.cover.temp = this.cover.link;
-      this.avatar.temp = this.avatar.link;
-    },
-    save: function() {
-      axios({
-        method: "put",
-        url: "http://localhost:8000/api/image/" + this.avatar.item.id,
-        params: {
-          id: this.avatar.item.id,
-          link: this.avatar.temp
-        }
-      }).then(res => {
-        console.log(res.data.mess);
-        if (res.data.mess) {
-          this.dialog = false;
-          this.cover.link = this.cover.temp;
-          this.avatar.link = this.avatar.temp;
-          this.$emit("loadUser", true);
-          return;
-        }
-        return;
       });
     },
     checkPass: function() {

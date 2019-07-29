@@ -25,7 +25,7 @@
               v-on="on"
             />
           </template>
-          <v-date-picker light no-title scrollable v-model="checkInVal">
+          <v-date-picker light no-title scrollable v-model="checkInVal" :min="checkInVal">
             <v-spacer></v-spacer>
             <v-btn flat v-on:click="mn.menu2 = false">Hủy</v-btn>
             <v-btn flat v-on:click="$refs.checkIn.save(checkInVal)">OK</v-btn>
@@ -53,7 +53,7 @@
               v-on="on"
             />
           </template>
-          <v-date-picker light no-title scrollable v-model="checkOutVal">
+          <v-date-picker light no-title scrollable v-model="checkOutVal" :min="checkOutVal">
             <v-spacer></v-spacer>
             <v-btn flat @click="mn.menu1 = false">Hủy</v-btn>
             <v-btn flat @click="$refs.checkOut.save(checkOutVal)">OK</v-btn>
@@ -955,7 +955,7 @@
                           <h2 class="font-weight-bold">{{bookingDialog.room.room_name}}</h2>
                         </v-flex>
                         <v-flex md8>
-                          <span>{{bookingDialog.room.room_type.name}}&nbsp;{{bookingDialog.room.room_mode.name}}</span>
+                          <span>{{bookingDialog.room.room_type.name}}</span>
                         </v-flex>
                         <v-flex
                           md4
@@ -967,7 +967,7 @@
                         <v-flex md8>
                           <span>Số Đêm Ở</span>
                         </v-flex>
-                        <v-flex md4>{{bookingDialog.room.days-1}}</v-flex>
+                        <v-flex md4>{{bookingDialog.room.days}}</v-flex>
                         <v-flex md12>
                           <v-divider></v-divider>
                         </v-flex>
@@ -1153,7 +1153,14 @@
                         <v-flex md8>
                           <span>Số Đêm Ở</span>
                         </v-flex>
-                        <v-flex md4>{{bookingDialog.room.days-1}}</v-flex>
+                        <v-flex md4>{{bookingDialog.room.days}}</v-flex>
+                        
+                                <v-flex md12>
+                                  <div class="font-italic font-weight-black">
+                                    {{bookingDialog.couponCode.mess}}
+                                  </div>
+                                </v-flex>
+                              
                         <v-flex md12>
                           <v-divider></v-divider>
                         </v-flex>
@@ -1257,8 +1264,8 @@
           <span class="ml-5 font-weight-bold title">Thực Hiện Đặt Câu Hỏi</span>
           <v-spacer></v-spacer>
           <div class="mr-3">
-            <v-btn color="teal" depressed class="white--text" @click="sendQuestion">Gửi</v-btn>
-            <v-btn color="red" depressed class="white--text" @click="action.dialog = false">Đóng</v-btn>
+            <v-btn round color="teal" depressed class="white--text" @click="sendQuestion" :disabled="action.data.title.length===0 && action.data.content.length===0">Gửi</v-btn>
+            <v-btn round color="red" depressed class="white--text" @click="action.dialog = false">Đóng</v-btn>
           </div>
         </v-card-actions>
         <v-divider class="pa-0 ma-0"></v-divider>
@@ -1267,35 +1274,6 @@
             <v-card-title>
               <v-form ref="form" data-vv-scope="form2">
                 <v-layout row wrap class="pa-0 ma-0">
-                  <!-- <v-flex md12 v-show="action.id ===0">
-                    <v-layout row wrap class="pa-0 ma-0">
-                      <v-flex md12>
-                        <v-rating
-                          v-model="action.data.star"
-                          class="pa-0 ma-0"
-                          color="#B53471"
-                          background-color="#636e72"
-                          empty-icon="$vuetify.icons.ratingFull"
-                          half-incrementss
-                          small
-                        ></v-rating>
-                      </v-flex>
-                      <v-flex md6>
-                        <v-checkbox
-                          v-model="action.data.can_comment"
-                          label="Public for comment"
-                          color="#B53471"
-                        ></v-checkbox>
-                      </v-flex>
-                      <v-flex md6>
-                        <v-checkbox
-                          v-model="action.data.notification"
-                          label="Get comment' notifications"
-                          color="#B53471"
-                        ></v-checkbox>
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>-->
                   <v-flex md12>
                     <v-text-field
                       :error-messages="errors.collect('form2.title')"
@@ -1337,6 +1315,13 @@
         </v-card-title>
       </v-card>
     </v-dialog>
+    <v-dialog persistent v-model="waiting" max-width="300">
+      <v-img :aspect-ratio="6/3" src="/img/booking/load.gif" style="opacity:0.9">
+      <v-layout fill-height align-center justify-center>
+        <span class="pa-5 caption white--text font-weight-bold">đang xử lý...</span>
+      </v-layout>
+      </v-img>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -1374,6 +1359,7 @@ export default {
   },
   data() {
     return {
+      waiting:false,
       text: "",
       paymentMethods: [],
       couponCodes: [],
@@ -1693,6 +1679,8 @@ export default {
         });
     },
     loadSearchData: function() {
+      this.page = 1;
+      this.getHotelRooms();
       this.$emit("loadSearchData", {
         place: this.placeVal,
         checkIn: this.checkInVal,
@@ -1720,7 +1708,7 @@ export default {
       this.bookingDialog.state = true;
       this.bookingDialog.accept = false;
       this.bookingDialog.totalPrice =
-        room.bookingAmount * room.price * (room.days - 1);
+        room.bookingAmount * room.price * (room.days);
       this.bookingDialog.step = 1;
       this.bookingDialog.couponCode.check = false;
       this.text = "";
@@ -1765,16 +1753,17 @@ export default {
       this.$emit("loadLoginDialog", true, val);
     },
     applyCouponCode: function() {
-      var $temp = 1;
+      var temp = 1;
       this.couponCodes.forEach(c => {
-        if (c.id == this.bookingDialog.couponCode.id) $temp = c.discount_value;
+        if (c.id == this.bookingDialog.couponCode.id) temp = c.discount_value;
       });
+      alert(temp)
       this.bookingDialog.totalPrice =
-        this.bookingDialog.room.bookingAmount *
-        this.bookingDialog.room.price *
-        ((100 - $temp) / 100);
+        this.bookingDialog.totalPrice *
+        ((100 - temp) / 100);
     },
     getBooking: function() {
+      this.waiting = true;
       axios({
         method: "post",
         url: "http://localhost:8000/api/booking",
@@ -1803,9 +1792,11 @@ export default {
           if (res.data.status == true) {
             console.log(res.data.booking);
             this.bookingDialog.state = false;
+            this.waiting = false;
             this.$emit("loadLogin");
             this.$emit("loadBookingDetail", res.data.booking, 1);
             this.getHotelRooms();
+            this.getHotelDetail();
           } else {
             console.log(res.data.mess);
           }

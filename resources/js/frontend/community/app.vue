@@ -22,6 +22,17 @@
       </v-img>
       <v-list dense class="grey lighten-4">
         <template>
+          <v-list-tile to="/" target="_blank">
+            <v-list-tile-action>
+              <v-icon :color="drawer.iconColor">{{drawer.websiteIcon}}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title :class="textClass.black">Trang Chủ</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </template>
+        <v-divider></v-divider>
+        <template>
           <v-list-tile :to="{name:'home'}">
             <v-list-tile-action>
               <v-icon :color="drawer.iconColor">{{drawer.communityIcon}}</v-icon>
@@ -93,12 +104,31 @@
           <v-layout
             row
             wrap
-            class="pl-3 ma-0 mx-1"
+            class="pa-0 pl-1 pr-1 ma-0 caption"
             v-for="(notification,i) in notifications.list"
             :key="i"
           >
-            <v-flex md12 class="ml-2">
-              <router-link :to="{name:notification.link.name,query:{id:notification.link.id}}">
+            <v-flex
+              :class="notification.read == false? `grey lighten-2`:`white`"
+              @click="markedNotification(notification)"
+              v-if="notification.answer"
+            >
+              <div class="ml-3 my-2">
+                <div class="font-weight-bold purple--text">{{notification.message}}</div>
+                <div class="ml-1 pl-3 border-left border-light">
+                  <div>{{notification.question.title}}</div>
+                  <div class="font-italic">"{{notification.question.content}}"</div>
+                  <div class="font-weight-bold body-1">-&nbsp;{{notification.answer}}</div>
+                </div>
+              </div>
+            </v-flex>
+            <v-flex
+              md12
+              :class="notification.read == false? `grey lighten-2`:`white`"
+              @click="markedNotification(notification)"
+              v-else
+            >
+              <div class="ml-3 my-2">
                 <v-avatar size="42px" color="black">
                   <v-avatar size="40px" color="white">
                     <img :src="'/img/user/'+notification.user.avatar" />
@@ -106,12 +136,12 @@
                 </v-avatar>
                 <div>
                   <div>{{notification.user.name}}</div>
-                  <div>"{{notification.message}}"</div>
+                  <div class="font-weight-bold teal--text">"{{notification.message}}"</div>
                 </div>
-              </router-link>
+              </div>
             </v-flex>
             <v-flex md12 v-if="i<notifications.list.length-1">
-              <v-divider></v-divider>
+              <v-divider class="pa-0 ma-0 my-2"></v-divider>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -124,41 +154,42 @@
     </v-navigation-drawer>
     <v-toolbar :color="drawer.color" app fixed clipped-right clipped-left flat>
       <v-toolbar-side-icon v-on:click="drawer.state = !drawer.state" class="teal accent-4"></v-toolbar-side-icon>
-      <a class="title ml-3 mr-5 white--text text-uppercase" href="/community">Trang Chủ</a>
+      <a class="title ml-3 mr-5 white--text text-uppercase" href="/community">Cộng đồng</a>
       <v-spacer></v-spacer>
       <v-speed-dial
-        v-model="fab"
+        v-model="notifications.state"
         :transition="`slide-x-reverse-transition`"
         :direction="`left`"
         v-if="notifications.list.length>0"
       >
         <template v-slot:activator>
-          <v-badge overlap color="red" class="mr-5">
+          <v-badge overlap color="red" class="mr-5" v-if="notifications.count>0">
             <template v-slot:badge>
-              <span>{{notifications.list.length}}</span>
+              <span>{{notifications.count}}</span>
             </template>
             <v-avatar :color="drawer.iconColor" size="40px">
-              <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
+              <v-icon dark>notifications</v-icon>
             </v-avatar>
           </v-badge>
+          <v-avatar :color="drawer.iconColor" size="40px" class="mr-5" v-else>
+            <v-icon class="pointer" dark>notifications</v-icon>
+          </v-avatar>
         </template>
-        <v-btn fab dark small color="green">
-          <v-icon>edit</v-icon>
+        <v-btn fab dark small color="orange" @click.stop="markedAllNotifications">
+          <v-icon>remove_red_eye</v-icon>
         </v-btn>
-        <v-btn fab dark small color="indigo">
-          <v-icon>add</v-icon>
-        </v-btn>
-        <v-btn fab dark small color="red">
+        <v-btn fab dark small color="red" @click.stop="deleteAllNotifications">
           <v-icon>delete</v-icon>
         </v-btn>
       </v-speed-dial>
-      <v-avatar :color="drawer.iconColor" size="40px" class="mr-5" v-else>
-        <v-icon
-          dark
-          v-on:click="notifications.state = !notifications.state"
-          v-if="!fab"
-        >notifications</v-icon>
-        <v-icon v-else v-on:click="notifications.state = !notifications.state">close</v-icon>
+      <v-avatar
+        :color="drawer.iconColor"
+        size="40px"
+        class="mr-5"
+        @click="notifications.state = !notifications.state"
+        v-else
+      >
+        <v-icon class="pointer" dark>notifications</v-icon>
       </v-avatar>
     </v-toolbar>
     <div id="top"></div>
@@ -208,7 +239,14 @@
       persistent
     >
       <v-card title light width="100%" height="100%">
-        <v-layout fill-height row wrap justify-center align-center class="pa-0 ma-0 login-background">
+        <v-layout
+          fill-height
+          row
+          wrap
+          justify-center
+          align-center
+          class="pa-0 ma-0 login-background"
+        >
           <div class="text-md-center" v-if="flag === false">
             <div>
               <v-icon large color="#9980FA">fas fa-circle-notch fa-spin</v-icon>
@@ -228,75 +266,75 @@
           </div>
           <v-flex md8 v-else>
             <v-hover v-slot:default="{ hover }">
-            <v-layout
-              row
-              wrap
-              justify-center
-              align-center
-              :class="hover? `pa-5 ma-0 white elevation-20`:`pa-5 ma-0 white elevation-5`"
-            >
-              <v-flex md5 mr-2>
-                <v-img :aspect-ratio="4/3" src="/blog/img/slider/slider.png" class="radius">
-                  <v-layout fill-height justify-center align-center>
-                    <div>
+              <v-layout
+                row
+                wrap
+                justify-center
+                align-center
+                :class="hover? `pa-5 ma-0 white elevation-20`:`pa-5 ma-0 white elevation-5`"
+              >
+                <v-flex md5 mr-2>
+                  <v-img :aspect-ratio="4/3" src="/blog/img/slider/slider.png" class="radius">
+                    <v-layout fill-height justify-center align-center>
                       <div>
-                        <a href="/" target="_blank" class="body-1">Trang Chủ</a>
-                      </div>
-                      <div class="ml-1 pl-3 border-left border-dark">
                         <div>
-                          <a href="/about.html" target="_blank" class="caption">Về Chúng Tôi</a>
+                          <a href="/" target="_blank" class="body-1">Trang Chủ</a>
                         </div>
-                        <div>
-                          <a href="/contact.html" target="_blank" class="caption">Liên Hệ</a>
+                        <div class="ml-1 pl-3 border-left border-dark">
+                          <div>
+                            <a href="/about.html" target="_blank" class="caption">Về Chúng Tôi</a>
+                          </div>
+                          <div>
+                            <a href="/contact.html" target="_blank" class="caption">Liên Hệ</a>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </v-layout>
-                </v-img>
-              </v-flex>
-              <v-flex md6 ml-2>
-                <v-form ref="form" data-vv-scope="form1">
-                  <v-text-field
-                    color="teal"
-                    :error-messages="errors.collect('form1.username')"
-                    data-vv-name="username"
-                    v-validate="'required|min:4'"
-                    type="text"
-                    outline
-                    v-model="login.username"
-                    label="Username"
-                  ></v-text-field>
-                  <v-text-field
-                    color="teal"
-                    :error-messages="errors.collect('form1.password')"
-                    data-vv-name="password"
-                    v-validate="'required|min:4'"
-                    type="password"
-                    outline
-                    v-model="login.password"
-                    label="Mật khẩu"
-                    append-icon="visibility"
-                    v-on:click:append="login.value=true"
-                    v-if="!login.value"
-                  ></v-text-field>
-                  <v-text-field
-                    color="teal"
-                    :error-messages="errors.collect('form1.password')"
-                    data-vv-name="password"
-                    v-validate="'required|min:4'"
-                    type="text"
-                    outline
-                    v-model="login.password"
-                    label="Mật khẩu"
-                    append-icon="visibility_off"
-                    v-on:click:append="login.value=false"
-                    v-else
-                  ></v-text-field>
-                  <v-btn round color="teal" v-on:click="submitLogin" dark depressed>Đăng Nhập</v-btn>
-                  <v-btn round color="grey" v-on:click="clear" dark depressed>Xóa</v-btn>
-                </v-form>
-              </v-flex>
-            </v-layout>
+                    </v-layout>
+                  </v-img>
+                </v-flex>
+                <v-flex md6 ml-2>
+                  <v-form ref="form" data-vv-scope="form1">
+                    <v-text-field
+                      color="teal"
+                      :error-messages="errors.collect('form1.username')"
+                      data-vv-name="username"
+                      v-validate="'required|min:4'"
+                      type="text"
+                      outline
+                      v-model="login.username"
+                      label="Username"
+                    ></v-text-field>
+                    <v-text-field
+                      color="teal"
+                      :error-messages="errors.collect('form1.password')"
+                      data-vv-name="password"
+                      v-validate="'required|min:4'"
+                      type="password"
+                      outline
+                      v-model="login.password"
+                      label="Mật khẩu"
+                      append-icon="visibility"
+                      v-on:click:append="login.value=true"
+                      v-if="!login.value"
+                    ></v-text-field>
+                    <v-text-field
+                      color="teal"
+                      :error-messages="errors.collect('form1.password')"
+                      data-vv-name="password"
+                      v-validate="'required|min:4'"
+                      type="text"
+                      outline
+                      v-model="login.password"
+                      label="Mật khẩu"
+                      append-icon="visibility_off"
+                      v-on:click:append="login.value=false"
+                      v-else
+                    ></v-text-field>
+                    <v-btn round color="teal" v-on:click="submitLogin" dark depressed>Đăng Nhập</v-btn>
+                    <v-btn round color="grey" v-on:click="clear" dark depressed>Xóa</v-btn>
+                  </v-form>
+                </v-flex>
+              </v-layout>
             </v-hover>
           </v-flex>
         </v-layout>
@@ -362,30 +400,33 @@ export default {
         iconColor: "#1cc3b2",
         communityIcon: "refresh",
         accountIcon: "folder_shared",
-        logoutIcon: "logout"
+        logoutIcon: "logout",
+        websiteIcon: "check_box_outline_blank"
       },
       notifications: {
-        kind: [
-          "Đã bình luận", //index 0
-          "Đang theo dõi bạn" //index 1
-        ],
         state: false,
         iconColor: "#1cc3b2",
         commentIcon: "message",
         followingIcon: "person_add",
         systemMessageIcon: "announcement",
         newsIcon: "fas fa-poll-h",
+        count: 0,
         list: []
       }
     };
   },
+  beforeCreate() {},
   created() {
     console.log("created");
     this.getLogin();
   },
   mounted() {
+    // this.getLogin();
     this.$validator.localize("en", this.dictionary);
     window.Echo.channel("message").listen(".send-mess", e => {
+      this.getNotifications();
+    });
+    window.Echo.channel("question").listen(".hotel-answer", e => {
       this.getNotifications();
     });
   },
@@ -486,6 +527,7 @@ export default {
           console.log(res.data.data);
           console.log(this.notifications.list);
           this.notifications.list = res.data.data;
+          this.notifications.count = res.data.count;
           console.log(this.notifications.list);
         })
         .catch(error => {
@@ -539,6 +581,118 @@ export default {
             });
         }
       });
+    },
+    markedAllNotifications: function() {
+      var oldList = this.notifications.list;
+      var count = this.notifications.count;
+      // this.notifications.list = [];
+      this.notifications.list.forEach(element => {
+        element.read = true;
+      });
+      this.notifications.count = 0;
+      var flag = true;
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/update-all-notifications",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {})
+        .catch(error => {
+          flag = false;
+          // console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
+      if (!flag) {
+        this.notifications.list = [];
+        this.notifications.count = count;
+        this.notifications.list = oldList;
+      }
+    },
+    deleteAllNotifications: function() {
+      var oldList = this.notifications.list;
+      var count = this.notifications.count;
+      this.notifications.list = [];
+      this.notifications.count = 0;
+      var flag = true;
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/delete-all-notifications",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {})
+        .catch(error => {
+          flag = false;
+          // console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        });
+      if (!flag) {
+        this.notifications.list = oldList;
+        this.notifications.count = count;
+      }
+    },
+    getIndex(id) {
+      var number = 0;
+      this.notifications.list.forEach((element, index) => {
+        if (element.id == id) number = index;
+      });
+      return number;
+    },
+    markedNotification: function(val) {
+      if (val.read != true) {
+        var index = this.getIndex(val.id);
+        console.log(index);
+        console.log(this.notifications.list[index]);
+        this.notifications.list[index].read = true;
+        this.notifications.count = this.notifications.count - 1;
+        var flag = true;
+        axios({
+          method: "put",
+          url: "http://localhost:8000/api/notifications/" + val.id,
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("login_token")
+          }
+        })
+          .then(res => {
+            console.log(res.data);
+            if (res.data.status == true) {
+              if(!val.answer){
+                this.$router.push({
+                name: val.link.name,
+                query: { id: val.link.id }
+              });
+              }              
+            } else {
+              flag = false;
+            }
+          })
+          .catch(error => {
+            flag = false;
+            // console.log(error.response);
+            if (error.response.status == 401) {
+              localStorage.removeItem("login_token");
+              this.$router.push({ name: "login" });
+            }
+          })
+          .then(() => {
+            if (!flag) {
+              this.notifications.list[index].read = false;
+              this.notifications.count = this.notifications.count + 1;
+            }
+          });
+      } else {
+        if(!val.answer)
+          this.$router.push({ name: val.link.name, query: { id: val.link.id } });
+      }
     }
   }
 };

@@ -40,10 +40,7 @@ class UserController extends Controller
         $user->Customer;
         $avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
         $user->avatar = $avatar;
-        $user->followers = $user->Followers();
-        $user->customerFollowings = $user->Followings();
-        $user->hotelFollowings = $user->HotelFollowings();
-        $user->review = $user->reViewList();
+        $user->review = $user->reViewList($user->id);
         $user->question = $user->QuestionList();
         $user->booking = $user->bookingList();        
         return response()->json([
@@ -165,28 +162,14 @@ class UserController extends Controller
         $user->avatar = $avatar;
         $followers = $user->Followers();
         $user->follow = false;
-        $user->review = $user->reViewList();
+        $user->review = $user->reViewList(Auth::user()->id);
         if (sizeOf($followers) > 0) {
             foreach ($followers as $f) {
-                $f->isFollowing = $f->follower->isFollowed(Auth::user()->id);
                 if ($f->follower_id ==  Auth::user()->id) {
                     $user->follow = true;
-                    $f->isFollowing = null;
                 }
             }
         }
-        $user->followers = $followers;
-        $customerFollowings = $user->Followings();
-        if (sizeOf($customerFollowings) > 0) {
-            foreach ($customerFollowings as $c) {
-                $c->isFollowing = $c->followed->isFollowed(Auth::user()->id);
-                if ($c->followed_id ==  Auth::user()->id) {
-                    $c->isFollowing = null;
-                }
-            }
-        }
-        $user->customerFollowings = $customerFollowings;
-        $user->hotelFollowings = $user->HotelFollowings();
         if ($id == Auth::user()->id)
             return response()->json([
                 'status' => false,

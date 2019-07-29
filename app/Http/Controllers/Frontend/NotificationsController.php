@@ -19,11 +19,16 @@ class NotificationsController extends Controller
     {
         $user = Auth::user();
         $nofications = array();
-        foreach($user->unreadNotifications as $n){
-            $nofications[] = $n->data;
+        foreach ($user->notifications as $n) {
+            $temp = $n->data;
+            $temp['id'] = $n->id;
+            $temp['read'] = $n->read_at?true:false;
+            $nofications[] = $temp;
         };
+        $count = $user->unreadNotifications->count();
         return response()->json([
-            'data' => $nofications
+            'data' => $nofications,
+            'count' => $count
         ]);
     }
 
@@ -54,7 +59,31 @@ class NotificationsController extends Controller
     //put/patch notifications/{notifications}
     public function update($id, Request $req)
     {
-        return;
+        // dd($id);
+        $notification = Auth::user()->unreadNotifications->where('id', $id)->first();
+        if ($notification == null) return response()->json([
+            'status' => false
+        ]);
+        $notification->markAsRead();
+        return response()->json([
+            'status' => true,
+        ]);
+    }
+
+    public function updateAll(Request $req)
+    {
+        Auth::user()->unreadNotifications->markAsRead();
+        return response()->json([
+            'status' => true
+        ]);
+    }
+
+    public function deleteAll(Request $req)
+    {
+        Auth::user()->notifications()->delete();
+        return response()->json([
+            'status' => true
+        ]);
     }
 
     //delete notifications/{notifications}
