@@ -15,7 +15,7 @@ use App\Http\Resources\BookingResource;
 class Hotel extends Model
 {
   use Notifiable;
-  
+
   protected $table = 'hotel';
 
   protected $fillable = [
@@ -82,12 +82,12 @@ class Hotel extends Model
   }
   public function getCouponCode()
   {
-    $couponCodes = CouponCode::where('hotel_id',$this->id)->get();
+    $couponCodes = CouponCode::where('hotel_id', $this->id)->get();
     $temp = array();
     foreach ($couponCodes as $couponCode) {
       if (!Carbon::now()->lessThan(Carbon::parse($couponCode->start_at))) {
         if ($couponCode->end_at == null || Carbon::now()->lessThan(Carbon::parse($couponCode->end_at))) {
-          if($couponCode->apply_amount >0)
+          if ($couponCode->apply_amount > 0)
             $temp[] = $couponCode;
         }
       }
@@ -106,7 +106,6 @@ class Hotel extends Model
       $r->booking = $r->bookingDetail();
       $r->useful = false;
       $r->customer = $r->Customer();
-      // $r->avatar = UserImage::where('user_id', $r->customer_id)->where('is_primary', 1)->first();
       if ($id != null) {
         $customerReview = $r->CustomerReview($id, $r->id);
         if ($customerReview != null && $customerReview->useful != 0) $r->useful = true;
@@ -117,7 +116,7 @@ class Hotel extends Model
 
   public function questionList()
   {
-    $question = Question::where('hotel_id', $this->id)->orderBy('created_at','desc')->get();
+    $question = Question::where('hotel_id', $this->id)->orderBy('created_at', 'desc')->get();
     foreach ($question as $q) {
       $q->customer = $q->Customer();
       $q->Reply;
@@ -228,27 +227,52 @@ class Hotel extends Model
   {
     $policy = $this->Policy;
     $paymentMethods = array();
-    switch ($policy->cancelable) {
+    $tempCase0 = array();
+    $tempCase1 = array();
+    switch ($policy->payment_method) {
       case 0:
-        $tempCase0 = array();
         $tempCase0['method'] = PaymentMethod::find(1);
-        $tempCase0['content'] = 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng.';
+        if ($policy->cancelable > 0) {
+          $tempCase0['content'] = 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In ' . $policy->cancelable . ' ngày';
+        } else {
+          $tempCase0['content'] = ' Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng';
+        }
         $paymentMethods[] = $tempCase0;
         break;
-      default:
-        for ($i = 1; $i <= 2; $i++) {
-          $tempDefault = array();
-          $tempDefault['method'] = PaymentMethod::find($i);
-          $tempDefault['content'] = 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In ' . $policy->cancelable . ' ngày.';
-          if ($i == 2) {
-            if ($policy->can_refund == 0) {
-              $tempDefault['content'] = $tempDefault['content'] . ' Tuy nhiên, bạn sẽ không được hoàn trả phía đã thanh toán.';
-            } else {
-              $tempDefault['content'] = $tempDefault['content'] . '  Chúng tôi chấp nhận hoàn trả ' . $policy->can_refund . '% các chi phí mà bạn đã thanh toán.';
-            }
+      case 1:
+        $tempCase1['method'] = PaymentMethod::find(2);
+        if ($policy->cancelable > 0) {
+          $tempCase1['content'] = 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In ' . $policy->cancelable . ' ngày';
+          if ($policy->can_refund > 0) {
+            $tempCase1['content'] = $tempCase1['content'] . '. Bạn sẽ được hoàn trả ' . $policy->can_refund . '% phí đã thanh toán';
+          } else {
+            $tempCase1['content'] = $tempCase1['content'] . '. Tuy nhiên, bạn sẽ không được hoàn trả phía đã thanh toán';
           }
-          $paymentMethods[] = $tempDefault;
+        } else {
+          $tempCase1['content'] = ' Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng';
         }
+        $paymentMethods[] = $tempCase1;
+        break;
+      default:
+        $tempCase0['method'] = PaymentMethod::find(1);
+        if ($policy->cancelable > 0) {
+          $tempCase0['content'] = 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In ' . $policy->cancelable . ' ngày';
+        } else {
+          $tempCase0['content'] = ' Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng';
+        }
+        $paymentMethods[] = $tempCase0;
+        $tempCase1['method'] = PaymentMethod::find(2);
+        if ($policy->cancelable > 0) {
+          $tempCase1['content'] = 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In ' . $policy->cancelable . ' ngày';
+          if ($policy->can_refund > 0) {
+            $tempCase1['content'] = $tempCase1['content'] . '. Bạn sẽ được hoàn trả ' . $policy->can_refund . '% phí đã thanh toán';
+          } else {
+            $tempCase1['content'] = $tempCase1['content'] . '. Tuy nhiên, bạn sẽ không được hoàn trả phía đã thanh toán';
+          }
+        } else {
+          $tempCase1['content'] = ' Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng';
+        }
+        $paymentMethods[] = $tempCase1;
         break;
     }
     return $paymentMethods;
@@ -269,15 +293,15 @@ class Hotel extends Model
   }
   public function getReviewPoint()
   {
-    $reviews = Review::where('hotel_id',$this->id)->get();
+    $reviews = Review::where('hotel_id', $this->id)->get();
     $count = sizeOf($reviews);
     $point = 0;
     foreach ($reviews as $review) {
       $point += $review->point;
     }
     if ($count != 0)
-      return $point / $count;
-    else
-      return 0;
+      $this->update([
+        'review_point' => $point / $count
+      ]);
   }
 }

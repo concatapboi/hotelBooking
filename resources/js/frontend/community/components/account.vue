@@ -859,6 +859,24 @@ export default {
   },
   mounted() {
     this.$validator.localize("en", this.dictionary);
+    window.Echo.channel("message").listen(".send-mess", e => {
+      this.user.review.forEach((element, index) => {
+        if (element.id == e.link.id) {
+          var comment = {
+            content: e.content,
+            customer: {
+              id: e.user.id,
+              name: e.user.name,
+              avatar: {
+                image_link: e.user.avatar
+              }
+            }
+          };
+          this.user.review[index].comment = [...this.user.review[index].comment,comment];
+          this.user.review[index].comments = this.user.review[index].comments + 1;
+        }
+      });
+    });
   },
   beforeCreate(){
   },
@@ -979,9 +997,9 @@ export default {
           if (res.data.status == true) {
             console.log(res.data.comment);
             var comment = res.data.comment;
-            this.user.review[index].comment.push(comment);
-            this.user.review[index].comments =
-              this.user.review[index].comments + 1;
+            // this.user.review[index].comment.push(comment);
+            // this.user.review[index].comments =
+            //   this.user.review[index].comments + 1;
             this.comment.able = false;
             this.comment.content = "";
             this.comment.review_id = 0;
@@ -1158,9 +1176,7 @@ export default {
     },
     formatDate: function(date) {
       if (!date) return null;
-      date = date.substr(0, 10);
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
+      return this.$moment(date).format("DD-MM-YYYY");
     },
     bookingListPage: function(val) {
       if (val != 0) {

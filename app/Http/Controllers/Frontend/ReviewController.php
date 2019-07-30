@@ -142,6 +142,7 @@ class ReviewController extends Controller
             'booking_id' => $req->booking_id,
             'can_comment' => $req->can_comment == true ? 1 : 0,
         ]);
+        Hotel::find($req->hotel_id)->getReviewPoint();
         $customerReview = CustomerReview::create([
             'customer_id' => $review->customer_id,
             'review_id' => $review->id,

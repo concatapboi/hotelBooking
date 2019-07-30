@@ -239,7 +239,20 @@ export default {
   },
   mounted() {
     window.Echo.channel("message").listen(".send-mess", e => {
-      if(e.link.id == this.id) this.load();
+      if(e.link.id == this.id) {
+        var comment = {
+            content: e.content,
+            customer: {
+              id: e.user.id,
+              name: e.user.name,
+              avatar: {
+                image_link: e.user.avatar
+              }
+            }
+          };
+          this.review.comment = [...this.review.comment,comment];
+          this.review.comments = this.review.comments+1;
+      }
     });
   },
   watch: {
@@ -289,9 +302,7 @@ export default {
     },
     formatDate: function(date) {
       if (!date) return null;
-      date = date.substr(0, 10);
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
+      return this.$moment(date).format("DD-MM-YYYY");
     },
     sendComment: function() {
       this.comment.review_id = this.id;
@@ -309,8 +320,8 @@ export default {
           console.log(res.data.status);
           if (res.data.status == true) {
             console.log(res.data.comment);
-            var comment = res.data.comment;
-            this.review.comment.push(comment);
+            // var comment = res.data.comment;
+            // this.review.comment.push(comment);
             this.comment.able = false;
             this.comment.content = "";
             this.comment.review_id = 0;

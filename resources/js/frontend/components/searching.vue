@@ -25,7 +25,7 @@
               v-on="on"
             />
           </template>
-          <v-date-picker light no-title scrollable v-model="checkInVal" :min="checkInVal">
+          <v-date-picker light no-title scrollable v-model="checkInVal" :min="now">
             <v-spacer></v-spacer>
             <v-btn flat v-on:click="mn.menu2 = false">Hủy</v-btn>
             <v-btn flat v-on:click="$refs.checkIn.save(checkInVal)">OK</v-btn>
@@ -53,7 +53,7 @@
               v-on="on"
             />
           </template>
-          <v-date-picker light no-title scrollable v-model="checkOutVal" :min="checkOutVal">
+          <v-date-picker light no-title scrollable v-model="checkOutVal" :min="checkInVal+1">
             <v-spacer></v-spacer>
             <v-btn flat @click="mn.menu1 = false">Hủy</v-btn>
             <v-btn flat @click="$refs.checkOut.save(checkOutVal)">OK</v-btn>
@@ -383,6 +383,9 @@ export default {
     checkIn: {
       type: String
     },
+    now: {
+      type: String
+    },
     checkOut: {
       type: String
     },
@@ -549,8 +552,7 @@ export default {
     },
     formatDate: function(date) {
       if (!date) return null;
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
+      return this.$moment(date).format("DD-MM-YYYY");
     },
     reSearch: function() {
       this.$router.push({

@@ -119,7 +119,7 @@ class Booking extends Model
     $todayExplode = explode("-", date("Y-m-d"));
     $bookingCheckIn = Carbon::createMidnightDate($bookingCheckinExplode[0], $bookingCheckinExplode[1], $bookingCheckinExplode[2]);
     $today = Carbon::createMidnightDate($todayExplode[0], $todayExplode[1], $todayExplode[2]);
-    if (!$today->lessThan($bookingCheckIn)) {
+    if (!$today->lessThan($bookingCheckIn) || $today->diffInDays($bookingCheckIn)>=$policy->cancelable) {
       $status = false;
     }
     return $status;

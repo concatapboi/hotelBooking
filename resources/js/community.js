@@ -15,10 +15,12 @@ import VeeValidate from 'vee-validate';
 import Routes from '@/js/frontend/community/routes.js';
 import App from '@/js/frontend/community/app';
 import InfiniteLoading from 'vue-infinite-loading';
+import VueMoment from 'vue-moment';
 
 Vue.use(Vuetify);
 Vue.use(VeeValidate);
-Vue.use(InfiniteLoading)
+Vue.use(InfiniteLoading);
+Vue.use(VueMoment);
 
 /**
  * The following block of code may be used to automatically register your
