@@ -131,6 +131,7 @@ class HotelController extends Controller
             "check_in" => $request->checkin,
             "check_out" => $request->checkout,
             "content" => $request->detailPolicy,
+            "payment_method" => $request->payment_method,
         ];
         if ($request->cancelable == true) {
             $policy["cancelable"] = $request->cancel_day;
@@ -156,7 +157,7 @@ class HotelController extends Controller
      */
     public function show($id)
     {
-        //
+        return new HotelResource(Hotel::find($id));
     }
 
     /**
@@ -260,6 +261,7 @@ class HotelController extends Controller
             "check_in" => $request->checkin,
             "check_out" => $request->checkout,
             "content" => $request->detailPolicy,
+            "payment_method" => $request->payment_method,
         ];
         if ($request->cancelable == true) {
             $policy["cancelable"] = $request->cancel_day;

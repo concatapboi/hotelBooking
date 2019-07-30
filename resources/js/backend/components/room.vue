@@ -96,6 +96,9 @@
                       data-vv-name="maxAmountAdult"-->
                       <v-text-field
                         outline
+                        v-validate="''"
+                        :error-messages="errors.collect('max_adult_amount')"
+                        data-vv-name="max_adult_amount"
                         type="number"
                         min="1"
                         class="pr-3"
@@ -107,6 +110,9 @@
                       <v-text-field
                         outline
                         type="number"
+                        v-validate="''"
+                        :error-messages="errors.collect('max_child_amount')"
+                        data-vv-name="max_child_amount"
                         min="1"
                         class="pl-3"
                         label="Số lượng trẻ em tối đa"
@@ -118,7 +124,11 @@
                       <v-text-field
                         outline
                         type="number"
+                        v-validate="'max_value:'+room.max_child_amount"
+                        :error-messages="errors.collect('free_child_amount')"
+                        data-vv-name="free_child_amount"
                         min="1"
+                        :max="room.max_child_amount"
                         class="pl-3"
                         label="Số lượng trẻ em được miễn phí"
                         v-model="room.free_child_amount"
@@ -497,6 +507,9 @@ export default {
     // hotelId: {
     //   type: Number
     // },
+    arrayHotel: {
+      type: Array
+    },
     arrayService: {
       type: Array
     },
@@ -565,6 +578,9 @@ export default {
           },
           price: {
             decimal: "Giá phòng ko hợp lệ"
+          },
+          free_child_amount:{
+            max_value : "số trẻ em được miễn phí phải bé hơn hoặc bằng số trẻ em miễn phí"
           }
         }
       },
@@ -582,12 +598,20 @@ export default {
     };
   },
   created() {
-    if (this.$route.query.hotelId == 0) {
-      this.$router.push({ name: "home" });
-      this.$emit("onErrorMessage", "vui long chon khach san");
-    } else {
-      this.$emit("chooseHotel", this.hotelId);
-      this.initialize();
+    // if (this.$route.query.hotelId == 0) {
+    //   this.$router.push({ name: "home" });
+    //   this.$emit("onErrorMessage", "vui long chon khach san");
+    // } else {
+    //   this.$emit("chooseHotel", this.hotelId);
+    //   this.initialize();
+    // }
+    this.initialize();
+  },
+  watch: {
+    room: function() {
+      if (this.room.free_child_amount > this.room.max_child_amount) {
+        this.room.free_child_amount = this.room.max_child_amount;
+      }
     }
   },
   mounted() {
@@ -679,6 +703,15 @@ export default {
       this.formTitle = "New Room";
       this.$refs.formNewRoom.reset();
       this.images = [];
+      this.showAmount = false;
+      if (this.defaultRoomMode == 1) {
+        this.room.max_adult_amount = 1;
+      } else if (this.defaultRoomMode == 2) {
+        this.room.max_adult_amount = 2;
+      } else {
+        this.room.max_adult_amount = 2;
+        this.showAmount = true;
+      }
     },
     initialize: function() {
       this.chooseRoomMode();
@@ -738,6 +771,7 @@ export default {
       this.bed.splice(index, 1);
     },
     addNewRoom: function() {
+      console.log(this.room);
       var _this = this;
       this.$validator
         .validate()
@@ -852,9 +886,6 @@ export default {
     },
     showEdit: function(roomMode, roomId) {
       this.roomModeWorkingOn = roomMode;
-
-      this.dialog = true;
-      this.formTitle = "Sửa thông tin phòng";
       this.roomId = roomId;
       axios
         .get("http://localhost:8000/api/manager/room/" + roomId, {
@@ -866,11 +897,17 @@ export default {
           }
         })
         .then(response => {
+          this.dialog = true;
+          this.formTitle = "Sửa thông tin phòng";
           if (response.data.status == true) {
             var room = response.data.data;
             this.room.room_name = room.room_name;
             this.room.amount = room.amount;
             this.room.description = room.description;
+            this.room.max_adult_amount = room.max_adult_amount;
+            this.room.max_child_amount = room.max_child_amount;
+            this.room.child_age = room.child_age;
+            this.room.free_child_amount = room.free_child_amount;
             if (this.room.max_child_amount != 0) {
               this.showAmount = true;
               this.showFreeAmount = true;
@@ -878,10 +915,7 @@ export default {
               this.showAmount = false;
               this.showFreeAmount = false;
             }
-            this.room.max_adult_amount = room.max_adult_amount;
-            this.room.max_child_amount = room.max_child_amount;
-            this.room.child_age = room.child_age;
-            this.room.free_child_amount = room.free_child_amount;
+
             this.room.room_size = room.room_size;
             this.room.price = room.price;
             this.defaultRoomMode = room.room_mode_id;

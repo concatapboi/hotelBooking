@@ -34,6 +34,7 @@ class HotelResource extends JsonResource
             "fax_number" => $this->fax_number,
             "tax_code" => $this->tax_code,
             "hotel_type" => $this->HotelType->name,
+            "hotel_type_id" => $this->hotel_type_id,
             "coin" => $this->coin,
             "stars_num" => $this->stars_num,
             "address" => $this->address,

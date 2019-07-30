@@ -17,6 +17,7 @@ class Policy extends Model
     'can_refund',
     'cancelable',
     'content',
+    'payment_method',
   ];
 
   public function Hotel()
