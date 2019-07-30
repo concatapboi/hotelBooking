@@ -259,19 +259,28 @@ class DatabaseSeeder extends Seeder
                 'ward_id' => $arr[$rand],
                 'address' => 'Hà Nội',
             ]);
+            $method = rand (0,2);
             $cancel = rand (0,7);
-            if($cancel ==0) $refund = 0;
-            else $refund = rand(0,15);
+            $refund = rand(0,15);
             $content = '';
             $check_in = '08:00';
             $check_out = '17:00';
+            switch($method){
+                case 0:
+                    $refund = 0;
+                    $content = $content.'Chỉ chấp nhận thanh toán tại chỗ.';
+                    break;
+                case 1:
+                    $content = $content.'Chỉ chấp nhận thanh toán trực tuyến.';
+                    break;
+            }
             switch($cancel){
                 case 0:
                     $content = $content.'Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng. ';
                     break;
                 default:
                     if($refund == 0){
-                        $content = $content.'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In '.$cancel.' ngày. Tuy nhiên, bạn sẽ không được hoàn trả phía đã thanh toán.';
+                        $content = $content.'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In '.$cancel.' ngày. Tuy nhiên, bạn sẽ không được hoàn trả phí đã thanh toán.';
                     }else{
                         $content = $content.'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In '.$cancel.' ngày. Chúng tôi chấp nhận hoàn trả '.$refund.'% các chi phí mà bạn đã thanh toán.';
                     }
@@ -282,6 +291,7 @@ class DatabaseSeeder extends Seeder
                 'check_in' => $check_in.':00',
                 'check_out' => $check_out.':00',
                 'cancelable' => $cancel,
+                'payment_method' => $method,
                 'can_refund' => $refund,
                 'content' => $content
             ]);

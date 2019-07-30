@@ -213,6 +213,13 @@ export default {
       newQuestionList: []
     };
   },
+  mounted(){
+    window.Echo.channel("ask").listen(".user-ask", e => {
+      this.questionList = [e.question, ...this.questionList];
+      this.newQuestionList = [e.question, ...this.newQuestionList];
+      this.radio = 2;
+    });
+  },
   created() {
     this.$emit("chooseHotel", this.hotelId);
     // if (Object.keys(this.$route.query).length == 0) {
@@ -241,6 +248,17 @@ export default {
     },
     closeQues: function() {
       this.search = "";
+      switch (this.radio) {
+        case 0:
+          this.data = this.questionList;
+          break;
+        case 1:
+          this.data = this.oldQuestionList;
+          break;
+        case 2:
+          this.data = this.newQuestionList;
+          break;
+      }
     },
     load: function() {
       console.log(this.hotelId);
@@ -311,6 +329,7 @@ export default {
             this.oldQuestionList.push(res.data.question);
             this.questionList.push(res.data.question);
             this.data  = this.oldQuestionList;
+            this.text = "";
             this.openQues(res.data.question.title);
           } else {
             // this.$router.push({ name: "home" });

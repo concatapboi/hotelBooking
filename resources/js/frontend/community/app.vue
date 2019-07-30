@@ -525,10 +525,8 @@ export default {
       })
         .then(res => {
           console.log(res.data.data);
-          console.log(this.notifications.list);
           this.notifications.list = res.data.data;
           this.notifications.count = res.data.count;
-          console.log(this.notifications.list);
         })
         .catch(error => {
           // console.log(error.response);

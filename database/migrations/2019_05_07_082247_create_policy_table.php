@@ -21,6 +21,7 @@ class CreatePolicyTable extends Migration
             $table->integer('cancelable')->default(0);
             $table->integer('can_refund')->default(0)->max(100);
             $table->text('content')->nullable();
+            $table->tinyInteger('payment_method')->default(2);//0:off,1:on,2:both
             $table->timestamps();
             $table->foreign('hotel_id')
             ->references('id')->on('hotel')

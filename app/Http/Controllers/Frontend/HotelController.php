@@ -75,48 +75,36 @@ class HotelController extends Controller
                 $hotel->paymentMethods = $hotel->paymentMethods();
                 $hotel->image = HotelImage::where('hotel_id', $hotel->id)->where('is_primary', 1)->first()->image_link;
                 $hotel->images = HotelImage::where('hotel_id', $hotel->id)->get();
-                $hotel->question = $hotel->questionList();
-                $hotel->review_point = $hotel->getReviewPoint();
+                // $hotel->question = $hotel->questionList();
                 $status = true;
                 $hotel->hotel_type = $hotel->HotelTypeResource();
                 $hotel->service = $hotel->ServiceResource();
                 $hotel->followed = false;
-                $hotel->review = $hotel->reviewList($req->userID);
+                // $hotel->review = $hotel->reviewList($req->userID);
                 $hotel->coupon_code = $hotel->getCouponCode();
                 if ($req->userID != null) {
                     if (HotelFollowing::where('customer_id', $req->userID)->where('hotel_id', $hotel->id)->first() != null)
                         $hotel->followed = true;
                 }
-                // foreach ($hotel->Room as $r) {
-                //     $r->couponCode = $r->couponCode();
-                //     $r->image = RoomImage::where('room_id', $r->id)->where('is_primary', 1)->first()->image_link;
-                //     $r->images = RoomImage::where('room_id', $r->id)->get();
-                //     $r->room_mode = $r->RoomModeResource();
-                //     $r->room_type = $r->RoomTypeResource();
-                //     $tempRoomType = $r->room_type;
-                //     $r->room_bed_type = $r->RoomBedTypeResource();
-                //     $checkinExplode = explode("-", $req->check_in);
-                //     $checkoutExplode = explode("-", $req->check_out);
-                //     $checkIn = Carbon::createMidnightDate($checkinExplode[0], $checkinExplode[1], $checkinExplode[2]);
-                //     $checkOut = Carbon::createMidnightDate($checkoutExplode[0], $checkoutExplode[1], $checkoutExplode[2]);
-                //     $r->amount = $r->availableRoomAmount($checkIn, $checkOut);
-                //     foreach ($r->Feature as $f) {
-                //         $f->Feature;
-                //     };
-                //     $servicesRoomType = ServiceRoomType::where('room_type_id', $tempRoomType->id)->where('hotel_id', $hotel->id)->get();
-                //     $teampService = null;
-                //     foreach ($servicesRoomType as $sRT) {
-                //         $teampService[] = new ServiceResource($sRT->Service);
-                //     }
-                //     $r->service = $teampService;
-                //     $r->bookingAmount = 1;
-                // }
             }
         }
         return response()->json(['status' => $status, 'data' => $hotel]);
     }
 
-    public function roomByHotel(Request $req){
+    public function questionsByHotel(Request $req){
+        $questions = array();
+        return response()->json([
+            'questions' => Hotel::find($req->hotel_id)->questionList()?Hotel::find($req->hotel_id)->questionList():$questions,
+        ]);
+    }
+    public function reviewsByHotel(Request $req){
+        $reviews = array();
+        return response()->json([
+            'reviews' => Hotel::find($req->hotel_id)->reviewList($req->user_id)?Hotel::find($req->hotel_id)->reviewList($req->user_id):$reviews,
+        ]);
+    }
+
+    public function roomsByHotel(Request $req){
         $id = $req->hotel_id;
         $hotel = Hotel::find($id);
         if($hotel == null){

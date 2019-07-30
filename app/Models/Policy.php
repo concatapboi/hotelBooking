@@ -10,6 +10,7 @@ class Policy extends Model
 
   protected $fillable = [
     'hotel_id',
+    'payment_method',
     'check_in',
     'check_out',
     'cancelable',

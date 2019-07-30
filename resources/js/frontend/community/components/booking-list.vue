@@ -346,7 +346,7 @@
                                     </v-layout>
                                   </v-flex>
                                   <v-flex md5 class="pr-3">
-                                    <v-text-field
+                                    <v-textarea
                                       :error-messages="errors.collect('formReview.title')"
                                       data-vv-name="title"
                                       v-validate="'required'"
@@ -359,7 +359,7 @@
                                       rows="4"
                                       clear-icon="cancel"
                                       label="Nhập tiêu đề tại đây..."
-                                    ></v-text-field>
+                                    ></v-textarea>
                                   </v-flex>
                                   <v-flex md7>
                                     <v-textarea
@@ -797,9 +797,7 @@ export default {
     },
     formatDate: function(date) {
       if (!date) return null;
-      date = date.substr(0, 10);
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
+      return this.$moment(date).format("DD-MM-YYYY");
     },
     sortData: function() {
       console.log(this.sortedBookingList);

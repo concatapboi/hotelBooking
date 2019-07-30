@@ -160,8 +160,20 @@
         <v-flex md12>
           <v-list two-line>
             
-            <span v-for="(notification,i) in notifications.list" :key="i">
-              <v-list-tile v-if="notification.read_at == null" class="white">
+            <div v-for="(notification,i) in notifications.list" :key="i">
+              <div v-if="notification.data.ask">
+                <v-layout row wrap class="mx-1 ma-0 caption grey lighten-2">
+                  <v-flex md12 class="ma-3">
+                    <div class="font-weight-bold purple--text">{{notification.data.message}}</div>
+                    <div class="pl-3 ml-1 border-left border-light">
+                      <div>{{notification.data.ask.title}}</div>
+                      <div class="font-italic">"{{notification.data.ask.content}}"</div>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </div>
+              <div v-else>
+                <v-list-tile v-if="notification.read_at == null" class="white">
                 <a
                   @click="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
                   @contextmenu="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
@@ -175,7 +187,6 @@
                   </v-list-tile-content>
                 </a>
               </v-list-tile>
-
               <v-list-tile v-else class="light-grey">
                 <a
                   @click="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
@@ -191,7 +202,8 @@
                 </a>
               </v-list-tile>
               <v-divider></v-divider>
-            </span>
+              </div>
+            </div>
 
             <!-- </v-list-group> -->
             <!-- <span v-if="notification.read_at === null">
@@ -335,6 +347,7 @@ export default {
         })
         .then(response => {
           console.log(response.data);
+          console.log(this.notifications.list);
           this.notifications.list = response.data;
           console.log(this.notifications.list);
         })

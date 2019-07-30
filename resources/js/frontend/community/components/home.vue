@@ -271,11 +271,13 @@
       </v-img>
     </v-flex>
     <v-flex shrink md8 v-else>
-      <v-layout row wrap fill-height justify-center align-center>
-        <v-flex md12>
-          <div class="text-md-center headline font-italic">
-            <v-icon large>fas fa-circle-notch fa-spin</v-icon>
-          </div>
+      <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
+        <v-flex md3 class="pa-2 ma-2">
+          <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
+            <v-layout fill-height align-center justify-center>
+              <span class="pa-5 caption black--text font-weight-bold">đang tải...</span>
+            </v-layout>
+          </v-img>
         </v-flex>
       </v-layout>
     </v-flex>
@@ -292,7 +294,7 @@
           </div>
         </v-flex>
       </v-layout>
-    </v-flex> -->
+    </v-flex>-->
   </v-layout>
 </template>
 
@@ -329,7 +331,7 @@ export default {
       avatar: {
         link: null
       },
-      flag: false
+      flag: false,
     };
   },
   mounted() {
@@ -346,7 +348,7 @@ export default {
               }
             }
           };
-          this.feeds[index].comment.push(comment);
+          this.feeds[index].comment = [...this.feeds[index].comment, comment];
           this.feeds[index].comments = this.feeds[index].comments + 1;
         }
       });
@@ -538,10 +540,8 @@ export default {
     },
     formatDate: function(date) {
       if (!date) return null;
-      date = date.substr(0, 10);
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
-    }
+      return this.$moment(date).format("DD-MM-YYYY");
+    },
   }
 };
 </script>

@@ -77,6 +77,7 @@ class User extends Authenticatable implements JWTSubject
       $b->room->room_type = $b->Room->RoomType;   
       $b->days =  Carbon::parse($b->check_in)->diffInDays( Carbon::parse($b->check_out));   
       $b->total = ($b->days)*($b->room_amount*$b->room_price*((100-$b->discount_value)/100));
+      $b->test = $hotel->paymentMethods();
       foreach($hotel->paymentMethods() as $p){
         if($p['method']->id == $b->payment_method_id) $b->payment_method = [
           'id' =>$p['method']->id,

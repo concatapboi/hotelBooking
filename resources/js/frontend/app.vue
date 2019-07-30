@@ -6,7 +6,7 @@
           <v-layout row wrap class="white text-md-center" fill-height align-center>
             <v-flex md2>
               <router-link :to="{name:'home'}">
-                <img src="/blog/./img/core-img/logo.png"/>
+                <img src="/blog/./img/core-img/logo.png" />
               </router-link>
             </v-flex>
             <v-flex md2>
@@ -16,7 +16,7 @@
               <router-link :to="{name:'contact'}" class="title text-uppercase">liên hệ</router-link>
             </v-flex>
             <v-flex md6>
-              <v-btn depressed flat color="teal" v-if="!login.check" @click="dialog = true">
+              <v-btn round depressed flat color="teal" v-if="!login.check" @click="dialog = true">
                 <span class="title text-uppercase black--text">Đăng nhập</span>
                 <i class="fas fa-arrow-right mx-3 black--text"></i>
               </v-btn>
@@ -56,7 +56,7 @@
                   </v-list-tile>
                   <v-divider></v-divider>
                   <v-list-tile>
-                    <v-btn dark depressed color="teal" large @click="logOut">
+                    <v-btn round dark depressed color="teal" large @click="logOut">
                       <i class="fas fa-sign-out-alt mx-2"></i>Đăng Xuất
                     </v-btn>
                   </v-list-tile>
@@ -81,6 +81,7 @@
             v-on:loadSnackbar="eventSnackbar"
             :place="place"
             :checkIn="checkIn"
+            :now="now"
             :checkOut="checkOut"
             :checkInFormatted="checkInFormatted"
             :checkOutFormatted="checkOutFormatted"
@@ -161,9 +162,9 @@
                 v-on:click:append="login.value=false"
                 v-else
               ></v-text-field>
-              <v-btn color="teal" v-on:click="submitLogin" dark depressed>Đăng Nhập</v-btn>
-              <v-btn color="grey" v-on:click="clear" dark depressed>Xóa</v-btn>
-              <v-btn color="red" v-on:click="dialog=false" dark depressed>Hủy</v-btn>
+              <v-btn round color="teal" v-on:click="submitLogin" dark depressed>Đăng Nhập</v-btn>
+              <v-btn round color="grey" v-on:click="clear" dark depressed>Xóa</v-btn>
+              <v-btn round color="red" v-on:click="dialog=false" dark depressed>Hủy</v-btn>
             </v-flex>
             <v-flex></v-flex>
           </v-layout>
@@ -591,16 +592,19 @@ export default {
         }
       },
       place: "Hồ Chí Minh",
-      now: new Date(),
-      checkIn: this.getNextDate(new Date().toISOString().substr(0, 10), 1),
-      // checkIn: new Date().toISOString().substr(0, 10),
-      checkInFormatted: this.formatDate(
-        this.getNextDate(new Date().toISOString().substr(0, 10), 1)
-      ),
-      checkOut: this.getNextDate(new Date().toISOString().substr(0, 10), 2),
-      checkOutFormatted: this.formatDate(
-        this.getNextDate(new Date().toISOString().substr(0, 10), 2)
-      )
+      now: this.$moment(new Date()).add(1,'days').format("YYYY-MM-DD"),
+      // checkIn: this.getNextDate(new Date().toISOString().substr(0, 10), 1),
+      // checkInFormatted: this.formatDate(
+      //   this.getNextDate(new Date().toISOString().substr(0, 10), 1)
+      // ),
+      // checkOut: this.getNextDate(new Date().toISOString().substr(0, 10), 2),
+      // checkOutFormatted: this.formatDate(
+      //   this.getNmin.toISOString().substr(0, 10), 2)
+      // )
+      checkIn: this.$moment(new Date()).add(1,'days').format("YYYY-MM-DD"),
+      checkInFormatted: this.$moment(new Date()).add(1,'days').format("DD-MM-YYYY"),
+      checkOut: this.$moment(new Date()).add(2,'days').format("YYYY-MM-DD"),
+      checkOutFormatted: this.$moment(new Date()).add(2,'days').format("DD-MM-YYYY"),
     };
   },
   created() {
@@ -625,20 +629,27 @@ export default {
       this.login.value = false;
     },
     checkIn: function(val) {
-      if (val < new Date().toISOString().substr(0, 10)) {
-        this.checkIn = new Date().toISOString().substr(0, 10);
+      if(this.checkIn >= this.checkOut){
         this.checkInFormatted = this.formatDate(this.checkIn);
-      } else this.checkInFormatted = this.formatDate(this.checkIn);
-      if (this.checkIn >= this.checkOut) {
-        this.checkOut = this.getNextDate(val, 1);
-        this.checkOutFormatted = this.formatDate(this.checkOut);
+        this.checkOut = this.$moment(this.checkIn).add(1,'days').format("YYYY-MM-DD");
+      }else{
+        this.checkInFormatted = this.formatDate(this.checkIn);
       }
+      // if (val < new Date().toISOString().substr(0, 10)) {
+      //   this.checkIn = new Date().toISOString().substr(0, 10);
+      //   this.checkInFormatted = this.formatDate(this.checkIn);
+      // } else this.checkInFormatted = this.formatDate(this.checkIn);
+      // if (this.checkIn >= this.checkOut) {
+      //   this.checkOut = this.getNextDate(val, 1);
+      //   this.checkOutFormatted = this.formatDate(this.checkOut);
+      // }
     },
     checkOut: function(val) {
-      if (val <= this.checkIn) {
-        this.checkOut = this.getNextDate(this.checkIn, 1);
-        this.checkOutFormatted = this.formatDate(this.checkOut);
-      } else this.checkOutFormatted = this.formatDate(this.checkOut);
+      // if (val <= this.checkIn) {
+      //   this.checkOut = this.getNextDate(this.checkIn, 1);
+      //   this.checkOutFormatted = this.formatDate(this.checkOut);
+      // } else 
+      this.checkOutFormatted = this.formatDate(this.checkOut);
     }
   },
   mounted() {
@@ -783,42 +794,7 @@ export default {
     },
     formatDate: function(date) {
       if (!date) return null;
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
-    },
-    getNextDate: function(date, number) {
-      const [year, month, day] = date.split("-");
-      var newDate;
-      if (day == 31) {
-        var dayTemp = 1;
-        var monthTemp = month;
-        var yearTemp = year;
-        if (monthTemp == 12) {
-          monthTemp = 1;
-          yearTemp = year + 1;
-        } else monthTemp = month + 1;
-        dayTemp = dayTemp + "";
-        monthTemp = monthTemp + "";
-        yearTemp = yearTemp + "";
-        newDate = new Date(
-          `${yearTemp}-${monthTemp.padStart(2, "0")}-${dayTemp.padStart(
-            2,
-            "0"
-          )}`
-        )
-          .toISOString()
-          .substr(0, 10);
-      } else {
-        var tempDate;
-        tempDate = new Date(year + "-" + month + "-" + day).getDate() + number;
-        tempDate = tempDate + "";
-        newDate = new Date(
-          `${year}-${month.padStart(2, "0")}-${tempDate.padStart(2, "0")}`
-        )
-          .toISOString()
-          .substr(0, 10);
-      }
-      return newDate;
+      return this.$moment(date).format("DD-MM-YYYY");
     },
     eventSearch: function(data) {
       this.place = data.place.trim();
