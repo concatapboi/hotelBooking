@@ -2,7 +2,7 @@
   <v-app v-show="loaded">
     <v-navigation-drawer clipped app fixed class="text--black" light v-model="drawer">
       <v-list>
-        <v-list-tile class="style-link" :to="{name:'home'}">
+        <v-list-tile class="style-link" :to="{name:'home' , query :{hotelId : hotelId}}">
           <v-list-tile-action>
             <i class="ma-1 fa-lg fas fa-home"></i>
           </v-list-tile-action>
@@ -147,7 +147,6 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-navigation-drawer
-      
       v-model="notifications.state"
       clipped
       temporary
@@ -159,7 +158,6 @@
         <!-- {{notifications.list}} -->
         <v-flex md12>
           <v-list two-line>
-            
             <div v-for="(notification,i) in notifications.list" :key="i">
               <div v-if="notification.data.ask">
                 <v-layout row wrap class="mx-1 ma-0 caption grey lighten-2">
@@ -174,34 +172,34 @@
               </div>
               <div v-else>
                 <v-list-tile v-if="notification.read_at == null" class="white">
-                <a
-                  @click="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
-                  @contextmenu="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
-                  :href="'order?hotelId='+hotelId"
-                >
-                  <v-list-tile-content>
-                    <v-list-tile-title>
-                      <h5>Đơn đặt phòng mới</h5>
-                    </v-list-tile-title>
-                    <v-list-tile-sub-title>Đơn {{notification.data.booking.id}} đang chờ bạn xác nhận</v-list-tile-sub-title>
-                  </v-list-tile-content>
-                </a>
-              </v-list-tile>
-              <v-list-tile v-else class="light-grey">
-                <a
-                  @click="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
-                  @contextmenu="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
-                  :href="'order?hotelId='+hotelId"
-                >
-                  <v-list-tile-content>
-                    <v-list-tile-title>
-                      <h5>Đơn đặt phòng mới</h5>
-                    </v-list-tile-title>
-                    <v-list-tile-sub-title>Đơn {{notification.data.booking.id}} đang chờ bạn xác nhận</v-list-tile-sub-title>
-                  </v-list-tile-content>
-                </a>
-              </v-list-tile>
-              <v-divider></v-divider>
+                  <a
+                    @click="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
+                    @contextmenu="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
+                    :href="'order?hotelId='+hotelId"
+                  >
+                    <v-list-tile-content>
+                      <v-list-tile-title>
+                        <h5>Đơn đặt phòng mới</h5>
+                      </v-list-tile-title>
+                      <v-list-tile-sub-title>Đơn {{notification.data.booking.id}} đang chờ bạn xác nhận</v-list-tile-sub-title>
+                    </v-list-tile-content>
+                  </a>
+                </v-list-tile>
+                <v-list-tile v-else class="light-grey">
+                  <a
+                    @click="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
+                    @contextmenu="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
+                    :href="'order?hotelId='+hotelId"
+                  >
+                    <v-list-tile-content>
+                      <v-list-tile-title>
+                        <h5>Đơn đặt phòng mới</h5>
+                      </v-list-tile-title>
+                      <v-list-tile-sub-title>Đơn {{notification.data.booking.id}} đang chờ bạn xác nhận</v-list-tile-sub-title>
+                    </v-list-tile-content>
+                  </a>
+                </v-list-tile>
+                <v-divider></v-divider>
               </div>
             </div>
 
@@ -297,7 +295,7 @@ export default {
       snackbarText: "",
       snackbarTimeout: 5000,
       dialog: false,
-      hotelId: 0,
+      hotelId: this.$route.query.hotelId,
       hotelName: "",
       hotel_stars_num: 2,
       currentProperties: "",
@@ -314,7 +312,7 @@ export default {
         state: false,
         list: []
       },
-      errorMessage : null,
+      errorMessage: null
     };
   },
 
@@ -367,6 +365,7 @@ export default {
       this.loaded = true;
     }
     this.initialize();
+    // route : function(){
   },
   mounted() {
     // window.Echo.channel("manager").listen(".accept-booking", e => {
@@ -380,6 +379,18 @@ export default {
       // this.notifications.list.push(e);
       console.log(e);
     });
+  },
+  watch: {
+    arrayHotel: function() {
+      var validHotel = [];
+      console.log(this.arrayHotel);
+      this.arrayHotel.forEach(element => {
+        validHotel.push(element.id.toString());
+      });
+      if (validHotel.includes(this.hotelId) == false) {
+        document.location.href = "login";
+      }
+    }
   },
   methods: {
     showOrderDetail: function(notificationId, $event, index, bookingId) {
@@ -537,7 +548,7 @@ export default {
       this.api_token = null;
       location.href = "login";
     },
-    onErrorMessage : function(message){
+    onErrorMessage: function(message) {
       this.errorMessage = message;
     }
   }

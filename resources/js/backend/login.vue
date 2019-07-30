@@ -8,13 +8,17 @@
               <div class="login-content">
                 <div class="login-logo">
                   <a href="#">
-                    <img src="../../../public/images/icon/logo.png" alt="CoolAdmin">
+                    <img src="../../../public/images/icon/logo.png" alt="CoolAdmin" />
                   </a>
                 </div>
                 <!-- color="#4172d7" -->
                 <v-tabs grow dark slider-color="white">
-                  <v-tab class="haha" to="login" ripple><span class="white--text">Login</span></v-tab>
-                  <v-tab class="haha" to="register" ripple><span class="white--text">Register</span></v-tab>
+                  <v-tab class="haha" to="login" ripple>
+                    <span class="white--text">Login</span>
+                  </v-tab>
+                  <v-tab class="haha" to="register" ripple>
+                    <span class="white--text">Register</span>
+                  </v-tab>
                 </v-tabs>
                 <router-view class="mt-3"></router-view>
               </div>
@@ -27,12 +31,15 @@
 </template>
 <script>
 export default {
+  $_veeValidate: {
+    validator: "new"
+  },
   data: function() {
     return {
       messages: "",
       show: false,
       email: "",
-      password: ""
+      password: "",
     };
   },
   methods: {
@@ -76,6 +83,9 @@ export default {
     // 		  name : "thang",
     // 	  }
     // 	});
+  },
+  mounted(){
+    this.$validator.localize("en", this.dictionary);
   }
 };
 </script>

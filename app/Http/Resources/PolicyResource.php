@@ -20,6 +20,7 @@ class PolicyResource extends JsonResource
         if ($this->cancelable > 0) {
             $cancelable = true;
         } else $cancelable = false;
+        
         $arrayData = [
             "checkin" => Carbon::parse($this->check_in)->format('H:i'),
             "checkout" => Carbon::parse($this->check_out)->format('H:i'),
@@ -28,7 +29,16 @@ class PolicyResource extends JsonResource
             "detailPolicy" => $this->content,
             "cancelable" => $cancelable,
         ];
-        
+        if($this->payment_method == 2){
+            $arrayData["online"] = true;
+            $arrayData["offline"] = true;
+        }elseif($this->payment_method == 1){
+            $arrayData["online"] = false;
+            $arrayData["offline"] = true;
+        }else{
+            $arrayData["online"] = true;
+            $arrayData["offline"] = false;
+        }
         return $arrayData;
     }
 }

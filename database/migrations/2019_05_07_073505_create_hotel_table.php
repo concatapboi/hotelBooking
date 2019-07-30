@@ -28,7 +28,7 @@ class CreateHotelTable extends Migration
             $table->integer('child_age')->default(13);
             $table->string('tax_code');
             $table->double('review_point')->default(0);
-            $table->string('fax_number');
+            $table->string('fax_number')->nullable();
             $table->integer('coin')->default(0);
             $table->integer('ward_id')->unsigned();
             $table->integer('hotel_type_id')->unsigned();
