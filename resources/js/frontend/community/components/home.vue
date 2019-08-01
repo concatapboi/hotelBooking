@@ -2,7 +2,7 @@
   <v-layout row wrap class="mx-3">
     <v-flex shrink md8 v-if="feeds.length !=0">
       <v-layout class="row wrap mx-3 mb-5" v-for="(r,index) in feeds" :key="index">
-        <v-badge left overlap :color="color.badge" v-if="!r.code">
+        <v-badge left overlap :color="color.badge">
           <template v-slot:badge>
             <v-tooltip top v-if="r.can_comment == 1">
               <template v-slot:activator="{ on }">
@@ -18,24 +18,78 @@
             </v-tooltip>
           </template>
           <v-card light min-height="120px" class="pa-1" flat tile width="800px">
-            <router-link class="pointer" :to="{name:'review',query:{id:r.id}}" target="_blank">
-              <v-card-title>
-                <router-link :to="{name:'user',params:{id:r.customer.id}}">
-                  <v-avatar size="72px" color="black" flat>
-                    <v-avatar size="70px" color="white">
-                      <v-tooltip top>
-                        <template v-slot:activator="{ on }">
-                          <img :src="'/img/user/'+r.customer.avatar.image_link" v-on="on" />
-                        </template>
-                        <span>{{r.customer.name }}</span>
-                      </v-tooltip>
+            <v-card-title>
+              <v-layout row wrap class="pa-0 ma-0" align-center>
+                <v-flex md9 class="text-md-left">
+                  <router-link :to="{name:'user',params:{id:r.customer.id}}">
+                    <v-avatar size="72px" color="black" flat>
+                      <v-avatar size="70px" color="white">
+                        <v-tooltip top>
+                          <template v-slot:activator="{ on }">
+                            <img :src="'/img/user/'+r.customer.avatar.image_link" v-on="on" />
+                          </template>
+                          <span>{{r.customer.name }}</span>
+                        </v-tooltip>
+                      </v-avatar>
                     </v-avatar>
-                  </v-avatar>
-                  <span class="title pl-3 font-weight-light">{{r.customer.name}}</span>
-                </router-link>
+                    <span class="title pl-3 font-weight-light">{{r.customer.name}}</span>
+                  </router-link>
+                </v-flex>
                 <v-spacer></v-spacer>
-              </v-card-title>
-              <v-divider class="m-0 p-0"></v-divider>
+                <v-flex md1 class="text-md-right">
+                  <v-speed-dial :transition="`slide-x-reverse-transition`" :direction="`left`">
+                    <template v-slot:activator>
+                      <v-btn fab depressed color="#6F1E51" small @click="r.cancel = !r.cancel">
+                        <v-icon color="white" medium v-if="!r.cancel">settings</v-icon>
+                        <v-icon color="white" medium>clear</v-icon>
+                      </v-btn>
+                    </template>
+                    <v-btn
+                      fab
+                      color="#0652DD"
+                      depressed
+                      small
+                      @click.stop="updateReviewState(r.id)"
+                      v-if="r.can_comment ==1 && r.customer.id == customer.id"
+                    >
+                      <i class="fas fa-comment white--text fa-lg"></i>
+                    </v-btn>
+                    <v-btn
+                      fab
+                      color="red"
+                      depressed
+                      small
+                      @click.stop="updateReviewState(r.id)"
+                      v-else-if="r.customer.id == customer.id"
+                    >
+                      <i class="fas fa-comment-slash white--text fa-lg"></i>
+                    </v-btn>
+                    <v-btn
+                      fab
+                      color="#0652DD"
+                      depressed
+                      small
+                      @click.stop="updateNotification(r.id)"
+                      v-if="r.customer_review.status ==1"
+                    >
+                      <i class="far fa-bell white--text fa-lg"></i>
+                    </v-btn>
+                    <v-btn
+                      fab
+                      color="red"
+                      depressed
+                      small
+                      @click.stop="updateNotification(r.id)"
+                      v-else
+                    >
+                      <i class="far fa-bell-slash white--text fa-lg"></i>
+                    </v-btn>
+                  </v-speed-dial>
+                </v-flex>
+              </v-layout>
+            </v-card-title>
+            <v-divider class="m-0 p-0"></v-divider>
+            <router-link class="pointer" :to="{name:'review',query:{id:r.id}}" target="_blank">
               <v-card-text>
                 <span class="headline">" {{r.title}} "</span>
                 <v-layout>
@@ -51,11 +105,11 @@
                     <v-card-text class="font-weight-bold font-italic">{{r.content}}</v-card-text>
                   </v-card>
                 </v-layout>
-                <span class="grey--text pl-2">-{{formatDate(r.created_at)}}</span>
+                <span class="grey--text pl-2">-&nbsp;{{formatDate(r.created_at)}}</span>
                 <v-layout
                   row
                   wrap
-                  class="pa-0 ma-0 mt-2 ml-3 pl-3 border-left border-bottom"
+                  class="pa-0 ma-0 mt-2 ml-3 pl-3 border-left border-bottom caption"
                   align-center
                 >
                   <v-flex md3>
@@ -68,9 +122,23 @@
                           <router-link :to="{name:'hotel',params:{id:r.hotel.id}}" target="_blank">
                             <span class="font-weight-bold body-2">{{r.hotel.name}}</span>
                           </router-link>
-                          &nbsp;({{r.hotel.stars_num}}&nbsp;sao)
                         </div>
-                        <div>Tại&nbsp;{{r.hotel.address}}</div>
+                        <div v-if="r.hotel.stars_num > 0">
+                          <v-chip color="#3B3B98" class="white--text">
+                            <v-icon class="mr-1" small color="yellow">star</v-icon>
+                            {{r.hotel.stars_num}}/5
+                          </v-chip>
+                          <v-chip
+                            color="#A3CB38"
+                            class="white--text font-weight-text"
+                          >{{r.hotel.review_point}}/10</v-chip>
+                        </div>
+                        <div>
+                          <v-chip color="#7d5fff" class="white--text">
+                            <v-icon class="mr-1" small color="pink">room</v-icon>
+                            {{r.hotel.address}}
+                          </v-chip>
+                        </div>
                       </v-flex>
                       <v-flex md4 v-for="(ser,i) in r.hotel.services" :key="i" class="pa-1">
                         <div class="text-md-center border pa-2">
@@ -201,55 +269,6 @@
             </v-layout>
           </v-card>
         </v-badge>
-        <v-card light min-height="120px" class="pa-1" flat tile width="800px" v-else>
-          <v-card-title>
-            <v-avatar size="72px" color="black" flat>
-              <v-avatar size="70px" color="white">
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <img :src="'/blog/img/hotel/'+r.hotel.image" v-on="on" />
-                  </template>
-                  <span>{{r.hotel.name }}</span>
-                </v-tooltip>
-              </v-avatar>
-            </v-avatar>
-            <span class="title pl-3 font-weight-light">{{r.hotel.name}}</span>
-            <v-spacer></v-spacer>
-          </v-card-title>
-          <v-divider class="m-0 p-0"></v-divider>
-          <v-card-text>
-            <v-layout row wrap class="pa-2 ma-0 grey lighten-2 radius" align-center>
-              <v-flex md3 class="text-md-center">
-                <div>
-                  <div>Mã</div>
-                  <div>
-                    <span class="display-1 font-weight-bold indigo--text">{{r.code}}</span>
-                  </div>
-                </div>
-              </v-flex>
-              <v-flex md9 class="pa-2 border-left border-light">
-                <div>
-                  <div>
-                    <span class="headline">{{r.title}}</span>
-                  </div>
-                  <div>
-                    <span class="font-weight-bold font-italic">"{{r.content}}"</span>
-                  </div>
-                  <div
-                    class="body-2 font-weight-bold"
-                  >{{formatDate(r.start_at)}}&nbsp;-&nbsp;{{formatDate(r.end_at)}}</div>
-                  <div>
-                    <span
-                      class="red--text body-2"
-                      v-if="r.days>0"
-                    >Đã diễn ra&nbsp;{{r.days}}&nbsp;ngày</span>
-                    <span class="red--text body-2" v-else>Đang diễn ra.</span>
-                  </div>
-                </div>
-              </v-flex>
-            </v-layout>
-          </v-card-text>
-        </v-card>
       </v-layout>
       <infinite-loading @distance="1" @infinite="loadFeeds">
         <span class="caption font-italic" slot="no-more">Bạn đã đến cuối trang...</span>
@@ -308,6 +327,7 @@ export default {
   mounted() {},
   data() {
     return {
+      cancel: false,
       page: 1,
       comment: {
         review_id: 0,
@@ -331,7 +351,7 @@ export default {
       avatar: {
         link: null
       },
-      flag: false,
+      flag: false
     };
   },
   mounted() {
@@ -532,16 +552,103 @@ export default {
           }
         });
     },
-    hide: function(index) {
-      this.snackbar.state = !this.snackbar.state;
-      this.snackbar.content = "Hide " + index;
-      this.examples[index].hide = false;
-      return;
-    },
     formatDate: function(date) {
       if (!date) return null;
       return this.$moment(date).format("DD-MM-YYYY");
     },
+    updateNotification: function(review_id) {
+      var flag = true;
+      var index = this.getIndex(review_id);
+      switch (this.feeds[index].customer_review.status) {
+        case 1:
+          this.feeds[index].customer_review.status = 0;
+          break;
+        case 0:
+          this.feeds[index].customer_review.status = 1;
+          break;
+      }
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/get-notification",
+        params: {
+          review_id: review_id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          if (res.data.status == false) {
+            flag = false;
+          }
+        })
+        .catch(error => {
+          flag = false;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        })
+        .then(() => {
+          if (!flag) {
+            switch (this.feeds[index].customer_review.status) {
+              case 1:
+                this.feeds[index].customer_review.status = 0;
+                break;
+              case 0:
+                this.feeds[index].customer_review.status = 1;
+                break;
+            }
+          }
+        });
+    },
+    updateReviewState: function(review_id) {
+      var flag = true;
+      var index = this.getIndex(review_id);
+      switch (this.feeds[index].can_comment) {
+        case 1:
+          this.feeds[index].can_comment = 0;
+          break;
+        case 0:
+          this.feeds[index].can_comment = 1;
+          break;
+      }
+      axios({
+        method: "put",
+        url: "http://localhost:8000/api/review/"+review_id,
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          if (res.data.status == false) {
+            flag = false;
+          }
+        })
+        .catch(error => {
+          flag = false;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        })
+        .then(() => {
+          if (!flag) {
+            switch (this.feeds[index].can_comment) {
+              case 1:
+                this.feeds[index].can_comment = 0;
+                break;
+              case 0:
+                this.feeds[index].can_comment = 1;
+                break;
+            }
+          }
+        });
+    }
   }
 };
 </script>

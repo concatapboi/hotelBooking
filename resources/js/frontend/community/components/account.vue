@@ -18,7 +18,18 @@
           <v-spacer></v-spacer>
         </v-layout>
       </v-img>
-      <div v-if="user.review.length !=0">
+      <div v-if="flag ===false">
+        <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
+          <v-flex md3 class="pa-2 ma-2">
+            <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
+              <v-layout fill-height align-center justify-center>
+                <span class="pa-5 caption black--text font-weight-bold">đang tải...</span>
+              </v-layout>
+            </v-img>
+          </v-flex>
+        </v-layout>
+      </div>
+      <div v-else-if="user.review.length !=0">
         <v-layout class="row wrap mx-3 mb-5" v-for="(item,index) in user.review" :key="index">
           <v-badge left overlap :color="color.badge">
             <template v-slot:badge>
@@ -36,9 +47,58 @@
               </v-tooltip>
             </template>
             <v-card light min-height="120px" class="pa-1" flat tile width="800px">
-              <router-link class="pointer" :to="{name:'review',query:{id:item.id}}" target="_blank">
               <v-card-title>
-                <v-spacer></v-spacer>
+                <v-divider></v-divider>
+                <v-speed-dial :transition="`slide-x-reverse-transition`" :direction="`left`">
+                  <template v-slot:activator>
+                    <v-btn fab depressed color="#6F1E51" small @click="item.cancel = !item.cancel">
+                      <v-icon color="white" medium v-if="!item.cancel">settings</v-icon>
+                      <v-icon color="white" medium>clear</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-btn
+                    fab
+                    color="#0652DD"
+                    depressed
+                    small
+                    @click.stop="updateReviewState(item.id)"
+                    v-if="item.can_comment ==1"
+                  >
+                    <i class="fas fa-comment white--text fa-lg"></i>
+                  </v-btn>
+                  <v-btn
+                    fab
+                    color="red"
+                    depressed
+                    small
+                    @click.stop="updateReviewState(item.id)"
+                    v-else
+                  >
+                    <i class="fas fa-comment-slash white--text fa-lg"></i>
+                  </v-btn>
+                  <v-btn
+                    fab
+                    color="#0652DD"
+                    depressed
+                    small
+                    @click.stop="updateNotification(item.id)"
+                    v-if="item.customer_review.status ==1"
+                  >
+                    <i class="far fa-bell white--text fa-lg"></i>
+                  </v-btn>
+                  <v-btn
+                    fab
+                    color="red"
+                    depressed
+                    small
+                    @click.stop="updateNotification(item.id)"
+                    v-else
+                  >
+                    <i class="far fa-bell-slash white--text fa-lg"></i>
+                  </v-btn>
+                </v-speed-dial>
+              </v-card-title>
+              <router-link class="pointer" :to="{name:'review',query:{id:item.id}}" target="_blank">
                 <v-card-text>
                   <span class="headline">{{item.title}}</span>
                   <v-layout>
@@ -74,9 +134,23 @@
                             >
                               <span class="font-weight-bold body-2">{{item.hotel.name}}</span>
                             </router-link>
-                            &nbsp;({{item.hotel.stars_num}}&nbsp;sao)
                           </div>
-                          <div>Tại&nbsp;{{item.hotel.address}}</div>
+                          <div v-if="item.hotel.stars_num > 0">
+                            <v-chip color="#3B3B98" class="white--text">
+                              <v-icon class="mr-1" small color="yellow">star</v-icon>
+                              {{item.hotel.stars_num}}/5
+                            </v-chip>
+                            <v-chip
+                              color="#A3CB38"
+                              class="white--text font-weight-text"
+                            >{{item.hotel.review_point}}/10</v-chip>
+                          </div>
+                          <div>
+                            <v-chip color="#7d5fff" class="white--text">
+                              <v-icon class="mr-1" small color="pink">room</v-icon>
+                              {{item.hotel.address}}
+                            </v-chip>
+                          </div>
                         </v-flex>
                         <v-flex md4 v-for="(ser,i) in item.hotel.services" :key="i" class="pa-1">
                           <div class="text-md-center border pa-2">
@@ -92,7 +166,6 @@
                     </v-flex>
                   </v-layout>
                 </v-card-text>
-              </v-card-title>
               </router-link>
               <v-card-actions>
                 <v-tooltip top>
@@ -357,7 +430,7 @@
                     Tình Trạng Đơn:&nbsp;
                     <span class="orange--text">{{b.status.name}}</span>
                   </div>
-                </div> -->
+                </div>-->
               </v-flex>
               <v-flex md12>
                 <v-divider class="pa-0 ma-0 mt-2"></v-divider>
@@ -574,101 +647,96 @@
     <v-dialog v-model="questionList.dialog" width="700px" persistent>
       <v-card flat tile light height="470px">
         <v-card-text>
-          <v-btn round depressed color="red" dark v-on:click="questionList.dialog = false">
-            <span class="text-uppercase">Đóng</span>
-          </v-btn>
-          <template>
-            <v-card light flat width="100%" height="370px" style="overflow:auto">
-              <v-card-title>
-                <v-spacer></v-spacer>
-                <v-text-field
-                  color="teal"
-                  v-model="search"
-                  append-icon="search"
-                  label="Nhập tên nhà cung cấp bạn đã hỏi..."
-                  single-line
-                  hide-details
-                ></v-text-field>
-              </v-card-title>
-              <v-data-table
-                :rows-per-page-items='[2,4,6,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
-                :headers="tblHeaders.question"
-                hide-headers
-                :items="user.question"
-                :search="search"
-                class="elevation-0 border"
-              >
-                <template v-slot:items="q">
-                  <td>
-                    <div class="ma-2">
-                      <div>
-                        <span
-                          class="font-weight-black"
-                          style="word-wrap: break-word;"
-                        >{{q.item.title}}</span>
-                        <span class="caption grey--text">-&nbsp;{{formatDate(q.item.created_at)}}</span>
-                      </div>
-                      <div>
-                        <span
-                          class="font-italic"
-                          style="word-wrap: break-word;"
-                        >"{{q.item.content}}"</span>
-                      </div>
+          <v-card light flat width="100%" height="370px" style="overflow:auto">
+            <v-card-title>
+              <v-btn round depressed color="red" dark v-on:click="questionList.dialog = false">
+                <span class="text-uppercase">Đóng</span>
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-text-field
+                color="teal"
+                v-model="search"
+                append-icon="search"
+                label="Nhập tên nhà cung cấp bạn đã hỏi..."
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+            <v-data-table
+              :rows-per-page-items='[2,4,6,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
+              :headers="tblHeaders.question"
+              hide-headers
+              :items="user.question"
+              :search="search"
+              class="elevation-0 border"
+            >
+              <template v-slot:items="q">
+                <td>
+                  <div class="ma-2">
+                    <div>
+                      <span
+                        class="font-weight-black"
+                        style="word-wrap: break-word;"
+                      >{{q.item.title}}</span>
+                      <span class="caption grey--text">-&nbsp;{{formatDate(q.item.created_at)}}</span>
                     </div>
-                    <v-divider class="pa-0 ma-0"></v-divider>
-                    <div class="ma-2" v-if="q.item.reply !=null">
-                      <div>
-                        <span class="font-weight-black" style="word-wrap: break-word;">
-                          <router-link
-                            :to="{name:'hotel', params:{id:q.item.hotel.id}}"
-                            target="_blank"
-                          >{{q.item.hotel.name}}</router-link>
-                        </span>
-                      </div>
-                      <div>
-                        <span
-                          class="font-italic"
-                          style="word-wrap: break-word;"
-                        >"{{q.item.reply.content}}"</span>
-                      </div>
-                      <div class="pl-3">
-                        <span
-                          class="caption grey--text"
-                        >-&nbsp;{{formatDate(q.item.reply.created_at)}}</span>
-                      </div>
+                    <div>
+                      <span class="font-italic" style="word-wrap: break-word;">"{{q.item.content}}"</span>
                     </div>
-                    <div class="ma-2" v-else>
-                      <div>
-                        <span class="font-weight-black" style="word-wrap: break-word;">
-                          <router-link
-                            :to="{name:'hotel', params:{id:q.item.hotel.id}}"
-                            target="_blank"
-                          >{{q.item.hotel.name}}</router-link>
-                        </span>
-                      </div>
-                      <div>
-                        <span class="font-italic" style="word-wrap: break-word;">Chưa phản hồi...</span>
-                      </div>
+                  </div>
+                  <div class="ma-2 pa-3 purple lighten-2" v-if="q.item.reply !=null">
+                    <div>
+                      <span class="font-weight-black" style="word-wrap: break-word;">
+                        <router-link
+                          :to="{name:'hotel', params:{id:q.item.hotel.id}}"
+                          target="_blank"
+                        >{{q.item.hotel.name}}</router-link>
+                      </span>
                     </div>
-                  </td>
-                </template>
-                <template v-slot:no-results>
-                  <v-alert
-                    :value="true"
-                    color="error"
-                    icon="warning"
-                  >Không tìm thấy dữ liệu nhà cung cấp "{{ search }}".</v-alert>
-                </template>
-              </v-data-table>
-            </v-card>
-          </template>
+                    <div>
+                      <span
+                        class="font-italic"
+                        style="word-wrap: break-word;"
+                      >"{{q.item.reply.content}}"</span>
+                    </div>
+                    <div class="pl-3">
+                      <span
+                        class="caption grey--text"
+                      >-&nbsp;{{formatDate(q.item.reply.created_at)}}</span>
+                    </div>
+                  </div>
+                  <div class="ma-2 pa-3 purple lighten-2" v-else>
+                    <div>
+                      <span class="font-weight-black" style="word-wrap: break-word;">
+                        <router-link
+                          :to="{name:'hotel', params:{id:q.item.hotel.id}}"
+                          target="_blank"
+                        >{{q.item.hotel.name}}</router-link>
+                      </span>
+                    </div>
+                    <div>
+                      <span class="font-italic" style="word-wrap: break-word;">Chưa phản hồi...</span>
+                    </div>
+                  </div>
+                </td>
+              </template>
+              <template v-slot:no-results>
+                <v-layout align-center white>
+                  <v-flex md3>
+                    <v-img :aspect-ratio="1" src="/img/booking/no-result.gif"></v-img>
+                  </v-flex>
+                  <v-flex offset-md1 class="font-weight-bold body-2">Rất tiếc, không tìm thấy.</v-flex>
+                </v-layout>
+              </template>
+            </v-data-table>
+          </v-card>
         </v-card-text>
       </v-card>
     </v-dialog>
     <v-dialog scrollable v-model="reviewForm.dialog" width="500px" persistent>
       <v-card flat tile light height="470px">
         <v-card-actions>
-          <span class="ml-5 font-weight-bold title">Review form</span>
+          <span class="ml-5 font-weight-bold title">Đánh giá</span>
           <v-spacer></v-spacer>
           <div class="mr-3">
             <v-btn round color="teal" depressed class="white--text" @click="sendReview">send</v-btn>
@@ -704,14 +772,15 @@
                       <v-flex md6>
                         <v-checkbox
                           v-model="reviewForm.can_comment"
-                          label="Public for comment"
+                          label="Bật bình luận"
                           color="#B53471"
                         ></v-checkbox>
                       </v-flex>
                       <v-flex md6>
                         <v-checkbox
+                          :disabled="!reviewForm.can_comment"
                           v-model="reviewForm.notification"
-                          label="Get comment' notifications"
+                          label="Nhận thông báo"
                           color="#B53471"
                         ></v-checkbox>
                       </v-flex>
@@ -728,7 +797,7 @@
                       outline
                       clearable
                       clear-icon="cancel"
-                      label="Title"
+                      label="Nhập tiêu đề tại đây"
                     ></v-text-field>
                   </v-flex>
                   <v-flex md12>
@@ -743,7 +812,7 @@
                       clear-icon="cancel"
                       auto-grow
                       rows="4"
-                      label="Content"
+                      label="Nhập nội dung tại đây"
                     ></v-textarea>
                   </v-flex>
                 </v-layout>
@@ -854,7 +923,8 @@ export default {
       passDialog: {
         check: false,
         main: false
-      }
+      },
+      flag: false
     };
   },
   mounted() {
@@ -872,14 +942,17 @@ export default {
               }
             }
           };
-          this.user.review[index].comment = [...this.user.review[index].comment,comment];
-          this.user.review[index].comments = this.user.review[index].comments + 1;
+          this.user.review[index].comment = [
+            ...this.user.review[index].comment,
+            comment
+          ];
+          this.user.review[index].comments =
+            this.user.review[index].comments + 1;
         }
       });
     });
   },
-  beforeCreate(){
-  },
+  beforeCreate() {},
   created() {
     this.getInfo();
   },
@@ -891,6 +964,11 @@ export default {
         this.comment.content = "";
       } else {
         this.comment.able = true;
+      }
+    },
+    "reviewForm.can_comment": function() {
+      if (this.reviewForm.can_comment == 0) {
+        this.reviewForm.notification = 0;
       }
     }
   },
@@ -968,11 +1046,13 @@ export default {
             switch (this.user.review[index].customer_review.like) {
               case 0:
                 this.user.review[index].customer_review.like = 1;
-                this.user.review[index].likes = this.user.review[index].likes + 1;
+                this.user.review[index].likes =
+                  this.user.review[index].likes + 1;
                 break;
               case 1:
                 this.user.review[index].customer_review.like = 0;
-                this.user.review[index].likes = this.user.review[index].likes - 1;
+                this.user.review[index].likes =
+                  this.user.review[index].likes - 1;
                 break;
             }
           }
@@ -1060,6 +1140,7 @@ export default {
           }
         })
           .then(res => {
+            this.flag = true;
             this.user = res.data.user;
             console.log(this.user);
           })
@@ -1185,6 +1266,99 @@ export default {
           query: { code: "bookingcode" + val }
         });
       } else this.$router.push({ name: "booking-list" });
+    },
+    updateNotification: function(review_id) {
+      var flag = true;
+      var index = this.getIndex(review_id);
+      switch (this.user.review[index].customer_review.status) {
+        case 1:
+          this.user.review[index].customer_review.status = 0;
+          break;
+        case 0:
+          this.user.review[index].customer_review.status = 1;
+          break;
+      }
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/get-notification",
+        params: {
+          review_id: review_id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          if (res.data.status == false) {
+            flag = false;
+          }
+        })
+        .catch(error => {
+          flag = false;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        })
+        .then(() => {
+          if (!flag) {
+            switch (this.user.review[index].customer_review.status) {
+              case 1:
+                this.user.review[index].customer_review.status = 0;
+                break;
+              case 0:
+                this.user.review[index].customer_review.status = 1;
+                break;
+            }
+          }
+        });
+    },
+    updateReviewState: function(review_id) {
+      var flag = true;
+      var index = this.getIndex(review_id);
+      switch (this.user.review[index].can_comment) {
+        case 1:
+          this.user.review[index].can_comment = 0;
+          break;
+        case 0:
+          this.user.review[index].can_comment = 1;
+          break;
+      }
+      axios({
+        method: "put",
+        url: "http://localhost:8000/api/review/" + review_id,
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          if (res.data.status == false) {
+            flag = false;
+          }
+        })
+        .catch(error => {
+          flag = false;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        })
+        .then(() => {
+          if (!flag) {
+            switch (this.user.review[index].can_comment) {
+              case 1:
+                this.user.review[index].can_comment = 0;
+                break;
+              case 0:
+                this.user.review[index].can_comment = 1;
+                break;
+            }
+          }
+        });
     }
   }
 };

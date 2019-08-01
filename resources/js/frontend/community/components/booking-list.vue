@@ -338,6 +338,7 @@
                                       </v-flex>
                                       <v-flex md6>
                                         <v-checkbox
+                                          :disabled="!reviewData.can_comment"
                                           v-model="reviewData.notification"
                                           label="Nhận thông báo"
                                           color="#B53471"
@@ -386,11 +387,12 @@
                   </v-card>
                 </template>
                 <template v-slot:no-results>
-                  <v-alert
-                    :value="true"
-                    color="error"
-                    icon="warning"
-                  >Tìm "{{ search }}" không có kết quả.</v-alert>
+                  <v-layout align-center white>
+                    <v-flex md3>
+                      <v-img :aspect-ratio="1" src="/img/booking/no-result.gif"></v-img>
+                    </v-flex>
+                    <v-flex offset-md1 class="font-weight-bold body-2">Rất tiếc, không tìm thấy.</v-flex>
+                  </v-layout>
                 </template>
               </v-data-table>
             </v-card>
@@ -404,9 +406,15 @@
       </v-layout>
     </v-flex>
     <v-flex md7 v-else>
-      <v-layout align-center justify-center>
-        <v-icon large color="teal">fas fa-circle-notch fa-spin</v-icon>
-      </v-layout>
+      <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
+          <v-flex md3 class="pa-2 ma-2">
+            <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
+              <v-layout fill-height align-center justify-center>
+                <span class="pa-5 caption black--text font-weight-bold">đang tải...</span>
+              </v-layout>
+            </v-img>
+          </v-flex>
+        </v-layout>
     </v-flex>
     <v-flex md4 offset-md1>
       <v-card light flat tile>
@@ -438,13 +446,24 @@
             <v-flex md12>
               <div>
                 <div class="mb-1">
-                  <span class="body-1 orange--text">Lựa chọn khác</span>
+                  <span class="body-1 orange--text">Tìm theo ngày</span>
                 </div>
                 <div>
                   <input type="text" v-model="code" class="pa-2 border"/>
                 </div>
                 <div class="mt-1">
-                  <span class="grey--text cption font-italic">*nhập ngày theo chuẩn: 2019-01-01</span>
+                  <span class="grey--text cption font-italic">*nhập ngày theo chuẩn: DD-MM-YYYY</span>
+                </div>
+              </div>
+              <div>
+                <div class="mb-1">
+                  <span class="body-1 orange--text">Tìm theo mã</span>
+                </div>
+                <div>
+                  <input type="text" v-model="bookingCode" class="pa-2 border"/>
+                </div>
+                <div class="mt-1">
+                  <span class="grey--text cption font-italic">*nhập mã đơn</span>
                 </div>
               </div>
             </v-flex>
@@ -452,19 +471,30 @@
         </v-card-title>
       </v-card>
     </v-flex>
-    <v-dialog persistent v-model="confirm.dialog" max-width="290">
+    <v-dialog persistent v-model="confirm.dialog" max-width="500">
       <v-card>
-        <v-card-title class="headline">{{confirm.title}}</v-card-title>
-
-        <v-card-text>{{confirm.content}}</v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn color="green darken-1" flat="flat" @click="confirm.dialog = false">Hủy</v-btn>
-
-          <v-btn color="green darken-1" flat="flat" @click="cancelBooking()">Đồng Ý</v-btn>
-        </v-card-actions>
+        <v-card-title>
+          <v-layout class="pa-0 ma-0" align-center>
+            <v-flex md5>
+              <v-img :aspect-ratio="1" src="/img/booking/octo.gif"></v-img>
+            </v-flex>
+            <v-flex md7>
+              <div class="title">{{confirm.title}}</div>
+              <div class="ml-3">
+                <v-chip
+                  class="pa-1 ma-2 white--text font-weight-bold"
+                  color="red" 
+                  @click="confirm.dialog = false"
+                >Hủy</v-chip>
+                <v-chip
+                  class="pa-1 ma-2 white--text font-weight-bold"
+                  color="green darken-1"
+                  @click="cancelBooking()"
+                >Đồng ý</v-chip>
+              </div>
+            </v-flex>
+          </v-layout>
+        </v-card-title>
       </v-card>
     </v-dialog>
   </v-layout>
@@ -514,14 +544,13 @@ export default {
       confirm: {
         dialog: false,
         index: 0,
-        title: "Bạn có chắc chắn?",
-        content:
-          "Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan."
+        title: "Xóa? Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan.",
       },
       flag: {
         state: false,
         text: ""
       },
+      bookingCode:"",
       status: [],
       bookingList: [],
       pureBookingList: [],
@@ -592,8 +621,21 @@ export default {
     //       if(newVal != oldVal) this.pureBookingList = this.bookingList;
     //   }
     code: function(val) {
-      this.search = val;
+      if(val.length ==10){
+        let [day,month,year] = val.trim().split('-');
+        val = year+"-"+month+"-"+day;
+        this.search = this.$moment(val).format("YYYY-MM-DD");
+      }      
+    },
+    bookingCode: function(val){
+      this.search = "bookingcode"+val;
+    },
+    "reviewData.can_comment": function(){
+      if(this.reviewData.can_comment == 0){
+        this.reviewData.notification = 0;
+      }
     }
+    
   },
   methods: {
     getDetail: function(booking) {
@@ -633,6 +675,7 @@ export default {
       this.booking = booking;
     },
     sendReview: function() {
+      console.log(this.reviewData.can_comment);
       var index = this.bookingList.indexOf(this.booking);
       console.log(index);
       console.log(this.bookingList[index].review);
@@ -713,10 +756,8 @@ export default {
       this.confirm.dialog = true;
       this.confirm.index = this.bookingList.indexOf(booking);
       this.booking = booking;
-      this.confirm.title = "Bạn có chắc chắn?";
-      if (booking.status.id == 4)
-        this.confirm.content =
-          "Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan.";
+      this.confirm.title =
+        "Xóa? Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan.";
     },
     loadBookingStatus: function() {
       axios({

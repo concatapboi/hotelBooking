@@ -62,8 +62,9 @@ class QuestionController extends Controller
         $questionTemp['created_at'] = $question->created_at;
         $questionTemp['customer'] = $question->Customer();
         $questionTemp['reply'] = $question->Reply;
-        broadcast(new UserAskEvent($question->hotel_id,$ask,$message,$questionTemp));
         Hotel::find($question->hotel_id)->notify(new UserAskNotification($question->hotel_id,$ask,$message));
+        $notificationId = Hotel::find($question->hotel_id)->unreadNotifications->first()->id;
+        broadcast(new UserAskEvent($question->hotel_id,$ask,$message,$questionTemp,$notificationId));
         return response()->json([
             'status' => true,
             'errors' => null,

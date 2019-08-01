@@ -114,7 +114,6 @@
             <v-list-tile>
               <v-list-tile-title @click="openAccountDialog">Tài khoản</v-list-tile-title>
             </v-list-tile>
-
             <v-list-tile>
               <v-list-tile-title @click="logout">Đăng xuất</v-list-tile-title>
             </v-list-tile>
@@ -145,6 +144,7 @@
                     </div>
                   </v-flex>
                 </v-layout>
+                <v-divider dark></v-divider>
               </div>
               <div v-else>
                 <v-list-tile v-if="notification.read_at == null" class="white">
@@ -231,6 +231,8 @@
           v-bind:arrayProvince="arrayProvince"
           v-bind:arrayService="arrayService"
           v-bind:api_token="api_token"
+          :snackbar="snackbar"
+          v-on:loadSnackbar="eventSnackbar"
           v-bind:errorMessage="errorMessage"
           v-on:changeArrayHotel="update($event)"
           v-on:chooseHotel="chooseHotel($event)"
@@ -238,6 +240,25 @@
           v-on:panelIndex="panelIndex($event)"
         ></router-view>
       </v-container>
+      <v-snackbar
+        v-model="snackbar.state"
+        multi-line="multi-line"
+        :timeout="snackbar.timeout"
+        top
+        color="white"
+        class="body-1 black--text font-weight-bold"
+        style="margin-top:150px"
+      >
+        <v-layout align-center>
+          <v-flex md5>
+            <v-img :aspect-ratio="1" src="/img/booking/alert.gif"></v-img>
+          </v-flex>
+          <v-flex>{{snackbar.content}}</v-flex>
+          <v-flex>
+            <v-icon v-on:click="snackbar.state = !snackbar.state" large color="black">close</v-icon>
+          </v-flex>
+        </v-layout>
+      </v-snackbar>
     </v-content>
     <v-dialog v-model="accountDialog" width="50%">
       <v-card>
@@ -280,7 +301,14 @@
 export default {
   data: function() {
     return {
+
       editAccount: false,
+
+      snackbar: {
+        state: false,
+        content: "",
+        timeout: 6000
+      },
       loaded: false,
       items: [
         { icon: "home", color: "black", title: "Trang chủ" },
@@ -302,9 +330,9 @@ export default {
       formTitle: "",
       districtDisabled: true,
       wardDisabled: true,
-      snackbar: false,
-      snackbarText: "",
-      snackbarTimeout: 5000,
+      // snackbar: false,
+      // snackbarText: "",
+      // snackbarTimeout: 5000,
       dialog: false,
       hotelId: this.$route.query.hotelId,
       hotelName: "",
@@ -337,7 +365,6 @@ export default {
       }
     };
   },
-
   watch: {
     $route: function(to, from) {
       if (to.name == "home") {
@@ -408,9 +435,15 @@ export default {
     // window.Echo.channel("manager").listen(".accept-booking", e => {
     //   console.log(e);
     // });
+    window.Echo.channel("ask").listen(".user-ask", e => {
+      if (e.data.hotel == this.hotelId) {
+        this.notifications.list = [e, ...this.notifications.list];
+      }
+    });
     window.Echo.channel("manager").listen(".new-booking", e => {
+      console.log(e);
       if (e.hotelId == this.hotelId) {
-        this.notifications.list.push(e);
+        this.notifications.list = [e, ...this.notifications.list];
       }
     });
     window.Echo.channel("manager").listen(".accept-booking", e => {
@@ -605,6 +638,10 @@ export default {
         this.hotelPanel[i] = false;
       }
       this.hotelPanel[index] = true;
+    },
+    eventSnackbar: function(val) {
+      this.snackbar.state = !this.snackbar.state;
+      this.snackbar.content = val + "";
     },
     logout: function() {
       axios({

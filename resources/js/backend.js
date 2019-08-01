@@ -15,6 +15,7 @@ import Routes from '@/js/backend/routes.js';
 import App from '@/js/backend/backend';
 import colors from 'vuetify/es5/util/colors';
 import VeeValidate from 'vee-validate';
+import VueMoment from 'vue-moment';
 
 Vue.use(VeeValidate,{
     events: 'change'
@@ -27,6 +28,7 @@ Vue.use(Vuetify, {
     },
     // iconfont: 'mdi',
 });
+Vue.use(VueMoment);
 
 /**
  * The following block of code may be used to automatically register your

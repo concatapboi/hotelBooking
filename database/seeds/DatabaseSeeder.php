@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
         //Hotel type: 7
         DB::table('hotel_type')->insert([
             'id' => 1,
-            'name' => 'Bình Dân',
+            'name' => 'Khách Sạn Bình Dân',
             'meta_name' => 'business-hotel',
         ]);
         DB::table('hotel_type')->insert([
@@ -193,7 +193,7 @@ class DatabaseSeeder extends Seeder
             'status' => true,
         ]);
         DB::table('service')->insert([
-            'name' => 'Giặc Ủi',
+            'name' => 'Giặt Ủi',
             'meta_name' => 'laundry',
             'icon' => 'caret-square-down',
             'status' => true,

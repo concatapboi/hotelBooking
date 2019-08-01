@@ -37,7 +37,7 @@ class Review extends Model
   }
   public function Comment()
   {
-    return $this->hasMany('App\Models\Comment', 'review_id', 'id')->orderBy('created_at','desc');
+    return $this->hasMany('App\Models\Comment', 'review_id', 'id')->orderBy('created_at', 'desc');
   }
 
   public function Hotel()
@@ -45,11 +45,21 @@ class Review extends Model
     return $this->belongsTo('App\Models\Hotel', 'hotel_id', 'id');
   }
 
-  public function CustomerReview($customerID,$reviewID){
-    return CustomerReview::where('customer_id', $customerID)->where('review_id', $reviewID)->first();
+  public function CustomerReview($customerID, $reviewID)
+  {
+    $customer_review = CustomerReview::where('customer_id', $customerID)->where('review_id', $reviewID)->first();
+    if ($customer_review == null) {
+      $customer_review = new CustomerReview();
+      $customer_review->customer_id = $customerID;
+      $customer_review->status = 0;
+      $customer_review->like = 0;
+      $customer_review->useful = 0;
+    }
+    return $customer_review;
   }
-  public function UserReview(){
-    return $this->hasMany('App\Models\CustomerReview','review_id','id')->where('customer_id','<>','customer_id');
+  public function UserReview()
+  {
+    return $this->hasMany('App\Models\CustomerReview', 'review_id', 'id')->where('customer_id', '<>', 'customer_id');
   }
   public function Booking()
   {
@@ -57,7 +67,7 @@ class Review extends Model
   }
   public function bookingDetail()
   {
-    $booking= Booking::find($this->booking_id);
+    $booking = Booking::find($this->booking_id);
     $data = [];
     $data['id'] = $booking->id;
     $data['check_in'] = $booking->check_in;
@@ -67,7 +77,7 @@ class Review extends Model
     $data['room_amount'] = $booking->room_amount;
     $room = $booking->Room;
     $temp = array();
-    foreach($room->roomFeature() as $f){
+    foreach ($room->roomFeature() as $f) {
       $temp[] = $f->FeatureResource();
     }
     $room->feature = $temp;

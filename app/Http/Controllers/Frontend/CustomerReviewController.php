@@ -22,6 +22,15 @@ class CustomerReviewController extends Controller
     {
         if (Auth::check()) {
             $customerReview = CustomerReview::where('customer_id', Auth::user()->id)->where('review_id', $req->review_id)->first();
+            if ($customerReview == null) {
+                $customerReview = CustomerReview::create([
+                    'customer_id' => Auth::user()->id,
+                    'review_id' => $req->review_id,
+                    'status' => 0,
+                    'like' => 0,
+                    'useful' => 0,
+                ]);
+            }
             $review = Review::find($req->review_id);
             if ($customerReview == null || $review == null)
                 return response()->json([
@@ -29,9 +38,13 @@ class CustomerReviewController extends Controller
                 ]);
             switch ($customerReview->like) {
                 case 1:
-                    $customerReview->update([
-                        'like' => 0,
-                    ]);
+                    if ($customerReview->status == 0 && $customerReview->useful == 0) {
+                        $customerReview->delete();
+                    } else {
+                        $customerReview->update([
+                            'like' => 0,
+                        ]);
+                    }
                     $review->update([
                         'likes' => $review->likes - 1,
                     ]);
@@ -56,6 +69,42 @@ class CustomerReviewController extends Controller
 
     public function getNotification(Request $req)
     {
+        if (Auth::check()) {
+            $customerReview = CustomerReview::where('customer_id', Auth::user()->id)->where('review_id', $req->review_id)->first();
+            if ($customerReview == null) {
+                $customerReview = CustomerReview::create([
+                    'customer_id' => Auth::user()->id,
+                    'review_id' => $req->review_id,
+                    'status' => 0,
+                    'like' => 0,
+                    'useful' => 0,
+                ]);
+            }
+            $review = Review::find($req->review_id);
+            if ($customerReview == null || $review == null)
+                return response()->json([
+                    'status' => false,
+                ]);
+            switch ($customerReview->status) {
+                case 1:
+                    if ($customerReview->like == 0 && $customerReview->useful == 0) {
+                        $customerReview->delete();
+                    } else {
+                        $customerReview->update([
+                            'status' => 0,
+                        ]);
+                    }
+                    break;
+                case 0;
+                    $customerReview->update([
+                        'status' => 1,
+                    ]);
+                    break;
+            }
+            return response()->json([
+                'status' => true,
+            ]);
+        }
         return response()->json([
             'status' => false,
         ]);
@@ -65,6 +114,15 @@ class CustomerReviewController extends Controller
     {
         if (Auth::check()) {
             $customerReview = CustomerReview::where('customer_id', Auth::user()->id)->where('review_id', $req->review_id)->first();
+            if ($customerReview == null) {
+                $customerReview = CustomerReview::created([
+                    'customer_id' => Auth::user()->id,
+                    'review_id' => $req->review_id,
+                    'status' => 1,
+                    'like' => 0,
+                    'useful' => 0,
+                ]);
+            }
             $review = Review::find($req->review_id);
             if ($customerReview == null || $review == null)
                 return response()->json([

@@ -53,7 +53,7 @@
                           @click="q.expanded = false; closeQues()"
                           class="red--text"
                           v-else
-                        >Hủy.</a>
+                        >Quay lại.</a>
                       </span>
                       <span v-else>
                         <a
@@ -67,7 +67,7 @@
                           @click="q.expanded = false;closeQues()"
                           class="red--text"
                           v-else
-                        >Hủy.</a>
+                        >Quay lại.</a>
                       </span>
                     </td>
                   </tr>
@@ -104,6 +104,14 @@
                     </v-layout>
                   </v-card>
                 </template>
+                <template v-slot:no-results>
+                  <v-layout align-center white>
+                    <v-flex md3>
+                      <v-img :aspect-ratio="1" src="/img/booking/no-result.gif"></v-img>
+                    </v-flex>
+                    <v-flex offset-md1 class="font-weight-bold body-2">Rất tiếc, không tìm thấy.</v-flex>
+                  </v-layout>
+                </template>
               </v-data-table>
             </v-card>
           </template>
@@ -116,8 +124,14 @@
       </v-layout>
     </v-flex>
     <v-flex md7 v-else>
-      <v-layout align-center justify-center>
-        <v-icon large color="teal">fas fa-circle-notch fa-spin</v-icon>
+      <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
+        <v-flex md5 class="pa-2 ma-2">
+          <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
+            <v-layout fill-height align-center justify-center>
+              <span class="pa-5 caption purple--text font-weight-bold">đang tải...</span>
+            </v-layout>
+          </v-img>
+        </v-flex>
       </v-layout>
     </v-flex>
     <v-flex md4 offset-md1>
@@ -130,28 +144,28 @@
                   <v-flex md12>
                     <span class="body-1 purple--text">Chọn danh sách:</span>
                   </v-flex>
-                  <v-flex md4>
+                  <v-flex md12>
                     <v-layout row wrap class="pa-0 ma-0" align-center>
                       <v-flex md2>
                         <v-radio :value="0" @click="radio = 0" color="black"></v-radio>
                       </v-flex>
-                      <v-flex md8 offset-md1 class="caption">Tất cả</v-flex>
+                      <v-flex md8 class="caption">Tất cả ({{questionList.length}})</v-flex>
                     </v-layout>
                   </v-flex>
-                  <v-flex md4>
+                  <v-flex md12>
                     <v-layout row wrap class="pa-0 ma-0" align-center>
                       <v-flex md2>
                         <v-radio :value="1" @click="radio = 1" color="purple"></v-radio>
                       </v-flex>
-                      <v-flex md8 offset-md1 class="caption">Đã phản hồi</v-flex>
+                      <v-flex md8 class="caption">Đã phản hồi ({{oldQuestionList.length}})</v-flex>
                     </v-layout>
                   </v-flex>
-                  <v-flex md4>
+                  <v-flex md12>
                     <v-layout row wrap class="pa-0 ma-0" align-center>
                       <v-flex md2>
                         <v-radio :value="2" @click="radio = 2" color="orange"></v-radio>
                       </v-flex>
-                      <v-flex md8 offset-md1 class="caption">Mới</v-flex>
+                      <v-flex md8 class="caption">Mới ({{newQuestionList.length}})</v-flex>
                     </v-layout>
                   </v-flex>
                 </v-layout>
@@ -215,8 +229,8 @@ export default {
   },
   mounted(){
     window.Echo.channel("ask").listen(".user-ask", e => {
-      this.questionList = [e.question, ...this.questionList];
-      this.newQuestionList = [e.question, ...this.newQuestionList];
+      this.questionList = [e.data.question, ...this.questionList];
+      this.newQuestionList = [e.data.question, ...this.newQuestionList];
       this.radio = 2;
     });
   },

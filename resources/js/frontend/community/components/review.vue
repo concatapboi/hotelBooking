@@ -18,19 +18,74 @@
             </v-tooltip>
           </template>
           <v-card light min-height="120px" class="pa-1" flat tile width="800px">
-            <v-card-title v-if="review.customer">
-              <v-avatar size="72px" color="black" flat>
-                <v-avatar size="70px" color="white">
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <img :src="'/img/user/'+review.customer.avatar.image_link" v-on="on" />
+            <v-card-title>
+              <v-layout row wrap class="pa-0 ma-0" align-center>
+                <v-flex md9 class="text-md-left" v-if="review.customer">
+                  <v-avatar size="72px" color="black" flat>
+                    <v-avatar size="70px" color="white">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <img :src="'/img/user/'+review.customer.avatar.image_link" v-on="on" />
+                        </template>
+                        <span>{{review.customer.name }}</span>
+                      </v-tooltip>
+                    </v-avatar>
+                  </v-avatar>
+                  <span class="title pl-3 font-weight-light">{{review.customer.name}}</span>
+                </v-flex>
+                <v-spacer v-if="review.customer"></v-spacer>
+                <v-flex md11 v-else><v-divider></v-divider></v-flex>
+                <v-flex md1 class="text-md-right">
+                  <v-speed-dial :transition="`slide-x-reverse-transition`" :direction="`left`">
+                    <template v-slot:activator>
+                      <v-btn fab depressed color="#6F1E51" small @click="cancel = !cancel">
+                        <v-icon color="white" medium v-if="!cancel">settings</v-icon>
+                        <v-icon color="white" medium>clear</v-icon>
+                      </v-btn>
                     </template>
-                    <span>{{review.customer.name }}</span>
-                  </v-tooltip>
-                </v-avatar>
-              </v-avatar>
-              <span class="title pl-3 font-weight-light">{{review.customer.name}}</span>
-              <v-spacer></v-spacer>
+                    <v-btn
+                      fab
+                      color="#0652DD"
+                      depressed
+                      small
+                      @click.stop="updateReviewState(review.id)"
+                      v-if="review.can_comment ==1 && !review.customer"
+                    >
+                      <i class="fas fa-comment white--text fa-lg"></i>
+                    </v-btn>
+                    <v-btn
+                      fab
+                      color="red"
+                      depressed
+                      small
+                      @click.stop="updateReviewState(review.id)"
+                      v-else-if="!review.customer"
+                    >
+                      <i class="fas fa-comment-slash white--text fa-lg"></i>
+                    </v-btn>
+                    <v-btn
+                      fab
+                      color="#0652DD"
+                      depressed
+                      small
+                      @click.stop="updateNotification(review.id)"
+                      v-if="review.customer_review.status ==1"
+                    >
+                      <i class="far fa-bell white--text fa-lg"></i>
+                    </v-btn>
+                    <v-btn
+                      fab
+                      color="red"
+                      depressed
+                      small
+                      @click.stop="updateNotification(review.id)"
+                      v-else
+                    >
+                      <i class="far fa-bell-slash white--text fa-lg"></i>
+                    </v-btn>
+                  </v-speed-dial>
+                </v-flex>
+              </v-layout>
             </v-card-title>
             <v-divider class="m-0 p-0" v-if="review.customer"></v-divider>
             <v-card-text>
@@ -68,9 +123,23 @@
                         >
                           <span class="font-weight-bold body-2">{{review.hotel.name}}</span>
                         </router-link>
-                        &nbsp;({{review.hotel.stars_num}}&nbsp;sao)
                       </div>
-                      <div>Tại&nbsp;{{review.hotel.address}}</div>
+                      <div v-if="review.hotel.stars_num > 0">
+                        <v-chip color="#3B3B98" class="white--text">
+                          <v-icon class="mr-1" small color="yellow">star</v-icon>
+                          {{review.hotel.stars_num}}/5
+                        </v-chip>
+                        <v-chip
+                          color="#A3CB38"
+                          class="white--text font-weight-text"
+                        >{{review.hotel.review_point}}/10</v-chip>
+                      </div>
+                      <div>
+                        <v-chip color="#7d5fff" class="white--text">
+                          <v-icon class="mr-1" small color="pink">room</v-icon>
+                          {{review.hotel.address}}
+                        </v-chip>
+                      </div>
                     </v-flex>
                     <v-flex md4 v-for="(ser,i) in review.hotel.services" :key="i" class="pa-1">
                       <div class="text-md-center border pa-2">
@@ -208,8 +277,14 @@
 
 <script>
 export default {
+  props: {
+    customer: {
+      type: Object
+    }
+  },
   data() {
     return {
+      cancel:false,
       id: this.$route.query.id,
       comment: {
         review_id: 0,
@@ -219,11 +294,12 @@ export default {
       review: {
         customer_review: {},
         hotel: {
-          id:0,
+          id: 0,
           image: "default.png",
           services: []
         }
       },
+      user: {},
       color: {
         header: "#2c3e50",
         badge: "#1cc3b2",
@@ -239,19 +315,19 @@ export default {
   },
   mounted() {
     window.Echo.channel("message").listen(".send-mess", e => {
-      if(e.link.id == this.id) {
+      if (e.link.id == this.id) {
         var comment = {
-            content: e.content,
-            customer: {
-              id: e.user.id,
-              name: e.user.name,
-              avatar: {
-                image_link: e.user.avatar
-              }
+          content: e.content,
+          customer: {
+            id: e.user.id,
+            name: e.user.name,
+            avatar: {
+              image_link: e.user.avatar
             }
-          };
-          this.review.comment = [...this.review.comment,comment];
-          this.review.comments = this.review.comments+1;
+          }
+        };
+        this.review.comment = [...this.review.comment, comment];
+        this.review.comments = this.review.comments + 1;
       }
     });
   },
@@ -268,6 +344,7 @@ export default {
     }
   },
   created() {
+    this.user = this.customer;
     if (Object.keys(this.$route.query).length == 0) {
       this.$router.push({ name: "home" });
     }
@@ -394,6 +471,97 @@ export default {
           }
         });
     },
+    updateNotification: function(review_id) {
+      var flag = true;
+      switch (this.review.customer_review.status) {
+        case 1:
+          this.review.customer_review.status = 0;
+          break;
+        case 0:
+          this.review.customer_review.status = 1;
+          break;
+      }
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/get-notification",
+        params: {
+          review_id: review_id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          if (res.data.status == false) {
+            flag = false;
+          }
+        })
+        .catch(error => {
+          flag = false;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        })
+        .then(() => {
+          if (!flag) {
+            switch (this.review.customer_review.status) {
+              case 1:
+                this.review.customer_review.status = 0;
+                break;
+              case 0:
+                this.review.customer_review.status = 1;
+                break;
+            }
+          }
+        });
+    },
+    updateReviewState: function(review_id) {
+      var flag = true;
+      switch (this.review.can_comment) {
+        case 1:
+          this.review.can_comment = 0;
+          break;
+        case 0:
+          this.review.can_comment = 1;
+          break;
+      }
+      axios({
+        method: "put",
+        url: "http://localhost:8000/api/review/"+review_id,
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          if (res.data.status == false) {
+            flag = false;
+          }
+        })
+        .catch(error => {
+          flag = false;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        })
+        .then(() => {
+          if (!flag) {
+            switch (this.review.can_comment) {
+              case 1:
+                this.review.can_comment = 0;
+                break;
+              case 0:
+                this.review.can_comment = 1;
+                break;
+            }
+          }
+        });
+    }
   }
 };
 </script>

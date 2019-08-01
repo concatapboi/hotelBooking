@@ -19,6 +19,7 @@ use App\Http\Resources\ServiceResource;
 use Carbon\Carbon;
 use App\Models\HotelImage;
 use App\Models\RoomImage;
+use App\User;
 
 class HotelController extends Controller
 {
@@ -75,50 +76,73 @@ class HotelController extends Controller
                 $hotel->paymentMethods = $hotel->paymentMethods();
                 $hotel->image = HotelImage::where('hotel_id', $hotel->id)->where('is_primary', 1)->first()->image_link;
                 $hotel->images = HotelImage::where('hotel_id', $hotel->id)->get();
-                // $hotel->question = $hotel->questionList();
                 $status = true;
                 $hotel->hotel_type = $hotel->HotelTypeResource();
                 $hotel->service = $hotel->ServiceResource();
                 $hotel->followed = false;
-                // $hotel->review = $hotel->reviewList($req->userID);
                 $hotel->coupon_code = $hotel->getCouponCode();
                 if ($req->userID != null) {
                     if (HotelFollowing::where('customer_id', $req->userID)->where('hotel_id', $hotel->id)->first() != null)
                         $hotel->followed = true;
+                }
+            } else {
+                $hotel = Hotel::withTrashed()->find($id);
+                if ($hotel != null) {
+                    $hotel->Policy;
+                    $hotel->paymentMethods = $hotel->paymentMethods();
+                    $hotel->image = HotelImage::where('hotel_id', $hotel->id)->where('is_primary', 1)->first()->image_link;
+                    $hotel->images = HotelImage::where('hotel_id', $hotel->id)->get();
+                    $status = false;
+                    $hotel->hotel_type = $hotel->HotelTypeResource();
+                    $hotel->service = $hotel->ServiceResource();
+                    $hotel->followed = false;
+                    $hotel->coupon_code = $hotel->getCouponCode();
+                    if ($req->userID != null || User::find($req->userID)!=null) {
+                        if (HotelFollowing::where('customer_id', $req->userID)->where('hotel_id', $hotel->id)->first() != null)
+                            $hotel->followed = true;
+                    }
                 }
             }
         }
         return response()->json(['status' => $status, 'data' => $hotel]);
     }
 
-    public function questionsByHotel(Request $req){
+    public function questionsByHotel(Request $req)
+    {
         $questions = array();
         return response()->json([
-            'questions' => Hotel::find($req->hotel_id)->questionList()?Hotel::find($req->hotel_id)->questionList():$questions,
+            'questions' => Hotel::find($req->hotel_id)->questionList() ? Hotel::find($req->hotel_id)->questionList() : $questions,
         ]);
     }
-    public function reviewsByHotel(Request $req){
+    public function reviewsByHotel(Request $req)
+    {
+        $hotel = Hotel::find($req->hotel_id);
         $reviews = array();
+        $status = false;
+        if ($hotel != null) {
+            $reviews = $hotel->reviewList($req->user_id);
+        }
         return response()->json([
-            'reviews' => Hotel::find($req->hotel_id)->reviewList($req->user_id)?Hotel::find($req->hotel_id)->reviewList($req->user_id):$reviews,
+            'status' => $status,
+            'reviews' => $reviews,
         ]);
     }
 
-    public function roomsByHotel(Request $req){
+    public function roomsByHotel(Request $req)
+    {
         $id = $req->hotel_id;
         $hotel = Hotel::find($id);
-        if($hotel == null){
+        if ($hotel == null) {
             return response()->json([
-                'status' => $req->hotel_id,
+                'status' => false,
                 'room' => array()
             ]);
         }
-        // $rooms = $hotel->Room;
-        $rooms = Room::where('hotel_id',$hotel->id)->orderBy('price')->paginate(2);
+        $rooms = Room::where('hotel_id', $hotel->id)->orderBy('price')->paginate(2);
         foreach ($rooms as $r) {
             $r->couponCode = $r->couponCode();
             $r->image = RoomImage::where('room_id', $r->id)->where('is_primary', 1)->first()->image_link;
-            $r->images = RoomImage::where('room_id', $r->id)->get();
+            $r->images = RoomImage::where('room_id', $r->id)->orderBy('is_primary', 'asc')->get();
             $r->room_mode = $r->RoomModeResource();
             $r->room_type = $r->RoomTypeResource();
             $tempRoomType = $r->room_type;
@@ -130,7 +154,7 @@ class HotelController extends Controller
             $r->days = $checkIn->diffInDays($checkOut);
             $r->amount = $r->availableRoomAmount($checkIn, $checkOut);
             $temp = array();
-            foreach($r->roomFeature() as $f){
+            foreach ($r->roomFeature() as $f) {
                 $temp[] = $f->FeatureResource();
             }
             $r->feature = $temp;
@@ -143,6 +167,7 @@ class HotelController extends Controller
             $r->bookingAmount = 1;
         }
         return response()->json([
+            'status' => true,
             'room' => $rooms
         ]);
     }

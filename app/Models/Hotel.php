@@ -89,7 +89,7 @@ class Hotel extends Model
     foreach ($couponCodes as $couponCode) {
       if (!Carbon::now()->lessThan(Carbon::parse($couponCode->start_at))) {
         if ($couponCode->end_at == null || Carbon::now()->lessThan(Carbon::parse($couponCode->end_at))) {
-          if ($couponCode->apply_amount > 0)
+          // if (($couponCode->apply_amount - $couponCode->applied_amount) > 0)
             $temp[] = $couponCode;
         }
       }
@@ -248,7 +248,7 @@ class Hotel extends Model
           if ($policy->can_refund > 0) {
             $tempCase1['content'] = $tempCase1['content'] . '. Bạn sẽ được hoàn trả ' . $policy->can_refund . '% phí đã thanh toán';
           } else {
-            $tempCase1['content'] = $tempCase1['content'] . '. Tuy nhiên, bạn sẽ không được hoàn trả phía đã thanh toán';
+            $tempCase1['content'] = $tempCase1['content'] . '. Tuy nhiên, bạn sẽ không được hoàn trả phí đã thanh toán';
           }
         } else {
           $tempCase1['content'] = ' Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng';

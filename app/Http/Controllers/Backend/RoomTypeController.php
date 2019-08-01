@@ -20,14 +20,14 @@ class RoomTypeController extends Controller
     {
         // return $request->hotelId;
         $roomModeId = $request->roomModeId;
-        $hotel = Hotel::where("id",$request->hotelId)->with("Room")->get();
+        $hotel = Hotel::where("id", $request->hotelId)->with("Room")->get();
         $temp = [];
-        foreach($hotel[0]->room as $room){
-            if($room->room_mode_id == $roomModeId){
+        foreach ($hotel[0]->room as $room) {
+            if ($room->room_mode_id == $roomModeId) {
                 $temp[] = $room->room_type_id;
             }
         }
-        $data = RoomType::whereNotIn("id",$temp)->get();
+        $data = RoomType::whereNotIn("id", $temp)->get();
         return response()->json([
             "status" => true,
             "data" => $data,
@@ -63,7 +63,23 @@ class RoomTypeController extends Controller
      */
     public function show($id)
     {
-        //
+        $hotel_id = $id;
+        if (Hotel::find($hotel_id) == null) {
+            return response()->json([
+                'status' => false,
+            ]);
+        }
+        $roomTypes = array();
+        $data = RoomType::whereHas("Room", function ($query) use ($hotel_id) {
+            $query->where("hotel_id", $hotel_id);
+        })->get();
+        foreach ($data as $roomType) {
+            $roomTypes[] = new RoomTypeResource($roomType);
+        }
+        return response()->json([
+            'status' => true,
+            'data' => $roomTypes,
+        ]);
     }
 
     /**

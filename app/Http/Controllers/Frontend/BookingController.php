@@ -76,9 +76,9 @@ class BookingController extends Controller
                     $mess = 'Thành công!';
                     $coupon_code = CouponCode::find($b['coupon_code_id']);
                     $discount = 0;
-                    if ($coupon_code != null) {
+                    if ($coupon_code != null && (($coupon_code->apply_amount - $coupon_code->applied_amount) >0)) {
                         $coupon_code->update([
-                            'apply_amount' => $coupon_code->apply_amount-1,
+                            'applied_amount' => $coupon_code->applied_amount+1,
                         ]);
                         $discount = $coupon_code->discount_value;
                         $coupon_code = $coupon_code->code;
@@ -150,7 +150,21 @@ class BookingController extends Controller
     }
     //get booking/{booking}
     public function show($id)
-    { }
+    { 
+        $data = array();
+        $booking = Booking::find($id);
+        $data['check_in'] = $booking->check_in;
+        $data['check_out'] = $booking->check_out;
+        $data['cancel_status'] = $booking->CancelAble();
+        $hotel = $booking->Room->Hotel; 
+        $data['payment'] = $hotel->paymentMethods();
+        $data['id'] = $booking->id;
+        $data['status'] = $booking->status;
+        $data['customer_id'] = $booking->customer_id;
+        return response()->json([
+            'booking' => $data
+        ]);
+    }
 
     //booking/{booking}/edit
     public function edit($id)

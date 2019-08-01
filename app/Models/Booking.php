@@ -85,7 +85,7 @@ class Booking extends Model
   public function reviewAble()
   {
     $status = false;
-    if ($this->status_id ==4 && $this->Review == null) {
+    if ($this->status_id == 4 && $this->Review == null) {
       $bookingCheckOutExplode = explode("-", $this->check_out);
       $todayExplode = explode("-", date("Y-m-d"));
       $bookingCheckOut = Carbon::createMidnightDate($bookingCheckOutExplode[0], $bookingCheckOutExplode[1], $bookingCheckOutExplode[2]);
@@ -107,22 +107,26 @@ class Booking extends Model
         $status = true;
         break;
       case 2:
-        $status = true;
-        break;
       case 4:
-      if($policy->cancelable == 0) $status = false;
-      else     $status = true;
+        if($policy->cancelable ==0){
+          $status = false;
+        }else{
+          $now = Carbon::now();
+          $bookingCheckIn = Carbon::parse($this->check_in);
+          if($now->lessThan($bookingCheckIn)){
+            if($bookingCheckIn->diffInDays($now)>=$policy->cancelable){
+              $status = true;
+            }else{
+              $status = false;
+            }
+          }else{
+            $status = false;
+          }
+        }
         break;
       default:
         $status = false;
         break;
-    }
-    $bookingCheckinExplode = explode("-", $this->check_in);
-    $todayExplode = explode("-", date("Y-m-d"));
-    $bookingCheckIn = Carbon::createMidnightDate($bookingCheckinExplode[0], $bookingCheckinExplode[1], $bookingCheckinExplode[2]);
-    $today = Carbon::createMidnightDate($todayExplode[0], $todayExplode[1], $todayExplode[2]);
-    if (!$today->lessThan($bookingCheckIn) || $today->diffInDays($bookingCheckIn)>=$policy->cancelable) {
-      $status = false;
     }
     return $status;
   }
