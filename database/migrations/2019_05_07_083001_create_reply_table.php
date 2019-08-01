@@ -19,6 +19,7 @@ class CreateReplyTable extends Migration
             $table->integer('question_id')->unsigned();
             // $table->integer('hotel_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('question_id')
             ->references('id')->on('question')
             ->onDelete('cascade');

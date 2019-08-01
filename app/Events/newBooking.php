@@ -21,12 +21,14 @@ class newBooking implements ShouldBroadcastNow
      *
      * @return void
      */
-    public $booking;
-    public $notificationId;
-    public function __construct(Booking $booking,$notificationId)
+    public $data;
+    public $id;
+    public $hotelId;
+    public function __construct(Booking $booking,$notificationId,$hotelId)
     {
-        $this->booking = new BookingResource($booking);
-        $this->notificationId = $notificationId;
+        $this->data['booking'] = new BookingResource($booking);
+        $this->id = $notificationId;
+        $this->hotelId = $hotelId;
     }
 
     /**

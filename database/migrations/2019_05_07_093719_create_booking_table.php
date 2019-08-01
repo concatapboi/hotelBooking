@@ -33,6 +33,7 @@ class CreateBookingTable extends Migration
             $table->string('coupon_code')->nullable();
             $table->integer('discount_value')->default(0);
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('room_id')
             ->references('id')->on('room')
             ->onDelete('cascade');

@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\BedTypeResource;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RoomBedType extends Model
 {
+  use SoftDeletes;
   protected $table = 'room_bed_type';
 
   protected $fillable = [

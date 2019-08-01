@@ -193,7 +193,17 @@
                         <label for="file" class="fileLabel" v-ripple="{ class: `primary--text` }">
                           <v-icon color="primary">add</v-icon>
                         </label>
-                        <input type="file" id="file" multiple ref="images" @change="addImage" />
+                        <input
+                          type="file"
+                          v-validate="'required|mimes:image/jpeg,image/png'"
+                          :error-messages="errors.collect('image')"
+                          data-vv-name="image"
+                          id="file"
+                          multiple
+                          ref="images"
+                          @change="addImage"
+                        />
+                        <span>{{ errors.first('image') }}</span>
                       </div>
                     </v-flex>
                   </v-layout>
@@ -483,16 +493,30 @@
               </v-tabs>
             </v-expansion-panel-content>
           </v-expansion-panel>
-          <v-dialog width="30%" v-model="confirmDialog">
+          <v-dialog max-width="40%" v-model="confirmDialog">
             <v-card>
               <v-card-title>
-                <h3>Xác nhận</h3>
+                <h5>Xác nhận</h5>
               </v-card-title>
-              <v-card-text>Bạn có muốn xóa loại phòng này</v-card-text>
+              <v-card-text v-if="bookingListCantDelete == null">{{confirmDialogText}}</v-card-text>
+              <v-card-text v-else>
+                Bạn không thể xóa phòng này vì :
+                <ul>
+                  <li v-for="(booking,i) in bookingListCantDelete.sau" :key="i">
+                    {{booking.reason}} -- Đơn # {{booking.id}}
+                    <v-btn small depressed round @click="detailOrder(booking.id)">Chi tiết</v-btn>
+                  </li>
+                  <li v-for="(booking,i) in bookingListCantDelete.giua" :key="i">
+                    {{booking.reason}} -- Đơn # {{booking.id}}
+                    <v-btn small depressed round @click="detailOrder(booking.id)">Chi tiết</v-btn>
+                  </li>
+                </ul>
+              </v-card-text>
+
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn class="grey white--text" flat round depressed @click="cancel">Hủy</v-btn>
-                <v-btn class="red white--text" flat round depressed @click="deleteRoom">Xóa</v-btn>
+                <v-btn color="grey" flat round depressed @click="cancel">Hủy</v-btn>
+                <v-btn color="red" flat round depressed @click.stop="deleteRoom()">Xác nhận</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -561,7 +585,9 @@ export default {
       defaultBedType: 1,
       amount: 1,
       total: 1,
-
+      confirmDialog: false,
+      confirmDialogText: "",
+      bookingListCantDelete: null,
       dictionary: {
         custom: {
           roomName: {
@@ -579,8 +605,9 @@ export default {
           price: {
             decimal: "Giá phòng ko hợp lệ"
           },
-          free_child_amount:{
-            max_value : "số trẻ em được miễn phí phải bé hơn hoặc bằng số trẻ em miễn phí"
+          free_child_amount: {
+            max_value:
+              "số trẻ em được miễn phí phải bé hơn hoặc bằng số trẻ em tối đa"
           }
         }
       },
@@ -846,13 +873,14 @@ export default {
       this.confirmDialog = true;
       this.roomId = roomId;
       this.roomModeWorkingOn = roomMode;
+      this.confirmDialogText = "Bạn có muốn xóa phòng này " + "?";
     },
     cancel: function() {
       this.dialog = false;
       this.confirmDialog = false;
     },
     deleteRoom: function() {
-      console.log("xoa" + this.roomId);
+      // console.log("xoa" + this.roomId);
       axios({
         method: "delete",
         url: "http://localhost:8000/api/manager/room/" + this.roomId,
@@ -864,27 +892,36 @@ export default {
         }
       })
         .then(response => {
-          this.arrayRoom.forEach(element => {
-            for (var i = 0; i < element.room.length; i++) {
-              if (element.room[i].id == this.roomId) {
-                element.room.splice(i, 1);
+          console.log(response.data)
+          if (response.data.status == false) {
+            if (response.data.booking_list != null) {
+              this.confirmDialog = true;
+              this.bookingListCantDelete = response.data.booking_list;
+              console.log(response.data.booking_list);
+            }
+          } else {
+            this.arrayRoom.forEach(element => {
+              for (var i = 0; i < element.room.length; i++) {
+                if (element.room[i].id == this.roomId) {
+                  element.room.splice(i, 1);
+                }
+              }
+            });
+            for (var i = 0; i < this.arrayRoom.length; i++) {
+              console.log(this.arrayRoom[i].room.length);
+              if (this.arrayRoom[i].room.length == 0) {
+                this.arrayRoom.splice(i, 1);
               }
             }
-          });
-          console.log(this.arrayRoom);
-          for (var i = 0; i < this.arrayRoom.length; i++) {
-            console.log(this.arrayRoom[i].room.length);
-            if (this.arrayRoom[i].room.length == 0) {
-              this.arrayRoom.splice(i, 1);
-            }
+            this.confirmDialog = false;
           }
-          this.confirmDialog = false;
         })
         .catch(error => {
           console.log(error.response);
         });
     },
     showEdit: function(roomMode, roomId) {
+      console.log(this.arrayRoom);
       this.roomModeWorkingOn = roomMode;
       this.roomId = roomId;
       axios
@@ -936,6 +973,7 @@ export default {
         });
     },
     editRoom: function(roomId) {
+      console.log(this.images);
       axios({
         method: "put",
         url: "http://localhost:8000/api/manager/room/" + roomId,
@@ -978,6 +1016,12 @@ export default {
         .catch(error => {
           console.log(error.response);
         });
+    },
+    detailOrder: function(id) {
+      this.$router.push({
+        name: "order",
+        query: { hotelId: this.hotelId, orderId: id }
+      });
     }
   }
 };

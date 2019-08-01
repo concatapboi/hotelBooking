@@ -10,10 +10,12 @@ use App\Http\Resources\HotelTypeResource;
 use App\Models\Booking;
 use App\Models\RoomMode;
 use App\Http\Resources\BookingResource;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Hotel extends Model
 {
+  use SoftDeletes;
   use Notifiable;
 
   protected $table = 'hotel';

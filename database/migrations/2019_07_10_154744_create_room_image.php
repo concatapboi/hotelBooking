@@ -19,6 +19,7 @@ class CreateRoomImage extends Migration
             $table->tinyInteger('is_primary')->default(0);
             $table->integer('room_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('room_id')
             ->references('id')->on('room')
             ->onDelete('cascade');

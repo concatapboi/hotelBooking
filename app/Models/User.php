@@ -8,9 +8,11 @@ use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Http\Resources\BookingStatusResource;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements JWTSubject
 {
+  use SoftDeletes;
   use Notifiable;
 
   protected $table = 'users';

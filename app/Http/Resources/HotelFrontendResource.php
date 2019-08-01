@@ -39,7 +39,7 @@ class HotelFrontendResource extends JsonResource
             "maxPrice" => $this->maxPrice(),
             "ward" => $this->ward_id,
             "child_age" => $this->child_age,
-            "image" => asset("images/room/".HotelImage::where('hotel_id',$this->id)->where('is_primary',1)->first()->image_link),
+            "image" => asset("images/hotel/".HotelImage::where('hotel_id',$this->id)->where('is_primary',1)->first()->image_link),
             "policy" =>  new PolicyResource($this->Policy),
         ];
         return $arrayData;

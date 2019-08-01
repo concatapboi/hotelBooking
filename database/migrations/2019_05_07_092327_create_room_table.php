@@ -27,6 +27,7 @@ class CreateRoomTable extends Migration
             $table->integer('room_type_id')->unsigned();
             $table->integer('hotel_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('room_mode_id')
             ->references('id')->on('room_mode')
             ->onDelete('cascade');

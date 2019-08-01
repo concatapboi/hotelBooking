@@ -72,7 +72,7 @@
       <v-toolbar-side-icon @click.stop="drawer = !drawer" class="teal accent-4">
         <v-icon>dehaze</v-icon>
       </v-toolbar-side-icon>
-      <v-toolbar-title class="white--text">Cool admin</v-toolbar-title>
+      <v-toolbar-title class="white--text">Quản lý khách sạn</v-toolbar-title>
       <v-spacer></v-spacer>
       <!-- <div>Currently working with
       <v-btn dark depressed round small>
@@ -86,31 +86,6 @@
         <v-btn @click="logout" dark depressed round small>{{hotelName}}</v-btn>
       </div>
       <v-toolbar-items class="hidden-sm-and-down">
-        <!-- <v-btn flat>do sth</v-btn> -->
-        <!-- <v-avatar class="mt-2" @click="logout">
-          <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
-        </v-avatar>-->
-        <!-- <v-speed-dial :transition="`slide-x-reverse-transition`" :direction="`left`">
-          <template v-slot:activator>
-            <v-badge overlap color="red" class="mr-5">
-              <template v-slot:badge>
-                <span>{{notifications.list.length}}</span>
-              </template>
-              <v-avatar :color="'blue'" size="40px">
-                <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
-              </v-avatar>
-            </v-badge>
-          </template>
-          <v-btn fab dark small color="green">
-            <v-icon>edit</v-icon>
-          </v-btn>
-          <v-btn fab dark small color="indigo">
-            <v-icon>add</v-icon>
-          </v-btn>
-          <v-btn fab dark small color="red">
-            <v-icon>delete</v-icon>
-          </v-btn>
-        </v-speed-dial>-->
         <span class="mt-2 mr-3">
           <v-badge v-if="notifications.list.length >0" overlap color="red">
             <template v-slot:badge>
@@ -134,13 +109,14 @@
           </template>
           <v-list>
             <v-list-tile>
-              <v-list-tile-title>Account</v-list-tile-title>
+              <v-list-tile-title>Chào {{hotelManager.name}}</v-list-tile-title>
             </v-list-tile>
             <v-list-tile>
-              <v-list-tile-title></v-list-tile-title>
+              <v-list-tile-title @click="openAccountDialog">Tài khoản</v-list-tile-title>
             </v-list-tile>
+
             <v-list-tile>
-              <v-list-tile-title @click="logout">logout</v-list-tile-title>
+              <v-list-tile-title @click="logout">Đăng xuất</v-list-tile-title>
             </v-list-tile>
           </v-list>
         </v-menu>
@@ -263,6 +239,40 @@
         ></router-view>
       </v-container>
     </v-content>
+    <v-dialog v-model="accountDialog" width="50%">
+      <v-card>
+        <v-card-title>
+          <h2 v-if="editAccount == false">Thông tin tài khoản</h2>
+          <h2 v-else>Sửa thông tin tài khoản</h2>
+          <v-spacer></v-spacer>
+          <v-btn v-if="editAccount == false" @click="editAccountClick">Sửa</v-btn>
+        </v-card-title>
+        <v-card-text>
+          <v-layout row wrap align-center justify-center>
+            <v-flex md3 offset-md1>Tên</v-flex>
+            <v-flex md8 v-if="editAccount == false">{{hotelManager.name}}</v-flex>
+            <v-flex md8 v-else>
+              <v-text-field v-model="editHotelManager.name"></v-text-field>
+            </v-flex>
+            <v-flex md3 offset-md1>Email</v-flex>
+            <v-flex md8 v-if="editAccount == false">{{hotelManager.email}}</v-flex>
+            <v-flex md8 v-else>
+              <v-text-field v-model="editHotelManager.email"></v-text-field>
+            </v-flex>
+            <v-flex md3 offset-md1>Phone</v-flex>
+            <v-flex md8 v-if="editAccount == false">{{hotelManager.phone_number}}</v-flex>
+            <v-flex md8 v-else>
+              <v-text-field v-model="editHotelManager.phone_number"></v-text-field>
+            </v-flex>
+          </v-layout>
+        </v-card-text>
+        <v-card-actions v-if="editAccount == true">
+          <v-spacer></v-spacer>
+          <v-btn round class="mx-2 white--text font-weight bold" depressed color="red" @click="accountDialog = false">Hủy</v-btn>
+          <v-btn round class="mx-2 white--text font-weight bold" depressed color="primary" @click="updateAccount">Xác nhận</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 <script>
@@ -270,6 +280,7 @@
 export default {
   data: function() {
     return {
+      editAccount: false,
       loaded: false,
       items: [
         { icon: "home", color: "black", title: "Trang chủ" },
@@ -312,7 +323,18 @@ export default {
         state: false,
         list: []
       },
-      errorMessage: null
+      errorMessage: null,
+      accountDialog: false,
+      hotelManager: {
+        name: "",
+        email: "",
+        phone_number: ""
+      },
+      editHotelManager: {
+        name: "",
+        email: "",
+        phone_number: ""
+      }
     };
   },
 
@@ -355,6 +377,21 @@ export default {
             _this.logout();
           }
         });
+    },
+    arrayHotel: function() {
+      var validHotel = [];
+      console.log(this.arrayHotel);
+      this.arrayHotel.forEach(element => {
+        validHotel.push(element.id.toString());
+      });
+      if (validHotel.includes(this.hotelId) == false) {
+        document.location.href = "login";
+      }
+    },
+    accountDialog: function() {
+      if (this.accountDialog == false) {
+        this.editAccount = false;
+      }
     }
   },
   created() {
@@ -365,14 +402,16 @@ export default {
       this.loaded = true;
     }
     this.initialize();
-    // route : function(){
+    this.getHotelManager(this.hotelId);
   },
   mounted() {
     // window.Echo.channel("manager").listen(".accept-booking", e => {
     //   console.log(e);
     // });
     window.Echo.channel("manager").listen(".new-booking", e => {
-      this.notifications.list.push(e);
+      if (e.hotelId == this.hotelId) {
+        this.notifications.list.push(e);
+      }
     });
     window.Echo.channel("manager").listen(".accept-booking", e => {
       // alert(e.message);
@@ -380,19 +419,58 @@ export default {
       console.log(e);
     });
   },
-  watch: {
-    arrayHotel: function() {
-      var validHotel = [];
-      console.log(this.arrayHotel);
-      this.arrayHotel.forEach(element => {
-        validHotel.push(element.id.toString());
-      });
-      if (validHotel.includes(this.hotelId) == false) {
-        document.location.href = "login";
-      }
-    }
-  },
   methods: {
+    updateAccount: function() {
+      axios({
+        method: "put",
+        url: "http://localhost:8000/api/manager/update-user",
+        headers: {
+          Authorization: "Bearer " + this.api_token
+        },
+        data: {
+          hotelManager : this.editHotelManager,
+          id: this.hotelId
+        }
+      })
+        .then(response => {
+          console.log(response);
+          if(response.data.status == true){
+            this.accountDialog = false;
+            this.hotelManager = this.editHotelManager;
+          }
+
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+    },
+    editAccountClick: function() {
+      this.editAccount = true;
+      this.editHotelManager.name = this.hotelManager.name;
+      this.editHotelManager.email = this.hotelManager.email;
+      this.editHotelManager.phone_number = this.hotelManager.phone_number;
+    },
+    getHotelManager(hotelId) {
+      axios
+        .get("http://localhost:8000/api/manager/get-user/", {
+          headers: {
+            Authorization: "Bearer " + this.api_token
+          },
+          params: {
+            id: hotelId
+          }
+        })
+        .then(response => {
+          console.log(response);
+          this.hotelManager = response.data;
+        })
+        .catch(function(error) {
+          console.log(error.response);
+        });
+    },
+    openAccountDialog: function() {
+      this.accountDialog = true;
+    },
     showOrderDetail: function(notificationId, $event, index, bookingId) {
       axios({
         method: "post",

@@ -25,6 +25,7 @@ class CreateCouponCodeTable extends Migration
             $table->integer('applied_amount')->default(0);
             $table->integer('hotel_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('hotel_id')
             ->references('id')->on('hotel')
             ->onDelete('cascade');

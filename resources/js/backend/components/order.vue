@@ -274,7 +274,7 @@
           </v-card-text>
           <v-card-actions v-show="ask == false">
             <v-btn>reset</v-btn>
-            <v-btn>cancel</v-btn>
+            <v-btn>Hủy</v-btn>
             <v-btn @click="addBooking">Thêm</v-btn>
           </v-card-actions>
         </v-card>
@@ -349,223 +349,40 @@
               </span>
             </td>
             <td class="text-xs-center action-width">
-              <div>
+              <!-- {{booking.item.status_id}} -->
+              <div style="width:100%">
                 <v-layout row wrap justify-center>
                   <v-flex md12>
-                    <v-dialog v-model="dialog" max-width="80%">
-                      <template v-slot:activator="{ on }">
-                        <v-chip
-                          round
-                          color="primary"
-                          small
-                          depressed
-                          v-on="on"
-                          @click="ShowDetailBooking(booking.item)"
-                        >Chi tiết</v-chip>
-                      </template>
-                      <v-card>
-                        <v-card-text>
-                          <v-layout>
-                            <v-flex md19 class="m-3">
-                              <h3>Đơn #{{detailBooking.id}}</h3>
-                            </v-flex>
-                            <v-flex md3>
-                              <b>Trạng thái :</b>
-                              <span v-if="detailBooking.status_id == 1">
-                                <v-chip outline disabled text-color="warning">
-                                  <b>{{detailBooking.status}}</b>
-                                </v-chip>
-                              </span>
-                              <span v-else-if="detailBooking.status_id == 2">
-                                <v-chip outline disabled text-color="blue">
-                                  <b>{{detailBooking.status}}</b>
-                                </v-chip>
-                              </span>
-                              <span v-else-if="detailBooking.status_id == 3">
-                                <v-chip outline disabled text-color="red">
-                                  <b>{{detailBooking.status}}</b>
-                                </v-chip>
-                              </span>
-                              <span v-else-if="detailBooking.status_id == 4">
-                                <v-chip outline disabled text-color="success">
-                                  <b>{{detailBooking.status}}</b>
-                                </v-chip>
-                              </span>
-                              <span v-else-if="detailBooking.status_id == 5">
-                                <v-chip outline disabled text-color="red">
-                                  <b>{{detailBooking.status}}</b>
-                                </v-chip>
-                              </span>
-                              <span v-else-if="detailBooking.status_id == 6">
-                                <v-chip outline disabled text-color="red">
-                                  <b>{{detailBooking.status}}</b>
-                                </v-chip>
-                              </span>
-                              <span v-else-if="detailBooking.status_id == 7">
-                                <v-chip outline disabled text-color="grey">
-                                  <b>{{detailBooking.status}}</b>
-                                </v-chip>
-                              </span>
-                              <span v-else-if="detailBooking.status_id == 8">
-                                <v-chip outline disabled text-color="blue">
-                                  <b>{{detailBooking.status}}</b>
-                                </v-chip>
-                              </span>
-                            </v-flex>
-                          </v-layout>
-
-                          <h5>Thông tin khách hàng</h5>
-                          <v-layout row wrap>
-                            <v-flex md2 offset-md1>
-                              <b>Tên</b>
-                            </v-flex>
-                            <v-flex md9>: {{detailBooking.contact_name}}</v-flex>
-                          </v-layout>
-                          <v-layout row wrap>
-                            <v-flex md2 offset-md1>
-                              <b>Email</b>
-                            </v-flex>
-                            <v-flex md9>: {{detailBooking.contact_email}}</v-flex>
-                          </v-layout>
-                          <v-layout row wrap>
-                            <v-flex md2 offset-md1>
-                              <b>Số điện thoại</b>
-                            </v-flex>
-                            <v-flex md9>: {{detailBooking.contact_phone}}</v-flex>
-                          </v-layout>
-                          <v-layout row wrap>
-                            <v-flex md2 offset-md1>
-                              <b>địa chỉ</b>
-                            </v-flex>
-                            <v-flex md9>: {{detailBooking.contact_address}}</v-flex>
-                          </v-layout>
-                          <v-layout v-if="detailBooking.special_request != null" row wrap>
-                            <v-flex md2 offset-md1>
-                              <b>Yêu cầu đặc biệt</b>
-                            </v-flex>
-                            <v-flex md9>: {{detailBooking.special_request}}</v-flex>
-                          </v-layout>
-                          <v-divider></v-divider>
-                          <h5>Thông tin Đơn</h5>
-                          <v-layout>
-                            <v-flex md4 class>
-                              <span v-for="(image,index) in detailBooking.room_images" :key="index">
-                                <v-img
-                                  height="200px"
-                                  v-if="image.is_primary == 1"
-                                  dark
-                                  :src="'http://localhost:8000/images/room/'+image.image_link"
-                                ></v-img>
-                              </span>
-                            </v-flex>
-                            <v-flex md8 class="mt-3">
-                              <v-layout row wrap class="mb-3">
-                                <v-flex md2 offset-md1>
-                                  <b>Check in</b>
-                                </v-flex>
-                                <v-flex md3>
-                                  :
-                                  <span class="title ml-3">{{detailBooking.check_in}}</span>
-                                </v-flex>
-                                <v-flex md2 offset-md1>
-                                  <b>Check out</b>
-                                </v-flex>
-                                <v-flex md3>
-                                  :
-                                  <span class="title ml-3">{{detailBooking.check_out}}</span>
-                                </v-flex>
-                              </v-layout>
-                              <v-layout row wrap>
-                                <v-flex md2 offset-md1>
-                                  <b>Tên phòng</b>
-                                </v-flex>
-                                <v-flex md9>: {{detailBooking.room_name}}</v-flex>
-                              </v-layout>
-                              <v-layout row wrap>
-                                <v-flex md2 offset-md1>
-                                  <b>Giá phòng</b>
-                                </v-flex>
-                                <v-flex
-                                  md9
-                                >: {{(detailBooking.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</v-flex>
-                              </v-layout>
-                              <v-layout row wrap>
-                                <v-flex md2 offset-md1>
-                                  <b>Số lượng phòng</b>
-                                </v-flex>
-                                <v-flex md9>: {{detailBooking.room_amount}}</v-flex>
-                              </v-layout>
-                              <!-- <v-layout row wrap>
-                            <v-flex md2 offset-md1>check in</v-flex>
-                            <v-flex md9>{{detailBooking.check_in}}</v-flex>
-                          </v-layout>
-                          <v-layout row wrap>
-                            <v-flex md2 offset-md1>check out</v-flex>
-                            <v-flex md9>{{detailBooking.check_out}}</v-flex>
-                              </v-layout>-->
-                              <v-layout row wrap>
-                                <v-flex md2 offset-md1>
-                                  <b>Mã phòng</b>
-                                </v-flex>
-                                <v-flex md9>: {{detailBooking.room_id}}</v-flex>
-                              </v-layout>
-                              <v-layout row wrap>
-                                <v-flex md2 offset-md1>
-                                  <b>Phương thức thanh toán</b>
-                                </v-flex>
-                                <v-flex md9>: {{detailBooking.payment_method}}</v-flex>
-                              </v-layout>
-                            </v-flex>
-                          </v-layout>
-                          <!-- <v-layout row wrap>
-                        <v-flex md2 offset-md1>Room name</v-flex>
-                        <v-flex md9>{{detailBooking.room_name}}</v-flex>
-                      </v-layout>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>Room price</v-flex>
-                        <v-flex md9>{{detailBooking.room_price}}</v-flex>
-                      </v-layout>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>Room amount</v-flex>
-                        <v-flex md9>{{detailBooking.room_amount}}</v-flex>
-                      </v-layout>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>check in</v-flex>
-                        <v-flex md9>{{detailBooking.check_in}}</v-flex>
-                      </v-layout>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>check out</v-flex>
-                        <v-flex md9>{{detailBooking.check_out}}</v-flex>
-                      </v-layout>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>room Id</v-flex>
-                        <v-flex md9>{{detailBooking.room_id}}</v-flex>
-                      </v-layout>
-                      <v-layout row wrap>
-                        <v-flex md2 offset-md1>Payment method</v-flex>
-                        <v-flex md9>{{detailBooking.payment_method}}</v-flex>
-                          </v-layout>-->
-                          <v-divider></v-divider>
-                          <!-- {{detailBooking.hotel_name}}
-                  {{detailBooking.room_name}}
-                  {{detailBooking.room_price}}
-                  {{detailBooking.room_amount}}
-                  {{detailBooking.check_in}}
-                  {{detailBooking.check_out}}
-                  {{detailBooking.room_id}}
-                  {{detailBooking.customer_id}}
-                  {{detailBooking.status_id}}
-                          {{detailBooking.payment_method}}-->
-                        </v-card-text>
-                      </v-card>
-                    </v-dialog>
+                    <div @click="ShowDetailBooking(booking.item)" class="mb-0 chip info">Chi tiết</div>
                   </v-flex>
-                  <span row wrap v-if="booking.item.status_id == 1">
+                  <v-flex md12>
+                    <div v-if="booking.item.status_id == 1">
+                      <div class="chip success" @click="acceptBooking(booking.item)">Chấp nhận</div>
+                      <div class="chip red" @click="declineBooking(booking.item)">Từ chối</div>
+                    </div>
+                    <div v-if="booking.item.status_id == 2">
+                      <div>
+                        <div class="chip blue" @click="confirmBooking(booking.item)">Xác nhận</div>
+
+                        <div class="chip red" @click="showConfirmDialog(booking.item)">Hủy đơn</div>
+                      </div>
+                    </div>
+                    <div v-if="booking.item.status_id == 4">
+                      <div>
+                        <div class="chip red" @click="showConfirmDialog(booking.item)">Hủy đơn</div>
+                      </div>
+                    </div>
+                    <!-- <div v-if="booking.item.status_id == 4">
+                      <div>c</div>
+                    </div>-->
+                  </v-flex>
+                  <!-- <span v-if="booking.item.status_id == 1">
                     <v-flex md12>
                       <v-chip
                         round
                         depressed
                         small
+                        class="white--text"
                         color="success"
                         @click="acceptBooking(booking.item)"
                       >Chấp nhận</v-chip>
@@ -575,12 +392,13 @@
                         round
                         depressed
                         small
+                        class="white--text"
                         color="error"
                         @click="declineBooking(booking.item)"
                       >Từ chối</v-chip>
                     </v-flex>
                   </span>
-                  <span v-else-if="booking.item.status_id == 2">
+                  <span  v-else-if="booking.item.status_id == 2">
                     <v-flex md12>
                       <v-chip
                         round
@@ -603,7 +421,7 @@
                     </v-flex>
                   </span>
                   <span v-else-if="booking.item.status_id == 4">
-                    <v-flex md12>
+                    <v-flex md12  >
                       <v-chip
                         round
                         depressed
@@ -613,13 +431,183 @@
                         @click="showConfirmDialog(booking.item)"
                       >Hủy đơn</v-chip>
                     </v-flex>
-                  </span>
+                  </span>-->
                 </v-layout>
               </div>
             </td>
           </template>
         </v-data-table>
       </v-card>
+      <v-dialog v-model="dialog" max-width="80%">
+        <template v-slot:activator="{ on }"></template>
+        <v-card>
+          <v-card-text>
+            <v-layout>
+              <v-flex md19 class="m-3">
+                <h3>Đơn #{{detailBooking.id}}</h3>
+              </v-flex>
+              <v-flex md3>
+                <b>Trạng thái :</b>
+                <span v-if="detailBooking.status_id == 1">
+                  <v-chip outline disabled text-color="warning">
+                    <b>{{detailBooking.status}}</b>
+                  </v-chip>
+                </span>
+                <span v-else-if="detailBooking.status_id == 2">
+                  <v-chip outline disabled text-color="blue">
+                    <b>{{detailBooking.status}}</b>
+                  </v-chip>
+                </span>
+                <span v-else-if="detailBooking.status_id == 3">
+                  <v-chip outline disabled text-color="red">
+                    <b>{{detailBooking.status}}</b>
+                  </v-chip>
+                </span>
+                <span v-else-if="detailBooking.status_id == 4">
+                  <v-chip outline disabled text-color="success">
+                    <b>{{detailBooking.status}}</b>
+                  </v-chip>
+                </span>
+                <span v-else-if="detailBooking.status_id == 5">
+                  <v-chip outline disabled text-color="red">
+                    <b>{{detailBooking.status}}</b>
+                  </v-chip>
+                </span>
+                <span v-else-if="detailBooking.status_id == 6">
+                  <v-chip outline disabled text-color="red">
+                    <b>{{detailBooking.status}}</b>
+                  </v-chip>
+                </span>
+                <span v-else-if="detailBooking.status_id == 7">
+                  <v-chip outline disabled text-color="grey">
+                    <b>{{detailBooking.status}}</b>
+                  </v-chip>
+                </span>
+                <span v-else-if="detailBooking.status_id == 8">
+                  <v-chip outline disabled text-color="blue">
+                    <b>{{detailBooking.status}}</b>
+                  </v-chip>
+                </span>
+              </v-flex>
+            </v-layout>
+
+            <h5>Thông tin khách hàng</h5>
+            <v-layout row wrap>
+              <v-flex md2 offset-md1>
+                <b>Tên</b>
+              </v-flex>
+              <v-flex md9>: {{detailBooking.contact_name}}</v-flex>
+            </v-layout>
+            <v-layout row wrap>
+              <v-flex md2 offset-md1>
+                <b>Email</b>
+              </v-flex>
+              <v-flex md9>: {{detailBooking.contact_email}}</v-flex>
+            </v-layout>
+            <v-layout row wrap>
+              <v-flex md2 offset-md1>
+                <b>Số điện thoại</b>
+              </v-flex>
+              <v-flex md9>: {{detailBooking.contact_phone}}</v-flex>
+            </v-layout>
+            <v-layout row wrap>
+              <v-flex md2 offset-md1>
+                <b>địa chỉ</b>
+              </v-flex>
+              <v-flex md9>: {{detailBooking.contact_address}}</v-flex>
+            </v-layout>
+            <v-layout v-if="detailBooking.special_request != null" row wrap>
+              <v-flex md2 offset-md1>
+                <b>Yêu cầu đặc biệt</b>
+              </v-flex>
+              <v-flex md9>: {{detailBooking.special_request}}</v-flex>
+            </v-layout>
+            <v-divider></v-divider>
+            <h5>Thông tin Đơn</h5>
+            <v-layout>
+              <v-flex md4 class>
+                <span v-for="(image,index) in detailBooking.room_images" :key="index">
+                  <v-img
+                    height="200px"
+                    v-if="image.is_primary == 1"
+                    dark
+                    :src="'http://localhost:8000/images/room/'+image.image_link"
+                  ></v-img>
+                </span>
+              </v-flex>
+              <v-flex md8 class="mt-3">
+                <v-layout row wrap class="mb-3">
+                  <v-flex md2 offset-md1>
+                    <b>Check in</b>
+                  </v-flex>
+                  <v-flex md3>
+                    :
+                    <span class="title ml-3">{{detailBooking.check_in}}</span>
+                  </v-flex>
+                  <v-flex md2 offset-md1>
+                    <b>Check out</b>
+                  </v-flex>
+                  <v-flex md3>
+                    :
+                    <span class="title ml-3">{{detailBooking.check_out}}</span>
+                  </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex md2 offset-md1>
+                    <b>Tên phòng</b>
+                  </v-flex>
+                  <v-flex md9>: {{detailBooking.room_name}}</v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex md2 offset-md1>
+                    <b>Giá phòng</b>
+                  </v-flex>
+                  <v-flex
+                    md9
+                  >: {{(detailBooking.room_price).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex md2 offset-md1>
+                    <b>Số lượng phòng</b>
+                  </v-flex>
+                  <v-flex md9>: {{detailBooking.room_amount}}</v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex md2 offset-md1>
+                    <b>Mã phòng</b>
+                  </v-flex>
+                  <v-flex md9>: {{detailBooking.room_id}}</v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex md2 offset-md1>
+                    <b>phòng</b>
+                  </v-flex>
+                  <v-flex md9>: {{detailBooking.room}}</v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                  <v-flex md2 offset-md1>
+                    <b>Kiểu phòng</b>
+                  </v-flex>
+                  <v-flex md9>: {{detailBooking.room}}</v-flex>
+                </v-layout>
+                <!-- <v-layout row wrap>
+                  <v-flex md2 offset-md1>
+                    <b>Loại phòng</b>
+                  </v-flex>
+                  <v-flex md9>: {{detailBooking.room.room_mode}}</v-flex>
+                </v-layout> -->
+                <v-layout row wrap>
+                  <v-flex md2 offset-md1>
+                    <b>Phương thức thanh toán</b>
+                  </v-flex>
+                  <v-flex md9>: {{detailBooking.payment_method}}</v-flex>
+                </v-layout>
+              </v-flex>
+            </v-layout>
+            <v-divider></v-divider>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </template>
 
     <v-dialog max-width="30%" v-model="confirmDialog">
@@ -636,7 +624,7 @@
           </ul>
           <span
             v-if="cancelReminder == true"
-          >You will also have to refund 100% this order to the user</span>
+          >Bạn sẽ phải hoàn tiền 100% giá trị đơn hàng này cho khách hàng.</span>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -681,13 +669,25 @@ export default {
       bookingList: [],
       search: "",
       headers: [
-        { text: "Id", value: "id", sortable: false, align: "center" },
+        {
+          text: "Id",
+          value: "id",
+          sortable: false,
+          align: "center",
+          width: "10%"
+        },
         { text: "Tên phòng", value: 0, sortable: false, align: "center" },
         { text: "Check in", value: 0, sortable: false, align: "center" },
         { text: "Check out", value: 0, sortable: false, align: "center" },
         { text: "Tổng giá", value: 0, sortable: false, align: "center" },
         { text: "Trạng thái", value: 0, sortable: false, align: "center" },
-        { text: "Action", value: 0, sortable: false, align: "center" }
+        {
+          text: "Action",
+          value: 0,
+          sortable: false,
+          align: "center",
+          width: "10%"
+        }
       ],
       hotelId: this.$route.query.hotelId,
       confirmDialog: false,
@@ -811,6 +811,7 @@ export default {
         });
     },
     ShowDetailBooking: function(item) {
+      this.dialog = true;
       this.detailBooking = item;
     },
     acceptBooking: function(booking) {
@@ -898,7 +899,7 @@ export default {
         (this.transferPercent * booking.room_price * booking.room_amount) / 100
       );
       this.confirmDialogText =
-        "Are you sure you want to cancel this order? if you cancel this our system will:";
+        "Bạn có muốn hủy đơn đặt phòng này? Nếu bạn hủy đơn này hệ thống sẽ:";
       this.confirmDialog = true;
       this.detailBooking = booking;
     },
@@ -1100,6 +1101,16 @@ export default {
 <style scoped>
 .action-width {
   width: 100px;
+}
+.chip {
+  background-color: blue;
+  padding: 2px 12px;
+  text-align: center;
+  border-radius: 28px;
+  color: white;
+  width: 100%;
+  margin: 5px 0px;
+  white-space: nowrap;
 }
 </style>
 

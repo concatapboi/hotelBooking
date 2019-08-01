@@ -1,33 +1,84 @@
 <template>
   <div>
+    <!-- {{booking}} -->
     <v-layout justify-space-around>
-      <v-card flat width="23%" class="red" height="150px">
+      <v-card flat width="23%" class="primary white--text" height="150px">
         <v-card-title>
-          <v-icon class="m-2">event_note</v-icon>
-          <h2>Orders</h2>
+          <v-layout align-center>
+            <v-flex md2>
+              <v-avatar color="teal" size="40px">
+                <v-icon class="m-2" color="white">event_note</v-icon>
+              </v-avatar>
+            </v-flex>
+            <v-flex md9 offset-md1>
+              <div class="title ml-1">Tổng số đơn trong tháng</div>
+            </v-flex>
+          </v-layout>
         </v-card-title>
-        <v-card-text>12</v-card-text>
+        <v-divider class="pa-0 ma-0 my-2"></v-divider>
+        <v-card-text class="text-md-center">
+          <span class="headline">{{numberOfAllBooking}}</span>
+        </v-card-text>
       </v-card>
-      <v-card flat width="23%" class="orange" height="150px">
+      <v-card flat width="23%" class="green accent-4 white--text" height="150px">
         <v-card-title>
-          <v-icon class="m-2">airline_seat_individual_suite</v-icon>
-          <h2>Rooms</h2>
+          <!-- <v-icon class="m-2">airline_seat_individual_suite</v-icon> -->
+          <!-- <h5>Số đơn mới</h5> -->
+          <v-layout align-center>
+            <v-flex md2>
+              <v-avatar color="green darken-2" size="40px">
+                <v-icon class="m-2" color="white">airline_seat_individual_suite</v-icon>
+              </v-avatar>
+            </v-flex>
+            <v-flex md9 offset-md1>
+              <div class="title ml-1">Số đơn mới</div>
+            </v-flex>
+          </v-layout>
         </v-card-title>
-        <v-card-text>12</v-card-text>
+        <v-divider class="pa-0 ma-0 my-2"></v-divider>
+        <v-card-text class="text-md-center">
+          <span class="headline">{{numberOfNewBooking}}</span>
+        </v-card-text>
       </v-card>
-      <v-card flat width="23%" class="yellow" height="150px">
+      <v-card flat width="23%" class="brown white--text" height="150px">
         <v-card-title>
-          <v-icon class="m-2">loyalty</v-icon>
-          <h2>Promotion</h2>
+          <!-- <v-icon class="m-2">loyalty</v-icon>
+          <h5>Khuyến mãi đang diễn ra</h5>-->
+          <v-layout align-center>
+            <v-flex md2>
+              <v-avatar color="brown darken-2" size="40px">
+                <v-icon class="m-2" color="white">loyalty</v-icon>
+              </v-avatar>
+            </v-flex>
+            <v-flex md9 offset-md1>
+              <div class="title ml-1">Khuyến mãi đang diễn ra</div>
+            </v-flex>
+          </v-layout>
         </v-card-title>
-        <v-card-text>12</v-card-text>
+        <v-divider class="pa-0 ma-0 my-2"></v-divider>
+        <v-card-text class="text-md-center">
+          <span class="headline">{{numberOfCouponCode}}</span>
+        </v-card-text>
       </v-card>
-      <v-card flat width="23%" class="green" height="150px">
+      <v-card flat width="23%" class="purple white--text" height="150px">
         <v-card-title>
-          <v-icon class="m-2">stars</v-icon>
-          <h2>ETC</h2>
+          <!-- <v-icon class="m-2">stars</v-icon>
+          <h5>Câu hỏi mới</h5> -->
+          <v-layout align-center>
+            <v-flex md2>
+              <v-avatar color="purple darken-2" size="40px">
+                <v-icon class="m-2" color="white">loyalty</v-icon>
+              </v-avatar>
+            </v-flex>
+            <v-flex md9 offset-md1>
+              <div class="title ml-1">Câu hỏi mới</div>
+            </v-flex>
+          </v-layout>
         </v-card-title>
-        <v-card-text>12</v-card-text>
+        <v-divider class="pa-0 ma-0 my-2"></v-divider>
+        <v-card-text class="text-md-center">
+          <span class="headline">{{numberOfNewQuestion}}</span>
+        </v-card-text>
       </v-card>
     </v-layout>
     <v-alert v-show="errorMessage" type="error" :value="true">{{errorMessage}}</v-alert>
@@ -369,6 +420,17 @@
                     </v-flex>
                   </v-layout>
                   <v-layout row justify-center align-center>
+                    <v-flex offset-md1 md3>
+                      <h5>Các hình thức thanh toán chấp nhận</h5>
+                    </v-flex>
+                    <v-flex offset-md1 md3>
+                      <v-checkbox v-model="newHotelData.policy.offline" label="Thanh toán offline"></v-checkbox>
+                    </v-flex>
+                    <v-flex md3>
+                      <v-checkbox v-model="newHotelData.policy.online" label="Thanh toán online"></v-checkbox>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row justify-center align-center>
                     <v-flex offset-md1 md11>
                       <v-textarea
                         label="Chính sách chi tiết"
@@ -414,6 +476,10 @@
               {{booking.reason}} -- Đơn # {{booking.id}}
               <v-btn small depressed round @click="detailOrder(booking.id)">Chi tiết</v-btn>
             </li>
+            <li v-for="(booking,i) in bookingListCantDelete.giua" :key="i">
+              {{booking.reason}} -- Đơn # {{booking.id}}
+              <v-btn small depressed round @click="detailOrder(booking.id)">Chi tiết</v-btn>
+            </li>
           </ul>
         </v-card-text>
 
@@ -429,8 +495,9 @@
         <v-card-title>
           <h1 class="ml-3">{{hotel.name}}</h1>
           <v-spacer></v-spacer>
-          <v-btn @click="editHotel(hotel.id)">Sửa</v-btn>
-          <v-btn @click="deleteHotel(hotel.id)">Xóa</v-btn>
+          <v-btn class="warning" flat round depressed @click="editHotel(hotel.id)">Sửa</v-btn>
+          <!-- <v-btn @click="editHotel(hotel.id)">Sửa</v-btn> -->
+          <v-btn class="red white--text" flat round depressed @click="deleteHotel(hotel.id)">Xóa</v-btn>
         </v-card-title>
         <v-layout row wrap class="pa-2 ma-0">
           <v-flex md4 class="pa-1" v-for="(image,index) in hotel.images" :key="index">
@@ -583,7 +650,9 @@ export default {
           cancelable: false,
           cancel_day: 0,
           refundRate: 0,
-          detailPolicy: ""
+          detailPolicy: "",
+          offline: false,
+          online: false
         },
         child_age: ""
       },
@@ -706,27 +775,80 @@ export default {
           }
         }
       },
-      hotelId: this.$route.query.hotelId
+      hotelId: this.$route.query.hotelId,
+      numberOfAllBooking: 0,
+      numberOfNewBooking: 0,
+      numberOfCouponCode: 0,
+      numberOfNewQuestion: 0,
     };
   },
   mounted() {
     this.$validator.localize("en", this.dictionary);
+    this.getAllBooking();
+    this.getAllCouponCode();
+    this.getAllQuestion();
   },
   created() {
     // this.getHotelList();
     this.getHotelInfo();
     this.getArrayHotelType();
     this.$emit("chooseHotel", this.hotelId);
-    
   },
   watch: {
     confirmDialog: function() {
       if (this.confirmDialog == false) {
         this.bookingListCantDelete = null;
       }
-    },
+    }
   },
   methods: {
+    getAllCouponCode: function() {
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/manager/coupon-code",
+        headers: {
+          Authorization: "Bearer " + this.api_token
+        },
+        params: {
+          hotelId: this.hotelId
+        }
+      })
+        .then(res => {
+          console.log(res.data);
+          this.numberOfCouponCode = res.data.couponCode.length;
+        })
+        .catch(error => {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            this.router.push({ name: "login" });
+          }
+        });
+    },
+    getAllQuestion: function() {
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/manager/question",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("api_token")
+        },
+        params: {
+          hotelId: this.hotelId
+        }
+      })
+        .then(res => {
+          if (res.data.status == true) {
+            this.numberOfNewQuestion = res.data.newQuestions.length;
+          } else {
+            this.$router.push({ name: "home" });
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            this.router.push({ name: "login" });
+          }
+        });
+    },
     getHotelInfo() {
       axios
         .get("http://localhost:8000/api/manager/hotel/" + this.hotelId, {
@@ -953,11 +1075,11 @@ export default {
       this.newHotelData.policy.checkin = hotel.policy.checkin;
       this.newHotelData.policy.checkout = hotel.policy.checkout;
       this.newHotelData.policy.cancel_day = hotel.policy.cancel_day;
+      this.newHotelData.policy.online = hotel.policy.online;
+      this.newHotelData.policy.offline = hotel.policy.offline;
       this.newHotelData.policy.detailPolicy = hotel.policy.detailPolicy;
       this.newHotelData.policy.refundRate = hotel.policy.refundRate;
       this.newHotelData.images = hotel.images;
-      console.log(hotel);
-      console.log(this.newHotelData);
       axios
         .get("http://localhost:8000/api/manager/hotel-address", {
           params: {
@@ -1033,6 +1155,8 @@ export default {
       this.newHotelData.phone = hotel.phone;
       this.newHotelData.fax_number = hotel.fax_number;
       this.newHotelData.tax_code = hotel.tax_code;
+      console.log(this.newHotelData);
+      console.log(this.hotel);
     },
     deleteHotel: function(hotelId) {
       this.confirmDialog = true;
@@ -1097,6 +1221,43 @@ export default {
         name: "order",
         query: { hotelId: this.selectedId, orderId: id }
       });
+    },
+    getAllBooking: function() {
+      var date = new Date(),
+        y = date.getFullYear(),
+        m = date.getMonth();
+      var firstDay = new Date(y, m, 1);
+      var lastDay = new Date(y, m + 1, 0);
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/manager/booking-filter-date",
+        headers: {
+          Authorization: "Bearer " + this.api_token
+        },
+        params: {
+          checkin: firstDay,
+          checkout: lastDay,
+          hotelId: this.hotelId
+        }
+      })
+        .then(response => {
+          console.log(response.data);
+          if (response.status == 401) {
+            this.logout;
+          }
+          if (response.data.status == true) {
+            // this.booking = response.data.data;
+            this.numberOfAllBooking = response.data.data.length;
+            response.data.data.forEach(element => {
+              if (element.status_id == 1) {
+                this.numberOfNewBooking += 1;
+              }
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
     }
   }
 };

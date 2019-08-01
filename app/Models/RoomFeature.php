@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Feature;
 use App\Http\Resources\FeatureResource;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RoomFeature extends Model
 {
+  use SoftDeletes;
   protected $table = 'room_feature';
 
   protected $fillable = [

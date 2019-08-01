@@ -37,6 +37,7 @@ class BookingResource extends JsonResource
             "status_id" => $this->status_id,
             "payment_method" => $this->PaymentMethod->name,
             "room_images" => $this->Room->Image,
+            "room" => new RoomResource($this->Room),
         ];
         return $arrayData;
     }

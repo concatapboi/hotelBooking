@@ -6,9 +6,11 @@ use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\HotelResource;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Booking extends Model
 {
+  use SoftDeletes;
   protected $table = 'booking';
 
   protected $fillable = [

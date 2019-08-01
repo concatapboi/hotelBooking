@@ -9,9 +9,11 @@ use App\Http\Resources\RoomModeResource;
 use App\Http\Resources\RoomTypeResource;
 use App\Models\RoomType;
 use App\Http\Resources\RoomBedTypeResource;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Room extends Model
 {
+  use SoftDeletes;
   protected $table = 'room';
 
   protected $fillable = [

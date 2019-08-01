@@ -24,7 +24,7 @@ class Feature extends Model
     $data = [];
     $rooms = $this->Room;
     foreach ($rooms as $room) {
-      if ($room->Hotel->id == $id) {
+      if ($room->hotel_id == $id) {
         $data[] = $room->id;
       }
     }
