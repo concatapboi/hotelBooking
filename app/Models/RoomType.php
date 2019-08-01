@@ -21,6 +21,10 @@ class RoomType extends Model
   {
     return $this->hasMany('App\Models\ServiceRoomType', 'room_type_id', 'id');
   }
+  public function Room()
+  {
+    return $this->hasMany('App\Models\Room', 'room_type_id', 'id');
+  }
   public function Apply()
   {
     return ApplyCouponCodeRoomType::where('room_type_id', $this->id)->get();

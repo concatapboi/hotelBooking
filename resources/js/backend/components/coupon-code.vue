@@ -1,7 +1,7 @@
 <template>
   <v-layout row wrap>
     <v-flex shrink md8 v-if="flag.state">
-      <v-layout class="pa-0 ma-0" v-if="couponCode.length>0 || expiredCouponCode.length > 0">
+      <v-layout class="pa-0 ma-0" v-if="data.length>0">
         <v-flex md12 v-if="!createForm">
           <template>
             <v-card flat>
@@ -28,10 +28,16 @@
                                 <span class="font-weight-black">{{c.item.title}}</span>
                               </div>
                               <div>
-                                <span class="font-italic caption">"{{c.item.title}}"</span>
+                                <span class="font-italic caption">"{{c.item.content}}"</span>
                               </div>
                               <div>
-                                <span class="font-weight-black title brown--text">"{{c.item.code}}"</span>
+                                Mã:&nbsp;<span class="font-weight-black title brown--text">{{c.item.code}}</span>
+                              </div>
+                              <div v-if="c.item.days">
+                                Đã diễn ra được&nbsp;
+                                <span
+                                  class="font-weight-black"
+                                >{{c.item.days}}&nbsp;</span>ngày...
                               </div>
                             </div>
                           </v-layout>
@@ -58,22 +64,28 @@
                                 @click="openDatePicker(c.item)"
                               >Thêm...</a>
                             </v-flex>
-                            <v-flex md10 v-if="c.item.days">
-                              <div>
-                                Đã diễn ra được&nbsp;
-                                <span class="font-weight-black">{{c.item.days}}&nbsp;</span>ngày...
-                              </div>
+                            <v-flex md4>
+                              <span class="caption">Số lượng:</span>
+                            </v-flex>
+                            <v-flex md8>
+                              <span class="font-weight-black">{{c.item.apply_amount}}</span>
+                            </v-flex>
+                            <v-flex md4>
+                              <span class="caption">Đã dùng:</span>
+                            </v-flex>
+                            <v-flex md8>
+                              <span class="font-weight-black">{{c.item.applied_amount}}</span>
                             </v-flex>
                           </v-layout>
                         </v-flex>
                       </v-layout>
                     </td>
                     <td>
-                      <div v-if="c.item.start_at ==null && radio ==1">
-                        <a href="#" class="red--text caption">Xóa...</a>
+                      <div v-if="radio ==1">
+                        <v-chip color="red" class="white--text caption" @click="openSureConfirm(c.item.id)">Xóa</v-chip>
                       </div>
                       <div v-if="radio ==0">
-                        <a href="#" class="indigo--text caption" @click="endCode(c.item.id)">Dừng...</a>
+                        <v-chip color="indigo" class="white--text caption" @click="openSureConfirm(c.item.id)">Dừng</v-chip>
                       </div>
                     </td>
                   </tr>
@@ -84,13 +96,21 @@
                     <v-layout align-center class="pa-0 ma-1 border grey lighten-2" row wrap></v-layout>
                   </v-card>
                 </template>
+                <template v-slot:no-results>
+                  <v-layout align-center white>
+                    <v-flex md3>
+                      <v-img :aspect-ratio="1" src="/img/booking/no-result.gif"></v-img>
+                    </v-flex>
+                    <v-flex offset-md1 class="font-weight-bold body-2">Rất tiếc, không tìm thấy.</v-flex>
+                  </v-layout>
+                </template>
               </v-data-table>
             </v-card>
           </template>
         </v-flex>
         <v-flex md12 v-else>
           <v-form ref="form" data-vv-scope="form1" class="pa-1 brown lighten-2">
-            <v-layout row wrap class="pa-2 ma-0 white" align-center>
+            <v-layout row wrap class="pa-4 ma-0 white caption" align-center>
               <v-flex md12>
                 <div
                   class="ma-3 font-weight-black headline text-md-center text-uppercase brown--text"
@@ -99,8 +119,8 @@
               <v-flex md12>
                 <v-divider class="brown"></v-divider>
               </v-flex>
-              <v-flex md6>
-                <span class="caption">Ngày bắt đầu:&nbsp;</span>
+              <v-flex md5>
+                <span>Ngày bắt đầu:&nbsp;</span>
                 <v-menu
                   ref="start"
                   v-model="mn.menu1"
@@ -115,14 +135,17 @@
                   :nudge-top="-10"
                 >
                   <template v-slot:activator="{ on }">
-                    <input
-                      style="width:150px"
-                      class="text-md-center border pa-2 mb-3"
+                    <v-text-field
+                      :error-messages="errors.collect('form1.start_at')"
+                      data-vv-name="start_at"
+                      v-validate="'required'"
                       type="text"
+                      outline
+                      color="brown"
                       v-model="startFormatted"
                       readonly
                       v-on="on"
-                    />
+                    ></v-text-field>
                   </template>
                   <v-date-picker light no-title scrollable v-model="code.start_at" :min="now">
                     <v-spacer></v-spacer>
@@ -131,9 +154,10 @@
                   </v-date-picker>
                 </v-menu>
               </v-flex>
-              <v-flex md5 offset-md1>
-                <span class="caption">Ngày kết thúc:&nbsp;</span>
+              <v-flex md6 offset-md1>
+                <span>Ngày kết thúc:&nbsp;</span>
                 <v-menu
+                  :disabled="code.start_at.length ===0"
                   ref="end"
                   v-model="mn.menu2"
                   :return-value.sync="code.end_at"
@@ -147,14 +171,14 @@
                   :nudge-top="-10"
                 >
                   <template v-slot:activator="{ on }">
-                    <input
-                      style="width:150px"
-                      class="text-md-center border pa-2 mb-3"
+                    <v-text-field
                       type="text"
+                      outline
+                      color="brown"
                       v-model="endFormatted"
                       readonly
                       v-on="on"
-                    />
+                    ></v-text-field>
                   </template>
                   <v-date-picker
                     light
@@ -169,7 +193,7 @@
                   </v-date-picker>
                 </v-menu>
               </v-flex>
-              <v-flex md4>
+              <v-flex md5>
                 <v-text-field
                   :error-messages="errors.collect('form1.code')"
                   data-vv-name="code"
@@ -181,7 +205,7 @@
                   label="Nhập mã coupon tại đây..."
                 ></v-text-field>
               </v-flex>
-              <v-flex md7 offset-md1>
+              <v-flex md6 offset-md1>
                 <v-textarea
                   :error-messages="errors.collect('form1.title')"
                   data-vv-name="title"
@@ -195,7 +219,52 @@
                   label="Nhập tiêu đề khuyến mãi tại đây..."
                 ></v-textarea>
               </v-flex>
-              <v-flex md5 mb-3>
+              <v-flex md12 class="mb-3 py-3 border-top border-bottom">
+                <span>Áp dụng cho:&nbsp;</span>
+                <v-layout align-center class="pa-2 mx-2">
+                  <v-flex md4>
+                    <v-radio-group v-model="roomTypeRadio" :mandatory="false">
+                      <v-layout class="caption mb-2" align-center>
+                        <v-flex md1>
+                          <v-radio :value="0" color="brown"></v-radio>
+                        </v-flex>
+                        <v-flex offset-md1>
+                          Tất cả loại phòng.
+                        </v-flex>
+                      </v-layout>                      
+                      <v-layout class="caption" align-center>
+                        <v-flex md1>
+                          <v-radio :value="1" color="orange"></v-radio>
+                        </v-flex>
+                        <v-flex offset-md1>
+                          Một số loại...
+                        </v-flex>
+                      </v-layout>                      
+                  </v-radio-group> 
+                  </v-flex>
+                  <v-flex md7 offset-md1>
+                    <div v-if="roomTypeRadio ==0" class="body-2 font-weight-bold">
+                      Mã sẽ áp dụng cho tất cả các loại phòng.
+                    </div>
+                    <div v-else>
+                      <v-layout row wrap class="pa-0 ma-0 caption" align-center>
+                        <v-select
+                          label="Chọn loại phòng"
+                          :items="roomTypes"
+                          v-model="selectedRoomTypes"
+                          chips
+                          multiple
+                          outline
+                          color="brown"
+                          :item-text="'name'"
+                          :item-value="'id'">
+                        </v-select>
+                      </v-layout>
+                    </div>
+                  </v-flex>
+                </v-layout>                  
+              </v-flex>
+              <v-flex md5>
                 <span class="subheading">Mức giảm (%):&nbsp;</span>
                 <input
                   type="number"
@@ -206,7 +275,7 @@
                   style="width:100px"
                 />
               </v-flex>
-              <v-flex md5 offset-md1 mb-3>
+              <v-flex md6 offset-md1>
                 <span class="subheading">Số lượng:&nbsp;</span>
                 <input
                   type="number"
@@ -216,11 +285,8 @@
                   style="width:100px"
                 />
               </v-flex>
-              <v-flex m12>
+              <v-flex m12 class="mt-3">
                 <v-textarea
-                  :error-messages="errors.collect('form1.content')"
-                  data-vv-name="content"
-                  v-validate="'required'"
                   outline
                   auto-grow
                   rows="6"
@@ -236,11 +302,10 @@
       <v-layout class="pa-0 ma-0" justify-center align-center v-else>
         <div v-if="!createForm">
           <span>{{flag.text}}</span>
-          
         </div>
         <v-flex md12 v-else>
           <v-form ref="form" data-vv-scope="form1" class="pa-1 brown lighten-2">
-            <v-layout row wrap class="pa-2 ma-0 white" align-center>
+            <v-layout row wrap class="pa-4 ma-0 white caption" align-center>
               <v-flex md12>
                 <div
                   class="ma-3 font-weight-black headline text-md-center text-uppercase brown--text"
@@ -249,8 +314,8 @@
               <v-flex md12>
                 <v-divider class="brown"></v-divider>
               </v-flex>
-              <v-flex md6>
-                <span class="caption">Ngày bắt đầu:&nbsp;</span>
+              <v-flex md5>
+                <span>Ngày bắt đầu:&nbsp;</span>
                 <v-menu
                   ref="start"
                   v-model="mn.menu1"
@@ -265,14 +330,17 @@
                   :nudge-top="-10"
                 >
                   <template v-slot:activator="{ on }">
-                    <input
-                      style="width:150px"
-                      class="text-md-center border pa-2 mb-3"
+                    <v-text-field
+                      :error-messages="errors.collect('form1.start_at')"
+                      data-vv-name="start_at"
+                      v-validate="'required'"
                       type="text"
+                      outline
+                      color="brown"
                       v-model="startFormatted"
                       readonly
                       v-on="on"
-                    />
+                    ></v-text-field>
                   </template>
                   <v-date-picker light no-title scrollable v-model="code.start_at" :min="now">
                     <v-spacer></v-spacer>
@@ -281,9 +349,10 @@
                   </v-date-picker>
                 </v-menu>
               </v-flex>
-              <v-flex md5 offset-md1>
-                <span class="caption">Ngày kết thúc:&nbsp;</span>
+              <v-flex md6 offset-md1>
+                <span>Ngày kết thúc:&nbsp;</span>
                 <v-menu
+                  :disabled="code.start_at.length ===0"
                   ref="end"
                   v-model="mn.menu2"
                   :return-value.sync="code.end_at"
@@ -297,14 +366,14 @@
                   :nudge-top="-10"
                 >
                   <template v-slot:activator="{ on }">
-                    <input
-                      style="width:150px"
-                      class="text-md-center border pa-2 mb-3"
+                    <v-text-field
                       type="text"
+                      outline
+                      color="brown"
                       v-model="endFormatted"
                       readonly
                       v-on="on"
-                    />
+                    ></v-text-field>
                   </template>
                   <v-date-picker
                     light
@@ -319,7 +388,7 @@
                   </v-date-picker>
                 </v-menu>
               </v-flex>
-              <v-flex md4>
+              <v-flex md5>
                 <v-text-field
                   :error-messages="errors.collect('form1.code')"
                   data-vv-name="code"
@@ -331,7 +400,7 @@
                   label="Nhập mã coupon tại đây..."
                 ></v-text-field>
               </v-flex>
-              <v-flex md7 offset-md1>
+              <v-flex md6 offset-md1>
                 <v-textarea
                   :error-messages="errors.collect('form1.title')"
                   data-vv-name="title"
@@ -345,7 +414,52 @@
                   label="Nhập tiêu đề khuyến mãi tại đây..."
                 ></v-textarea>
               </v-flex>
-              <v-flex md5 mb-3>
+              <v-flex md12 class="mb-3 py-3 border-top border-bottom">
+                <span>Áp dụng cho:&nbsp;</span>
+                <v-layout align-center class="pa-2 mx-2">
+                  <v-flex md4>
+                    <v-radio-group v-model="roomTypeRadio" :mandatory="false">
+                      <v-layout class="caption mb-2" align-center>
+                        <v-flex md1>
+                          <v-radio :value="0" color="brown"></v-radio>
+                        </v-flex>
+                        <v-flex offset-md1>
+                          Tất cả loại phòng.
+                        </v-flex>
+                      </v-layout>                      
+                      <v-layout class="caption" align-center>
+                        <v-flex md1>
+                          <v-radio :value="1" color="orange"></v-radio>
+                        </v-flex>
+                        <v-flex offset-md1>
+                          Một số loại...
+                        </v-flex>
+                      </v-layout>                      
+                  </v-radio-group> 
+                  </v-flex>
+                  <v-flex md7 offset-md1>
+                    <div v-if="roomTypeRadio ==0" class="body-2 font-weight-bold">
+                      Mã sẽ áp dụng cho tất cả các loại phòng.
+                    </div>
+                    <div v-else>
+                      <v-layout row wrap class="pa-0 ma-0 caption" align-center>
+                        <v-select
+                          label="Chọn loại phòng"
+                          :items="roomTypes"
+                          v-model="selectedRoomTypes"
+                          chips
+                          multiple
+                          outline
+                          color="brown"
+                          :item-text="'name'"
+                          :item-value="'id'">
+                        </v-select>
+                      </v-layout>
+                    </div>
+                  </v-flex>
+                </v-layout>                  
+              </v-flex>
+              <v-flex md5>
                 <span class="subheading">Mức giảm (%):&nbsp;</span>
                 <input
                   type="number"
@@ -356,7 +470,7 @@
                   style="width:100px"
                 />
               </v-flex>
-              <v-flex md5 offset-md1 mb-3>
+              <v-flex md6 offset-md1>
                 <span class="subheading">Số lượng:&nbsp;</span>
                 <input
                   type="number"
@@ -366,11 +480,8 @@
                   style="width:100px"
                 />
               </v-flex>
-              <v-flex m12>
+              <v-flex m12 class="mt-3">
                 <v-textarea
-                  :error-messages="errors.collect('form1.content')"
-                  data-vv-name="content"
-                  v-validate="'required'"
                   outline
                   auto-grow
                   rows="6"
@@ -385,8 +496,14 @@
       </v-layout>
     </v-flex>
     <v-flex md8 v-else>
-      <v-layout align-center justify-center>
-        <v-icon large color="brown">fas fa-circle-notch fa-spin</v-icon>
+      <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
+        <v-flex md5 class="pa-2 ma-2">
+          <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
+            <v-layout fill-height align-center justify-center>
+              <span class="pa-5 caption brown--text font-weight-bold">đang tải...</span>
+            </v-layout>
+          </v-img>
+        </v-flex>
       </v-layout>
     </v-flex>
     <v-flex md3 offset-md1>
@@ -398,7 +515,7 @@
                 round
                 depressed
                 color="brown lighten-2"
-                @click.stop="createForm = true"
+                @click.stop="createForm = true; resetForm()"
                 class="white--text"
                 v-if="createForm === false"
               >
@@ -486,10 +603,12 @@
         </v-card-title>
       </v-card>
     </v-flex>
-    <v-dialog persistent v-model="confirm" max-width="500">
+    <v-dialog persistent v-model="confirm.couponCode" max-width="500">
       <v-card flat title class="pa-2">
-        <v-card-title class="headline">Xem lại chi tiết dữ liệu vừa tạo</v-card-title>
         <v-card-text>
+          <div>
+            <span class="headline font-weight-bold mb-3">Xem lại chi tiết dữ liệu vừa tạo</span>
+          </div>
           <v-layout row wrap class="pa-2 ma-0 border" align-center>
             <v-flex md3>
               <div
@@ -536,10 +655,14 @@
             </v-flex>
           </v-layout>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="mr-2 mt-0">
           <v-spacer></v-spacer>
-          <v-btn round color="red" flat="flat" @click="confirm = false">Hủy</v-btn>
-          <v-btn round color="green darken-1" flat="flat" @click="submitForm">Đồng Ý</v-btn>
+          <v-btn round class="white--text font-weight-text mx-2"
+            depressed color="red" @click="confirm.couponCode = false"
+          >Hủy</v-btn>
+          <v-btn round class="white--text font-weight-text mx-2"
+            depressed color="green darken-1" @click="submitForm"
+          >Đồng Ý</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -571,6 +694,50 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-dialog persistent v-model="waiting" width="500px">
+      <v-layout fill-height align-center justify-center class="blue lighten-2" style="opacity:0.9">
+        <v-flex md5>
+          <v-img :aspect-ratio="1" src="/img/booking/load.gif">
+            <v-layout fill-height align-center justify-center>
+              <span class="pa-5 caption white--text font-weight-bold">đang xử lý...</span>
+            </v-layout>
+          </v-img>
+        </v-flex>
+      </v-layout>
+    </v-dialog>
+    <v-dialog persistent v-model="confirm.dialog" max-width="500">
+      <v-card>
+        <v-card-title>
+          <v-layout class="pa-0 ma-0" align-center>
+            <v-flex md5>
+              <v-img :aspect-ratio="1" src="/img/booking/octo.gif"></v-img>
+            </v-flex>
+            <v-flex md7>
+              <div class="title">{{confirm.title}}</div>
+              <div class="ml-3">
+                <v-chip
+                  class="pa-1 ma-2 white--text font-weight-bold"
+                  color="red" 
+                  @click="confirm.dialog = false"
+                >Hủy</v-chip>
+                <v-chip
+                  class="pa-1 ma-2 white--text font-weight-bold"
+                  color="green darken-1"
+                  @click="deleteCode(confirm.id)"
+                  v-if="radio !=0"
+                >Đồng ý</v-chip>
+                <v-chip
+                  class="pa-1 ma-2 white--text font-weight-bold"
+                  color="green darken-1"
+                  @click="endCode(confirm.id)"
+                  v-else
+                >Đồng ý</v-chip>
+              </div>
+            </v-flex>
+          </v-layout>
+        </v-card-title>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
@@ -581,7 +748,16 @@ export default {
   },
   data() {
     return {
-      confirm: false,
+      roomTypeRadio: 0,
+      selectedRoomTypes:[],
+      roomTypes:[],
+      waiting: false,
+      confirm: {
+        couponCode:false,
+        dialog: false,
+        id: 0,
+        title: "Bạn có chắc chắn?",
+      },
       search: "",
       radio: 0,
       createForm: false,
@@ -625,7 +801,7 @@ export default {
         end_at: "",
         amount: 1
       },
-      now: new Date().toISOString().substr(0, 10),
+      now: this.$moment(new Date()).format("YYYY-MM-DD"),
       startFormatted: "",
       endFormatted: "",
       dictionary: {
@@ -636,9 +812,9 @@ export default {
           title: {
             required: () => "Vẫn chưa nhập tiêu đề khuyến mãi cần tạo"
           },
-          content: {
-            required: () => "Vẫn chưa nhập tiêu đề khuyến mãi cần tạo"
-          }
+          start_at: {
+            required: () => "Chọn một ngày"
+          },
         }
       },
       datePicker: {
@@ -652,6 +828,7 @@ export default {
   },
   created() {
     this.$emit("chooseHotel", this.hotelId);
+    console.log(localStorage.getItem('api_token'));
     // if (Object.keys(this.$route.query).length == 0) {
     //   this.$router.push({ name: "home" });
     // }
@@ -662,6 +839,29 @@ export default {
     this.$validator.localize("en", this.dictionary);
   },
   watch: {
+    "roomTypeRadio":function(){
+      if(this.roomTypeRadio == 0){
+        let temp = [];
+        this.roomTypes.forEach(element=>{
+          temp.push(element.id);
+        });
+        this.selectedRoomTypes = temp;
+      } 
+      else{
+        this.selectedRoomTypes =[];
+      }
+    },
+    "selectedRoomTypes": function(){
+      if(this.selectedRoomTypes.length == this.roomTypes.length){
+        this.roomTypeRadio =0;
+      }
+    },
+    "confirm.dialog":function(){
+      if(this.confirm.dialog == false) {
+        this.confirm.id = 0;
+        this.confirm.content = "";
+      }
+    },
     "datePicker.end_at": function() {
       this.datePicker.endFormatted = this.formatDate(this.datePicker.end_at);
     },
@@ -700,14 +900,19 @@ export default {
         .then(res => {
           this.flag.state = true;
           console.log(res.data.status);
+          console.log(res.data.couponCode);
+          console.log(res.data.expiredCouponCode);
+          console.log(res.data.waitingCouponCode);
           if (res.data.status == true) {
             this.couponCode = res.data.couponCode;
             this.expiredCouponCode = res.data.expiredCouponCode;
             this.waitingCouponCode = res.data.waitingCouponCode;
             if (this.couponCode.length == 0) {
               if (this.waitingCouponCode.length != 0) {
+                this.data = this.waitingCouponCode;
                 this.radio = 1;
               } else {
+                this.data = this.expiredCouponCode;
                 this.radio = 2;
               }
             } else {
@@ -724,69 +929,131 @@ export default {
             this.router.push({ name: "login" });
           }
         });
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/manager/room-type/"+this.hotelId,
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("api_token")
+        },
+        params: {
+          hotelId: this.hotelId
+        }
+      })
+        .then(res => {
+          if (res.data.status == true) {
+            this.roomTypes = res.data.data;
+          } else {
+            this.$router.push({ name: "home" });
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+          console.log(error);
+          if (error.response.status == 401) {
+            this.router.push({ name: "login" });
+          }
+        });
     },
     formatDate: function(date) {
       if (!date) return null;
-      // date = date.substr(0, 10);
-      const [year, month, day] = date.split("-");
-      return `${day}/${month}/${year}`;
+      return this.$moment(date).format("DD-MM-YYYY");
     },
     resetForm: function() {
-      this.$refs.form.reset();
       this.startFormatted = "";
       this.code.start_at = "";
+      this.code.title = "";
+      this.code.code = "";
+      this.code.content = "";
       this.code.end_at = "";
+      this.code.discount = 1;
+      this.code.amount = 1;
       this.endFormatted = "";
+      this.roomTypeRadio = 0;
+      let temp = [];
+        this.roomTypes.forEach(element=>{
+          temp.push(element.id);
+        });
+      this.selectedRoomTypes = temp;
       this.$validator.reset();
     },
     openConfirm: function() {
       this.$validator.validateAll("form1").then(valid => {
         if (valid) {
-          this.confirm = true;
+          if(this.roomTypeRadio !=0 && this.selectedRoomTypes.length ==0){
+            this.$emit("loadSnackbar", "Dường như bạn bỏ sót bước chọn loại phòng áp dụng!");
+          }else{
+          this.confirm.couponCode = true;
+          }
         }
       });
     },
+    openSureConfirm: function(id){
+      this.confirm.id = id;
+      let index = this.getIndex(id);
+      let code = null;
+      switch(this.radio){
+        case 0:
+          code = this.couponCode[index].code;
+          this.confirm.title = "Bạn có chắc sẽ dừng áp dụng mã "+code+" ?";
+          break;
+        case 1:
+          code = this.waitingCouponCode[index].code;
+          this.confirm.title = "Bạn có chắc sẽ xóa mã "+code+" ?";
+          break;        
+      }
+      this.confirm.dialog = true;
+    },
     submitForm: function() {
+      // alert(this.selectedRoomTypes)
+      // return
+      this.waiting = true;
       this.$validator.validateAll("form1").then(valid => {
         if (valid) {
-          axios({
-            method: "post",
-            url: "http://localhost:8000/api/manager/coupon-code",
-            headers: {
-              Authorization: "Bearer " + localStorage.getItem("api_token")
-            },
-            data: {
-              hotelId: this.hotelId,
-              code: this.code
-            }
-          })
-            .then(res => {
-              console.log(res.data);
-              if (res.data.status == true) {
-                this.resetForm();
-                this.createForm = false;
-                this.confirm = false;
-                var newCoupon = res.data.data;
-                if (newCoupon.waiting) {
-                  this.waitingCouponCode.push(newCoupon);
-                  this.radio = 1;
-                } else {
-                  this.couponCode.push(newCoupon);
-                  this.radio = 0;
-                }
-                this.search = newCoupon.code;
-                console.log(this.search);
-              } else {
-                this.$router.push({ name: "home" });
+          if(this.roomTypeRadio !=0 && this.selectedRoomTypes.length ==0){
+            this.$emit("loadSnackbar", "Dường như bạn bỏ sót bước chọn loại phòng áp dụng!");
+          }else{
+            axios({
+              method: "post",
+              url: "http://localhost:8000/api/manager/coupon-code",
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("api_token")
+              },
+              data: {
+                hotelId: this.hotelId,
+                code: this.code,
+                radio: this.roomTypeRadio,
+                roomTypes: this.selectedRoomTypes,
               }
             })
-            .catch(error => {
-              console.log(error.response);
-              console.log(error);
-              if (error.response.status == 401) {
-                this.router.push({ name: "login" });
-              }
-            });
+              .then(res => {
+                console.log(res.data);
+                if (res.data.status == true) {
+                  this.resetForm();
+                  this.createForm = false;
+                  this.confirm.couponCode = false;
+                  this.waiting = false;
+                  var newCoupon = res.data.data;
+                  if (newCoupon.waiting) {
+                    this.waitingCouponCode.push(newCoupon);
+                    this.radio = 1;
+                  } else {
+                    this.couponCode.push(newCoupon);
+                    this.radio = 0;
+                  }
+                  this.search = newCoupon.code;
+                  console.log(this.search);
+                } else {
+                  this.$router.push({ name: "home" });
+                }
+              })
+              .catch(error => {
+                console.log(error.response);
+                console.log(error);
+                if (error.response.status == 401) {
+                  this.router.push({ name: "login" });
+                }
+              });
+          }
         }
       });
     },
@@ -808,7 +1075,13 @@ export default {
       }
       return index;
     },
+    remove (item) {
+        this.selectedRoomTypes.splice(this.selectedRoomTypes.indexOf(item), 1)
+        this.selectedRoomTypes = [...this.selectedRoomTypes]
+      },
     endCode: function(id) {
+      this.confirm.dialog = false;
+      this.waiting = true;
       axios({
         method: "put",
         url: "http://localhost:8000/api/manager/coupon-code/" + id,
@@ -823,6 +1096,7 @@ export default {
         .then(res => {
           console.log(res.data);
           if (res.data.status == true) {
+            this.waiting = false;
             var index = this.getIndex(id);
             this.expiredCouponCode.push(res.data.couponCode);
             this.couponCode.splice(index, 1);
@@ -839,17 +1113,46 @@ export default {
           }
         });
     },
+    deleteCode(id){
+      this.confirm.dialog = false;
+      this.waiting = true;
+      axios({
+        method: "delete",
+        url: "http://localhost:8000/api/manager/coupon-code/" + id,
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("api_token")
+        },
+        params: {
+          id: id,
+        }
+      })
+        .then(res => {
+          console.log(res.data);
+          if (res.data.status == true) {
+            this.waiting = false;
+            var index = this.getIndex(id);
+            this.waitingCouponCode.splice(index,1);
+          } else {
+            // this.$router.push({ name: "home" });
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            this.router.push({ name: "login" });
+          }
+        });
+    },
     openDatePicker: function(item) {
       this.datePicker.state = true;
       this.datePicker.id = item.id;
-      if(item.start_at > this.now)
-        this.datePicker.start_at = item.start_at;
-      else 
-        this.datePicker.start_at = this.now;
+      if (item.start_at > this.now) this.datePicker.start_at = item.start_at;
+      else this.datePicker.start_at = this.now;
       this.datePicker.end_at = "";
       this.datePicker.endFormatted = "";
     },
     addEndDate: function() {
+      this.waiting = true;
       axios({
         method: "put",
         url:
@@ -866,17 +1169,18 @@ export default {
         .then(res => {
           console.log(res.data);
           if (res.data.status == true) {
+            this.waiting = false;
             this.datePicker.state = false;
             var index = this.getIndex(this.datePicker.id);
-            switch(this.radio){
+            switch (this.radio) {
               case 0:
-              this.couponCode[index].end_at = this.datePicker.end_at;
-              this.search = this.couponCode[index].code;
-              break;
+                this.couponCode[index].end_at = this.datePicker.end_at;
+                this.search = this.couponCode[index].code;
+                break;
               case 1:
-              this.waitingCouponCode[index].end_at = this.datePicker.end_at;
-              this.search = this.waitingCouponCode[index].code;
-              break;
+                this.waitingCouponCode[index].end_at = this.datePicker.end_at;
+                this.search = this.waitingCouponCode[index].code;
+                break;
             }
           } else {
             // this.$router.push({ name: "home" });

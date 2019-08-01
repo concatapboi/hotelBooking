@@ -65,10 +65,19 @@ class Room extends Model
     $roomType = RoomType::find($this->room_type_id);
     $hotel  = Hotel::find($this->hotel_id);
     $couponCodes = $roomType->Apply();
+    $temp = array();
     foreach($couponCodes as $c){
-      if(CouponCode::find($c->coupon_code_id)->hotel_id == $hotel->id) return CouponCode::find($c->coupon_code_id);
+      if(CouponCode::find($c->coupon_code_id)!=null && CouponCode::find($c->coupon_code_id)->hotel_id == $hotel->id){
+        $couponCode = CouponCode::find($c->coupon_code_id);
+        if (!Carbon::now()->lessThan(Carbon::parse($couponCode->start_at))) {
+          if ($couponCode->end_at == null || Carbon::now()->lessThan(Carbon::parse($couponCode->end_at))) {
+            if (($couponCode->apply_amount - $couponCode->applied_amount) > 0)
+              $temp[] =  $couponCode;              
+          }
+        }
+      }
     }
-    return null;
+    return $temp;
   }
 
   public function RoomBedType()

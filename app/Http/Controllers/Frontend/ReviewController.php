@@ -25,68 +25,13 @@ use App\Http\Resources\ReviewCollection;
 
 class ReviewController extends Controller
 {
-    //get review
-    // public function index()
-    // {
-    //     $arr = array();
-    //     if (Auth::check()) {
-    //         $user = Auth::user();
-    //         foreach ($user->reViewList() as $review) {
-    //             $temp = $review;
-    //             $temp->customer = $user;
-    //             // $temp->Hotel;
-    //             // $temp->hotel->image = HotelImage::where('hotel_id', $temp->hotel->id)->where('is_primary', 1)->first()->image_link;
-    //             // $temp->hotel->services = $temp->hotel->ServiceResource();
-    //             $temp->customer->avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
-    //             $arr[] = $temp;
-    //         }
-    //         $followings = $user->Followings();
-    //         if (sizeOf($followings) != 0) {
-    //             foreach ($followings as $f) {
-    //                 foreach ($f->followed->reViewList() as $review) {
-    //                     $temp = $review;
-    //                     // $temp->Hotel;
-    //                     // $temp->hotel->image = HotelImage::where('hotel_id', $temp->hotel->id)->where('is_primary', 1)->first()->image_link;
-    //                     // $temp->hotel->services = $temp->hotel->ServiceResource();
-    //                     $temp->customer = $f->followed;
-    //                     $temp->customer->avatar = UserImage::where('user_id', $f->followed->id)->where('is_primary', 1)->first();
-    //                     $arr[] = $temp;
-    //                 }
-    //             }
-    //         }
-    //         $tempArr = array();
-    //         $hotelFollowings = $user->HotelFollowings();
-    //         if (sizeOf($hotelFollowings) != 0) {
-    //             foreach ($hotelFollowings as $h) {
-    //                 $h->Hotel;
-    //                 $hotelTemp = $h->Hotel;
-    //                 $hotelTemp->image = HotelImage::where('hotel_id', $h->hotel->id)->where('is_primary', 1)->first()->image_link;;
-    //                 foreach ($h->hotel->CouponCode as $couponCode) {
-    //                     $couponCode->hotel = $hotelTemp;
-    //                     if ($couponCode->start_at != null && !Carbon::now()->lessThan(Carbon::parse($couponCode->start_at))) {
-    //                         if ($couponCode->end_at == null || ($couponCode->end_at != null && Carbon::now()->lessThan(Carbon::parse($couponCode->end_at)))) {
-    //                             $couponCode->days = Carbon::now()->diffInDays($couponCode->start_at);
-    //                             $tempArr[] = $couponCode;
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     $data = array_merge($arr, $tempArr);
-    //     $collection = collect($data)->sortBy('created_at');
-    //     $data = $collection->values()->all();
-    //     return response()->json([
-    //         'data' => $data,
-    //     ]);
-    // }
     public function index()
     {
         $user = Auth::user();
         $followingCustomer = CustomerFollowing::where("follower_id", $user->id)->pluck("followed_id");
         $followingCustomer[] = $user->id;
-        $reviewList = Review::whereIn("customer_id", $followingCustomer);        
-        $data = new ReviewCollection($reviewList->paginate(2));        
+        $reviewList = Review::whereIn("customer_id", $followingCustomer)->orderBy('created_at', 'desc');
+        $data = new ReviewCollection($reviewList->paginate(2));
         return $data;
     }
     public function filterByRoomType($array, $roomTypes)
@@ -140,13 +85,13 @@ class ReviewController extends Controller
             'customer_id' => Auth::user()->id,
             'hotel_id' => $req->hotel_id,
             'booking_id' => $req->booking_id,
-            'can_comment' => $req->can_comment == true ? 1 : 0,
+            'can_comment' => $req->can_comment == 'true' ? 1 : 0,
         ]);
         Hotel::find($req->hotel_id)->getReviewPoint();
         $customerReview = CustomerReview::create([
             'customer_id' => $review->customer_id,
             'review_id' => $review->id,
-            'status' => $req->notification == true ? 1 : 0,
+            'status' => $req->notification == 'true' ? 1 : 0,
             'like' => 0,
             'useful' => 0,
         ]);
@@ -196,9 +141,24 @@ class ReviewController extends Controller
     }
 
     //put/patch review/{review}
-    public function update($id, Request $req)
+    public function update($id)
     {
-        return;
+        $status = false;
+        $review = Review::find($id);
+        if ($review != null) {
+            $status = true;
+            switch ($review->can_comment) {
+                case 1:
+                    $review->update(['can_comment' => 0]);
+                    break;
+                case 0:
+                    $review->update(['can_comment' => 1]);
+                    break;
+            }
+        }
+        return response()->json([
+            'status' => $status
+        ]);
     }
 
     //delete review/{review}

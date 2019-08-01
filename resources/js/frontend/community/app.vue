@@ -168,11 +168,13 @@
               <span>{{notifications.count}}</span>
             </template>
             <v-avatar :color="drawer.iconColor" size="40px">
-              <v-icon dark>notifications</v-icon>
+              <v-icon class="pointer" dark v-if="!notifications.state">notifications</v-icon>
+              <v-icon class="pointer" dark v-else>clear</v-icon>
             </v-avatar>
           </v-badge>
           <v-avatar :color="drawer.iconColor" size="40px" class="mr-5" v-else>
-            <v-icon class="pointer" dark>notifications</v-icon>
+            <v-icon class="pointer" dark v-if="!notifications.state">notifications</v-icon>
+            <v-icon class="pointer" dark v-else>clear</v-icon>
           </v-avatar>
         </template>
         <v-btn fab dark small color="orange" @click.stop="markedAllNotifications">
@@ -189,21 +191,24 @@
         @click="notifications.state = !notifications.state"
         v-else
       >
-        <v-icon class="pointer" dark>notifications</v-icon>
+        <v-icon class="pointer" dark v-if="!notifications.state">notifications</v-icon>
+        <v-icon class="pointer" dark v-else>clear</v-icon>
       </v-avatar>
     </v-toolbar>
     <div id="top"></div>
     <v-content>
       <v-container fluid fill-height class="grey lighten-2">
-        <router-view
-          :user="user"
-          :customer="user"
-          v-on:loadLogin="getLogin"
-          :snackbar="snackbar"
-          v-on:loadSnackbar="eventSnackbar"
-          :login="login"
-          :check="login.check"
-        ></router-view>
+        <transition name="moveInUp">
+          <router-view
+            :user="user"
+            :customer="user"
+            v-on:loadLogin="getLogin"
+            :snackbar="snackbar"
+            v-on:loadSnackbar="eventSnackbar"
+            :login="login"
+            :check="login.check"
+          ></router-view>
+        </transition>
         <v-btn
           href="#top"
           color="#0e2737"
@@ -222,14 +227,21 @@
     <v-snackbar
       v-model="snackbar.state"
       multi-line="multi-line"
-      right
       :timeout="snackbar.timeout"
       top
       color="white"
-      class="black--text font-weight-bold"
+      class="body-1 black--text font-weight-bold"
+      style="margin-top:150px"
     >
-      {{snackbar.content}}
-      <v-icon v-on:click="snackbar.state = !snackbar.state" large color="black">close</v-icon>
+      <v-layout align-center>
+        <v-flex md5>
+          <v-img :aspect-ratio="1" src="/img/booking/alert.gif"></v-img>
+        </v-flex>
+        <v-flex>{{snackbar.content}}</v-flex>
+        <v-flex>
+          <v-icon v-on:click="snackbar.state = !snackbar.state" large color="black">close</v-icon>
+        </v-flex>
+      </v-layout>
     </v-snackbar>
     <v-dialog
       fullscreen
@@ -375,7 +387,7 @@ export default {
       snackbar: {
         state: false,
         content: "",
-        timeout: 36000
+        timeout: 6000
       },
       hello: "hello",
       year: new Date().getFullYear(),
@@ -663,12 +675,12 @@ export default {
           .then(res => {
             console.log(res.data);
             if (res.data.status == true) {
-              if(!val.answer){
+              if (!val.answer) {
                 this.$router.push({
-                name: val.link.name,
-                query: { id: val.link.id }
-              });
-              }              
+                  name: val.link.name,
+                  query: { id: val.link.id }
+                });
+              }
             } else {
               flag = false;
             }
@@ -688,8 +700,11 @@ export default {
             }
           });
       } else {
-        if(!val.answer)
-          this.$router.push({ name: val.link.name, query: { id: val.link.id } });
+        if (!val.answer)
+          this.$router.push({
+            name: val.link.name,
+            query: { id: val.link.id }
+          });
       }
     }
   }

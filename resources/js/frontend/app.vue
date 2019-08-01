@@ -15,7 +15,10 @@
             <v-flex md2>
               <router-link :to="{name:'contact'}" class="title text-uppercase">liên hệ</router-link>
             </v-flex>
-            <v-flex md6>
+            <v-flex md2>
+              <router-link :to="{name:'policy'}" class="title text-uppercase">chính sách</router-link>
+            </v-flex>
+            <v-flex md4>
               <v-btn round depressed flat color="teal" v-if="!login.check" @click="dialog = true">
                 <span class="title text-uppercase black--text">Đăng nhập</span>
                 <i class="fas fa-arrow-right mx-3 black--text"></i>
@@ -76,6 +79,7 @@
             :loginDialog="dialog"
             v-on:loadLoginDialog="eventDialog"
             :login="login"
+            :customer="login.user"
             :loginCheck="loginCheck"
             :snackbar="snackbar"
             v-on:loadSnackbar="eventSnackbar"
@@ -322,7 +326,7 @@
                 <div class="mt-3">
                   <v-img
                     :aspect-ratio="1"
-                    :src="'/blog/img/room/'+bookingList.detail.booking.room.image"
+                    :src="'/images/room/'+bookingList.detail.booking.room.image"
                   ></v-img>
                 </div>
               </v-flex>
@@ -484,14 +488,21 @@
     <v-snackbar
       v-model="snackbar.state"
       multi-line="multi-line"
-      right
       :timeout="snackbar.timeout"
       top
       color="white"
-      class="black--text font-weight-bold"
+      class="body-1 black--text font-weight-bold"
+      style="margin-top:150px"
     >
-      {{snackbar.content}}
-      <v-icon v-on:click="snackbar.state = !snackbar.state" large color="black">close</v-icon>
+      <v-layout align-center>
+        <v-flex md5>
+          <v-img :aspect-ratio="1" src="/img/booking/alert.gif"></v-img>
+        </v-flex>
+        <v-flex>{{snackbar.content}}</v-flex>
+        <v-flex>
+          <v-icon v-on:click="snackbar.state = !snackbar.state" large color="black">close</v-icon>
+        </v-flex>
+      </v-layout>
     </v-snackbar>
   </v-app>
 </template>
@@ -552,6 +563,7 @@ export default {
         password: "",
         value: false,
         user: {
+          id: 0,
           avatar: {},
           booking: []
         }
@@ -561,7 +573,7 @@ export default {
       snackbar: {
         state: false,
         content: "",
-        timeout: 2400
+        timeout: 6000
       },
       year: new Date().getFullYear(),
       drawer: {
@@ -592,7 +604,9 @@ export default {
         }
       },
       place: "Hồ Chí Minh",
-      now: this.$moment(new Date()).add(1,'days').format("YYYY-MM-DD"),
+      now: this.$moment(new Date())
+        .add(1, "days")
+        .format("YYYY-MM-DD"),
       // checkIn: this.getNextDate(new Date().toISOString().substr(0, 10), 1),
       // checkInFormatted: this.formatDate(
       //   this.getNextDate(new Date().toISOString().substr(0, 10), 1)
@@ -601,10 +615,18 @@ export default {
       // checkOutFormatted: this.formatDate(
       //   this.getNmin.toISOString().substr(0, 10), 2)
       // )
-      checkIn: this.$moment(new Date()).add(1,'days').format("YYYY-MM-DD"),
-      checkInFormatted: this.$moment(new Date()).add(1,'days').format("DD-MM-YYYY"),
-      checkOut: this.$moment(new Date()).add(2,'days').format("YYYY-MM-DD"),
-      checkOutFormatted: this.$moment(new Date()).add(2,'days').format("DD-MM-YYYY"),
+      checkIn: this.$moment(new Date())
+        .add(1, "days")
+        .format("YYYY-MM-DD"),
+      checkInFormatted: this.$moment(new Date())
+        .add(1, "days")
+        .format("DD-MM-YYYY"),
+      checkOut: this.$moment(new Date())
+        .add(2, "days")
+        .format("YYYY-MM-DD"),
+      checkOutFormatted: this.$moment(new Date())
+        .add(2, "days")
+        .format("DD-MM-YYYY")
     };
   },
   created() {
@@ -629,10 +651,12 @@ export default {
       this.login.value = false;
     },
     checkIn: function(val) {
-      if(this.checkIn >= this.checkOut){
+      if (this.checkIn >= this.checkOut) {
         this.checkInFormatted = this.formatDate(this.checkIn);
-        this.checkOut = this.$moment(this.checkIn).add(1,'days').format("YYYY-MM-DD");
-      }else{
+        this.checkOut = this.$moment(this.checkIn)
+          .add(1, "days")
+          .format("YYYY-MM-DD");
+      } else {
         this.checkInFormatted = this.formatDate(this.checkIn);
       }
       // if (val < new Date().toISOString().substr(0, 10)) {
@@ -648,7 +672,7 @@ export default {
       // if (val <= this.checkIn) {
       //   this.checkOut = this.getNextDate(this.checkIn, 1);
       //   this.checkOutFormatted = this.formatDate(this.checkOut);
-      // } else 
+      // } else
       this.checkOutFormatted = this.formatDate(this.checkOut);
     }
   },

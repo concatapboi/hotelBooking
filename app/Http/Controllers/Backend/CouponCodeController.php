@@ -11,6 +11,7 @@ use App\Models\RoomType;
 use Hash;
 use Carbon\Carbon;
 use Auth;
+use App\Models\ApplyCouponCodeRoomType;
 
 class CouponCodeController extends Controller
 {
@@ -92,13 +93,18 @@ class CouponCodeController extends Controller
             'apply_amount' => $couponCode['amount'],
             'hotel_id' => $req->hotelId,
         ]);
-        if ($newCouponCode->start_at == null) {
+        $roomTypes = $req->roomTypes;
+        foreach($roomTypes as $key => $value){
+            ApplyCouponCodeRoomType::create([
+                'coupon_code_id' => $newCouponCode->id,
+                'room_type_id' => $value
+            ]);
+        }
+        if ($newCouponCode->start_at == null || Carbon::now()->lessThan(Carbon::parse($newCouponCode->start_at))) {
             $newCouponCode->waiting = true;
-            $newCouponCode->status = true;
         } else {
             $newCouponCode->during = true;
-            $newCouponCode->status = true;
-            $newCouponCode->days = Carbon::now()->diffInDays($newCouponCode->start_at);
+            $newCouponCode->days = Carbon::now()->diffInDays(Carbon::parse($newCouponCode->start_at));
         }
         return response()->json([
             'status' => true,
@@ -148,6 +154,9 @@ class CouponCodeController extends Controller
     //delete code/{code}
     public function destroy($id)
     {
-        return;
+        CouponCode::find($id)->delete();
+        return response()->json([
+            'status' => true,
+        ]);
     }
 }

@@ -71,623 +71,787 @@
         </v-btn>
       </v-layout>
     </v-flex>
-    <v-flex shrink md3 class="detail-container">
-      <span class="headline font-weight-black">{{data.name}}</span>
-      <v-img :aspect-ratio="4/3" :src="'/images/hotel/'+data.image" class="my-2">
-        <v-layout row wrap justify-center align-center fill-height>
-          <v-flex md10>
-            <v-rating
-              v-model="data.stars_num"
-              color="#fff200"
-              background-color="grey darken-1"
-              empty-icon="$vuetify.icons.ratingFull"
-              half-incrementss
-              readonly
-              small
-            ></v-rating>
-          </v-flex>
-        </v-layout>
-      </v-img>
-      <v-layout row wrap class="hotel-info-item" align-center>
-        <v-flex md4>
-          <span>Đánh giá:</span>
-        </v-flex>
-        <v-flex md7 class="pl-2">
-          <span v-if="data.review_point>0">{{data.review_point}}/10</span>
-          <span v-else>Chưa có đánh giá.</span>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap class="hotel-info-item" align-center>
-        <v-flex md4>
-          <span>Số điện thoại:</span>
-        </v-flex>
-        <v-flex md7 class="pl-2">
-          <span>{{data.phone_number}}</span>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap class="hotel-info-item" align-center>
-        <v-flex md4>
-          <span>Email:</span>
-        </v-flex>
-        <v-flex md7 class="pl-2">
-          <span style="word-wrap: break-word;">{{data.email}}</span>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap class="hotel-info-item" align-center>
-        <v-flex md4>
-          <span>Số fax:</span>
-        </v-flex>
-        <v-flex md7 class="pl-2">
-          <span>{{data.fax_number}}</span>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap class="hotel-info-item" align-center>
-        <v-flex md4>
-          <span>Mã số thuế:</span>
-        </v-flex>
-        <v-flex md7 class="pl-2">
-          <span>{{data.tax_code}}</span>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap class="hotel-info-item" align-center>
-        <v-flex md4>
-          <span>Địa chỉ:</span>
-        </v-flex>
-        <v-flex md7 class="pl-2">
-          <span style="word-wrap: break-word;">{{data.address}}</span>
-        </v-flex>
-      </v-layout>
-      <v-btn
-        round
-        v-if="data.followed == false"
-        depressed
-        dark
-        v-on:click="followHotel(data,1)"
-      >theo dõi</v-btn>
-      <v-btn round v-else depressed dark v-on:click="followHotel(data,0)">hủy theo dõi</v-btn>
-    </v-flex>
-    <v-flex md9 class="detail-container">
-      <v-tabs centered grow color="grey lighten-2" light class="ma-1">
-        <v-tabs-slider color="black"></v-tabs-slider>
-        <v-tab href="#tab-1">Danh sách phòng</v-tab>
-        <v-tab href="#tab-2">Thông tin</v-tab>
-        <v-tab href="#tab-3" @click="getHotelReviews">Đánh giá</v-tab>
-        <v-tab href="#tab-4" @click="getHotelQuestion">Đặt câu hỏi</v-tab>
-        <v-tab href="#tab-5" @click="getAddress(data.address)">Map</v-tab>
-        <v-tab-item value="tab-1">
-          <v-card light flat tile v-if="rooms.length !=0">
-            <v-layout class="search-item" row wrap v-for="(room,index) in rooms" :key="index">
-              <v-flex xs3>
-                <v-layout row wrap class="pl-3">
-                  <v-flex class="pa-1" md12 v-for="(image,i) in room.images" :key="i">
-                    <v-img :aspect-ratio="4/3" :src="'/images/room/'+image.image_link" v-if="i<3"></v-img>
-                  </v-flex>
-                  <!-- <v-flex class="pa-1" md6>
-                    <v-img :aspect-ratio="1" :src="'/images/room/'+room.images[2].image_link"></v-img>
-                  </v-flex>
-                  <v-flex class="pa-1" md6>
-                    <v-img :aspect-ratio="1" :src="'/images/room/'+room.images[3].image_link">
-                      <v-layout fill-height justify-center align-center>
-                        <a href="#" @click="openImagesDialog(1,room)" class="red--text">Thêm...</a>
-                      </v-layout>
-                    </v-img>
-                  </v-flex> -->
-                </v-layout>
-              </v-flex>
-              <v-spacer></v-spacer>
-              <v-flex md6 style="border-right:1px solid #000;border-left:1px solid #000;">
-                <v-card-title>
-                  <div>
-                    <div class="headline">Phòng&nbsp;{{room.room_name}}</div>
-                    <div>
-                      Mức Giá:&nbsp;
-                      <span
-                        class="red--text font-weight-bold headline"
-                      >{{room.price.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}&nbsp;/đêm</span>
-                    </div>
-                    <div>
-                      Người Lớn:&nbsp;
-                      <span class="font-weight-bold">{{room.max_adult_amount}}</span>&nbsp;|&nbsp;Trẻ Em:&nbsp;
-                      <span
-                        class="font-weight-bold"
-                      >{{room.max_child_amount}}&nbsp;(dưới&nbsp;{{data.child_age}}&nbsp;tuổi)</span>
-                    </div>
-                    <div>
-                      Kiểu Phòng:&nbsp;
-                      <span class="font-weight-bold">{{room.room_mode.name}}</span>
-                    </div>
-                    <div>
-                      Loại Phòng:&nbsp;
-                      <span class="font-weight-bold">{{room.room_type.name}}</span>
-                    </div>
-                    <div>
-                      Kích Thước:&nbsp;
-                      <span class="font-weight-bold">{{room.room_size}}&nbsp;m²</span>
-                    </div>
-                    <div v-show="room.amount>0">
-                      Số Lượng:&nbsp;
-                      <input
-                        class="amount-room-input"
-                        type="number"
-                        v-model="room.bookingAmount"
+    <v-flex shrink md12>
+      <v-layout row wrap class="pa-0 ma-0" v-if="flag.detail">
+        <v-flex md12 v-if="!softDelete">
+          <v-layout row wrap class="pa-0 ma-0">
+            <v-flex shrink md3 class="detail-container">
+              <span class="headline font-weight-black">{{data.name}}</span>
+              <v-img :aspect-ratio="4/3" :src="'/images/hotel/'+data.image" class="my-2">
+                <v-layout row wrap justify-center align-end fill-height v-if="data.stars_num>0">
+                  <v-flex md10>
+                    <v-chip color="white">
+                      <v-rating
+                        v-model="data.stars_num"
+                        color="#fff200"
+                        background-color="grey darken-1"
+                        empty-icon="$vuetify.icons.ratingFull"
+                        half-incrementss
                         readonly
-                      />
-                      <v-btn
                         small
-                        class="amount-btn"
-                        depressed
-                        fab
-                        v-on:click="room.bookingAmount++;if(room.bookingAmount>room.amount){room.bookingAmount = room.amount}"
-                      >
-                        <i class="fa-lg fas fa-plus"></i>
-                      </v-btn>
-                      <v-btn
-                        small
-                        class="amount-btn"
-                        depressed
-                        fab
-                        v-on:click="room.bookingAmount--;if(room.bookingAmount<=0){room.bookingAmount = 1}"
-                      >
-                        <i class="fa-lg fas fa-minus"></i>
-                      </v-btn>
-                    </div>
-                  </div>
-                  <v-card-text>
-                    <v-layout row wrap class="pa-0 ma-0 caption">
-                      <v-flex md6 class="service-item">
-                        <div>
-                          <span>Dịch Vụ</span>
-                        </div>
-                        <v-divider></v-divider>
-                        <div v-for="(service,i) in room.service" :key="i">
-                          <i :class="'fas fa-'+service.icon"></i>&nbsp;
-                          <span>{{service.name}}</span>
-                        </div>
-                      </v-flex>
-                      <v-flex md6 class="feature-item">
-                        <div>
-                          <span>Nội Thất</span>
-                        </div>
-                        <v-divider></v-divider>
-                        <div v-for="(feature,i) in room.feature" :key="i">
-                          <span>{{feature.name}}</span>
-                        </div>
-                      </v-flex>
-                    </v-layout>
-                  </v-card-text>
-                </v-card-title>
-              </v-flex>
-              <v-flex md2 class="text-md-center pt-5 pl-1">
+                      ></v-rating>
+                    </v-chip>
+                  </v-flex>
+                </v-layout>
+              </v-img>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Đánh giá:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span v-if="data.review_point>0">{{data.review_point}}/10</span>
+                  <span v-else>Chưa có đánh giá.</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Số điện thoại:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span>{{data.phone_number}}</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Email:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span style="word-wrap: break-word;">{{data.email}}</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Số fax:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span>{{data.fax_number}}</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Mã số thuế:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span>{{data.tax_code}}</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Địa chỉ:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span style="word-wrap: break-word;">{{data.address}}</span>
+                </v-flex>
+              </v-layout>
+              <div>
                 <v-btn
                   round
-                  :disabled="room.amount <= 0"
+                  v-if="data.followed == false"
                   depressed
-                  large
-                  color="#EE5A24"
-                  @click.stop="openDialog(room)"
-                  class="white--text"
-                >Chọn</v-btn>
-                <div class="font-weight-bold red--text body-2">Còn&nbsp;{{room.amount}}&nbsp;phòng</div>
-              </v-flex>
-              <!-- <v-flex md12>
+                  dark
+                  v-on:click="followHotel(data,1)"
+                >theo dõi</v-btn>
+                <v-btn round v-else depressed dark v-on:click="followHotel(data,0)">hủy theo dõi</v-btn>
+              </div>
+            </v-flex>
+            <v-flex md9 class="detail-container">
+              <v-tabs centered grow color="grey lighten-2" light class="ma-1">
+                <v-tabs-slider color="black"></v-tabs-slider>
+                <v-tab href="#tab-1">Danh sách phòng</v-tab>
+                <v-tab href="#tab-2">Thông tin</v-tab>
+                <v-tab href="#tab-3" @click="getHotelReviews">Đánh giá</v-tab>
+                <v-tab href="#tab-4" @click="getHotelQuestion">Đặt câu hỏi</v-tab>
+                <v-tab href="#tab-5" @click="getAddress(data.address)">Map</v-tab>
+                <v-tab-item value="tab-1">
+                  <v-card light flat tile v-if="rooms.length !=0">
+                    <v-layout
+                      class="search-item"
+                      row
+                      wrap
+                      v-for="(room,index) in rooms"
+                      :key="index"
+                    >
+                      <v-flex xs3>
+                        <v-layout row wrap class="pl-3">
+                          <v-flex class="pa-1" md12>
+                            <v-img :aspect-ratio="4/3" :src="'/images/room/'+room.image"></v-img>
+                          </v-flex>
+                          <v-flex class="pa-1" md6 v-for="(image,i) in room.images" :key="i">
+                            <v-img
+                              :aspect-ratio="1"
+                              :src="'/images/room/'+image.image_link"
+                              v-if="i<2"
+                            >
+                              <v-layout
+                                fill-height
+                                justify-center
+                                align-center
+                                v-if="room.images.length>3 && i==1"
+                              >
+                                <v-chip
+                                  color="white"
+                                  @click="openImagesDialog(1,room)"
+                                  class="red--text"
+                                >Thêm...</v-chip>
+                              </v-layout>
+                            </v-img>
+                          </v-flex>
+                        </v-layout>
+                      </v-flex>
+                      <v-spacer></v-spacer>
+                      <v-flex md6 style="border-right:1px solid #000;border-left:1px solid #000;">
+                        <v-card-title>
+                          <div>
+                            <div class="headline">Phòng&nbsp;{{room.room_name}}</div>
+                            <div>
+                              Mức Giá:&nbsp;
+                              <v-chip
+                                color="indigo"
+                                class="pa-2 white--text font-weight-bold headline"
+                              >{{room.price.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}&nbsp;/đêm</v-chip>
+                            </div>
+                            <div>
+                              Người Lớn:&nbsp;
+                              <span
+                                class="font-weight-bold"
+                              >{{room.max_adult_amount}}</span>&nbsp;|&nbsp;Trẻ Em:&nbsp;
+                              <span
+                                class="font-weight-bold"
+                              >{{room.max_child_amount}}&nbsp;(dưới&nbsp;{{data.child_age}}&nbsp;tuổi)</span>
+                            </div>
+                            <div>
+                              Kiểu Phòng:&nbsp;
+                              <span
+                                class="font-weight-bold"
+                              >{{room.room_mode.name}}</span>
+                            </div>
+                            <div>
+                              Loại Phòng:&nbsp;
+                              <span
+                                class="font-weight-bold"
+                              >{{room.room_type.name}}</span>
+                            </div>
+                            <div>
+                              Kích Thước:&nbsp;
+                              <span
+                                class="font-weight-bold"
+                              >{{room.room_size}}&nbsp;m²</span>
+                            </div>
+                            <div v-show="room.amount>0">
+                              Số Lượng:&nbsp;
+                              <input
+                                class="amount-room-input"
+                                type="number"
+                                v-model="room.bookingAmount"
+                                readonly
+                              />
+                              <v-btn
+                                small
+                                class="amount-btn"
+                                depressed
+                                fab
+                                v-on:click="room.bookingAmount++;if(room.bookingAmount>room.amount){room.bookingAmount = room.amount}"
+                              >
+                                <i class="fa-lg fas fa-plus"></i>
+                              </v-btn>
+                              <v-btn
+                                small
+                                class="amount-btn"
+                                depressed
+                                fab
+                                v-on:click="room.bookingAmount--;if(room.bookingAmount<=0){room.bookingAmount = 1}"
+                              >
+                                <i class="fa-lg fas fa-minus"></i>
+                              </v-btn>
+                            </div>
+                          </div>
+                          <v-card-text>
+                            <v-layout row wrap class="pa-0 ma-0 caption">
+                              <v-flex md6 class="service-item">
+                                <div>
+                                  <span>Dịch Vụ</span>
+                                </div>
+                                <v-divider></v-divider>
+                                <div v-for="(service,i) in room.service" :key="i">
+                                  <i :class="'fas fa-'+service.icon"></i>&nbsp;
+                                  <span>{{service.name}}</span>
+                                </div>
+                              </v-flex>
+                              <v-flex md6 class="feature-item">
+                                <div>
+                                  <span>Nội Thất</span>
+                                </div>
+                                <v-divider></v-divider>
+                                <div v-for="(feature,i) in room.feature" :key="i">
+                                  <span>{{feature.name}}</span>
+                                </div>
+                              </v-flex>
+                            </v-layout>
+                          </v-card-text>
+                        </v-card-title>
+                      </v-flex>
+                      <v-flex md2 class="text-md-center pt-5 pl-1">
+                        <v-btn
+                          round
+                          :disabled="room.amount <= 0"
+                          depressed
+                          large
+                          color="#EE5A24"
+                          @click.stop="openDialog(room)"
+                          class="white--text font-weight-bold"
+                        >Chọn</v-btn>
+                        <div
+                          class="font-weight-bold red--text body-2"
+                        >Còn&nbsp;{{room.amount}}&nbsp;phòng</div>
+                      </v-flex>
+                      <!-- <v-flex md12>
                         <v-card dark>
                           <v-card-text>ABC</v-card-text>
                         </v-card>
-              </v-flex>-->
-            </v-layout>
-            <infinite-loading @distance="1" @infinite="loadRoom">
-              <span class="caption font-italic" slot="no-more">Bạn đã đến cuối trang...</span>
-            </infinite-loading>
-          </v-card>
-          <v-card light flat tile width="100%" v-else>
-            <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
-              <v-flex md3 class="pa-2 ma-2">
-                <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
-                  <v-layout fill-height align-center justify-center>
-                    <span class="pa-5 caption black--text font-weight-bold">đang tải...</span>
-                  </v-layout>
-                </v-img>
-              </v-flex>
-            </v-layout>
-          </v-card>
-        </v-tab-item>
-        <v-tab-item value="tab-2">
-          <v-card light flat tile>
-            <v-layout row wrap class="hotel-tab">
-              <v-flex md12>
-                <v-card-title>
-                  <v-layout row wrap class="pa-0 ma-2">
-                    <v-flex md12>
-                      <div class="pl-4">
-                        <span class="font-weight-bold font-italic display-1">
-                          {{data.name}}&nbsp;
-                          <v-tooltip right>
-                            <template v-slot:activator="{ on }">
-                              <i
-                                class="blue--text fas fa-check-circle"
-                                v-on="on"
-                                v-show="data.verified!=0"
-                              ></i>
-                            </template>
-                            <span>đã xác thực</span>
-                          </v-tooltip>
-                        </span>
-                      </div>
-                    </v-flex>
-                    <v-flex md12>
-                      <v-divider></v-divider>
-                    </v-flex>
-                    <v-flex md12>
-                      <v-layout row wrap class="pa-0 ma-0" v-if="data.images.length !=0">
-                        <v-flex
-                          md3
-                          class="pa-1"
-                          v-for="(item,i) in data.images"
-                          :key="i"
-                          v-show="i<=3 && i<data.images.length"
-                        >
-                          <v-img :aspect-ratio="1/1" :src="'/images/hotel/'+item.image_link">
-                            <v-layout fill-height justify-center align-center v-if="i===3">
-                              <a
-                                href="#"
-                                @click="openImagesDialog(0,null)"
-                                class="red--text"
-                              >Thêm...</a>
-                            </v-layout>
-                          </v-img>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex md12>
-                      <v-divider></v-divider>
-                    </v-flex>
-                    <v-flex md12>
-                      <div>
-                        <span class="font-weight-bold subheading">Mô Tả:</span>
-                      </div>
-                      <div class="pa-2 pl-3 border my-1">
-                        <span style="word-wrap: break-word">{{data.description}}</span>
-                      </div>
-                    </v-flex>
-                    <v-flex md12>
-                      <v-divider></v-divider>
-                    </v-flex>
-                    <v-flex md12>
-                      <div>
-                        <span
-                          class="font-weight-bold subheading"
-                        >Thông Tin Địa Chỉ:&nbsp;{{data.address}}</span>
-                      </div>
-                    </v-flex>
-                    <v-flex md12>
-                      <v-divider></v-divider>
-                    </v-flex>
-                    <v-flex md12>
-                      <div>
-                        <span class="font-weight-bold subheading">Dịch Vụ:</span>
-                      </div>
-                      <v-layout row wrap class="pa-0 ma-0 my-1">
-                        <v-flex md2 v-for="(ser,i) in data.service" :key="i" class="pa-2 border">
-                          <div class="text-md-center">
-                            <div>
-                              <i :class="'fa-2x fas fa-'+ser.icon"></i>
-                            </div>
-                            <div>
-                              <span class="font-italic">{{ser.name}}</span>
-                            </div>
-                          </div>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex md12>
-                      <v-divider></v-divider>
-                    </v-flex>
-                    <v-flex md12>
-                      <div>
-                        <div>
-                          <span class="font-weight-bold subheading">Chính Sách:</span>
-                          <span class="ml-2 font-weight-bold font-italic">{{data.policy.content}}</span>
-                        </div>
-                        <div class="ml-2 pl-2 border-left">
-                          <div v-if="data.policy.check_in !=null">
-                            <span
-                              class="font-weight-bold subheading"
-                            >Thời Gian Check-in:&nbsp;{{data.policy.check_in}}</span>
-                          </div>
-                          <div v-if="data.policy.check_out !=null">
-                            <span
-                              class="font-weight-bold subheading"
-                            >Thời Gian Check-out:&nbsp;{{data.policy.check_out}}</span>
-                          </div>
-                          <div v-for="(p,i) in paymentMethods" :key="i">
-                            <span class="font-weight-bold subheading">{{p.method.name}}:</span>
-                            <span class="font-weight-bold font-italic">{{p.content}}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </v-flex>
-                  </v-layout>
-                </v-card-title>
-              </v-flex>
-            </v-layout>
-          </v-card>
-        </v-tab-item>
-        <v-tab-item value="tab-3">
-          <v-card light flat tile>
-            <v-layout row wrap class="hotel-tab">
-              <v-flex md12>
-                <v-card-title>
-                  <v-layout row wrap class="pa-3 ma-0">
-                    <v-flex md12>
-                      <span class="font-weight-bold subheading">Đánh Giá Của Khách Hàng</span>
-                    </v-flex>
-                    <v-flex md12 class="pl-2 ma-1" v-if="flag.review === true">
-                      <v-layout row wrap class="pa-0 ma-0" v-if="reviewList.length !=0">
-                        <v-flex
-                          md12
-                          class="pa-2 ma-2 grey lighten-2 caption"
-                          v-for="(r,i) in reviewList"
-                          :key="i"
-                        >
-                          <v-card light flat tile class="pa-4">
-                            <v-card-title class="pa-0 ma-0">
-                              <v-spacer></v-spacer>
-                              <i
-                                v-show="r.likes >=10"
-                                class="green--text fa-lg fas fa-cannabis pl-3 pr-1"
-                              ></i>
-                              <i
-                                v-show="r.likes >=100"
-                                class="grey--text fa-lg fas fa-bowling-ball pl-3 pr-1"
-                              ></i>
-                              <i
-                                v-show="r.likes >=500"
-                                class="orange--text fa-lg fas fa-award pl-3 pr-1"
-                              ></i>
-                            </v-card-title>
-                            <v-card-text class="pa-0 ma-0">
-                              <v-layout row wrap align-center class="pa-0 ma-0">
-                                <v-flex md2 class="border-right pa-1 mr-4">
-                                  <v-avatar size="110px" color="black">
-                                    <v-avatar size="100px" color="blue">
-                                      <div class="white--text text-md-center title">{{r.point}}/10</div>
-                                    </v-avatar>
-                                  </v-avatar>
-                                </v-flex>
-                                <v-flex md8>
-                                  <router-link
-                                    class="pointer"
-                                    :to="{name:'review',query:{id:r.id}}"
-                                    target="_blank"
+                      </v-flex>-->
+                    </v-layout>
+                    <infinite-loading @distance="1" @infinite="loadRoom">
+                      <span class="caption font-italic" slot="no-more">Bạn đã đến cuối trang...</span>
+                    </infinite-loading>
+                  </v-card>
+                  <v-card light flat tile width="100%" v-else>
+                    <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
+                      <v-flex md3 class="pa-2 ma-2">
+                        <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
+                          <v-layout fill-height align-center justify-center>
+                            <span class="pa-5 caption black--text font-weight-bold">đang tải...</span>
+                          </v-layout>
+                        </v-img>
+                      </v-flex>
+                    </v-layout>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item value="tab-2">
+                  <v-card light flat tile>
+                    <v-layout row wrap class="hotel-tab">
+                      <v-flex md12>
+                        <v-card-title>
+                          <v-layout row wrap class="pa-0 ma-2" align-center>
+                            <v-flex md12>
+                              <div class="pl-4">
+                                <span class="font-weight-bold font-italic display-1">
+                                  {{data.name}}&nbsp;
+                                  <v-tooltip right>
+                                    <template v-slot:activator="{ on }">
+                                      <i
+                                        class="blue--text fas fa-check-circle"
+                                        v-on="on"
+                                        v-show="data.verified!=0"
+                                      ></i>
+                                    </template>
+                                    <span>đã xác thực</span>
+                                  </v-tooltip>
+                                </span>
+                              </div>
+                            </v-flex>
+                            <v-flex md12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex md12>
+                              <v-layout row wrap class="pa-0 ma-0" v-if="data.images.length !=0">
+                                <v-flex
+                                  md3
+                                  class="pa-1"
+                                  v-for="(item,i) in data.images"
+                                  :key="i"
+                                  v-show="i<=3 && i<data.images.length"
+                                >
+                                  <v-img
+                                    :aspect-ratio="1/1"
+                                    :src="'/images/hotel/'+item.image_link"
                                   >
-                                    <div>
-                                      <div>
-                                        <v-avatar size="42px" color="black">
-                                          <router-link
-                                            :to="{name:'user',params:{id:r.customer.id}}"
-                                            target="_blank"
-                                          >
-                                            <v-avatar size="40px" color="white">
-                                              <img
-                                                :src="'/img/user/'+r.customer.avatar.image_link"
-                                                alt
-                                              />
-                                            </v-avatar>
-                                          </router-link>
-                                        </v-avatar>
-                                        <span class="subheading">
-                                          <router-link
-                                            :to="{name:'user',params:{id:r.customer.id}}"
-                                            target="_blank"
-                                          >{{r.customer.name}}</router-link>
-                                        </span>
-                                        <span class="grey--text">&nbsp;-{{formatDate(r.created_at)}}</span>
-                                      </div>
-                                      <div>
-                                        <div>
-                                          <span class="pl-2">{{r.title}}</span>
-                                        </div>
-                                        <div class="ml-3 pl-2 border-left">
-                                          <span class="font-italic">"{{r.content}}"</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </router-link>
-                                </v-flex>
-                                <v-flex md12 class="py-3 pl-5">
-                                  <div>Đã ở&nbsp;{{r.booking.days}}&nbsp;ngày.</div>
+                                    <v-layout
+                                      fill-height
+                                      justify-center
+                                      align-center
+                                      v-show="i===3"
+                                    >
+                                      <v-chip
+                                        color="white"
+                                        @click="openImagesDialog(0,null)"
+                                        class="red--text"
+                                      >Thêm...</v-chip>
+                                    </v-layout>
+                                  </v-img>
                                 </v-flex>
                               </v-layout>
-                            </v-card-text>
-                            <v-divider></v-divider>
-                            <v-card-actions>
-                              <i
-                                @click="takeUseful(r.id,i)"
-                                class="purple--text fa-3x far fa-thumbs-up pl-3 pr-1"
-                                v-if="r.useful == true"
-                              ></i>
-                              <i
-                                @click="takeUseful(r.id,i)"
-                                class="blue--text fa-lg far fa-thumbs-up pl-3 pr-1"
-                                v-else
-                              ></i>
-                              <span
-                                class="grey--text font-weight-bold"
-                              >Bài đăng này hữu ích đối với bạn?</span>
-                            </v-card-actions>
-                          </v-card>
-                        </v-flex>
-                      </v-layout>
-                      <v-layout row wrap class="pa-0 ma-0" v-else>
-                        <v-flex md12 class="pa-2 ma-2 border">
-                          <div class="text-md-center">
-                            <span class="title text-uppercase">chưa có đánh giá nào...</span>
-                          </div>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex md12 class="pl-2 ma-1" v-else>
-                      <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
-                        <v-flex md3 class="pa-2 ma-2">
-                          <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
-                            <v-layout fill-height align-center justify-center>
-                              <span class="pa-5 caption black--text font-weight-bold">đang tải...</span>
-                            </v-layout>
-                          </v-img>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                </v-card-title>
-              </v-flex>
-            </v-layout>
-          </v-card>
-        </v-tab-item>
-        <v-tab-item value="tab-4">
-          <v-card light flat tile>
-            <v-layout row wrap class="hotel-tab">
-              <v-flex md12>
-                <v-card-title>
-                  <v-layout row wrap class="pa-3 ma-0">
-                    <v-flex md12>
-                      <v-layout row wrap class="pa-0 ma-0" justify-center align-center>
-                        <v-flex md6 class="font-weight-bold subheading text-md-left">
-                          <span>Câu Hỏi Của Khách Hàng</span>
-                        </v-flex>
-                        <v-flex md6 class="text-md-right pr-3">
-                          <v-btn
-                            round
-                            color="#B53471"
-                            class="white--text"
-                            depressed
-                            @click="openQuestionDialog()"
-                          >hỏi&nbsp;{{data.hotel_type.name}}</v-btn>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex md12 class="pl-2 ma-1" v-if="flag.question === true">
-                      <v-layout row wrap class="pa-0 ma-0" v-if="questionList.length !=0">
-                        <v-flex
-                          md12
-                          class="pa-2 ma-2 border"
-                          v-for="(q,i) in questionList"
-                          :key="i"
-                        >
-                          <v-card light flat tile class="pl-4">
-                            <v-card-title class="pa-0 ma-0">
+                            </v-flex>
+                            <v-flex md12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex md12>
+                              <div>
+                                <span class="font-weight-bold subheading">Mô Tả:</span>
+                              </div>
+                              <div class="pa-3 my-1 grey lighten-2">
+                                <span style="word-wrap: break-word">{{data.description}}</span>
+                              </div>
+                            </v-flex>
+                            <v-flex md12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex md12>
+                              <div>
+                                <span class="font-weight-bold subheading">
+                                  <v-icon color="pink" medium>room</v-icon>
+                                  &nbsp;{{data.address}}
+                                </span>
+                              </div>
+                            </v-flex>
+                            <v-flex md12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex md12>
+                              <div>
+                                <span class="font-weight-bold subheading">Dịch Vụ:</span>
+                              </div>
+                              <v-layout row wrap class="pa-0 ma-0 my-1">
+                                <v-flex
+                                  md2
+                                  v-for="(ser,i) in data.service"
+                                  :key="i"
+                                  class="pa-2 border"
+                                >
+                                  <div class="text-md-center">
+                                    <div>
+                                      <i :class="'fa-2x fas fa-'+ser.icon"></i>
+                                    </div>
+                                    <div>
+                                      <span class="font-italic">{{ser.name}}</span>
+                                    </div>
+                                  </div>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                            <v-flex md12>
+                              <v-divider></v-divider>
+                            </v-flex>
+                            <v-flex md12>
                               <div>
                                 <div>
-                                  <div>
-                                    <v-avatar size="42px" color="black">
-                                      <router-link
-                                        :to="{name:'user',params:{id:q.customer.id}}"
-                                        target="_blank"
-                                      >
-                                        <v-avatar size="40px" color="white">
-                                          <img :src="'/img/user/'+q.customer.avatar.image_link" alt />
-                                        </v-avatar>
-                                      </router-link>
-                                    </v-avatar>
-                                    <span class="subheading">
-                                      <router-link
-                                        :to="{name:'user',params:{id:q.customer.id}}"
-                                        target="_blank"
-                                      >{{q.customer.name}}</router-link>
-                                    </span>
-                                    <span
-                                      class="grey--text"
-                                    >&nbsp;-&nbsp;{{formatDate(q.created_at)}}</span>
-                                  </div>
-                                  <div>
-                                    <div>
-                                      <span class="font-weight-black">{{q.title}}</span>
-                                    </div>
-                                    <div>
-                                      <span class="pl-2 font-italic">"{{q.content}}"</span>
-                                    </div>
-                                  </div>
+                                  <span class="font-weight-bold subheading">Chính Sách:</span>
+                                  <span
+                                    class="ml-2 font-weight-bold font-italic"
+                                  >{{data.policy.content}}</span>
                                 </div>
-                                <div class="pl-3 border-left border-warning" v-if="q.reply !=null">
-                                  <div>
-                                    <span class="font-weight-bold">{{data.name}}</span>
+                                <div class="ml-2 pl-2 border-left">
+                                  <div v-if="data.policy.check_in !=null">
                                     <span
-                                      class="grey--text"
-                                    >&nbsp;-&nbsp;{{formatDate(q.reply.created_at)}}</span>
+                                      class="font-weight-bold subheading"
+                                    >Thời Gian Check-in:&nbsp;{{data.policy.check_in}}</span>
                                   </div>
-                                  <div class="pl-3">"{{q.reply.content}}"</div>
+                                  <div v-if="data.policy.check_out !=null">
+                                    <span
+                                      class="font-weight-bold subheading"
+                                    >Thời Gian Check-out:&nbsp;{{data.policy.check_out}}</span>
+                                  </div>
+                                  <div v-for="(p,i) in paymentMethods" :key="i">
+                                    <span class="font-weight-bold subheading">{{p.method.name}}:</span>
+                                    <span class="font-weight-bold font-italic">{{p.content}}</span>
+                                  </div>
                                 </div>
                               </div>
-                            </v-card-title>
-                          </v-card>
-                        </v-flex>
-                      </v-layout>
-                      <v-layout row wrap class="pa-0 ma-0" v-else>
-                        <v-flex md12 class="pa-2 ma-2 border">
-                          <div class="text-md-center">
-                            <span class="title text-uppercase">chưa có câu hỏi nào...</span>
-                          </div>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                    <v-flex md12 class="pl-2 ma-1" v-else>
-                      <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
-                        <v-flex md3 class="pa-2 ma-2">
-                          <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
-                            <v-layout fill-height align-center justify-center>
-                              <span class="pa-5 caption black--text font-weight-bold">đang tải...</span>
-                            </v-layout>
-                          </v-img>
-                        </v-flex>
-                      </v-layout>
-                    </v-flex>
-                  </v-layout>
-                </v-card-title>
-              </v-flex>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-title>
+                      </v-flex>
+                    </v-layout>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item value="tab-3">
+                  <v-card light flat tile>
+                    <v-layout row wrap class="hotel-tab">
+                      <v-flex md12>
+                        <v-card-title>
+                          <v-layout row wrap class="pa-3 ma-0">
+                            <v-flex md12>
+                              <span class="font-weight-bold subheading">Đánh Giá Của Khách Hàng</span>
+                            </v-flex>
+                            <v-flex md12 class="pl-2 ma-1" v-if="flag.review === true">
+                              <v-layout row wrap class="pa-0 ma-0" v-if="reviewList.length !=0">
+                                <v-flex
+                                  md12
+                                  class="pa-2 ma-2 grey lighten-2 caption"
+                                  v-for="(r,i) in reviewList"
+                                  :key="i"
+                                >
+                                  <v-card light flat tile class="pa-4">
+                                    <v-card-title class="pa-0 ma-0">
+                                      <v-spacer></v-spacer>
+                                      <i
+                                        v-show="r.likes >=10"
+                                        class="green--text fa-lg fas fa-cannabis pl-3 pr-1"
+                                      ></i>
+                                      <i
+                                        v-show="r.likes >=100"
+                                        class="grey--text fa-lg fas fa-bowling-ball pl-3 pr-1"
+                                      ></i>
+                                      <i
+                                        v-show="r.likes >=500"
+                                        class="orange--text fa-lg fas fa-award pl-3 pr-1"
+                                      ></i>
+                                    </v-card-title>
+                                    <v-card-text class="pa-0 ma-0">
+                                      <v-layout row wrap align-center class="pa-0 ma-0">
+                                        <v-flex md2 class="border-right pa-1 mr-4">
+                                          <v-avatar size="110px" color="black">
+                                            <v-avatar size="100px" color="blue">
+                                              <div
+                                                class="white--text text-md-center title"
+                                              >{{r.point}}/10</div>
+                                            </v-avatar>
+                                          </v-avatar>
+                                        </v-flex>
+                                        <v-flex md8>
+                                          <router-link
+                                            class="pointer"
+                                            :to="{name:'review',query:{id:r.id}}"
+                                            target="_blank"
+                                          >
+                                            <div>
+                                              <div>
+                                                <v-avatar size="42px" color="black">
+                                                  <router-link
+                                                    :to="{name:'user',params:{id:r.customer.id}}"
+                                                    target="_blank"
+                                                  >
+                                                    <v-avatar size="40px" color="white">
+                                                      <img
+                                                        :src="'/img/user/'+r.customer.avatar.image_link"
+                                                        alt
+                                                      />
+                                                    </v-avatar>
+                                                  </router-link>
+                                                </v-avatar>
+                                                <span class="subheading">
+                                                  <router-link
+                                                    :to="{name:'user',params:{id:r.customer.id}}"
+                                                    target="_blank"
+                                                  >{{r.customer.name}}</router-link>
+                                                </span>
+                                                <span
+                                                  class="grey--text"
+                                                >&nbsp;-{{formatDate(r.created_at)}}</span>
+                                              </div>
+                                              <div>
+                                                <div>
+                                                  <span class="pl-2">{{r.title}}</span>
+                                                </div>
+                                                <div class="ml-3 pl-2 border-left">
+                                                  <span class="font-italic">"{{r.content}}"</span>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </router-link>
+                                        </v-flex>
+                                        <v-flex md12 class="py-3 pl-5">
+                                          <div>Đã ở&nbsp;{{r.booking.days}}&nbsp;ngày.</div>
+                                        </v-flex>
+                                      </v-layout>
+                                    </v-card-text>
+                                    <v-divider></v-divider>
+                                    <v-card-actions>
+                                      <i
+                                        @click="takeUseful(r.id,i)"
+                                        class="purple--text fa-3x far fa-thumbs-up pl-3 pr-1"
+                                        v-if="r.useful == true"
+                                      ></i>
+                                      <i
+                                        @click="takeUseful(r.id,i)"
+                                        class="blue--text fa-lg far fa-thumbs-up pl-3 pr-1"
+                                        v-else
+                                      ></i>
+                                      <span
+                                        class="grey--text font-weight-bold"
+                                      >Bài đăng này hữu ích đối với bạn?</span>
+                                    </v-card-actions>
+                                  </v-card>
+                                </v-flex>
+                              </v-layout>
+                              <v-layout row wrap class="pa-0 ma-0" v-else>
+                                <v-flex md12 class="pa-2 ma-2 border">
+                                  <div class="text-md-center">
+                                    <span class="title text-uppercase">chưa có đánh giá nào...</span>
+                                  </div>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                            <v-flex md12 class="pl-2 ma-1" v-else>
+                              <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
+                                <v-flex md3 class="pa-2 ma-2">
+                                  <v-img
+                                    :aspect-ratio="1"
+                                    src="/img/booking/load.gif"
+                                    style="opacity:0.9"
+                                  >
+                                    <v-layout fill-height align-center justify-center>
+                                      <span
+                                        class="pa-5 caption black--text font-weight-bold"
+                                      >đang tải...</span>
+                                    </v-layout>
+                                  </v-img>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-title>
+                      </v-flex>
+                    </v-layout>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item value="tab-4">
+                  <v-card light flat tile>
+                    <v-layout row wrap class="hotel-tab">
+                      <v-flex md12>
+                        <v-card-title>
+                          <v-layout row wrap class="pa-3 ma-0">
+                            <v-flex md12>
+                              <v-layout row wrap class="pa-0 ma-0" justify-center align-center>
+                                <v-flex md6 class="font-weight-bold subheading text-md-left">
+                                  <span>Câu Hỏi Của Khách Hàng</span>
+                                </v-flex>
+                                <v-flex md6 class="text-md-right pr-3">
+                                  <v-btn
+                                    round
+                                    color="#B53471"
+                                    class="white--text"
+                                    depressed
+                                    @click="openQuestionDialog()"
+                                  >hỏi&nbsp;{{data.hotel_type.name}}</v-btn>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                            <v-flex md12 class="pl-2 ma-1" v-if="flag.question === true">
+                              <v-layout row wrap class="pa-0 ma-0" v-if="questionList.length !=0">
+                                <v-flex
+                                  md12
+                                  class="pa-2 ma-2 border"
+                                  v-for="(q,i) in questionList"
+                                  :key="i"
+                                >
+                                  <v-card light flat tile class="pl-4">
+                                    <v-card-title class="pa-0 ma-0">
+                                      <div>
+                                        <div>
+                                          <div>
+                                            <v-avatar size="42px" color="black">
+                                              <router-link
+                                                :to="{name:'user',params:{id:q.customer.id}}"
+                                                target="_blank"
+                                              >
+                                                <v-avatar size="40px" color="white">
+                                                  <img
+                                                    :src="'/img/user/'+q.customer.avatar.image_link"
+                                                    alt
+                                                  />
+                                                </v-avatar>
+                                              </router-link>
+                                            </v-avatar>
+                                            <span class="subheading">
+                                              <router-link
+                                                :to="{name:'user',params:{id:q.customer.id}}"
+                                                target="_blank"
+                                              >{{q.customer.name}}</router-link>
+                                            </span>
+                                            <span
+                                              class="grey--text"
+                                            >&nbsp;-&nbsp;{{formatDate(q.created_at)}}</span>
+                                          </div>
+                                          <div>
+                                            <div>
+                                              <span class="font-weight-black">{{q.title}}</span>
+                                            </div>
+                                            <div>
+                                              <span class="pl-2 font-italic">"{{q.content}}"</span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div
+                                          class="pl-3 border-left border-warning"
+                                          v-if="q.reply !=null"
+                                        >
+                                          <div>
+                                            <span class="font-weight-bold">{{data.name}}</span>
+                                            <span
+                                              class="grey--text"
+                                            >&nbsp;-&nbsp;{{formatDate(q.reply.created_at)}}</span>
+                                          </div>
+                                          <div class="pl-3">"{{q.reply.content}}"</div>
+                                        </div>
+                                      </div>
+                                    </v-card-title>
+                                  </v-card>
+                                </v-flex>
+                              </v-layout>
+                              <v-layout row wrap class="pa-0 ma-0" v-else>
+                                <v-flex md12 class="pa-2 ma-2 border">
+                                  <div class="text-md-center">
+                                    <span class="title text-uppercase">chưa có câu hỏi nào...</span>
+                                  </div>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                            <v-flex md12 class="pl-2 ma-1" v-else>
+                              <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
+                                <v-flex md3 class="pa-2 ma-2">
+                                  <v-img
+                                    :aspect-ratio="1"
+                                    src="/img/booking/load.gif"
+                                    style="opacity:0.9"
+                                  >
+                                    <v-layout fill-height align-center justify-center>
+                                      <span
+                                        class="pa-5 caption black--text font-weight-bold"
+                                      >đang tải...</span>
+                                    </v-layout>
+                                  </v-img>
+                                </v-flex>
+                              </v-layout>
+                            </v-flex>
+                          </v-layout>
+                        </v-card-title>
+                      </v-flex>
+                    </v-layout>
+                  </v-card>
+                </v-tab-item>
+                <v-tab-item value="tab-5">
+                  <v-card light flat tile>
+                    <v-layout justify-center align-center row wrap class="hotel-tab">
+                      <v-flex md12 class="mb-3">
+                        <div id="map"></div>
+                      </v-flex>
+                      <v-flex md3>
+                        <h3 class="blue--text">
+                          <i class="far fa-credit-card"></i> ATM
+                        </h3>
+                        <ul>
+                          <li v-for="(item,i) in atm" :key="i">{{item.name}}</li>
+                        </ul>
+                      </v-flex>
+                      <v-flex md3>
+                        <h3 class="orange--text">
+                          <i class="fas fa-utensils"></i> Nhà hàng
+                        </h3>
+                        <ul>
+                          <li v-for="(item,i) in restaurant" :key="i">{{item.name}}</li>
+                        </ul>
+                      </v-flex>
+                      <v-flex md3>
+                        <h3 class="pink--text">
+                          <i class="fas fa-cocktail"></i> Pub
+                        </h3>
+                        <ul>
+                          <li v-for="(item,i) in pub" :key="i">{{item.name}}</li>
+                        </ul>
+                      </v-flex>
+                      <v-flex md3>
+                        <h3 class="green--text">
+                          <i class="fas fa-shopping-basket"></i> Siêu thị
+                        </h3>
+                        <ul>
+                          <li v-for="(item,i) in supermarket" :key="i">{{item.name}}</li>
+                        </ul>
+                      </v-flex>
+                    </v-layout>
+                  </v-card>
+                </v-tab-item>
+              </v-tabs>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex md12 class="detail-container" v-else>
+          <v-layout row wrap justify-center align-center class="pa-3 ma-4 border">
+            <v-flex md3>
+              <span class="headline font-weight-black">{{data.name}}</span>
+              <v-img :aspect-ratio="4/3" :src="'/images/hotel/'+data.image" class="my-2">
+                <v-layout row wrap justify-center align-end fill-height v-if="data.stars_num>0">
+                  <v-flex md10>
+                    <v-chip color="white">
+                      <v-rating
+                        v-model="data.stars_num"
+                        color="#fff200"
+                        background-color="grey darken-1"
+                        empty-icon="$vuetify.icons.ratingFull"
+                        half-incrementss
+                        readonly
+                        small
+                      ></v-rating>
+                    </v-chip>
+                  </v-flex>
+                </v-layout>
+              </v-img>
+            </v-flex>
+            <v-flex md4 class="ml-4 pa-3 grey lighten-2">
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Đánh giá:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span v-if="data.review_point>0">{{data.review_point}}/10</span>
+                  <span v-else>Chưa có đánh giá.</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Số điện thoại:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span>{{data.phone_number}}</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Email:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span style="word-wrap: break-word;">{{data.email}}</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Số fax:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span>{{data.fax_number}}</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Mã số thuế:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span>{{data.tax_code}}</span>
+                </v-flex>
+              </v-layout>
+              <v-layout row wrap class="hotel-info-item" align-center>
+                <v-flex md3>
+                  <span>Địa chỉ:</span>
+                </v-flex>
+                <v-flex md9 class="pl-2">
+                  <span style="word-wrap: break-word;">{{data.address}}</span>
+                </v-flex>
+              </v-layout>
+              <div>
+                <v-chip color="red" class="white--text font-weight-bold">Ngưng hoạt động.</v-chip>
+              </div>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+      <v-layout row wrap class="pa-0 ma-0" justify-center align-center v-else>
+        <v-flex md4 class="pa-2 ma-2">
+          <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
+            <v-layout fill-height align-center justify-center>
+              <span class="pa-5 caption black--text font-weight-bold">đang tải...</span>
             </v-layout>
-          </v-card>
-        </v-tab-item>
-        <v-tab-item value="tab-5">
-          <v-card light flat tile>
-            <v-layout justify-center align-center row wrap class="hotel-tab">
-              <v-flex md12 class="mb-3">
-                <div id="map"></div>
-              </v-flex>
-              <v-flex md3>
-                <h3 class="blue--text">
-                  <i class="far fa-credit-card"></i> ATM
-                </h3>
-                <ul>
-                  <li v-for="(item,i) in atm" :key="i">{{item.name}}</li>
-                </ul>
-              </v-flex>
-              <v-flex md3>
-                <h3 class="orange--text">
-                  <i class="fas fa-utensils"></i> Nhà hàng
-                </h3>
-                <ul>
-                  <li v-for="(item,i) in restaurant" :key="i">{{item.name}}</li>
-                </ul>
-              </v-flex>
-              <v-flex md3>
-                <h3 class="pink--text">
-                  <i class="fas fa-cocktail"></i> Pub
-                </h3>
-                <ul>
-                  <li v-for="(item,i) in pub" :key="i">{{item.name}}</li>
-                </ul>
-              </v-flex>
-              <v-flex md3>
-                <h3 class="green--text">
-                  <i class="fas fa-shopping-basket"></i> Siêu thị
-                </h3>
-                <ul>
-                  <li v-for="(item,i) in supermarket" :key="i">{{item.name}}</li>
-                </ul>
-              </v-flex>
-            </v-layout>
-          </v-card>
-        </v-tab-item>
-      </v-tabs>
+          </v-img>
+        </v-flex>
+      </v-layout>
     </v-flex>
     <v-dialog
       v-model="bookingDialog.state"
@@ -902,7 +1066,7 @@
                               outline
                               auto-grow
                               rows="2"
-                              hint="*Ex: thành phố Hồ cHí minh, quận 1, phường Đa Kao"
+                              hint="*Ex: phường Đa Kao, quận 1, thành phố Hồ Chí Minh"
                               persistent-hint
                             ></v-textarea>
                           </v-flex>
@@ -925,9 +1089,9 @@
                           <span class="orange--text font-weight-black">C</span>hi Tiết Giá
                         </h2>
                       </div>
-                      <v-layout row wrap class="grey lighten-2 pa-3 pl-5 ma-0">
+                      <v-layout row wrap class="grey lighten-2 pa-3 pl-5 ma-0" align-center>
                         <v-flex md12>
-                          <h2 class="font-weight-bold">{{bookingDialog.room.room_name}}</h2>
+                          <h2 class="font-weight-bold">Phòng {{bookingDialog.room.room_name}}</h2>
                         </v-flex>
                         <v-flex md8>
                           <span>{{bookingDialog.room.room_type.name}}</span>
@@ -955,6 +1119,8 @@
                                 class="mt-2 ma-0"
                                 color="teal"
                                 outline
+                                clearable
+                                @click:clear="text=''"
                               ></v-text-field>
                             </v-flex>
                             <v-flex md4>
@@ -962,7 +1128,7 @@
                                 round
                                 depressed
                                 :disabled="!bookingDialog.couponCode.check"
-                                @click="applyCouponCode"
+                                @click="applyCouponCode(bookingDialog.room.id,bookingDialog.room.couponCode)"
                               >Áp dụng</v-btn>
                             </v-flex>
                             <v-flex md12 v-if="bookingDialog.couponCode.mess.length >0">
@@ -978,6 +1144,7 @@
                         </v-flex>
                         <v-flex
                           md4
+                          class="title font-weight-bold"
                         >{{bookingDialog.totalPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</v-flex>
                       </v-layout>
                     </v-flex>
@@ -1144,6 +1311,7 @@
                         </v-flex>
                         <v-flex
                           md4
+                          class="title font-weight-bold"
                         >{{bookingDialog.totalPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</v-flex>
                       </v-layout>
                     </v-flex>
@@ -1165,6 +1333,7 @@
                     <v-flex md6 class="text-md-left">
                       <div>
                         <v-btn
+                          round
                           class="white--text"
                           color="#EE5A24"
                           large
@@ -1179,6 +1348,7 @@
                     <v-flex md6 class="text-md-right">
                       <div>
                         <v-btn
+                          round
                           class="white--text"
                           color="#EE5A24"
                           large
@@ -1190,6 +1360,7 @@
                           <i class="fa-lg fas fa-long-arrow-alt-right"></i>
                         </v-btn>
                         <v-btn
+                          round
                           @click="getBooking"
                           :disabled="bookingDialog.accept === false"
                           class="booking-btn"
@@ -1327,6 +1498,9 @@ export default {
     validator: "new"
   },
   props: {
+    customer:{
+      type: Object
+    },
     login: {
       type: Object
     },
@@ -1354,6 +1528,7 @@ export default {
   },
   data() {
     return {
+      softDelete: false,
       waiting: false,
       text: "",
       paymentMethods: [],
@@ -1374,7 +1549,7 @@ export default {
           image_link: "default.png"
         }
       },
-      userLogin: {},
+      userLogin: this.customer,
       bookingDialog: {
         couponCode: {
           check: false,
@@ -1485,6 +1660,7 @@ export default {
       active: false,
       map: null,
       flag: {
+        detail: false,
         question: false,
         review: false
       }
@@ -1505,23 +1681,27 @@ export default {
     } else {
       this.setSearchValue();
     }
+    this.getHotelDetail();
     this.getHotelRooms();
-    this.load();
-    // this.getHotelQuestion();
   },
   watch: {
     text: function(val) {
+      // if(val==null) this.bookingDialog.couponCode.mess = "";
       this.bookingDialog.couponCode.check = false;
       this.bookingDialog.couponCode.id = 0;
-      if (val.length == 0) {
+      if (val == null || val.length == 0) {
         this.bookingDialog.couponCode.mess = "";
       } else {
         this.couponCodes.forEach(c => {
           if (c.code.localeCompare(val.trim()) == 0) {
             this.bookingDialog.couponCode.check = true;
             this.bookingDialog.couponCode.id = c.id;
-            this.bookingDialog.couponCode.mess =
-              "Bạn nhận được " + c.discount_value + "% giảm giá.";
+            if (c.apply_amount - c.applied_amount <= 0)
+              this.bookingDialog.couponCode.mess =
+                "Rất tiếc, mã giảm giá đã hết.";
+            else
+              this.bookingDialog.couponCode.mess =
+                "Bạn nhận được " + c.discount_value + "% giảm giá.";
           }
         });
         if (this.bookingDialog.couponCode.check == false) {
@@ -1538,7 +1718,8 @@ export default {
       });
     },
     loginCheck: function() {
-      this.load();
+      this.userLogin = this.customer;
+      this.getHotelDetail();
       this.getHotelReviews();
     },
     placeVal: "loadSearchData",
@@ -1549,33 +1730,35 @@ export default {
     //-------------
   },
   methods: {
-    load: function() {
-      if (localStorage.getItem("login_token") != null) {
-        axios({
-          method: "get",
-          url: "http://localhost:8000/api/getUserLogin",
-          headers: {
-            Authorization: "Bearer " + this.login.token
-          }
-        })
-          .then(res => {
-            this.userLogin = res.data.user;
-            this.getHotelDetail();
-          })
-          .catch(error => {
-            console.log(error.response);
-            if (error.response.status == 401) {
-              localStorage.removeItem("login_token");
-              this.userLogin = {};
-              this.$emit("loadLogin");
-            }
-          });
-      } else {
-        this.$emit("loadLogin");
-        this.userLogin = {};
-        this.getHotelDetail();
-      }
-    },
+    // load: function() {
+    //   this.userLogin = this.customer;
+    //   this.getHotelDetail();
+    //   if (localStorage.getItem("login_token") != null) {
+    //     axios({
+    //       method: "get",
+    //       url: "http://localhost:8000/api/getUserLogin",
+    //       headers: {
+    //         Authorization: "Bearer " + this.login.token
+    //       }
+    //     })
+    //       .then(res => {
+    //         this.userLogin = res.data.user;
+    //         this.getHotelDetail();
+    //       })
+    //       .catch(error => {
+    //         console.log(error.response);
+    //         if (error.response.status == 401) {
+    //           localStorage.removeItem("login_token");
+    //           this.userLogin = {};
+    //           this.$emit("loadLogin");
+    //         }
+    //       });
+    //   } else {
+    //     this.$emit("loadLogin");
+    //     this.userLogin = {};
+    //     this.getHotelDetail();
+    //   }
+    // },
     getHotelDetail: function() {
       axios({
         method: "get",
@@ -1588,10 +1771,9 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.data);
-          if (res.data.status) {
+          console.log(res.data);
+          if (res.data.status == true) {
             this.data = res.data.data;
-            // this.data['room'] = [];
             this.paymentMethods = res.data.data.paymentMethods;
             this.couponCodes = res.data.data.coupon_code;
             res.data.data.paymentMethods.forEach(p => {
@@ -1599,10 +1781,23 @@ export default {
                 this.bookingDialog.policy = p.content;
               }
             });
-            return;
+          } else {
+            if (res.data.data != null) {
+              this.softDelete = true;
+              this.data = res.data.data;
+              this.paymentMethods = res.data.data.paymentMethods;
+              this.couponCodes = res.data.data.coupon_code;
+              res.data.data.paymentMethods.forEach(p => {
+                if (p.method.id == 1) {
+                  this.bookingDialog.policy = p.content;
+                }
+              });
+            }
           }
+          this.flag.detail = true;
         })
         .catch(error => {
+          console.log(error);
           console.log(error.response);
         });
     },
@@ -1663,8 +1858,6 @@ export default {
     },
     loadRoom($state) {
       this.page = this.page + 1;
-      console.log(this.page);
-      console.log(this.rooms);
       axios({
         method: "get",
         url: "http://localhost:8000/api/hotel-rooms",
@@ -1723,10 +1916,7 @@ export default {
       this.text = "";
       this.bookingDialog.couponCode.mess = "";
       this.bookingDialog.couponCode.id = 0;
-      this.paymentMethods.forEach(element => {
-        if (element.id == 1) this.bookingDialog.payment = element.id;
-        // console.log(element.name);
-      });
+      this.bookingDialog.payment = this.paymentMethods[0].method.id;
       if (this.login.check) {
         this.bookingDialog.booking.name = this.login.user.name;
         this.bookingDialog.booking.email = this.login.user.email;
@@ -1761,12 +1951,47 @@ export default {
     getLogin: function(val) {
       this.$emit("loadLoginDialog", true, val);
     },
-    applyCouponCode: function() {
-      var temp = 1;
-      this.couponCodes.forEach(c => {
-        if (c.id == this.bookingDialog.couponCode.id) temp = c.discount_value;
+    applyCouponCode: function(room_id, roomCouponCodes) {
+      var temp = 0;
+      roomCouponCodes.forEach((c, index) => {
+        if (c.id == this.bookingDialog.couponCode.id)
+          if (c.apply_amount - c.applied_amount > 0) {
+            temp = c.discount_value;
+          } else {
+            this.bookingDialog.couponCode.mess =
+              "Rất tiếc, mã giảm giá đã hết.";
+          }
       });
-      alert(temp);
+      if (temp == 0) {
+        this.bookingDialog.couponCode.mess =
+          "Dường như mã ĐÃ HẾT hoặc " +
+          this.text +
+          " KHÔNG ĐƯỢC " +
+          this.data.name +
+          " ÁP DỤNG cho loại phòng " +
+          this.bookingDialog.room.room_type.name +
+          " .";
+      }else{
+        axios({
+        method: "get",
+        url: "http://localhost:8000/api/check-coupon-code",
+        params: {
+          code_id: this.bookingDialog.couponCode.id,
+          room_id: room_id
+        },
+      })
+        .then(res => {
+          alert('run');
+          if(res.data.status == true){
+            temp = res.data.value;
+            this.bookingDialog.couponCode.mess = res.data.mess;
+          }
+        })
+        .catch(error => {
+          console.log(error.response);
+          console.log(error);
+        });
+      }
       this.bookingDialog.totalPrice =
         this.bookingDialog.totalPrice * ((100 - temp) / 100);
     },
@@ -1908,7 +2133,8 @@ export default {
         })
           .then(res => {
             console.log(res.data.data);
-            this.$emit("loadSnackbar", "Đang theo dõi " + value.name);
+            this.$emit("loadSnackbar", "Theo dõi " + this.data.name+" bạn chấp nhận nhận e-mail thông báo về cập nhật (chương trình khuyến mãi,...) của nhà cung cấp này.");
+            
           })
           .catch(error => {
             flag = false;

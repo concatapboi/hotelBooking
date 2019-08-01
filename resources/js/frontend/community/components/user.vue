@@ -60,8 +60,31 @@
               </v-tooltip>
             </template>
             <v-card light min-height="120px" class="pa-1" flat tile width="800px">
-              <router-link class="pointer" :to="{name:'review',query:{id:item.id}}" target="_blank">
               <v-card-title>
+                <v-divider></v-divider>
+                
+                    <v-btn
+                      fab
+                      color="#0652DD"
+                      depressed
+                      small
+                      @click.stop="updateNotification(item.id)"
+                      v-if="item.customer_review.status ==1"
+                    >
+                      <i class="far fa-bell white--text fa-lg"></i>
+                    </v-btn>
+                    <v-btn
+                      fab
+                      color="red"
+                      depressed
+                      small
+                      @click.stop="updateNotification(item.id)"
+                      v-else
+                    >
+                      <i class="far fa-bell-slash white--text fa-lg"></i>
+                    </v-btn>
+              </v-card-title>
+              <router-link class="pointer" :to="{name:'review',query:{id:item.id}}" target="_blank">
                 <v-spacer></v-spacer>
                 <v-card-text>
                   <span class="headline">{{item.title}}</span>
@@ -98,9 +121,23 @@
                             >
                               <span class="font-weight-bold body-2">{{item.hotel.name}}</span>
                             </router-link>
-                            &nbsp;({{item.hotel.stars_num}}&nbsp;sao)
                           </div>
-                          <div>Tại&nbsp;{{item.hotel.address}}</div>
+                          <div v-if="item.hotel.stars_num > 0">
+                        <v-chip color="#3B3B98" class="white--text">
+                          <v-icon class="mr-1" small color="yellow">star</v-icon>
+                          {{item.hotel.stars_num}}/5
+                        </v-chip>
+                        <v-chip
+                          color="#A3CB38"
+                          class="white--text font-weight-text"
+                        >{{item.hotel.review_point}}/10</v-chip>
+                      </div>
+                      <div>
+                        <v-chip color="#7d5fff" class="white--text">
+                          <v-icon class="mr-1" small color="pink">room</v-icon>
+                          {{item.hotel.address}}
+                        </v-chip>
+                      </div>
                         </v-flex>
                         <v-flex md4 v-for="(ser,i) in item.hotel.services" :key="i" class="pa-1">
                           <div class="text-md-center border pa-2">
@@ -116,7 +153,6 @@
                     </v-flex>
                   </v-layout>
                 </v-card-text>
-              </v-card-title>
               </router-link>
               <v-card-actions>
                 <v-tooltip top>
@@ -620,6 +656,54 @@ export default {
     formatDate: function(date) {
       if (!date) return null;
       return this.$moment(date).format("DD-MM-YYYY");
+    },
+    updateNotification: function(review_id) {
+      var flag = true;
+      var index = this.getIndex(review_id);
+      switch (this.data.review[index].customer_review.status) {
+        case 1:
+          this.data.review[index].customer_review.status = 0;
+          break;
+        case 0:
+          this.data.review[index].customer_review.status = 1;
+          break;
+      }
+      axios({
+        method: "get",
+        url: "http://localhost:8000/api/get-notification",
+        params: {
+          review_id: review_id
+        },
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("login_token")
+        }
+      })
+        .then(res => {
+          if (res.data.status == false) {
+            flag = false;
+          }
+        })
+        .catch(error => {
+          flag = false;
+          console.log(error.response);
+          if (error.response.status == 401) {
+            localStorage.removeItem("login_token");
+            this.login.token = localStorage.getItem("login_token");
+            this.$router.push({ name: "login" });
+          }
+        })
+        .then(() => {
+          if (!flag) {
+            switch (this.data.review[index].customer_review.status) {
+              case 1:
+                this.data.review[index].customer_review.status = 0;
+                break;
+              case 0:
+                this.data.review[index].customer_review.status = 1;
+                break;
+            }
+          }
+        });
     },
   }
 };

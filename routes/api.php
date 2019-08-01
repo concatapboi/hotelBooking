@@ -91,6 +91,7 @@ Route::get('district', 'Backend\AddressController@getDistrictByPronvinceName');
 Route::get('service', 'Backend\ServiceController@getAllService');
 Route::get('hotel-type', 'Backend\HotelTypeController@getAllHotelType');
 Route::get('room-type', 'Backend\RoomTypeController@getAllRoomType');
+Route::get('check-coupon-code', 'Frontend\CouponCodeController@checkCouponCode');
 Route::group(['middleware' => 'jwt.auth'], function () {
     Route::post('/logout', 'Frontend\AuthController@postLogout');
     Route::get('/getUserLogin', 'Frontend\AuthController@getUserLogin');

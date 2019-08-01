@@ -18,6 +18,7 @@ class CouponCode extends Model
     'start_at',
     'end_at',
     'apply_amount',
+    'applied_amount',
     'hotel_id',
   ];
 

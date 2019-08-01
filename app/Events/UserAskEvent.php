@@ -14,18 +14,21 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 class UserAskEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $hotel,$ask,$message,$question;
+    public $id,$data;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($hotel,$ask,$message,$question)
+    public function __construct($hotel,$ask,$message,$question,$notificationId)
     {
-        $this->hotel = $hotel;
-        $this->ask = $ask;
-        $this->message = $message;
-        $this->question = $question;
+        $arr = array();
+        $arr['hotel'] = $hotel;
+        $arr['ask'] = $ask;
+        $arr['message'] = $message;
+        $arr['question'] = $question;
+        $this->data = $arr;
+        $this->id = $notificationId;
     }
 
     /**
