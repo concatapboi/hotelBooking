@@ -19,6 +19,7 @@ class CreateCustomerTable extends Migration
             $table->integer('coin')->default(0);
             $table->string('address')->nullable();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('user_id')
             ->references('id')->on('users')
             ->onDelete('cascade');

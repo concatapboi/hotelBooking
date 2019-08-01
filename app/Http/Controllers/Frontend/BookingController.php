@@ -127,7 +127,7 @@ class BookingController extends Controller
         $hotel = $booking->Room->Hotel;
         $hotel->notify(new AppNewBooking(Booking::find($booking->id)));
         $notificationId = $hotel->unreadNotifications->first()->id;
-        Broadcast(new newBooking(Booking::find($booking->id),$notificationId));
+        Broadcast(new newBooking(Booking::find($booking->id),$notificationId,$hotel->id));
         return response()->json(['status' => $status, 'mess' => $mess, 'booking' => $booking]);
     }
     public function testMail()

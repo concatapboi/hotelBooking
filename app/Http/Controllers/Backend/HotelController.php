@@ -312,10 +312,12 @@ class HotelController extends Controller
                             if ($booking->status_id == 1 || $booking->status_id == 2) {
                                 $booking->reason = "Đơn đặt phòng cần xử lý";
                                 $bookingCantDelete["sau"][] = $booking;
+                                // $bookingCantDelete[] = $booking;
                             }
                             if ($booking->status_id == 4) {
                                 $booking->reason = "Đơn đặt phòng cần hủy";
                                 $bookingCantDelete["sau"][] = $booking;
+                                // $bookingCantDelete[] = $booking;
                             }
                         }
                         //cac don co ngay check in be hon va ngay check out lon hon hom nay hom nay
@@ -323,9 +325,10 @@ class HotelController extends Controller
 
                             if ($bookingCheckOut->greaterThan($today)) {
                                 if ($booking->status_id == 1 || $booking->status_id = 2) {
-                                    $booking->reason = "Order need to confirm";
+                                    $booking->reason = "Đơn đặt phòng cần xử lý";
                                 }
                                 $bookingCantDelete["giua"][] = $booking;
+                                // $bookingCantDelete[] = $booking;
                             }
                         }
                     }

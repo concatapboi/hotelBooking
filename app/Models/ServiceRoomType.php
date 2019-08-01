@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Resources\ServiceResource;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServiceRoomType extends Model
 {
+  use SoftDeletes;
   protected $table = 'service_room_type';
 
   protected $fillable = [

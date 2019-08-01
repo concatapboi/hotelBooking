@@ -19,6 +19,7 @@ class CreateServiceRoomTypeTable extends Migration
             $table->integer('room_type_id')->unsigned();
             $table->integer('hotel_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('service_id')
             ->references('id')->on('service')
             ->onDelete('cascade');

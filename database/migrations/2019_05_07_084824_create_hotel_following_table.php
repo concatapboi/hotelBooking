@@ -17,6 +17,7 @@ class CreateHotelFollowingTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->integer('hotel_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('customer_id')
             ->references('user_id')->on('customer')
             ->onDelete('cascade');

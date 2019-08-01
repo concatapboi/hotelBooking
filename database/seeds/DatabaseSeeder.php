@@ -388,6 +388,9 @@ class DatabaseSeeder extends Seeder
         factory(App\Models\BookingStatus::class)->create([
             'name' => 'Quá Hạn'
         ]);
+        factory(App\Models\BookingStatus::class)->create([
+            'name' => 'Tạo do khách sạn'
+        ]);
 
         //Booking method
         factory(App\Models\PaymentMethod::class)->create([]);

@@ -18,6 +18,7 @@ class CreateCommentTable extends Migration
             $table->integer('review_id')->unsigned();
             $table->text('content');
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('customer_id')
             ->references('user_id')->on('customer')
             ->onDelete('cascade');

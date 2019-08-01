@@ -27,6 +27,8 @@ Route::group(['prefix' => '/manager'], function () {
     Route::post('country', 'Backend\AddressController@postCountries');
     Route::get('searching', 'Backend\HotelController@search');
     Route::group(['middleware' => 'jwt.auth'], function () {
+        Route::get('get-user', 'Backend\HotelManagerController@getUserByHotel');
+        Route::put('update-user', 'Backend\HotelManagerController@updateUserByHotel');
         Route::post('logout', 'Backend\AuthController@logout');
         Route::resource('hotel', 'Backend\HotelController');
         Route::resource('question', 'Backend\QuestionController');

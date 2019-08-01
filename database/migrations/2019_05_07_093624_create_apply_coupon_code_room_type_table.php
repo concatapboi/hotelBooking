@@ -17,6 +17,7 @@ class CreateApplyCouponCodeRoomTypeTable extends Migration
             $table->integer('coupon_code_id')->unsigned();
             $table->integer('room_type_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('coupon_code_id')
             ->references('id')->on('coupon_code')
             ->onDelete('cascade');

@@ -24,10 +24,13 @@ class FeatureController extends Controller
         $panel = [];
         $hotel = Hotel::find($request->hotelId);
         $temp = [];
+        
         $numberOfRoom = sizeOf($hotel->Room);
         foreach ($features as $feature) {
             $temp["feature"] = new FeatureResource($feature);
+            // return $feature->RoomByHotel($request->hotelId);
             if (sizeOf($feature->RoomByHotel($request->hotelId)) == 0) {
+                // return 2;
                 $panel[] = false;
                 $temp["room"]["chosenRoom"] = null;
                 $temp["room"]["radio"] = "all";
@@ -43,6 +46,7 @@ class FeatureController extends Controller
 
             $data[] = $temp;
         }
+        
         return response()->json([
             "status" => true,
             "data" => $data,

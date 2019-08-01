@@ -73,7 +73,7 @@
     </v-flex>
     <v-flex shrink md3 class="detail-container">
       <span class="headline font-weight-black">{{data.name}}</span>
-      <v-img :aspect-ratio="4/3" :src="'/blog/img/hotel/'+data.image" class="my-2">
+      <v-img :aspect-ratio="4/3" :src="'/images/hotel/'+data.image" class="my-2">
         <v-layout row wrap justify-center align-center fill-height>
           <v-flex md10>
             <v-rating
@@ -159,19 +159,19 @@
             <v-layout class="search-item" row wrap v-for="(room,index) in rooms" :key="index">
               <v-flex xs3>
                 <v-layout row wrap class="pl-3">
-                  <v-flex class="pa-1" md12>
-                    <v-img :aspect-ratio="4/3" :src="'/blog/img/room/'+room.image"></v-img>
+                  <v-flex class="pa-1" md12 v-for="(image,i) in room.images" :key="i">
+                    <v-img :aspect-ratio="4/3" :src="'/images/room/'+image.image_link" v-if="i<3"></v-img>
+                  </v-flex>
+                  <!-- <v-flex class="pa-1" md6>
+                    <v-img :aspect-ratio="1" :src="'/images/room/'+room.images[2].image_link"></v-img>
                   </v-flex>
                   <v-flex class="pa-1" md6>
-                    <v-img :aspect-ratio="1" :src="'/blog/img/room/'+room.images[2].image_link"></v-img>
-                  </v-flex>
-                  <v-flex class="pa-1" md6>
-                    <v-img :aspect-ratio="1" :src="'/blog/img/room/'+room.images[3].image_link">
+                    <v-img :aspect-ratio="1" :src="'/images/room/'+room.images[3].image_link">
                       <v-layout fill-height justify-center align-center>
                         <a href="#" @click="openImagesDialog(1,room)" class="red--text">Thêm...</a>
                       </v-layout>
                     </v-img>
-                  </v-flex>
+                  </v-flex> -->
                 </v-layout>
               </v-flex>
               <v-spacer></v-spacer>
@@ -326,8 +326,8 @@
                           :key="i"
                           v-show="i<=3 && i<data.images.length"
                         >
-                          <v-img :aspect-ratio="1/1" :src="'/blog/img/hotel/'+item.image_link">
-                            <v-layout fill-height justify-center align-center v-show="i===3">
+                          <v-img :aspect-ratio="1/1" :src="'/images/hotel/'+item.image_link">
+                            <v-layout fill-height justify-center align-center v-if="i===3">
                               <a
                                 href="#"
                                 @click="openImagesDialog(0,null)"
@@ -725,7 +725,7 @@
                       <v-divider></v-divider>
                     </v-flex>
                     <v-flex md2>
-                      <v-img :aspect-ratio="1" :src="'/blog/img/room/'+bookingDialog.room.image"></v-img>
+                      <v-img :aspect-ratio="1" :src="'/images/room/'+bookingDialog.room.image"></v-img>
                     </v-flex>
                     <v-flex md10 class="pa-3">
                       <div>{{data.name}} - {{data.hotel_type.name}}</div>
@@ -1026,7 +1026,7 @@
                           <div class="mt-3">
                             <v-img
                               :aspect-ratio="1"
-                              :src="'/blog/img/room/'+bookingDialog.room.image"
+                              :src="'/images/room/'+bookingDialog.room.image"
                             ></v-img>
                           </div>
                         </v-flex>
@@ -1214,7 +1214,7 @@
         <v-card-text class="pa-3 ma-0">
           <v-layout row wrap class="ma-0 pa-0">
             <v-flex md10>
-              <v-img :aspect-ratio="1" :src="'/blog/img/'+images.key+'/'+images.img.image_link"></v-img>
+              <v-img :aspect-ratio="1" :src="'/images/'+images.key+'/'+images.img.image_link"></v-img>
             </v-flex>
             <v-flex md2>
               <v-layout row wrap class="pa-0 ma-1">
@@ -1222,7 +1222,7 @@
                   <v-avatar :tile="img.id !== images.img.id" size="100%">
                     <v-img
                       :aspect-ratio="1"
-                      :src="'/blog/img/'+images.key+'/'+img.image_link"
+                      :src="'/images/'+images.key+'/'+img.image_link"
                       @click="images.img = img"
                     ></v-img>
                   </v-avatar>

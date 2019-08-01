@@ -16,6 +16,7 @@ use function GuzzleHttp\json_decode;
 use App\Http\Resources\RoomBedTypeResource;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Resources\RoomModeResource;
+use Carbon\Carbon;
 
 class RoomController extends Controller
 {
@@ -205,17 +206,61 @@ class RoomController extends Controller
      */
     public function destroy($id)
     {
+        // $room = Room::find($id);
+        // if ($room != null) {
+        //     $room->delete();
+        //     return response()->json([
+        //         "status" => true,
+        //         "messages" => "room deleted!!!"
+        //     ]);
+        // } else {
+        //     return response()->json([
+        //         "status" => false,
+        //         "messages" => "cant find room with this id"
+        //     ]);
+        // }
+        $bookingCantDelete = [];
         $room = Room::find($id);
-        if ($room != null) {
-            $room->delete();
+        foreach ($room->booking as $booking) {
+            // return $room->booking;
+            $bookingCheckinExplode = explode("-", $booking->check_in);
+            $bookingCheckoutExplode = explode("-", $booking->check_out);
+            $todayExplode = explode("-", date("Y-m-d"));
+            $bookingCheckIn = Carbon::createMidnightDate($bookingCheckinExplode[0], $bookingCheckinExplode[1], $bookingCheckinExplode[2]);
+            $bookingCheckOut = Carbon::createMidnightDate($bookingCheckoutExplode[0], $bookingCheckoutExplode[1], $bookingCheckoutExplode[2]);
+            $today = Carbon::createMidnightDate($todayExplode[0], $todayExplode[1], $todayExplode[2]);
+            //cac don co ngay check in lon hon hom nay
+            if ($bookingCheckIn->greaterThan($today)) {
+                if ($booking->status_id == 1 || $booking->status_id == 2) {
+                    $booking->reason = "Đơn đặt phòng cần xử lý";
+                    $bookingCantDelete["sau"][] = $booking;
+                }
+                if ($booking->status_id == 4) {
+                    $booking->reason = "Đơn đặt phòng cần hủy";
+                    $bookingCantDelete["sau"][] = $booking;
+                }
+            }
+            //cac don co ngay check in be hon va ngay check out lon hon hom nay hom nay
+            else {
+                if ($bookingCheckOut->greaterThan($today)) {
+                    if ($booking->status_id == 1 || $booking->status_id = 2) {
+                        $booking->reason = "Đơn đặt phòng cần xử lý";
+                    }
+                    $bookingCantDelete["giua"][] = $booking;
+                }
+            }
+        }
+        if (sizeOf($bookingCantDelete) > 0) {
+            return response()->json([
+                "status" => false,
+                "message" => "Can't delete",
+                "booking_list" => $bookingCantDelete,
+            ]);
+        } else {
+            // Room::destroy($id);
             return response()->json([
                 "status" => true,
                 "messages" => "room deleted!!!"
-            ]);
-        } else {
-            return response()->json([
-                "status" => false,
-                "messages" => "cant find room with this id"
             ]);
         }
     }

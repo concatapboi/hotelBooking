@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Hotel;
+use App\Models\User;
+use App\Models\HotelManager;
 
 class HotelManagerController extends Controller
 {
@@ -47,7 +49,7 @@ class HotelManagerController extends Controller
      */
     public function show($id)
     {
-        //
+        return User::find($id);
     }
 
     /**
@@ -70,7 +72,7 @@ class HotelManagerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return $request->all();
     }
 
     /**
@@ -87,5 +89,25 @@ class HotelManagerController extends Controller
     public function test()
     {
         return Hotel::all();
+    }
+    public function getUserByHotel(Request $request)
+    {
+        return Hotel::find($request->id)->HotelManager->User;
+    }
+    public function updateUserByHotel(Request $request)
+    {
+        $user =  Hotel::find($request->id)->HotelManager->User;
+        $data = [
+            "name" => $request->hotelManager["name"],
+            "email" => $request->hotelManager["email"],
+            "phone_number" => $request->hotelManager["phone_number"],
+        ];
+        // return $data;
+        $user->update($data);
+        
+        return response()->json([
+            "status" => true,
+            "message" => "thông tin đã được cập nhất",
+        ]);
     }
 }

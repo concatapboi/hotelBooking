@@ -23,6 +23,7 @@ class CreatePolicyTable extends Migration
             $table->text('content')->nullable();
             $table->tinyInteger('payment_method')->default(2);//0:off,1:on,2:both
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('hotel_id')
             ->references('id')->on('hotel')
             ->onDelete('cascade');

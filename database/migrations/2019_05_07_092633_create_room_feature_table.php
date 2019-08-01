@@ -17,6 +17,7 @@ class CreateRoomFeatureTable extends Migration
             $table->integer('feature_id')->unsigned();
             $table->integer('room_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('feature_id')
             ->references('id')->on('feature')
             ->onDelete('cascade');

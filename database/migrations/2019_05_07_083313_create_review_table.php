@@ -26,6 +26,7 @@ class CreateReviewTable extends Migration
             $table->tinyInteger('can_comment')->default(1);
             $table->integer('booking_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('customer_id')
             ->references('user_id')->on('customer')
             ->onDelete('cascade');

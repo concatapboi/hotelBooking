@@ -16,6 +16,7 @@ class CreateHotelManagerTable extends Migration
         Schema::create('hotel_manager', function (Blueprint $table) {
             $table->integer('user_id',10)->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('user_id')
             ->references('id')->on('users')
             ->onDelete('cascade');

@@ -18,6 +18,7 @@ class CreateCustomerFollowingTable extends Migration
             $table->integer('follower_id')->unsigned();
             $table->integer('followed_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('follower_id')
             ->references('user_id')->on('customer')
             ->onDelete('cascade');

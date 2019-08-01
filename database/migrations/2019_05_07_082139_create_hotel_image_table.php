@@ -19,6 +19,7 @@ class CreateHotelImageTable extends Migration
             $table->tinyInteger('is_primary')->default(0);
             $table->integer('hotel_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('hotel_id')
             ->references('id')->on('hotel')
             ->onDelete('cascade');

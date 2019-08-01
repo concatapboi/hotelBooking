@@ -34,6 +34,7 @@ class CreateHotelTable extends Migration
             $table->integer('hotel_type_id')->unsigned();
             $table->integer('hotel_manager_id')->unsigned();
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('hotel_type_id')
             ->references('id')->on('hotel_type')
             ->onDelete('cascade');

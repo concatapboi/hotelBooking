@@ -168,17 +168,15 @@ class BookingController extends Controller
         $room_image = RoomImage::where("room_id", $room->id)->where("is_primary", 1)->first();
         $customer = Customer::find($booking->customer_id)->ofUser;
         broadcast(new AcceptBooking($booking));
-        // Hotel->notify()
-        return 1;
         // return (new AcceptOrderOffline($booking, $room, $room_image))->render();
 
-        // if ($booking->PaymentMethod->id == 1) {
-        //     $booking->update(["status_id" => 4]);
-        //     Mail::to($request->user())->queue(new AcceptOrderOffline($booking));
-        // } elseif ($booking->PaymentMethod->id == 2) {
-        //     $booking->update(["status_id" => 2]);
-        //     Mail::to($request->user())->queue(new AcceptOrderOnline($booking));
-        // }
+        if ($booking->PaymentMethod->id == 1) {
+            $booking->update(["status_id" => 4]);
+            Mail::to($request->user())->queue(new AcceptOrderOffline($booking, $room, $room_image));
+        } elseif ($booking->PaymentMethod->id == 2) {
+            $booking->update(["status_id" => 2]);
+            Mail::to($request->user())->queue(new AcceptOrderOnline($booking, $room, $room_image));
+        }
         return response()->json([
             "status" => true,
             // "data" => new BookingResource($booking),
@@ -268,5 +266,9 @@ class BookingController extends Controller
             "status" => true,
             "data" => $result,
         ]);
+    }
+    public function MonthReview(Request $request)
+    {
+        # code...
     }
 }

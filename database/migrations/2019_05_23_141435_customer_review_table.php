@@ -21,6 +21,7 @@ class CustomerReviewTable extends Migration
             $table->tinyInteger('like')->default(0);
             $table->tinyInteger('useful')->default(0);
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('customer_id')
             ->references('user_id')->on('customer')
             ->onDelete('cascade');
