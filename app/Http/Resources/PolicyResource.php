@@ -33,11 +33,11 @@ class PolicyResource extends JsonResource
             $arrayData["online"] = true;
             $arrayData["offline"] = true;
         }elseif($this->payment_method == 1){
-            $arrayData["online"] = false;
-            $arrayData["offline"] = true;
-        }else{
             $arrayData["online"] = true;
             $arrayData["offline"] = false;
+        }else{
+            $arrayData["online"] = false;
+            $arrayData["offline"] = true;
         }
         return $arrayData;
     }

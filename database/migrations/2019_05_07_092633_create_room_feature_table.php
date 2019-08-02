@@ -14,10 +14,11 @@ class CreateRoomFeatureTable extends Migration
     public function up()
     {
         Schema::create('room_feature', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('feature_id')->unsigned();
             $table->integer('room_id')->unsigned();
             $table->timestamps();
-            $table->softDeletes();
+            // $table->softDeletes();
             $table->foreign('feature_id')
             ->references('id')->on('feature')
             ->onDelete('cascade');

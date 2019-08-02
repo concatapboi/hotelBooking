@@ -1,0 +1,1 @@
+Xin lỗi đơn đặt phòng của bạn đã bị hủy

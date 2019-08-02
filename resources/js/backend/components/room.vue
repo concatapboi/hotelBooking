@@ -432,11 +432,12 @@
                                   <v-flex md7 align-items-center>
                                     {{r.max_adult_amount}} x
                                     <i class="fas fa-male fa-2x"></i>
+                                    <span v-if="r.max_child_amount!=0 && r.child_age!=0">
                                     {{r.max_child_amount}} x
                                     <i
                                       class="fas fa-child"
                                     ></i>
-                                    <span v-if="r.free_child_amount!=0 && r.child_age!=0">
+                                    
                                       ({{r.free_child_amount}} trẻ em dưới {{r.child_age}} tuổi sẽ được ở
                                       <span
                                         class="green--text"

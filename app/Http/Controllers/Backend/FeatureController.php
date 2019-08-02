@@ -142,10 +142,11 @@ class FeatureController extends Controller
     public function removeFeatureRoom(Request $request)
     {
         $hotel = Hotel::find($request->hotelId);
+        $roomIds = [];
         foreach ($hotel->room as $room) {
-            RoomFeature::where("room_id", $room->id)->where("feature_id", $request->featureId)->delete();
+            $roomIds[] = $room->id;
         }
-
+        $query = RoomFeature::whereIn("room_id", $roomIds)->where("feature_id", $request->featureId)->delete();
         $hotel->update(["rank_point" => $hotel->rank_point - 1]);
     }
     public function addFeatureRoom(Request $request)

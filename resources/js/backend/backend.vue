@@ -89,7 +89,7 @@
         <span class="mt-2 mr-3">
           <v-badge v-if="notifications.list.length >0" overlap color="red">
             <template v-slot:badge>
-              <span>{{notifications.list.length}}</span>
+              <span v-if="numberOfNewNoti != 0">{{numberOfNewNoti}}</span>
             </template>
             <v-avatar :color="'blue'">
               <v-icon dark v-on:click="notifications.state = !notifications.state">notifications</v-icon>
@@ -163,7 +163,7 @@
                     </v-list-tile-content>
                   </a>
                 </v-list-tile>
-                <v-list-tile v-else class="light-grey">
+                <v-list-tile v-else class="grey lighten-2">
                   <a
                     @click="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
                     @contextmenu="showOrderDetail(notification.id,$event,i,notification.data.booking.id)"
@@ -291,8 +291,20 @@
         </v-card-text>
         <v-card-actions v-if="editAccount == true">
           <v-spacer></v-spacer>
-          <v-btn round class="mx-2 white--text font-weight bold" depressed color="red" @click="accountDialog = false">Hủy</v-btn>
-          <v-btn round class="mx-2 white--text font-weight bold" depressed color="primary" @click="updateAccount">Xác nhận</v-btn>
+          <v-btn
+            round
+            class="mx-2 white--text font-weight bold"
+            depressed
+            color="red"
+            @click="accountDialog = false"
+          >Hủy</v-btn>
+          <v-btn
+            round
+            class="mx-2 white--text font-weight bold"
+            depressed
+            color="primary"
+            @click="updateAccount"
+          >Xác nhận</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -303,7 +315,6 @@
 export default {
   data: function() {
     return {
-
       editAccount: false,
 
       snackbar: {
@@ -364,7 +375,8 @@ export default {
         name: "",
         email: "",
         phone_number: ""
-      }
+      },
+      numberOfNewNoti: 0
     };
   },
   watch: {
@@ -398,6 +410,12 @@ export default {
           console.log(response.data);
           console.log(this.notifications.list);
           this.notifications.list = response.data;
+          this.notifications.list.forEach(element => {
+            console.log(element.read_at);
+            if (element.read_at != null) {
+              this.numberOfNewNoti += 1;
+            }
+          });
           console.log(this.notifications.list);
         })
         .catch(function(error) {
@@ -432,6 +450,7 @@ export default {
     }
     this.initialize();
     this.getHotelManager(this.hotelId);
+    this.getNotification();
   },
   mounted() {
     // window.Echo.channel("manager").listen(".accept-booking", e => {
@@ -455,6 +474,35 @@ export default {
     });
   },
   methods: {
+    getNotification: function() {
+      axios
+        .get("http://localhost:8000/api/manager/notification", {
+          headers: {
+            Authorization: "Bearer " + this.api_token
+          },
+          params: {
+            hotelId: this.hotelId
+          }
+        })
+        .then(response => {
+          console.log(response.data);
+          console.log(this.notifications.list);
+          this.notifications.list = response.data;
+          this.notifications.list.forEach(element => {
+            console.log(element.read_at);
+            if (element.read_at == null) {
+              this.numberOfNewNoti += 1;
+            }
+          });
+          console.log(this.notifications.list);
+        })
+        .catch(function(error) {
+          console.log(error.response);
+          if (error.response.status == 401) {
+            _this.logout();
+          }
+        });
+    },
     updateAccount: function() {
       axios({
         method: "put",
@@ -463,17 +511,16 @@ export default {
           Authorization: "Bearer " + this.api_token
         },
         data: {
-          hotelManager : this.editHotelManager,
+          hotelManager: this.editHotelManager,
           id: this.hotelId
         }
       })
         .then(response => {
           console.log(response);
-          if(response.data.status == true){
+          if (response.data.status == true) {
             this.accountDialog = false;
             this.hotelManager = this.editHotelManager;
           }
-
         })
         .catch(error => {
           console.log(error.response);
@@ -519,6 +566,7 @@ export default {
       })
         .then(response => {
           console.log(response);
+          this.numberOfNewNoti -= 1;
         })
         .catch(error => {
           console.log(error.response);
