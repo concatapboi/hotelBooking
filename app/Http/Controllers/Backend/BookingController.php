@@ -73,7 +73,7 @@ class BookingController extends Controller
             // "contact_name" => $request->name,
             // "contact_phone" => $request->phone,
             // "contact_address" => $request->address,
-            "fax_number" => $hotel->fax_number,
+            "bank" => $hotel->bank,
             "check_in" => $request->checkin,
             "check_out" => $request->checkout,
             "room_id" => $request->roomChosen,

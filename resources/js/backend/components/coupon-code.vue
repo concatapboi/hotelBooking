@@ -624,11 +624,12 @@
                   <span class="font-weight-black brown--text title">"{{code.code}}"</span>
                 </v-flex>
                 <v-flex md12>
-                  <div class="ma-2 pl-1">
+                  <span class="caption">Nội Dung:</span>
+                  <div class="mx-2 pl-1">
                     <div>
                       <span class="font-weight-black body-1">{{code.title}}</span>
                     </div>
-                    <div>
+                    <div v-if="code.content && code.content.length >0">
                       <span class="font-italic caption">"{{code.content}}"</span>
                     </div>
                   </div>
@@ -799,7 +800,8 @@ export default {
         content: "",
         start_at: "",
         end_at: "",
-        amount: 1
+        amount: 1,
+        applied: 0,
       },
       now: this.$moment(new Date()).format("YYYY-MM-DD"),
       startFormatted: "",
@@ -1027,11 +1029,11 @@ export default {
             })
               .then(res => {
                 console.log(res.data);
+                this.waiting = false;
                 if (res.data.status == true) {
                   this.resetForm();
                   this.createForm = false;
                   this.confirm.couponCode = false;
-                  this.waiting = false;
                   var newCoupon = res.data.data;
                   if (newCoupon.waiting) {
                     this.waitingCouponCode.push(newCoupon);
@@ -1043,7 +1045,11 @@ export default {
                   this.search = newCoupon.code;
                   console.log(this.search);
                 } else {
-                  this.$router.push({ name: "home" });
+                  if(res.data.message){
+                    this.$emit('loadSnackbar',res.data.message);
+                    this.waiting = false;
+                  }
+                  // this.$router.push({ name: "home" });
                 }
               })
               .catch(error => {

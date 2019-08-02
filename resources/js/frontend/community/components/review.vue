@@ -43,46 +43,66 @@
                         <v-icon color="white" medium>clear</v-icon>
                       </v-btn>
                     </template>
-                    <v-btn
-                      fab
-                      color="#0652DD"
-                      depressed
-                      small
-                      @click.stop="updateReviewState(review.id)"
-                      v-if="review.can_comment ==1 && !review.customer"
-                    >
-                      <i class="fas fa-comment white--text fa-lg"></i>
-                    </v-btn>
-                    <v-btn
-                      fab
-                      color="red"
-                      depressed
-                      small
-                      @click.stop="updateReviewState(review.id)"
-                      v-else-if="!review.customer"
-                    >
-                      <i class="fas fa-comment-slash white--text fa-lg"></i>
-                    </v-btn>
-                    <v-btn
-                      fab
-                      color="#0652DD"
-                      depressed
-                      small
-                      @click.stop="updateNotification(review.id)"
-                      v-if="review.customer_review.status ==1"
-                    >
-                      <i class="far fa-bell white--text fa-lg"></i>
-                    </v-btn>
-                    <v-btn
-                      fab
-                      color="red"
-                      depressed
-                      small
-                      @click.stop="updateNotification(review.id)"
-                      v-else
-                    >
-                      <i class="far fa-bell-slash white--text fa-lg"></i>
-                    </v-btn>
+                    <v-tooltip top v-if="review.can_comment ==1 && !review.customer">
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          fab
+                          color="#0652DD"
+                          depressed
+                          small
+                          @click.stop="updateReviewState(review.id)"
+                          v-on="on"
+                        >
+                          <i class="fas fa-comment white--text fa-lg"></i>
+                        </v-btn>
+                      </template>
+                      <span>Đang bật bình luận</span>
+                    </v-tooltip>
+                    <v-tooltip top v-else-if="!review.customer">
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          fab
+                          color="red"
+                          depressed
+                          small
+                          @click.stop="updateReviewState(review.id)"
+                          v-on="on"
+                        >
+                          <i class="fas fa-comment-slash white--text fa-lg"></i>
+                        </v-btn>
+                      </template>
+                      <span>Đang tắt bình luận</span>
+                    </v-tooltip>
+                    <v-tooltip top v-if="review.customer_review.status ==1">
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          fab
+                          color="#0652DD"
+                          depressed
+                          small
+                          @click.stop="updateNotification(review.id)"
+                          v-on="on"
+                        >
+                          <i class="far fa-bell white--text fa-lg"></i>
+                        </v-btn>
+                      </template>
+                      <span>Đang nhận thông báo</span>
+                    </v-tooltip>
+                    <v-tooltip top v-else>
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          fab
+                          color="red"
+                          depressed
+                          small
+                          @click.stop="updateNotification(review.id)"
+                          v-on="on"
+                        >
+                          <i class="far fa-bell-slash white--text fa-lg"></i>
+                        </v-btn>
+                      </template>
+                      <span>Đang tắt thông báo</span>
+                    </v-tooltip>
                   </v-speed-dial>
                 </v-flex>
               </v-layout>

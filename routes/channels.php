@@ -26,3 +26,6 @@ Broadcast::channel('question', function () {
 Broadcast::channel('ask', function () {
     return true;
 });
+Broadcast::channel('coupon', function () {
+    return true;
+});

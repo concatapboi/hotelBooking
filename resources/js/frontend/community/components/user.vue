@@ -62,27 +62,36 @@
             <v-card light min-height="120px" class="pa-1" flat tile width="800px">
               <v-card-title>
                 <v-divider></v-divider>
-                
+                <v-tooltip top v-if="item.customer_review.status ==1">
+                    <template v-slot:activator="{ on }">
                     <v-btn
                       fab
                       color="#0652DD"
                       depressed
                       small
                       @click.stop="updateNotification(item.id)"
-                      v-if="item.customer_review.status ==1"
+                      v-on="on"
                     >
                       <i class="far fa-bell white--text fa-lg"></i>
                     </v-btn>
+                  </template>
+                  <span>Đang nhận thông báo</span>
+                </v-tooltip>
+                <v-tooltip top v-else>
+                  <template v-slot:activator="{ on }">
                     <v-btn
                       fab
                       color="red"
                       depressed
                       small
                       @click.stop="updateNotification(item.id)"
-                      v-else
+                      v-on="on"
                     >
                       <i class="far fa-bell-slash white--text fa-lg"></i>
                     </v-btn>
+                  </template>
+                  <span>Đang tắt thông báo</span>
+                </v-tooltip>
               </v-card-title>
               <router-link class="pointer" :to="{name:'review',query:{id:item.id}}" target="_blank">
                 <v-spacer></v-spacer>

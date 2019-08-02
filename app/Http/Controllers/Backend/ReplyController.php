@@ -15,6 +15,7 @@ use Hash;
 use Carbon\Carbon;
 use Auth;
 use App\Notifications\HotelAnswerNotification;
+use App\Notifications\UserAskNotification;
 
 class ReplyController extends Controller
 {
@@ -50,6 +51,13 @@ class ReplyController extends Controller
         $questionTemp = array();
         $questionTemp['title'] = $question->title;
         $questionTemp['content'] = $question->content;
+        $notifications = $hotel->unreadNotifications->where('type','App\Notifications\UserAskNotification');
+        foreach($notifications as $notification){
+            if($notification->data['ask']){
+                if($notification->data['ask']['id'] == $question->id)
+                    $notification->delete();
+            }
+        }
         broadcast(new HotelAnswerEvent($hotel->name,$questionTemp,$reply->content));
         User::find($question->customer_id)->notify(new HotelAnswerNotification($hotel->name,$questionTemp,$reply->content));
         return response()->json([

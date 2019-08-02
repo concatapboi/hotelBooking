@@ -21,6 +21,7 @@ use App\Models\Notification;
 use Carbon\Carbon;
 use App\Mail\BookingCreatedConfirm;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Hotel;
 
 class BookingController extends Controller
 {
@@ -92,7 +93,7 @@ class BookingController extends Controller
                         'contact_phone' => $b['phone'],
                         'contact_address' => $b['address'],
                         'special_request' => $b['request'],
-                        'fax_number' => $room->Hotel->fax_number,
+                        'bank' => $room->Hotel->bank,
                         'check_in' => $b['checkIn'],
                         'check_out' => $b['checkOut'],
                         'room_id' => $b['roomId'],

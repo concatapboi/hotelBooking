@@ -28,7 +28,7 @@ class BookingResource extends JsonResource
             "contact_phone" => $this->contact_phone,
             "contact_address" => $this->contact_address,
             "special_request" => $this->special_request,
-            "fax_number" => $this->fax_number,
+            "bank" => $this->bank,
             "check_in" => $this->check_in,
             "check_out" => $this->check_out,
             "room_id" => $this->room_id,

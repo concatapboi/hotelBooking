@@ -56,46 +56,66 @@
                       <v-icon color="white" medium>clear</v-icon>
                     </v-btn>
                   </template>
-                  <v-btn
-                    fab
-                    color="#0652DD"
-                    depressed
-                    small
-                    @click.stop="updateReviewState(item.id)"
-                    v-if="item.can_comment ==1"
-                  >
-                    <i class="fas fa-comment white--text fa-lg"></i>
-                  </v-btn>
-                  <v-btn
-                    fab
-                    color="red"
-                    depressed
-                    small
-                    @click.stop="updateReviewState(item.id)"
-                    v-else
-                  >
-                    <i class="fas fa-comment-slash white--text fa-lg"></i>
-                  </v-btn>
-                  <v-btn
-                    fab
-                    color="#0652DD"
-                    depressed
-                    small
-                    @click.stop="updateNotification(item.id)"
-                    v-if="item.customer_review.status ==1"
-                  >
-                    <i class="far fa-bell white--text fa-lg"></i>
-                  </v-btn>
-                  <v-btn
-                    fab
-                    color="red"
-                    depressed
-                    small
-                    @click.stop="updateNotification(item.id)"
-                    v-else
-                  >
-                    <i class="far fa-bell-slash white--text fa-lg"></i>
-                  </v-btn>
+                  <v-tooltip top v-if="item.can_comment == 1">
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        fab
+                        color="#0652DD"
+                        depressed
+                        small
+                        @click.stop="updateReviewState(item.id)"
+                        v-on="on"
+                      >
+                        <i class="fas fa-comment white--text fa-lg"></i>
+                      </v-btn>
+                    </template>
+                    <span>Đang bật bình luận</span>
+                  </v-tooltip>
+                  <v-tooltip top v-else>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        fab
+                        color="red"
+                        depressed
+                        small
+                        @click.stop="updateReviewState(item.id)"
+                        v-on="on"
+                      >
+                        <i class="fas fa-comment-slash white--text fa-lg"></i>
+                      </v-btn>
+                    </template>
+                    <span>Đang tắt bình luận</span>
+                  </v-tooltip>
+                  <v-tooltip top v-if="item.customer_review.status ==1">
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        fab
+                        color="#0652DD"
+                        depressed
+                        small
+                        @click.stop="updateNotification(item.id)"
+                        v-on="on"
+                      >
+                        <i class="far fa-bell white--text fa-lg"></i>
+                      </v-btn>
+                    </template>
+                    <span>Đang nhận thông báo</span>
+                  </v-tooltip>
+                  <v-tooltip top v-else>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        fab
+                        color="red"
+                        depressed
+                        small
+                        @click.stop="updateNotification(item.id)"
+                        v-on="on"
+                      >
+                        <i class="far fa-bell-slash white--text fa-lg"></i>
+                      </v-btn>
+                    </template>
+                    <span>Đang tắt thông báo</span>
+                  </v-tooltip>
                 </v-speed-dial>
               </v-card-title>
               <router-link class="pointer" :to="{name:'review',query:{id:item.id}}" target="_blank">

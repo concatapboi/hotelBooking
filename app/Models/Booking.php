@@ -25,7 +25,7 @@ class Booking extends Model
     'contact_phone',
     'contact_address',
     'special_request',
-    'fax_number',
+    'bank',
     'coupon_code',
     'discount_value',
     'customer_id',

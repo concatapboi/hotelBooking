@@ -119,14 +119,7 @@
                   <span style="word-wrap: break-word;">{{data.email}}</span>
                 </v-flex>
               </v-layout>
-              <v-layout row wrap class="hotel-info-item" align-center>
-                <v-flex md3>
-                  <span>Số fax:</span>
-                </v-flex>
-                <v-flex md9 class="pl-2">
-                  <span>{{data.fax_number}}</span>
-                </v-flex>
-              </v-layout>
+              
               <v-layout row wrap class="hotel-info-item" align-center>
                 <v-flex md3>
                   <span>Mã số thuế:</span>
@@ -810,14 +803,6 @@
                 </v-flex>
                 <v-flex md9 class="pl-2">
                   <span style="word-wrap: break-word;">{{data.email}}</span>
-                </v-flex>
-              </v-layout>
-              <v-layout row wrap class="hotel-info-item" align-center>
-                <v-flex md3>
-                  <span>Số fax:</span>
-                </v-flex>
-                <v-flex md9 class="pl-2">
-                  <span>{{data.fax_number}}</span>
                 </v-flex>
               </v-layout>
               <v-layout row wrap class="hotel-info-item" align-center>
@@ -1663,7 +1648,8 @@ export default {
         detail: false,
         question: false,
         review: false
-      }
+      },
+      firstLoad: true,
     };
   },
   mounted() {
@@ -1678,9 +1664,8 @@ export default {
       this.checkInFormattedVal = this.formatDate(this.$route.query.check_in);
       this.checkOutVal = this.$route.query.check_out;
       this.checkOutFormattedVal = this.formatDate(this.$route.query.check_out);
-    } else {
-      this.setSearchValue();
     }
+      this.setSearchValue();
     this.getHotelDetail();
     this.getHotelRooms();
   },
@@ -1799,9 +1784,17 @@ export default {
         .catch(error => {
           console.log(error);
           console.log(error.response);
+        }).then(()=>{
+          if(this.firstLoad == true && this.data.policy.cancelable >0){
+            if(this.$moment(this.checkIn).diff(this.now,'days')>=0 && this.$moment(this.checkIn).diff(this.now,'days')<3)
+              this.$emit("loadSnackbar","Bạn cần chú ý đến chính sách hủy phòng của "+this.data.name+", vì bạn đặt phòng quá cận ngày check-in. "+this.data.name+" chỉ chấp nhận hủy phòng trước "+this.data.policy.cancelable+" ngày.");
+            this.firstLoad = false;
+          }
         });
     },
     getHotelRooms: function() {
+      this.page = 1;
+      this.rooms = [];
       axios({
         method: "get",
         url: "http://localhost:8000/api/hotel-rooms",
@@ -2045,7 +2038,7 @@ export default {
         });
     },
     openQuestionDialog() {
-      this.load();
+      // this.load();
       if (localStorage.getItem("login_token") == null) {
         this.$emit("loadLoginDialog", true, 1);
         return;
@@ -2133,7 +2126,7 @@ export default {
         })
           .then(res => {
             console.log(res.data.data);
-            this.$emit("loadSnackbar", "Theo dõi " + this.data.name+" bạn chấp nhận nhận e-mail thông báo về cập nhật (chương trình khuyến mãi,...) của nhà cung cấp này.");
+            this.$emit("loadSnackbar", "Theo dõi " + this.data.name+" bạn chấp nhận nhận thông báo về cập nhật (chương trình khuyến mãi,...) của nhà cung cấp này.");
             
           })
           .catch(error => {

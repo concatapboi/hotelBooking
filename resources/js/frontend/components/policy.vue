@@ -16,7 +16,7 @@
       <div>
         <span class="title font-weight-bold">T</span>rước khi thực hiện một yêu cầu dịch vụ cần xem rõ các điều khoản và nội dung chính sách liên quan.
         Mọi thắc mắc có thể liên hệ với hệ thống hoặc nhà cung cấp chỗ ở mà khách hàng đang chọn sử dụng dịch
-        vụ qua email, số điện thoại, fax,…
+        vụ qua email, số điện thoại,…
       </div>
       <div>
         <span class="title font-weight-bold">V</span>iệc thanh toán được thực hiện an toàn từ thẻ tín dụng/ghi nợ hoặc tài khoản ngân hàng của bạn

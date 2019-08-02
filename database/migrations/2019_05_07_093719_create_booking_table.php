@@ -23,7 +23,7 @@ class CreateBookingTable extends Migration
             $table->string('contact_phone');
             $table->string('contact_address');
             $table->string('special_request')->nullable();
-            $table->string('fax_number');
+            $table->string('bank');
             $table->date('check_in');
             $table->date('check_out');
             $table->integer('room_id')->unsigned();

@@ -26,17 +26,18 @@ class AuthController extends Controller
                 'password' => 'required|min:4'
             ],
             [
-                'username.required' => 'Username is empty!',
-                'username.min' => 'Username must be more than 3 charaters!',
-                'password.required' => 'Password is empty!',
-                'password.min' => 'Password must be more than 3 charaters!'
+                'username.required' => 'Chưa nhập username!',
+                'username.min' => 'Username phải hơn 3 ký tự!',
+                'password.required' => 'Chưa nhập pasword!',
+                'password.min' => 'Password phải hơn 3 ký tự!'
             ]
         );
         if ($validateData->fails()) {
+            $errors = $validateData->errors()->all();
             return response()->json([
                 'token' => "",
                 'status' => false,
-                'errors' => $validateData->errors(),
+                'errors' => $errors[0],
             ]);
         }
         $arr = array('username' => $req->username, 'password' => $req->password);
@@ -44,7 +45,7 @@ class AuthController extends Controller
             return response()->json([
                 'token' => "",
                 'status' => false,
-                'errors' => array("username" => "", "password" => ""),
+                'errors' => "Username hoặc password không đúng!",
             ]);
         } else {
             $user = Auth::user();
@@ -53,7 +54,7 @@ class AuthController extends Controller
                     [
                         'token' => $token,
                         'status' => true,
-                        'errors' => array("username" => "", "password" => ""),
+                        'errors' => "",
                     ]
                 );
             }else{
@@ -61,7 +62,7 @@ class AuthController extends Controller
                     [
                         'token' => null,
                         'status' => false,
-                        'errors' => array("username" => "", "password" => ""),
+                        'errors' => "Thông tin tài khoản không đúng!",
                     ]
                 );
             }
@@ -109,21 +110,22 @@ class AuthController extends Controller
                 'email' => 'required|email|unique:users,email',
             ],
             [
-                'username.required' => 'Username is empty!',
-                'username.min' => 'Username must be more than 2 charaters!',
-                'username.unique' => 'Username is registed!',
-                'password.required' => 'Password is empty!',
-                'password.min' => 'Password must be more than 3 charaters!',
-                'email.required' => 'Email is empty!',
-                'email.email' => 'Incorrect email type!',
-                'email.unique' => 'Email is registed!',
+                'username.required' => 'Chưa nhập username!',
+                'username.min' => 'Username phải hơn 3 ký tự!',
+                'username.unique' => 'Username is đã tồn tại!',
+                'password.required' => 'Chưa nhập password!',
+                'password.min' => 'Password phải hơn 3 ký tự!',
+                'email.required' => 'Email rỗng!',
+                'email.email' => 'Lỗi kiểu e-mail!',
+                'email.unique' => 'E-mail đã được đăng ký!',
             ]
         );
         $status = false;
         if ($validateData->fails()) {
+            $errors = $validateData->errors()->all();
             return response()->json([
                 'status' => $status,
-                'errors' => $validateData->errors(),
+                'errors' => $errors[0],
             ]);
         }
         $status = true;

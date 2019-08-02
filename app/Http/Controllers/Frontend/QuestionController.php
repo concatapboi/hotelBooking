@@ -52,6 +52,7 @@ class QuestionController extends Controller
             'hotel_id' => $req->hotel_id,
         ]);
         $ask = array();
+        $ask['id'] = $question->id;
         $ask['title'] = $question->title;
         $ask['content'] = $question->content;
         $message = Auth::user()->name.' đã gửi một câu hỏi.';

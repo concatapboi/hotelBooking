@@ -33,7 +33,7 @@ class Hotel extends Model
     'child_age',
     'tax_code',
     'review_point',
-    'fax_number',
+    'bank',
     'phone_number',
     'coin',
     'ward_id',
@@ -71,7 +71,16 @@ class Hotel extends Model
 
   public function Address()
   {
-    return $this->belongsTo('App\Models\HotelAddress', 'id', 'hotel_id');
+    // $ward_id = $this->ward_id;
+    // $province = Province::with("District")->whereHas("District", function ($query)   use ($ward_id) {
+    //   $query->whereHas("Ward", function ($query)   use ($ward_id) {
+    //       $query->where("id", $ward_id);
+    //   });
+    // })->get();
+    $ward = Ward::find($this->ward_id);
+    $district = District::find($ward->district_id);
+    $province = Province::find($district->province_id);
+    return $ward->name.", ".$district->name.", ".$province->name;
   }
 
   public function Room()
@@ -292,6 +301,10 @@ class Hotel extends Model
   public function Review()
   {
     return $this->hasMany('App\Models\Review', 'hotel_id', 'id');
+  }
+  public function Followers()
+  {
+    return $this->hasMany('App\Models\HotelFollowing', 'hotel_id', 'id');
   }
   public function getReviewPoint()
   {

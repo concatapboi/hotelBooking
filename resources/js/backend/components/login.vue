@@ -201,12 +201,12 @@
                       mask="##########"
                     ></v-text-field>
                     <v-text-field
-                      label="Số Fax"
+                      label="Chi nhánh ngân hàng"
                       v-validate="'required'"
                       class="pl-3"
-                      :error-messages="errors.collect('fax_number')"
-                      data-vv-name="fax_number"
-                      v-model="newHotelData.fax_number"
+                      :error-messages="errors.collect('bank')"
+                      data-vv-name="bank"
+                      v-model="newHotelData.bank"
                       outline
                     ></v-text-field>
                   </v-layout>
@@ -469,7 +469,7 @@ export default {
         credit_card: "",
         phone: "",
         tax_code: "",
-        fax_number: "",
+        bank: "",
         images: [],
         policy: {
           checkin: "",
@@ -570,8 +570,8 @@ export default {
           phone: {
             required: () => "Số điện thoại không được để trống"
           },
-          fax_number: {
-            required: () => "Số Fax không được để trống"
+          bank: {
+            required: () => "Chi nhánh ngân hàng không được để trống"
           },
           tax_code: {
             required: () => "Mã số thuế không được để trống"
@@ -701,7 +701,7 @@ export default {
               address: this.newHotelData.address,
               credit_card: this.newHotelData.credit_card,
               phone: this.newHotelData.phone,
-              fax_number: this.newHotelData.fax_number,
+              bank: this.newHotelData.bank,
               tax_code: this.newHotelData.tax_code,
               images: this.newHotelData.images,
               primaryId: this.primaryImage,
@@ -738,7 +738,7 @@ export default {
                   coin: 0,
                   credit_card: response.data.hotel.credit_card,
                   description: response.data.hotel.description,
-                  fax_number: response.data.hotel.fax_number,
+                  bank: response.data.hotel.bank,
                   email: response.data.hotel.email,
                   hotel_type: temp_hotel_type,
                   name: response.data.hotel.name,
