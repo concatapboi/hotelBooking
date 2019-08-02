@@ -485,6 +485,17 @@
         </v-layout>
       </v-card>
     </v-dialog>
+    <v-dialog persistent v-model="waiting" width="500px">
+      <v-layout fill-height align-center justify-center class="blue lighten-2" style="opacity:0.9">
+        <v-flex md5>
+          <v-img :aspect-ratio="1" src="/img/booking/load.gif">
+            <v-layout fill-height align-center justify-center>
+              <span class="pa-5 caption white--text font-weight-bold">đang xử lý...</span>
+            </v-layout>
+          </v-img>
+        </v-flex>
+      </v-layout>
+    </v-dialog>
     <v-snackbar
       v-model="snackbar.state"
       multi-line="multi-line"
@@ -573,7 +584,7 @@ export default {
       snackbar: {
         state: false,
         content: "",
-        timeout: 6000
+        timeout: 10000
       },
       year: new Date().getFullYear(),
       drawer: {
@@ -603,6 +614,7 @@ export default {
           }
         }
       },
+      waiting: false,
       place: "Hồ Chí Minh",
       now: this.$moment(new Date())
         .add(1, "days")
@@ -649,31 +661,27 @@ export default {
       this.$refs.form.reset();
       this.$validator.reset();
       this.login.value = false;
+      this.login.username = "";
     },
     checkIn: function(val) {
+      if(this.checkIn<= this.now) this.checkIn = this.$moment(new Date())
+        .add(1, "days")
+        .format("YYYY-MM-DD");
       if (this.checkIn >= this.checkOut) {
-        this.checkInFormatted = this.formatDate(this.checkIn);
         this.checkOut = this.$moment(this.checkIn)
           .add(1, "days")
           .format("YYYY-MM-DD");
-      } else {
-        this.checkInFormatted = this.formatDate(this.checkIn);
       }
-      // if (val < new Date().toISOString().substr(0, 10)) {
-      //   this.checkIn = new Date().toISOString().substr(0, 10);
-      //   this.checkInFormatted = this.formatDate(this.checkIn);
-      // } else this.checkInFormatted = this.formatDate(this.checkIn);
-      // if (this.checkIn >= this.checkOut) {
-      //   this.checkOut = this.getNextDate(val, 1);
-      //   this.checkOutFormatted = this.formatDate(this.checkOut);
-      // }
+      this.checkInFormatted = this.formatDate(this.checkIn);
+      this.checkOutFormatted = this.formatDate(this.checkOut);
     },
     checkOut: function(val) {
-      // if (val <= this.checkIn) {
-      //   this.checkOut = this.getNextDate(this.checkIn, 1);
-      //   this.checkOutFormatted = this.formatDate(this.checkOut);
-      // } else
+      if(this.checkOut <= this.now) 
+      this.checkOut = this.$moment(this.checkIn)
+          .add(1, "days")
+          .format("YYYY-MM-DD");
       this.checkOutFormatted = this.formatDate(this.checkOut);
+      this.checkInFormatted = this.formatDate(this.checkIn);
     }
   },
   mounted() {
@@ -740,6 +748,7 @@ export default {
     submitLogin: function() {
       this.$validator.validateAll("form1").then(valid => {
         if (valid) {
+          // this.waiting = true;
           axios({
             method: "post",
             url: "http://localhost:8000/api/login",
@@ -748,13 +757,18 @@ export default {
               password: this.login.password
             }
           }).then(res => {
+            console.log(res.data.errors)
+            this.waiting = false;
             if (!res.data.status) {
-              this.eventSnackbar("Đã xảy ra lỗi, thử lại!");
+              if(res.data.errors && res.data.errors.length >0)
+                this.eventSnackbar(res.data.errors);
+              else
+                this.eventSnackbar("Đã xảy ra lỗi, thử lại!");
               this.login.password = "";
               this.$validator.reset();
               return;
             }
-            // this.eventSnackbar("Login successfully!");
+            this.eventSnackbar("Chào mừng quay lại!");
             this.dialog = false;
             this.login.check = true;
             this.login.username = "";
@@ -792,6 +806,7 @@ export default {
     submitRegister: function() {
       this.$validator.validateAll("form2").then(valid => {
         if (valid) {
+          this.waiting = true;
           axios({
             method: "post",
             url: "http://localhost:8000/api/register",
@@ -804,14 +819,21 @@ export default {
               address: this.register.address
             }
           }).then(res => {
+            this.waiting = false;
             console.log(res.data.status);
             if (res.data.status) {
               this.registerDialog = false;
               this.eventSnackbar("Đăng ký thành công!");
               this.login.check = true;
             } else {
-              this.eventSnackbar("Đã xảy ra lỗi, thử lại!");
+              if(res.data.errors && res.data.errors.length >0)
+                this.eventSnackbar(res.data.errors);
+              else
+                this.eventSnackbar("Đã xảy ra lỗi, thử lại!");
             }
+          }).catch(error=>{
+            console.log(error.response);
+            console.log(error);
           });
         }
       });

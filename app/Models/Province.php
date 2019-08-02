@@ -9,6 +9,7 @@ class Province extends Model
   protected $table = 'province';
 
   protected $fillable = [
+    'id',
     'name',
     'code',
   ];

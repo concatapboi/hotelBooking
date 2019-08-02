@@ -227,12 +227,12 @@
                       mask="##########"
                     ></v-text-field>
                     <v-text-field
-                      label="Số Fax"
+                      label="Chi nhánh ngân hàng"
                       v-validate="''"
                       class="pl-3"
-                      :error-messages="errors.collect('fax_number')"
-                      data-vv-name="fax_number"
-                      v-model="newHotelData.fax_number"
+                      :error-messages="errors.collect('bank')"
+                      data-vv-name="bank"
+                      v-model="newHotelData.bank"
                       outline
                     ></v-text-field>
                   </v-layout>
@@ -542,11 +542,11 @@
               <v-flex xs8>{{hotel.tax_code}}</v-flex>
             </v-layout>
 
-            <v-layout row v-if="hotel.fax_number != null">
+            <v-layout row v-if="hotel.bank != null">
               <v-flex xs3 offset-xs1>
-                <h5>Số Fax</h5>
+                <h5>Chi nhánh ngân hàng</h5>
               </v-flex>
-              <v-flex xs8>{{hotel.fax_number}}</v-flex>
+              <v-flex xs8>{{hotel.bank}}</v-flex>
             </v-layout>
             <v-layout row>
               <v-flex xs3 offset-xs1>
@@ -642,7 +642,7 @@ export default {
         credit_card: "",
         phone: "",
         tax_code: "",
-        fax_number: "",
+        bank: "",
         images: [],
         policy: {
           checkin: "",
@@ -676,7 +676,7 @@ export default {
         credit_card: "",
         phone: "",
         tax_code: "",
-        fax_number: "",
+        bank: "",
         images: [],
         policy: {
           checkin: "",
@@ -761,8 +761,8 @@ export default {
           phone: {
             required: () => "Số điện thoại không được để trống"
           },
-          fax_number: {
-            required: () => "Số Fax không được để trống"
+          bank: {
+            required: () => "Chi nhánh ngân hàng không được để trống"
           },
           tax_code: {
             required: () => "Mã số thuế không được để trống"
@@ -1009,7 +1009,7 @@ export default {
               address: this.newHotelData.address,
               credit_card: this.newHotelData.credit_card,
               phone: this.newHotelData.phone,
-              fax_number: this.newHotelData.fax_number,
+              bank: this.newHotelData.bank,
               tax_code: this.newHotelData.tax_code,
               child_age: this.newHotelData.child_age,
               images: this.newHotelData.images,
@@ -1153,7 +1153,7 @@ export default {
       this.newHotelData.email = hotel.email;
       this.newHotelData.credit_card = hotel.credit_card;
       this.newHotelData.phone = hotel.phone;
-      this.newHotelData.fax_number = hotel.fax_number;
+      this.newHotelData.bank = hotel.bank;
       this.newHotelData.tax_code = hotel.tax_code;
       console.log(this.newHotelData);
       console.log(this.hotel);

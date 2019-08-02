@@ -9,6 +9,7 @@ class Ward extends Model
   protected $table = 'ward';
 
   protected $fillable = [
+    'id',
     'name',
     'district_id',
   ];

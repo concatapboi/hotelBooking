@@ -84,7 +84,7 @@ class HotelController extends Controller
             "address" => $request->address,
             "credit_card" => $request->credit_card,
             "phone_number" => $request->phone,
-            "fax_number" => $request->fax_number,
+            "bank" => $request->bank,
             "tax_code" => $request->tax_code,
             "stars_num" => $request->stars_num,
             "child_age" => $request->child_age,
@@ -100,7 +100,7 @@ class HotelController extends Controller
             'address' => 'required',
             'credit_card' => 'required',
             'phone_number' => 'required',
-            'fax_number' => 'required',
+            'bank' => 'required',
             'tax_code' => 'required',
             'child_age' => 'required',
         ]);
@@ -194,7 +194,7 @@ class HotelController extends Controller
             "address" => $request->address,
             "credit_card" => $request->credit_card,
             "phone_number" => $request->phone,
-            "fax_number" => $request->fax_number,
+            "bank" => $request->bank,
             "tax_code" => $request->tax_code,
             "stars_num" => $request->stars_num,
             "child_age" => $request->child_age,
@@ -209,7 +209,7 @@ class HotelController extends Controller
             'address' => 'required',
             'credit_card' => 'required',
             'phone_number' => 'required',
-            'fax_number' => 'required',
+            'bank' => 'required',
             'tax_code' => 'required',
             "child_age" => 'required',
         ]);
@@ -459,6 +459,11 @@ class HotelController extends Controller
         $hotelTypes = $request->hotelType;
         $price = $request->price;
         $roomTypes = $request->roomType;
+        if ($roomTypes  == null) {
+            foreach (RoomType::all() as $roomType) {
+                $roomTypes[] = $roomType->id;
+            }
+        }
         $checkIn = Carbon::createMidnightDate($checkIn);
         $checkOut = Carbon::createMidnightDate($checkOut);
         $data = [];
@@ -469,12 +474,12 @@ class HotelController extends Controller
                 });
             });
         });
-        $query = $this->filterByDate($query, $checkIn, $checkOut);
-        
+        $query = $this->filterByDate($query, $checkIn, $checkOut, $roomTypes);
+        return $query->get();
         if (is_array($districts) && sizeOf($districts) > 0) {
             $query = $this->filterByDistrict($query, $districts);
         }
-        
+
         if (is_array($stars) && sizeOf($stars) > 0) {
             $query = $this->filterByStar($query, $stars);
         }
@@ -483,9 +488,6 @@ class HotelController extends Controller
         }
         if (is_array($hotelTypes) && sizeOf($hotelTypes) > 0) {
             $query = $this->filterByHotelType($query, $hotelTypes);
-        }
-        if (is_array($roomTypes) && sizeOf($roomTypes) > 0) {
-            $query = $this->filterByRoomType($query, $roomTypes, $price);
         }
         if (is_array($price) && sizeOf($price) > 0) {
             $query = $this->filterByPrice($query, $price);
@@ -496,7 +498,7 @@ class HotelController extends Controller
             "data" => new HotelCollection($query->paginate(3)),
         ]);
     }
-    public function filterByDate($query, $checkIn, $checkOut)
+    public function filterByDate($query, $checkIn, $checkOut, $roomTypes)
     {
         $hotelIds = $query->get("id");
         $roomHaveBooking = Room::whereIn("hotel_id", $hotelIds)
@@ -507,29 +509,31 @@ class HotelController extends Controller
             ->whereDoesntHave("Booking")
             ->get("id");
         $ValidRoom = [];
-        foreach($roomDontHaveBooking as $room){
+        foreach ($roomDontHaveBooking as $room) {
             $ValidRoom[] = $room->id;
         }
         foreach ($roomHaveBooking as $room) {
-            $room_amount = $room->amount;
-            foreach ($room->booking as $booking) {
-                $bookingCheckin = Carbon::createMidnightDate($booking->check_in);
-                $bookingCheckout = Carbon::createMidnightDate($booking->check_out);
-                if ($checkIn->lessThanOrEqualTo($bookingCheckin)) {
-                    if ($checkOut->lessThanOrEqualTo($bookingCheckin)) {
-                        $room_amount++;
+            if (in_array($room->room_type_id, $roomTypes)) {
+                $room_amount = $room->amount;
+                foreach ($room->booking as $booking) {
+                    $bookingCheckin = Carbon::createMidnightDate($booking->check_in);
+                    $bookingCheckout = Carbon::createMidnightDate($booking->check_out);
+                    if ($checkIn->lessThanOrEqualTo($bookingCheckin)) {
+                        if ($checkOut->lessThanOrEqualTo($bookingCheckin)) {
+                            $room_amount++;
+                        }
                     }
-                }
-                if ($checkIn->greaterThanOrEqualTo($bookingCheckout)) {
-                    if ($checkOut->greaterThanOrEqualTo($bookingCheckout)) {
-                        $room_amount++;
+                    if ($checkIn->greaterThanOrEqualTo($bookingCheckout)) {
+                        if ($checkOut->greaterThanOrEqualTo($bookingCheckout)) {
+                            $room_amount++;
+                        }
                     }
+                    $room_amount -= $booking->room_amount;
                 }
-                $room_amount -= $booking->room_amount;
-            }
-            $room->amount = $room_amount;
-            if ($room->amount != 0) {
-                $ValidRoom[] = $room->id;
+                $room->amount = $room_amount;
+                if ($room->amount != 0) {
+                    $ValidRoom[] = $room->id;
+                }
             }
         }
         $ValidRoom = array_unique($ValidRoom);
@@ -558,14 +562,6 @@ class HotelController extends Controller
     public function filterByHotelType($query, $hotelTypes)
     {
         return $query->whereIn("hotel_type_id", $hotelTypes);
-    }
-    public function filterByRoomType($query, $roomTypes, $price)
-    {
-        return $query->whereHas("Room", function ($query) use ($roomTypes, $price) {
-            $query->whereIn("room_type_id", $roomTypes)->whereBetween("price", $price);
-            // ->whereHas("Booking")
-            // ->doesntHave("Booking","or");
-        });
     }
     public function filterByPrice($query, $price)
     {

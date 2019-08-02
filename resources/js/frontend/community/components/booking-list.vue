@@ -85,7 +85,7 @@
                             fab
                             depressed
                             color="grey"
-                            @click="b.expanded = false; reset()"
+                            @click="b.expanded = false; reset();search= radioSelected"
                           >
                             <v-icon color="white">keyboard_arrow_up</v-icon>
                           </v-btn>
@@ -572,6 +572,7 @@ export default {
           created_at: ""
         }
       },
+      radioSelected:"",
       tblHeaders: [
         {
           text: "Mã",
@@ -639,8 +640,9 @@ export default {
   },
   methods: {
     getDetail: function(booking) {
-      console.log(booking);
-      this.search = booking.check_in;
+      if(this.search.substr(0,11).localeCompare("bookingcode") !=0)
+        this.radioSelected = this.search;
+      this.search = "bookingcode"+booking.id;
       this.item.detail = true;
       (this.item.form = false), (this.item.review = false);
       this.booking = booking;
@@ -653,8 +655,9 @@ export default {
       this.code = "";
     },
     getReview: function(booking) {
-      console.log(booking);
-      this.search = booking.check_in;
+      if(this.search.substr(0,11).localeCompare("bookingcode") !=0)
+        this.radioSelected = this.search;
+      this.search = "bookingcode"+booking.id;
       this.item.review = true;
       this.item.detail = false;
       this.item.form = false;
@@ -662,7 +665,9 @@ export default {
       if (this.booking.review != null) this.review = booking.review;
     },
     formReview: function(booking) {
-      this.search = booking.check_in;
+      if(this.search.substr(0,11).localeCompare("bookingcode") !=0)
+        this.radioSelected = this.search;
+      this.search = "bookingcode"+booking.id;
       console.log(this.search);
       this.reviewData.title= "";
       this.reviewData.content ="";
@@ -675,10 +680,7 @@ export default {
       this.booking = booking;
     },
     sendReview: function() {
-      console.log(this.reviewData.can_comment);
       var index = this.bookingList.indexOf(this.booking);
-      console.log(index);
-      console.log(this.bookingList[index].review);
       this.$validator.validateAll("formReview").then(valid => {
         if (valid) {
           axios({
@@ -698,9 +700,6 @@ export default {
             }
           })
             .then(res => {
-              console.log(res.data);
-              console.log(this.bookingList[index]);
-              console.log(this.bookingList[index].can_review);
               if (res.data.status == true) {
                 this.bookingList[index].review = res.data.review;
                 this.bookingList[index].can_review = false;
@@ -722,7 +721,6 @@ export default {
             });
         }
       });
-      console.log(this.bookingList[index].review);
     },
     load: function() {
       axios({

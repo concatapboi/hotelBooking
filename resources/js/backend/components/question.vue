@@ -77,12 +77,12 @@
                     <v-card-text v-if="q.item.reply !=null">
                       <div>
                         <div>
-                          <span class="body-1 font-italic">"{{q.item.content}}"</span>
+                          <span class="body-1 font-italic">"{{q.item.reply.content}}"</span>
                         </div>
                         <div>
                           <span
                             class="caption pl-3"
-                          >-&nbsp;{{formatDate(q.item.created_at)}}</span>
+                          >-&nbsp;{{formatDate(q.item.reply.created_at)}}</span>
                         </div>
                       </div>
                     </v-card-text>
@@ -243,6 +243,7 @@ export default {
   },
   watch: {
     radio: function() {
+      this.search = "";
       switch (this.radio) {
         case 0:
           this.data = this.questionList;
@@ -275,7 +276,6 @@ export default {
       }
     },
     load: function() {
-      console.log(this.hotelId);
       axios({
         method: "get",
         url: "http://localhost:8000/api/manager/question",
@@ -296,13 +296,20 @@ export default {
             this.newQuestionList = res.data.newQuestions;
             this.data = this.questionList;
           } else {
-            this.$router.push({ name: "home" });
+            // this.$router.push({ name: "home" });
           }
         })
         .catch(error => {
           console.log(error.response);
           if (error.response.status == 401) {
             this.router.push({ name: "login" });
+          }
+        }).then(()=>{
+          if(this.$route.query.questionId && this.$route.query.questionId >0){
+            // this.radio = -1;
+            let questionId = this.$route.query.questionId;
+            let index = this.getIndex(this.questionList,questionId);
+            this.search = this.questionList[index].title;
           }
         });
     },

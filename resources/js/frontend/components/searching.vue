@@ -302,7 +302,7 @@
                           <span>đã kiểm chứng</span>
                         </v-tooltip>
                         </div>
-                        <div><v-icon small color="pink">room</v-icon><span>{{hotel.address}}</span></div>
+                        <div><v-icon small color="pink">room</v-icon><span>{{hotel.short_address}}</span></div>
                       </v-flex>
                       <v-flex md5 class="caption">
                         <div>
@@ -329,6 +329,9 @@
                           <span
                             class="body-2 font-weight-bold"
                           >{{hotel.maxPrice.toLocaleString('vi', {style: 'currency',currency: 'VND',})}}</span>
+                        </div>
+                        <div v-if="hotel.coupon_code>0">
+                          <v-chip color="red" class="white--text font-weight-bold body-2 pa-1">Còn mã giảm giá</v-chip>
                         </div>
                       </v-flex>
                       <v-flex md6 class="caption border-left border-light pl-4 ml-3">
@@ -433,6 +436,7 @@ export default {
       loading: false,
       noData: false,
       firstTime: true,
+      firstLoad: true,
       page: 1,
       // infiniteId: +new Date()
     };
@@ -443,6 +447,7 @@ export default {
     this.checkInFormattedVal = this.formatDate(this.$route.query.check_in);
     this.checkOutVal = this.$route.query.check_out;
     this.checkOutFormattedVal = this.formatDate(this.$route.query.check_out);
+    this.setSearchValue();
     this.addFilter();
   },
   watch: {
@@ -453,7 +458,10 @@ export default {
     checkOutVal: "loadSearchData",
     checkOut: "setSearchValue",
     starsSeleted: "addFilter",
-    districtSeleted: "addFilter",
+    "districtSeleted": function(){
+      if(this.districtSeleted == null) this.districtSeleted = [];
+      this.addFilter();
+    },
     serviceSeleted: "addFilter",
     hotelTypeSeleted: "addFilter",
     // price: "getData",
@@ -472,8 +480,6 @@ export default {
     },
     infiniteHandler: function($state) {
               this.page += 1;
-      console.log(this.infiniteId);
-      console.log(this.page);
       axios({
         method: "get",
         url: "http://localhost:8000/api/manager/searching",
@@ -533,28 +539,23 @@ export default {
       this.$emit("loadSearchData", {
         place: this.placeVal,
         checkIn: this.checkInVal,
-        checkInFormatted: this.checkInFormattedVal,
         checkOut: this.checkOutVal,
-        checkOutFormatted: this.checkOutFormattedVal
       });
     },
     setSearchValue: function() {
-      // this.placeVal = this.$route.query.place.replace(/\-/g, " ");
-      // this.checkInVal = this.$route.query.check_in;
-      // this.checkInFormattedVal = this.formatDate(this.$route.query.check_in);
-      // this.checkOutVal = this.$route.query.check_out;
-      // this.checkOutFormattedVal = this.formatDate(this.$route.query.check_out);
       this.placeVal = this.place;
       this.checkInVal = this.checkIn;
       this.checkOutVal = this.checkOut;
-      this.checkInFormattedVal = this.checkInFormatted;
-      this.checkOutFormattedVal = this.checkOutFormatted;
+      this.checkInFormattedVal = this.formatDate(this.checkIn);
+      this.checkOutFormattedVal = this.formatDate(this.checkOut);
     },
     formatDate: function(date) {
       if (!date) return null;
       return this.$moment(date).format("DD-MM-YYYY");
     },
     reSearch: function() {
+      this.districtSeleted = [];
+      this.arrayDistrict = [];
       this.$router.push({
         path: "searching",
         query: {
@@ -602,6 +603,12 @@ export default {
           this.loading = false;
           console.log(error.response);
           console.log(error);
+        }).then(()=>{
+          if(this.firstLoad == true){
+            if(this.$moment(this.checkIn).diff(this.now,'days')>=0 && this.$moment(this.checkIn).diff(this.now,'days')<3)
+              this.$emit("loadSnackbar","Bạn cần chú ý đến chính sách hủy phòng của nhà cung cấp, vì bạn đặt phòng quá cận ngày check-in. Thông thường ít nhất hơn 2 hoặc 3 ngày!");
+            this.firstLoad = false;
+          }
         });
     },
     initialize: function() {
@@ -611,6 +618,8 @@ export default {
       this.getRoomType();
     },
     getDisctrict: function() {
+      // let temp = this.arrayDistrict;
+      // this.arrayDistrict = [];
       axios
         .get("http://localhost:8000/api/district", {
           params: {
@@ -620,13 +629,16 @@ export default {
         .then(response => {
           console.log(response);
           if (response.data.status == false) {
+            // this.arrayDistrict = temp;
             this.showDistrict = false;
           } else {
             this.arrayDistrict = response.data.data;
             this.showDistrict = true;
           }
+          console.log(this.districtSeleted)
         })
         .catch(function(error) {
+          // this.arrayDistrict = temp;
           console.log(error);
         });
     },

@@ -123,21 +123,48 @@
               </div>
             </v-flex>
             <v-flex
+              :class="notification.read == false? `grey lighten-2`:`white`"
+              @click="markedNotification(notification)"
+              v-else-if="notification.coupon"
+            >
+              <div class="ml-3 my-2">
+                <v-layout class="pa-0 ma-0" align-center justify-start>
+                  <v-flex md2>
+                    <v-avatar size="42px" color="black">
+                      <v-avatar size="40px" color="white">
+                        <img :src="notification.hotel.image" />
+                      </v-avatar>
+                    </v-avatar>
+                  </v-flex>
+                  <v-flex>
+                    <div>{{notification.hotel.name}}</div>
+                  </v-flex>
+                  <v-spacer></v-spacer>
+                </v-layout>
+                <div class="font-weight-bold brown--text">"{{notification.message}}"</div>
+              </div>
+            </v-flex>
+            <v-flex
               md12
               :class="notification.read == false? `grey lighten-2`:`white`"
               @click="markedNotification(notification)"
               v-else
             >
               <div class="ml-3 my-2">
-                <v-avatar size="42px" color="black">
-                  <v-avatar size="40px" color="white">
-                    <img :src="'/img/user/'+notification.user.avatar" />
-                  </v-avatar>
-                </v-avatar>
-                <div>
-                  <div>{{notification.user.name}}</div>
-                  <div class="font-weight-bold teal--text">"{{notification.message}}"</div>
-                </div>
+                <v-layout class="pa-0 ma-0" align-center justify-start>
+                  <v-flex md2>
+                    <v-avatar size="42px" color="black">
+                      <v-avatar size="40px" color="white">
+                        <img :src="'/img/user/'+notification.user.avatar" />
+                      </v-avatar>
+                    </v-avatar>
+                  </v-flex>
+                  <v-flex>
+                    <div>{{notification.user.name}}</div>
+                  </v-flex>
+                  <v-spacer></v-spacer>
+                </v-layout>
+                <div class="font-weight-bold teal--text">"{{notification.message}}"</div>
               </div>
             </v-flex>
             <v-flex md12 v-if="i<notifications.list.length-1">
@@ -177,12 +204,22 @@
             <v-icon class="pointer" dark v-else>clear</v-icon>
           </v-avatar>
         </template>
-        <v-btn fab dark small color="orange" @click.stop="markedAllNotifications">
-          <v-icon>remove_red_eye</v-icon>
-        </v-btn>
-        <v-btn fab dark small color="red" @click.stop="deleteAllNotifications">
-          <v-icon>delete</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn fab dark small color="orange" @click.stop="markedAllNotifications" v-on="on">
+              <v-icon>remove_red_eye</v-icon>
+            </v-btn>
+          </template>
+          <span>Đánh dấu đã đọc</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-btn fab dark small color="red" @click.stop="deleteAllNotifications" v-on="on">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </template>
+          <span>Xóa thông báo</span>
+        </v-tooltip>
       </v-speed-dial>
       <v-avatar
         :color="drawer.iconColor"
@@ -352,6 +389,58 @@
         </v-layout>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="couponDetail.dialog" max-width="500">
+      <v-card flat title class="pa-2">
+        <v-card-title>
+          <v-layout class="pa-0 ma-0 border" align-center>
+            <v-flex md3>
+              <div
+                class="indigo--text text-md-center font-weight-black display-2"
+              >{{couponDetail.couponCode.discount_value}}%</div>
+            </v-flex>
+            <v-flex md8 offset-md1>
+              <v-layout row wrap class="border-left pa-0 ma-0 px-3" align-center>
+                <v-flex md4>
+                  <span class="caption">Mã Coupon:</span>
+                </v-flex>
+                <v-flex md6 offset-md1>
+                  <span class="font-weight-black brown--text title">"{{couponDetail.couponCode.code}}"</span>
+                </v-flex>
+                <v-flex md12>
+                  <span class="caption">Nội Dung:</span>                  
+                  <div class="mx-2 pl-1">
+                    <div>
+                      <span class="font-weight-black body-1">{{couponDetail.couponCode.title}}</span>
+                    </div>
+                    <div v-if="couponDetail.couponCode.content && couponDetail.couponCode.content.length>0">
+                      <span class="font-italic caption">"{{couponDetail.couponCode.content}}"</span>
+                    </div>
+                  </div>
+                </v-flex>
+                <v-flex md4>
+                  <span class="caption">Ngày Bắt Đầu:</span>
+                </v-flex>
+                <v-flex md6 offset-md1>
+                  <span class="font-weight-black caption">{{formatDate(couponDetail.couponCode.start_at)}}</span>
+                </v-flex>
+                <v-flex md4 v-if="couponDetail.couponCode.end_at && couponDetail.couponCode.end_at.length>0">
+                  <span class="caption">Ngày Kết Thúc:</span>
+                </v-flex>
+                <v-flex md6 v-if="couponDetail.couponCode.end_at && couponDetail.couponCode.end_at.length>0" offset-md1>
+                  <span class="font-weight-black caption">{{formatDate(couponDetail.couponCode.end_at)}}</span>
+                </v-flex>
+                <v-flex md4>
+                  <span class="caption">Số Lượng:</span>
+                </v-flex>
+                <v-flex md6 offset-md1>
+                  <span class="font-weight-black caption">{{couponDetail.couponCode.apply_amount}}</span>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+        </v-card-title>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -364,6 +453,11 @@ export default {
     return {
       fab: false,
       flag: false,
+      couponDetail: {
+        dialog: false,
+        couponCode:{},
+        hotel: {},
+      },
       dictionary: {
         custom: {
           username: {
@@ -387,7 +481,7 @@ export default {
       snackbar: {
         state: false,
         content: "",
-        timeout: 6000
+        timeout: 10000
       },
       hello: "hello",
       year: new Date().getFullYear(),
@@ -441,6 +535,9 @@ export default {
     window.Echo.channel("question").listen(".hotel-answer", e => {
       this.getNotifications();
     });
+    window.Echo.channel("coupon").listen(".new-coupon-code", e => {
+      this.getNotifications();
+    });
   },
   watch: {
     // call again the method if the route changes
@@ -476,10 +573,15 @@ export default {
         });
       }
     },
+    openCouponDetail: function(hotel,coupon){
+      this.couponDetail.hotel = hotel;
+      this.couponDetail.couponCode = coupon;
+      this.couponDetail.dialog = true;
+    },
     event: function(val) {
       this.hello = val;
     },
-    eventSnackbar: function(val) {
+    eventSnackbar: function(val) {      
       this.snackbar.state = !this.snackbar.state;
       this.snackbar.content = val + "";
     },
@@ -562,6 +664,9 @@ export default {
           })
             .then(res => {
               if (!res.data.status) {
+                if(res.data.errors && res.data.errors.length>0)
+                  this.eventSnackbar(res.data.errors);
+                else
                 this.eventSnackbar("Rất tiếc, thực hiện không thành công!");
                 this.login.check = false;
                 this.login.password = "";
@@ -649,6 +754,10 @@ export default {
         this.notifications.list = oldList;
         this.notifications.count = count;
       }
+    },    
+    formatDate: function(date) {
+      if (!date) return null;
+      return this.$moment(date).format("DD-MM-YYYY");
     },
     getIndex(id) {
       var number = 0;
@@ -658,6 +767,9 @@ export default {
       return number;
     },
     markedNotification: function(val) {
+      if(val.coupon){
+        this.openCouponDetail(val.hotel,val.coupon);
+      }
       if (val.read != true) {
         var index = this.getIndex(val.id);
         console.log(index);
@@ -675,7 +787,7 @@ export default {
           .then(res => {
             console.log(res.data);
             if (res.data.status == true) {
-              if (!val.answer) {
+              if (val.link) {
                 this.$router.push({
                   name: val.link.name,
                   query: { id: val.link.id }
@@ -700,7 +812,7 @@ export default {
             }
           });
       } else {
-        if (!val.answer)
+        if (val.link)
           this.$router.push({
             name: val.link.name,
             query: { id: val.link.id }

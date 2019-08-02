@@ -9,6 +9,7 @@ class District extends Model
   protected $table = 'district';
 
   protected $fillable = [
+    'id',
     'name',
     'province_id',
   ];

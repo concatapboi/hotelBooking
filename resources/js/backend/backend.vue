@@ -136,13 +136,15 @@
             <div v-for="(notification,i) in notifications.list" :key="i">
               <div v-if="notification.data.ask">
                 <v-layout row wrap class="mx-1 ma-0 caption grey lighten-2">
-                  <v-flex md12 class="ma-3">
-                    <div class="font-weight-bold purple--text">{{notification.data.message}}</div>
-                    <div class="pl-3 ml-1 border-left border-light">
-                      <div>{{notification.data.ask.title}}</div>
-                      <div class="font-italic">"{{notification.data.ask.content}}"</div>
-                    </div>
-                  </v-flex>
+                  <router-link :to="{name:'question',query:{hotelId: hotelId,questionId:notification.data.ask.id}}">
+                    <v-flex md12 class="ma-3">
+                      <div class="font-weight-bold purple--text">{{notification.data.message}}</div>
+                      <div class="pl-3 ml-1 border-left border-light">
+                        <div>{{notification.data.ask.title}}</div>
+                        <div class="font-italic">"{{notification.data.ask.content}}"</div>
+                      </div>
+                    </v-flex>
+                  </router-link>
                 </v-layout>
                 <v-divider dark></v-divider>
               </div>
@@ -307,7 +309,7 @@ export default {
       snackbar: {
         state: false,
         content: "",
-        timeout: 6000
+        timeout: 10000
       },
       loaded: false,
       items: [
