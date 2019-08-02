@@ -273,9 +273,9 @@
             </v-form>
           </v-card-text>
           <v-card-actions v-show="ask == false">
-            <v-btn>reset</v-btn>
-            <v-btn>Hủy</v-btn>
-            <v-btn @click="addBooking">Thêm</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn round depressed color="red" @click="bookingDialog = false" class="white--text">Hủy</v-btn>
+            <v-btn round depressed color="primary" @click="addBooking">Thêm</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -572,24 +572,24 @@
                   </v-flex>
                   <v-flex md9>: {{detailBooking.room_amount}}</v-flex>
                 </v-layout>
-                <v-layout row wrap>
+                <!-- <v-layout row wrap>
                   <v-flex md2 offset-md1>
                     <b>Mã phòng</b>
                   </v-flex>
                   <v-flex md9>: {{detailBooking.room_id}}</v-flex>
-                </v-layout>
+                </v-layout> -->
                 <v-layout row wrap>
                   <v-flex md2 offset-md1>
                     <b>phòng</b>
                   </v-flex>
-                  <v-flex md9>: {{detailBooking.room}}</v-flex>
+                  <v-flex md9>: <b>{{detailBooking.room.full_name}}</b></v-flex>
                 </v-layout>
-                <v-layout row wrap>
+                <!-- <v-layout row wrap>
                   <v-flex md2 offset-md1>
                     <b>Kiểu phòng</b>
                   </v-flex>
                   <v-flex md9>: {{detailBooking.room}}</v-flex>
-                </v-layout>
+                </v-layout> -->
                 <!-- <v-layout row wrap>
                   <v-flex md2 offset-md1>
                     <b>Loại phòng</b>
@@ -602,6 +602,13 @@
                   </v-flex>
                   <v-flex md9>: {{detailBooking.payment_method}}</v-flex>
                 </v-layout>
+                <v-layout row wrap>
+                  <v-flex md2 offset-md1>
+                    <b>Tổng giá</b>
+                  </v-flex>
+                  <v-flex md9>: {{(detailBooking.room_price * detailBooking.room_amount).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</v-flex>
+                </v-layout>
+                <!-- {{(booking.item.room_price * booking.item.room_amount).toLocaleString('vi', {style: 'currency',currency: 'VND'})}} -->
               </v-flex>
             </v-layout>
             <v-divider></v-divider>
@@ -664,7 +671,10 @@ export default {
       checkin2: null,
       checkout2: null,
       detailBooking: {
-        room_price: 0
+        room_price: 0,
+        room : {
+          full_name : ""
+        }
       },
       bookingList: [],
       search: "",
@@ -813,6 +823,7 @@ export default {
     ShowDetailBooking: function(item) {
       this.dialog = true;
       this.detailBooking = item;
+      console.log(this.detailBooking)
     },
     acceptBooking: function(booking) {
       var index = this.bookingList.indexOf(booking);

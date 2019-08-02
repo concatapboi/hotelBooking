@@ -609,6 +609,7 @@
   </div>
 </template>
 <script>
+import { constants } from 'crypto';
 export default {
   $_veeValidate: {
     validator: "new"
@@ -983,10 +984,10 @@ export default {
       if (this.newHotelData.policy.online == true) {
         if (this.newHotelData.policy.offline == true) {
           payment_method = 2;
-        } else {
+        } else if(this.newHotelData.policy.offline == false){
           payment_method = 1;
         }
-      } else {
+      } else if(this.newHotelData.policy.online == false){
         payment_method = 0;
       }
       console.log(this.newHotelData.images);
@@ -1027,6 +1028,7 @@ export default {
             }
           })
             .then(response => {
+              console.log(response)
               if (response.status == 401) {
                 this.logout;
               }
@@ -1034,11 +1036,12 @@ export default {
                 alert("can't update new hotel with this info");
                 console.log("cant");
               } else {
-                console.log(response);
                 this.snackbarText = response.data.message;
                 this.snackbar = true;
                 this.hotel = response.data.hotel;
                 this.dialog = false;
+                // this.hotel
+                
               }
               this.$emit("changeArrayHotel", _this.arrayHotel);
             })

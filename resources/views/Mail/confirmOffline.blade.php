@@ -283,21 +283,12 @@
                            </div>
                            <!-- END Spacer --><!-- Preheader -->
 
-                           <div class="text-header" style="color:#979797; font-family:Arial; font-size:10px; mso-line-height-rule:exactly; line-height:14px; text-align:right"><a class="link2-u" href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSRDCT&amp;_ei_=EgTpOV1Wxa6OLpMRnab9XjGZMDmwIozsT1X3B64G0xFlFArT9UdzzFSWa0qWzYuD0zg9HixxUKsiY8YQZhXGkO_1yUhklOjTFQc6Gj8UsHcWfQptb2z5B5P0IKcD61Y9epsQpA3NgZtoVo16idPw4uBjJLSJuiyKg6tVV1-w-eicIargDJx61DhSnZiKW3qRkwKl." style="color:#979797; text-decoration:underline" target="_blank"><span class="link2-u" style="color:#979797; text-decoration:underline">Book your Rover stay!</span></a> | <a class="link2-u" href="#" style="color:#979797; text-decoration:underline" target="_blank"><span class="link2-u" style="color:#979797; text-decoration:underline">View email with images</span></a>
-                           </div>
-                           <!-- END Preheader --><!-- Spacer -->
-
-                           <div style="font-size:0pt; line-height:0pt; height:17px"><img alt="" height="17" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:17px" width="1">
-                           </div>
-                           <!-- END Spacer -->
+                           
 
                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
                               <tbody>
                                  <tr><!-- Logo -->
-                                    <td class="column-310" valign="top" width="133">
-                                    <div class="logo" style="font-size:0pt; line-height:0pt; text-align:center"><a href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSSRTT&amp;_ei_=Eq2tf9zs59idfPO1Sc_9BblWPaVS2dtdm2Wj0kVsmIDoH3JhdDOJPvPtg3VU92rDttEEC4VQhZXrIN8J_Gs3N-u0A0." target="_blank"><img alt="Rover.com" border="0" height="50" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/135x50_rover_logo.png" width="135"></a>
-                                    </div>
-                                    </td>
+                                 <img src="{{asset("blog/img/core-img/logo.png")}}" alt="">
                                     <!-- END Logo -->
                                     <td class="m-td" style="font-size:0pt; line-height:0pt; text-align:left"></td>
                                     <td align="center" class="column-310" valign="top" width="410"><!-- Spacer -->
@@ -305,23 +296,7 @@
                                     </div>
                                     <!-- END Spacer --><!-- Navigation -->
 
-                                    <table border="0" cellpadding="0" cellspacing="0" class="mobile-100p">
-                                       <tbody>
-                                          <tr>
-                                             <td class="img-header" style="font-size:0pt; line-height:0pt; text-align:right" width="12"><img alt="" border="0" height="12" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/ico_search.png" width="12"></td>
-                                             <td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="3"></td>
-                                             <td class="text-header2" style="color:#666666; font-family:Arial; font-size:12px; mso-line-height-rule:exactly; line-height:16px; text-align:right; text-transform:uppercase; font-weight:bold; white-space:nowrap"><a class="link3" href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSSRWT&amp;_ei_=Eq2tf9zs59idfPO1Sc_9BblWPaVS2dtdm2Wj0kVsmIDoH3JhdDOJPvPtg3VU92rDttEEC4VQhZXrIN8J_Gs3N-u0A0." style="color:#666666; text-decoration:none" target="_blank"><span class="link3" style="color:#666666; text-decoration:none">SEARCH SITTERS</span></a></td>
-                                             <td class="w15" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-                                             <td class="img-header" style="font-size:0pt; line-height:0pt; text-align:right" width="12"><img alt="" border="0" height="12" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/ico_becomesitter.png" width="12"></td>
-                                             <td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="4"></td>
-                                             <td class="text-header2" style="color:#666666; font-family:Arial; font-size:12px; mso-line-height-rule:exactly; line-height:16px; text-align:right; text-transform:uppercase; font-weight:bold; white-space:nowrap"><a class="link3" href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSSRAT&amp;_ei_=Eq2tf9zs59idfPO1Sc_9BblWPaVS2dtdm2Wj0kVsmIDoH3JhdDOJPvPtg3VU92rDttEEC4VQhZXrIN8J_Gs3N-u0A0." style="color:#666666; text-decoration:none" target="_blank"><span class="link3" style="color:#666666; text-decoration:none">BECOME A SITTER</span></a></td>
-                                             <td class="w15" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-                                             <td class="img-header" style="font-size:0pt; line-height:0pt; text-align:right" width="14"><img alt="" border="0" height="14" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/ico_give20.png" width="14"></td>
-                                             <td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="4"></td>
-                                             <td class="text-header2" style="color:#666666; font-family:Arial; font-size:12px; mso-line-height-rule:exactly; line-height:16px; text-align:right; text-transform:uppercase; font-weight:bold; white-space:nowrap"><a class="link3" href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSSRCT&amp;_ei_=Eq2tf9zs59idfPO1Sc_9BblWPaVS2dtdm2Wj0kVsmIDoH3JhdDOJPvPtg3VU92rDttEEC4VQhZXrIN8J_Gs3N-u0A0." style="color:#666666; text-decoration:none" target="_blank"><span class="link3" style="color:#666666; text-decoration:none">GIVE $20, GET $20</span></a></td>
-                                          </tr>
-                                       </tbody>
-                                    </table>
+                                    
                                     <!-- END Navigation --></td>
                                  </tr>
                               </tbody>
@@ -422,13 +397,29 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                Số lượng
-                            </td>
-                            <td>
-                               : {{$booking->room_amount}}
-                            </td>
-                        </tr>
+                          <td>
+                              Số lượng phòng
+                          </td>
+                          <td>
+                             : {{$booking->room_amount}}
+                          </td>
+                      </tr>
+                      <tr>
+                        <td>
+                            Số đêm ở
+                        </td>
+                        <td>
+                           : {{$stay_days}} đêm
+                        </td>
+                    </tr>
+                      <tr>
+                        <td>
+                            Tổng giá
+                        </td>
+                        <td>
+                           : {{number_format($booking->room_price * $booking->room_amount * $stay_days *((100 - $booking->discount_value)/100))}}đ
+                        </td>
+                    </tr>
                     </table>
                 </td>
             </tr>  

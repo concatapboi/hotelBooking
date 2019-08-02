@@ -1,14 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" >
 
 <head>
   <meta charset="UTF-8">
   <title>Confirm booking</title>
-  
-  
-  
-  
-  
 </head>
 
 <body>
@@ -25,6 +20,11 @@
 </tbody></table>
 <custom name="opencounter" type="tracking">
 <style media="screen" type="text/css">/* Linked Styles */
+.chitietphong{
+  height: 100%;
+  border: 1px solid black;
+  padding-left: 20px;
+}
         body {
           padding:0 !important;
           margin:0 !important;
@@ -283,21 +283,12 @@
                            </div>
                            <!-- END Spacer --><!-- Preheader -->
 
-                           <div class="text-header" style="color:#979797; font-family:Arial; font-size:10px; mso-line-height-rule:exactly; line-height:14px; text-align:right"><a class="link2-u" href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSRDCT&amp;_ei_=EgTpOV1Wxa6OLpMRnab9XjGZMDmwIozsT1X3B64G0xFlFArT9UdzzFSWa0qWzYuD0zg9HixxUKsiY8YQZhXGkO_1yUhklOjTFQc6Gj8UsHcWfQptb2z5B5P0IKcD61Y9epsQpA3NgZtoVo16idPw4uBjJLSJuiyKg6tVV1-w-eicIargDJx61DhSnZiKW3qRkwKl." style="color:#979797; text-decoration:underline" target="_blank"><span class="link2-u" style="color:#979797; text-decoration:underline">Book your Rover stay!</span></a> | <a class="link2-u" href="#" style="color:#979797; text-decoration:underline" target="_blank"><span class="link2-u" style="color:#979797; text-decoration:underline">View email with images</span></a>
-                           </div>
-                           <!-- END Preheader --><!-- Spacer -->
-
-                           <div style="font-size:0pt; line-height:0pt; height:17px"><img alt="" height="17" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:17px" width="1">
-                           </div>
-                           <!-- END Spacer -->
+                           
 
                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
                               <tbody>
                                  <tr><!-- Logo -->
-                                    <td class="column-310" valign="top" width="133">
-                                    <div class="logo" style="font-size:0pt; line-height:0pt; text-align:center"><a href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSSRTT&amp;_ei_=Eq2tf9zs59idfPO1Sc_9BblWPaVS2dtdm2Wj0kVsmIDoH3JhdDOJPvPtg3VU92rDttEEC4VQhZXrIN8J_Gs3N-u0A0." target="_blank"><img alt="Rover.com" border="0" height="50" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/135x50_rover_logo.png" width="135"></a>
-                                    </div>
-                                    </td>
+                                 <img src="{{asset("blog/img/core-img/logo.png")}}" alt="">
                                     <!-- END Logo -->
                                     <td class="m-td" style="font-size:0pt; line-height:0pt; text-align:left"></td>
                                     <td align="center" class="column-310" valign="top" width="410"><!-- Spacer -->
@@ -305,23 +296,7 @@
                                     </div>
                                     <!-- END Spacer --><!-- Navigation -->
 
-                                    <table border="0" cellpadding="0" cellspacing="0" class="mobile-100p">
-                                       <tbody>
-                                          <tr>
-                                             <td class="img-header" style="font-size:0pt; line-height:0pt; text-align:right" width="12"><img alt="" border="0" height="12" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/ico_search.png" width="12"></td>
-                                             <td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="3"></td>
-                                             <td class="text-header2" style="color:#666666; font-family:Arial; font-size:12px; mso-line-height-rule:exactly; line-height:16px; text-align:right; text-transform:uppercase; font-weight:bold; white-space:nowrap"><a class="link3" href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSSRWT&amp;_ei_=Eq2tf9zs59idfPO1Sc_9BblWPaVS2dtdm2Wj0kVsmIDoH3JhdDOJPvPtg3VU92rDttEEC4VQhZXrIN8J_Gs3N-u0A0." style="color:#666666; text-decoration:none" target="_blank"><span class="link3" style="color:#666666; text-decoration:none">SEARCH SITTERS</span></a></td>
-                                             <td class="w15" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-                                             <td class="img-header" style="font-size:0pt; line-height:0pt; text-align:right" width="12"><img alt="" border="0" height="12" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/ico_becomesitter.png" width="12"></td>
-                                             <td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="4"></td>
-                                             <td class="text-header2" style="color:#666666; font-family:Arial; font-size:12px; mso-line-height-rule:exactly; line-height:16px; text-align:right; text-transform:uppercase; font-weight:bold; white-space:nowrap"><a class="link3" href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSSRAT&amp;_ei_=Eq2tf9zs59idfPO1Sc_9BblWPaVS2dtdm2Wj0kVsmIDoH3JhdDOJPvPtg3VU92rDttEEC4VQhZXrIN8J_Gs3N-u0A0." style="color:#666666; text-decoration:none" target="_blank"><span class="link3" style="color:#666666; text-decoration:none">BECOME A SITTER</span></a></td>
-                                             <td class="w15" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-                                             <td class="img-header" style="font-size:0pt; line-height:0pt; text-align:right" width="14"><img alt="" border="0" height="14" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/ico_give20.png" width="14"></td>
-                                             <td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="4"></td>
-                                             <td class="text-header2" style="color:#666666; font-family:Arial; font-size:12px; mso-line-height-rule:exactly; line-height:16px; text-align:right; text-transform:uppercase; font-weight:bold; white-space:nowrap"><a class="link3" href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSSRCT&amp;_ei_=Eq2tf9zs59idfPO1Sc_9BblWPaVS2dtdm2Wj0kVsmIDoH3JhdDOJPvPtg3VU92rDttEEC4VQhZXrIN8J_Gs3N-u0A0." style="color:#666666; text-decoration:none" target="_blank"><span class="link3" style="color:#666666; text-decoration:none">GIVE $20, GET $20</span></a></td>
-                                          </tr>
-                                       </tbody>
-                                    </table>
+                                    
                                     <!-- END Navigation --></td>
                                  </tr>
                               </tbody>
@@ -364,202 +339,95 @@
          </div>
          <!-- Headline -->
 
-         <div class="h2-center" style="padding-right:40px; padding-left:40px; color:#6b6b6b; font-family:Arial; font-size:26px; mso-line-height-rule:exactly; line-height:32px; text-align:center">Cảm ơn bạn đã đặt phòng tại khách sạn {{$booking->hotel_name}}
+         <div class="h2-center" style="padding-right:40px; padding-left:40px; color:#6b6b6b; font-family:Arial; font-size:26px; mso-line-height-rule:exactly; line-height:32px; text-align:center">Cảm ơn bạn đã đặt phòng tại <h5>{{$booking->hotel_name}}</h5>
          </div>
          <!-- END Headline -->
 
          <div style="font-size:0pt; line-height:0pt; height:20px"><img alt="" height="20" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:20px" width="1">
          </div>
-         <!-- Sub Head -->
-
-         <div class="h3-center" style="color:#9b9b9b; font-family:Arial; font-size:20px; mso-line-height-rule:exactly; line-height:26px; text-align:center">Smiles Davis + Tycho = <img alt="" border="0" height="22" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/ico_red_heart.png" title="" width="23">
-         </div>
-         <!-- END Sub Head -->
-
-         <div style="font-size:0pt; line-height:0pt; height:30px"><img alt="" height="30" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:30px" width="1">
-         </div>
-         <!-- Button -->
-
-         <div class="img-center" style="font-size:0pt; line-height:0pt; text-align:center"><a href="#" target="_blank"><img alt="Confirm this stay now" border="0" height="55" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/270x55_button_confirmthisstay.jpg" title="" width="270"></a>
-         </div>
-         <!-- END Button -->
+        
 
          <div style="font-size:0pt; line-height:0pt; height:30px"><img alt="" height="30" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:30px" width="1">
          </div>
          <!-- Headline -->
 
-         <div class="h2-center" style="padding-right:40px; padding-left:40px; color:#6b6b6b; font-family:Arial; font-size:26px; mso-line-height-rule:exactly; line-height:32px; text-align:center">Here are the details:
+         <div class="h2-center" style="padding-right:40px; padding-left:40px; color:#6b6b6b; font-family:Arial; font-size:26px; mso-line-height-rule:exactly; line-height:32px; text-align:center">Chi tiết đơn đặt phòng:
          </div>
          <!-- END Headline -->
-
-         <div style="font-size:0pt; line-height:0pt; height:20px"><img alt="" height="20" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:20px" width="1">
-         </div>
-         <!-- Date -->
-
-         <div class="h2-center" style="color:#6b6b6b; font-family:Arial; font-size:16px; mso-line-height-rule:exactly; line-height:22px; text-align:center"><strong>Dates:</strong>
-         </div>
-         <!-- END Date --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:3px"><img alt="" height="3" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:3px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Date Range -->
-
-         <div class="h2-center" style="color:#6b6b6b; font-family:Arial; font-size:16px; mso-line-height-rule:exactly; line-height:22px; text-align:center">12/29/17 to 1/1/18
-         </div>
-         <!-- END Date Range --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:20px"><img alt="" height="20" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:20px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Location -->
-
-         <div class="h2-center" style="color:#6b6b6b; font-family:Arial; font-size:16px; mso-line-height-rule:exactly; line-height:22px; text-align:center"><strong>Location:</strong>
-         </div>
-         <!-- END Location --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:3px"><img alt="" height="3" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:3px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Sitter Name or Home -->
-
-         <div class="h2-center" style="color:#6b6b6b; font-family:Arial; font-size:16px; mso-line-height-rule:exactly; line-height:22px; text-align:center">Your home
-         </div>
-         <!-- END Sitter Name or Home --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:20px"><img alt="" height="20" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:20px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Total Amount -->
-
-         <div class="h2-center" style="color:#6b6b6b; font-family:Arial; font-size:16px; mso-line-height-rule:exactly; line-height:22px; text-align:center"><strong>Total Amount:</strong>
-         </div>
-         <!-- END Total Amount --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:3px"><img alt="" height="3" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:3px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Amount -->
-
-         <div class="h2-center" style="color:#6b6b6b; font-family:Arial; font-size:16px; mso-line-height-rule:exactly; line-height:22px; text-align:center">$65.50
-         </div>
-         <!-- END Amount --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:30px"><img alt="" height="30" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:30px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Divider -->
-
-         <div style="font-size:0pt; line-height:0pt; height:1px; background:#cacaca; "><img alt="" height="1" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:1px" width="1">
-         </div>
-         <!-- END Divider --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:15px"><img alt="" height="15" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:15px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Three CTAs -->
-
-         <table border="0" cellpadding="0" cellspacing="0" width="100%">
-            <tbody>
-               <tr>
-                  <td class="em-hide" style="font-size:0pt; line-height:0pt; text-align:left" width="40"></td>
-                  <td align="center" class="column-292" width="192">
-                  <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                     <tbody>
-                        <tr>
-                           <td align="center" height="50">
-                           <table border="0" cellpadding="0" cellspacing="0">
-                              <tbody>
-                                 <tr><!-- Icon -->
-                                    <td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="7">
-                                    <div style="font-size:0pt; line-height:0pt; height:2px"><img alt="" height="2" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:2px" width="1">
-                                    </div>
-                                    <!-- END Icon --><img alt="" border="0" height="22" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/ico_decline_small.png" width="22"> <!-- END Arrow --></td>
-                                    <td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="10"></td>
-                                    <!-- CTA -->
-                                    <td class="h5" style="padding-top:6px; color:#6b6b6b; font-family:Arial; font-size:15px; mso-line-height-rule:exactly; line-height:16px; text-align:left"><a class="link4" href="#" style="color:#C51515; text-decoration:none" target="_blank"><span class="link4" style="color:#C51515; text-decoration:none">Decline This Request</span></a></td>
-                                    <!-- END CTA -->
-                                 </tr>
-                              </tbody>
-                           </table>
-                           </td>
-                        </tr>
-                     </tbody>
-                  </table>
-
-                  <div style="font-size:0pt; line-height:0pt; height:15px"><img alt="" height="15" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:15px" width="1">
-                  </div>
+         <!-- noidung -->    
+         <table width="100%" height="300px">
+            <tr>
+                <td width="30%" height="100%"><img height="200px" width="200px" src="{{asset("images/room/".$image->image_link)}}" alt="">
                   </td>
-                  <td class="m-td" style="font-size:0pt; line-height:0pt; text-align:left" width="12"></td>
-                  <td class="column-292" width="192">
-                  <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                     <tbody>
+                <td width="70%" height="100%">
+                    <table class="chitietphong" width="100%" >
                         <tr>
-                           <td align="center" height="50">
-                           <table border="0" cellpadding="0" cellspacing="0">
-                              <tbody>
-                                 <tr><!-- Icon -->
-                                    <td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="7">
-                                    <div style="font-size:0pt; line-height:0pt; height:2px"><img alt="" height="2" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:2px" width="1">
-                                    </div>
-                                    <!-- END Icon --><img alt="" border="0" height="22" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/ico_message_small.png" width="22"> <!-- END Arrow --></td>
-                                    <td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="10"></td>
-                                    <!-- CTA -->
-                                    <td class="h5" style="padding-top:6px; color:#6b6b6b; font-family:Arial; font-size:15px; mso-line-height-rule:exactly; line-height:16px; text-align:left"><a class="link4" href="#" style="color:#14A4BE; text-decoration:none" target="_blank"><span class="link4" style="color:#14A4BE; text-decoration:none">Send a Message</span></a></td>
-                                    <!-- END CTA -->
-                                 </tr>
-                              </tbody>
-                           </table>
-                           </td>
+                            <td>
+                                <b>Check-in </b>
+                            </td>
+                            <td>
+                                :<b>{{$booking->check_in}}</b>
+                                {{-- {{$booking->check_in}} --  {{$booking->check_out}}  --}}
+                            </td>
                         </tr>
-                     </tbody>
-                  </table>
+                        <tr>
+                            <td>
+                               
+                                <b>Check-Out</b>
+                            </td>
+                            <td>
+                              :<b> {{$booking->check_out}}</b>
+                            </td>
+                        </tr>
+                        <tr style="margin-top:50px">
+                            <td>
+                                Tên phòng
+                            </td>
+                            <td>
+                                :{{$room->room_name}}
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                Giá phòng
+                            </td>
+                            <td>
+                                :{{number_format($booking->room_price)}}đ
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Số lượng phòng
+                            </td>
+                            <td>
+                               : {{$booking->room_amount}}
+                            </td>
+                        </tr>
+                        <tr>
+                          <td>
+                              Số đêm ở
+                          </td>
+                          <td>
+                             : {{$stay_days}} đêm
+                          </td>
+                      </tr>
+                        <tr>
+                          <td>
+                              Tổng giá
+                          </td>
+                          <td>
+                             : {{number_format($booking->room_price * $booking->room_amount * $stay_days *((100 - $booking->discount_value)/100))}}đ
+                          </td>
+                      </tr>
+                    </table>
+                </td>
+            </tr>  
+                
+         </table>      
+        <!-- noidung -->
 
-                  <div style="font-size:0pt; line-height:0pt; height:15px"><img alt="" height="15" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:15px" width="1">
-                  </div>
-                  </td>
-                  <td class="em-hide" style="font-size:0pt; line-height:0pt; text-align:right" width="40"></td>
-               </tr>
-            </tbody>
-         </table>
-         <!-- END Three CTAS --><!-- Divider -->
-
-         <div style="font-size:0pt; line-height:0pt; height:1px; background:#cacaca; "><img alt="" height="1" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:1px" width="1">
-         </div>
-         <!-- END Divider --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:30px"><img alt="" height="30" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:30px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Headline -->
-
-         <div class="h2-center" style="padding-right:40px; padding-left:40px; color:#6b6b6b; font-family:Arial; font-size:18px; mso-line-height-rule:exactly; line-height:26px; text-align:center">All stays booked and paid for through Rover receive premium insurance, 24/7 emergency support, and our reservation guarantee.
-         </div>
-         <!-- END Headline --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:30px"><img alt="" height="30" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:30px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Divider -->
-
-         <div style="font-size:0pt; line-height:0pt; height:1px; background:#cacaca; "><img alt="" height="1" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:1px" width="1">
-         </div>
-         <!-- END Divider --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:20px"><img alt="" height="20" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:20px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Banner -->
-
-         <div class="content-width-img2" style="font-size:0pt; line-height:0pt; text-align:center"><a href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSSWCT&amp;_ei_=Eq2tf9zs59idfPO1Sc_9BblWPaVS2dtdm2Wj0kVsmIDoH3JhdDOJPvPtg3VU92rDttEEC4VQhZXrIN8J_Gs3N-u0A0." target="_blank"><img alt="" border="0" height="150" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/600x150_bookit_banner_referfriend.jpg" title="Be the best friend ever. Give $20, get $20." width="600"></a>
-         </div>
-         <!-- END Banner --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:20px"><img alt="" height="20" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:20px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Divider -->
-
-         <div style="font-size:0pt; line-height:0pt; height:1px; background:#cacaca; "><img alt="" height="1" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:1px" width="1">
-         </div>
-         <!-- END Divider --><!-- Spacer -->
-
-         <div style="font-size:0pt; line-height:0pt; height:20px"><img alt="" height="20" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:20px" width="1">
-         </div>
-         <!-- END Spacer --><!-- Banner -->
-
-         <div class="content-width-img2" style="font-size:0pt; line-height:0pt; text-align:center"><a href="https://e.rover.com/pub/cc?_ri_=X0Gzc2X%3DYQpglLjHJlTQGjdruOF6zde6BvfKC0lANakkOWsekJElNfLSN7IoWgFwAhtIO3yzeMVXtpKX%3DYSSYRT&amp;_ei_=Eq2tf9zs59idfPO1Sc_9BblWPaVS2dtdm2Wj0kVsmIDoH3JhdDOJPvPtg3VU92rDttEEC4VQhZXrIN8J_Gs3N-u0A0." target="_blank"><img alt="" border="0" height="150" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/600x150_bookit_banner_dailytreat.jpg" title="Get your Daily Treat! All the news that's fit to bark." width="600"></a>
-         </div>
-         <!-- END Banner --><!-- Spacer -->
+         
 
          <div style="font-size:0pt; line-height:0pt; height:20px"><img alt="" height="20" src="https://static.cdn.responsys.net/i2/responsysimages/rover/contentlibrary/transactional/owner/img/empty.gif" style="height:20px" width="1">
          </div>

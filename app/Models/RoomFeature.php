@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RoomFeature extends Model
 {
-  use SoftDeletes;
   protected $table = 'room_feature';
 
   protected $fillable = [
+    'id',
     'feature_id',
     'room_id',
   ];

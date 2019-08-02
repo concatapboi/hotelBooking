@@ -17,6 +17,7 @@ use App\Mail\AcceptOrderOffline;
 use App\Models\Customer;
 use App\Events\AcceptBooking;
 use App\Events\MessageSentEvent;
+use App\Mail\PaymentRequest;
 
 class BookingController extends Controller
 {
@@ -166,16 +167,25 @@ class BookingController extends Controller
         $booking = Booking::find($request->bookingId);
         $room = Room::find($booking->room_id);
         $room_image = RoomImage::where("room_id", $room->id)->where("is_primary", 1)->first();
+        $checkin = new Carbon($booking->check_in);
+        $checkout = new Carbon($booking->check_out);
+        $stay_days = $checkin->diffInDays($checkout);
         $customer = Customer::find($booking->customer_id)->ofUser;
-        broadcast(new AcceptBooking($booking));
+        // broadcast(new AcceptBooking($booking));
         // return (new AcceptOrderOffline($booking, $room, $room_image))->render();
 
         if ($booking->PaymentMethod->id == 1) {
             $booking->update(["status_id" => 4]);
-            Mail::to($request->user())->queue(new AcceptOrderOffline($booking, $room, $room_image));
+            Mail::to($request->user())->queue(new AcceptOrderOffline($booking, $room, $room_image, $stay_days));
         } elseif ($booking->PaymentMethod->id == 2) {
             $booking->update(["status_id" => 2]);
-            Mail::to($request->user())->queue(new AcceptOrderOnline($booking, $room, $room_image));
+            $booking->hotel = Hotel::find($room->hotel_id);
+            $booking->hotel->policy = Hotel::find($room->hotel_id)->Policy;
+            $booking->customer = User::find($booking->customer_id)->name;
+            return (new PaymentRequest($booking, $room, $room_image, $room->Hotel->credit_card, $stay_days))->render();
+            // return $room->Hotel->credit_card;
+            // return (new AcceptOrderOnline($booking, $room, $room_image,$room->Hotel->credit_card,$stay_days))->render();
+            // Mail::to($request->user())->queue(new AcceptOrderOnline($booking, $room, $room_image, $room->Hotel->credit_card));
         }
         return response()->json([
             "status" => true,
@@ -267,8 +277,8 @@ class BookingController extends Controller
             "data" => $result,
         ]);
     }
-    public function MonthReview(Request $request)
-    {
-        # code...
-    }
+    // public function MonthReview(Request $request)
+    // {
+    //     # code...
+    // }
 }

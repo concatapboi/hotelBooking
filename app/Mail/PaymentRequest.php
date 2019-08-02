@@ -6,11 +6,11 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Models\Room;
 use App\Models\Booking;
+use App\Models\Room;
 use App\Models\RoomImage;
 
-class AcceptOrderOffline extends Mailable
+class PaymentRequest extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -19,16 +19,18 @@ class AcceptOrderOffline extends Mailable
      *
      * @return void
      */
+    public $credit_card;
     public $booking;
     public $room;
     public $image;
     public $stay_days;
-    public function __construct(Booking $booking,Room $room,RoomImage $image,$stay_days)
+    public function __construct(Booking $booking,Room $room,RoomImage $image,$credit_card,$stay_days)
     {
         $this->booking = $booking;
         $this->room = $room;
         $this->image = $image;
         $this->stay_days = $stay_days;
+        $this->credit_card = $credit_card;
     }
 
     /**
@@ -38,6 +40,6 @@ class AcceptOrderOffline extends Mailable
      */
     public function build()
     {
-        return $this->view('Mail.confirmOffline');
+        return $this->view('Mail.paymentRequest');
     }
 }
