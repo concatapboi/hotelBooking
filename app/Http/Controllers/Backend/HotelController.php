@@ -39,6 +39,7 @@ class HotelController extends Controller
     public function index(Request $request)
     {
         $arrayHotelRaw = Auth::user()->HotelManager->first()->Hotel;
+        // return Auth::user()->HotelManager->first();
         $arrayHotel = [];
         $panel = [];
         foreach ($arrayHotelRaw as $key => $hotel) {
@@ -76,7 +77,6 @@ class HotelController extends Controller
             "email" => $request->email,
             "meta_name" => preg_replace("/\s+/", "-", trim($request->name)),
             "hotel_type_id" => $request->hotelType,
-            "hotel_manager_id" => $request->hotel_manager_id,
             "description" => $request->description,
             "province" => $request->province,
             "district" => $request->district,
@@ -110,6 +110,7 @@ class HotelController extends Controller
                 "errors" => $validator->errors(),
             ]);
         }
+        $data["hotel_manager_id"] = Auth::user()->id;
         $hotel = Hotel::create($data);
         $images = $request->images;
         $length = sizeof($images);
@@ -475,7 +476,6 @@ class HotelController extends Controller
             });
         });
         $query = $this->filterByDate($query, $checkIn, $checkOut, $roomTypes);
-        return $query->get();
         if (is_array($districts) && sizeOf($districts) > 0) {
             $query = $this->filterByDistrict($query, $districts);
         }

@@ -566,7 +566,10 @@ export default {
       })
         .then(response => {
           console.log(response);
-          this.numberOfNewNoti -= 1;
+          if(response.data.status == true){
+            this.numberOfNewNoti -= 1;
+          }
+          
         })
         .catch(error => {
           console.log(error.response);

@@ -37,6 +37,7 @@ class AuthController extends Controller
 		} else {
 			$user = Auth::user();
 			if ($user->getCustomer === null) {
+				$id = $user->id;
 				if ($user->isHotelManager() == true) {
 					$role = "manager";
 				} else {
@@ -46,7 +47,8 @@ class AuthController extends Controller
 					[
 						'role' => $role,
 						'token' => $token,
-						'status' => true
+						'status' => true,
+						'id' => $id,
 					]
 				);
 			} else {

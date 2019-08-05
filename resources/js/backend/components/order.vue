@@ -320,7 +320,7 @@
             <td class="text-xs-center">{{booking.item.check_out}}</td>
             <td
               class="text-xs-center"
-            >{{(booking.item.room_price * booking.item.room_amount).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</td>
+            >{{(booking.item.total_price).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</td>
             <td class="text-xs-center">
               <!-- <v-btn round color="warning" :ripple="false" depressed small></v-btn> -->
               <span v-if="booking.item.status_id == 1">
@@ -572,6 +572,12 @@
                   </v-flex>
                   <v-flex md9>: {{detailBooking.room_amount}}</v-flex>
                 </v-layout>
+                 <v-layout row wrap>
+                  <v-flex md2 offset-md1>
+                    <b>Số đêm ở</b>
+                  </v-flex>
+                  <v-flex md9>: {{detailBooking.stay_days}}</v-flex>
+                </v-layout>
                 <!-- <v-layout row wrap>
                   <v-flex md2 offset-md1>
                     <b>Mã phòng</b>
@@ -602,11 +608,12 @@
                   </v-flex>
                   <v-flex md9>: {{detailBooking.payment_method}}</v-flex>
                 </v-layout>
+                
                 <v-layout row wrap>
                   <v-flex md2 offset-md1>
                     <b>Tổng giá</b>
                   </v-flex>
-                  <v-flex md9>: {{(detailBooking.room_price * detailBooking.room_amount).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</v-flex>
+                  <v-flex md9>: {{(detailBooking.total_price).toLocaleString('vi', {style: 'currency',currency: 'VND'})}}</v-flex>
                 </v-layout>
                 <!-- {{(booking.item.room_price * booking.item.room_amount).toLocaleString('vi', {style: 'currency',currency: 'VND'})}} -->
               </v-flex>
@@ -674,7 +681,9 @@ export default {
         room_price: 0,
         room : {
           full_name : ""
-        }
+        },
+        stay_days : 0,
+        total_price : 0,
       },
       bookingList: [],
       search: "",
