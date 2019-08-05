@@ -16,11 +16,13 @@ class BookingCreatedConfirm extends Mailable
      *
      * @return void
      */
-    public $user,$booking;
-    public function __construct($user,$booking)
+    public $user,$booking,$place,$days;
+    public function __construct($user,$booking,$place,$days)
     {
         $this->user = $user;
         $this->booking = $booking;
+        $this->days = $days;
+        $this->place = $place;
     }
 
     /**

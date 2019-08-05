@@ -34,19 +34,6 @@ class ReviewController extends Controller
         $data = new ReviewCollection($reviewList->paginate(2));
         return $data;
     }
-    public function filterByRoomType($array, $roomTypes)
-    {
-        $data = array();
-        foreach ($array as $hotel) {
-            $temp = $hotel;
-            if ($hotel->countRoomByTypes($roomTypes) > 0) {
-                $temp->count = $hotel->countRoomByTypes($roomTypes);
-                $data[] = $temp;
-            }
-        }
-        $data = collect($data)->sortByDesc('count');
-        return $data->values();
-    }
     //get review/create
     public function create(Request $req)
     {
@@ -100,14 +87,7 @@ class ReviewController extends Controller
             'review' => $review,
         ]);
     }
-
-    //post review
-    public function store()
-    {
-        return;
-    }
-
-    //get review/{hotels}
+    //get review/{review}
     public function show($id)
     {
         $review = Review::find($id);
@@ -133,13 +113,6 @@ class ReviewController extends Controller
             'review' => $review
         ]);
     }
-
-    //review/{review}/edit
-    public function edit($id)
-    {
-        return;
-    }
-
     //put/patch review/{review}
     public function update($id)
     {
@@ -159,11 +132,5 @@ class ReviewController extends Controller
         return response()->json([
             'status' => $status
         ]);
-    }
-
-    //delete review/{review}
-    public function destroy($id)
-    {
-        return;
     }
 }

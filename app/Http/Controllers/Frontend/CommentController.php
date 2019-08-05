@@ -21,12 +21,6 @@ use App\Notifications\CommentNotification;
 
 class CommentController extends Controller
 {
-    //get comment
-    public function index()
-    {
-        return;
-    }
-
     //get comment/create
     public function store(Request $req)
     {
@@ -71,40 +65,9 @@ class CommentController extends Controller
         foreach ($customer_review as $customer) {
             User::find($customer->customer_id)->notify(new CommentNotification($user, $comment->review_id));
         }
-        // Auth::user()->notify(new CommentNotification($user,$comment->review_id));
         return response()->json([
             'status' => true,
             'comment' => $comment
         ]);
-    }
-
-    //post comment
-    public function create()
-    {
-        return;
-    }
-
-    //get comment/{comment}
-    public function show($id)
-    {
-        return;
-    }
-
-    //comment/{comment}/edit
-    public function edit($id)
-    {
-        return;
-    }
-
-    //put/patch comment/{comment}
-    public function update($id, Request $req)
-    {
-        return;
-    }
-
-    //delete comment/{comment}
-    public function destroy($id)
-    {
-        return;
     }
 }

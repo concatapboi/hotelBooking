@@ -20,38 +20,4 @@ class PaymentMethodController extends Controller
         $arr = PaymentMethod::all();
         return response()->json(['data' => $arr, 'status' => true]);
     }
-
-    //get paymentMethod/create
-    public function create()
-    {
-        return;
-    }
-
-    //post paymentMethod
-    public function store()
-    {
-        return;
-    }
-
-    //get paymentMethod/{paymentMethod}
-    public function show($id)
-    { }
-
-    //paymentMethod/{paymentMethod}/edit
-    public function edit($id)
-    {
-        return;
-    }
-
-    //put/patch paymentMethod/{paymentMethod}
-    public function update($id)
-    {
-        return;
-    }
-
-    //delete paymentMethod/{paymentMethod}
-    public function destroy($id)
-    {
-        return;
-    }
 }

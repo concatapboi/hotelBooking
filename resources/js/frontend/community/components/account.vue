@@ -415,9 +415,6 @@
           <v-btn round depressed color="grey lighten-2" @click.stop="bookingListPage(0)">
             <v-icon small>notes</v-icon>&nbsp;Xem Tất Cả
           </v-btn>
-          <!-- <v-btn round depressed color="grey lighten-2" @click.stop="openBookingListDialog">
-            <v-icon small>notes</v-icon>&nbsp;see all
-          </v-btn>-->
           <v-divider class="ma-0 pa-0"></v-divider>
           <v-container class="pa-1 ma-0">
             <v-layout
@@ -445,12 +442,6 @@
               </v-flex>
               <v-flex md6>
                 <v-chip color="orange" class="white--text caption">{{b.status.name}}</v-chip>
-                <!-- <div>
-                  <div>
-                    Tình Trạng Đơn:&nbsp;
-                    <span class="orange--text">{{b.status.name}}</span>
-                  </div>
-                </div>-->
               </v-flex>
               <v-flex md12>
                 <v-divider class="pa-0 ma-0 mt-2"></v-divider>
@@ -893,9 +884,6 @@ export default {
         address: ""
       },
       dictionary: {
-        attributes: {
-          email: "Dường như đây hông phải là một địa chỉ Email"
-        },
         custom: {
           email: {
             required: () => "Email không được bỏ trống"
@@ -1055,6 +1043,7 @@ export default {
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");
@@ -1093,29 +1082,21 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.status);
-          if (res.data.status == true) {
-            console.log(res.data.comment);
-            var comment = res.data.comment;
-            // this.user.review[index].comment.push(comment);
-            // this.user.review[index].comments =
-            //   this.user.review[index].comments + 1;
-            this.comment.able = false;
-            this.comment.content = "";
-            this.comment.review_id = 0;
-          } else {
+          if (res.data.status == false) {
             this.$emit("loadSnackbar", "Thao tác lỗi, thử lại?");
           }
         })
-        .catch(error => {
-          this.comment.able = false;
-          this.comment.content = "";
-          this.comment.review_id = 0;
+        .catch(error => {          
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.$router.push({ name: "login" });
           }
+        }).then(()=>{
+          this.comment.able = false;
+          this.comment.content = "";
+          this.comment.review_id = 0;
         });
     },
     clear: function() {
@@ -1139,7 +1120,6 @@ export default {
             if (res.data.status == true) {
               this.getInfo();
               this.$emit("loadLogin");
-              // this.$emit("loadSnackbar", "Updated!");
               this.formDialog = false;
               return;
             } else {
@@ -1162,10 +1142,10 @@ export default {
           .then(res => {
             this.flag = true;
             this.user = res.data.user;
-            console.log(this.user);
           })
           .catch(error => {
             console.log(error.response);
+            console.log(error);
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");
               this.$router.push({ name: "login" });
@@ -1218,6 +1198,7 @@ export default {
             })
             .catch(error => {
               console.log(error.response);
+              console.log(error);
               if (error.response.status == 401) {
                 localStorage.removeItem("login_token");
                 this.$router.push({ name: "login" });
@@ -1235,7 +1216,6 @@ export default {
           password: this.form.pass
         }
       }).then(res => {
-        console.log(res.data.mess);
         if (res.data.mess) {
           this.passDialog.check = false;
           this.passDialog.main = true;
@@ -1262,7 +1242,6 @@ export default {
           }).then(res => {
             console.log(res.data.status);
             if (res.data.status == false) {
-              // this.$emit("loadSnackbar", "Something wrong!");
               this.form.pass = this.form.rePass = "";
               return;
             }
@@ -1316,6 +1295,7 @@ export default {
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");
@@ -1361,6 +1341,7 @@ export default {
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");

@@ -37,7 +37,6 @@ class HotelController extends Controller
         }
         return response()->json(['status' => $status, 'data' => $hotels]);
     }
-
     //get top 5
     public function getTop5(Request $req)
     {
@@ -51,19 +50,6 @@ class HotelController extends Controller
         }
         return response()->json(['top5' => $hotel]);
     }
-
-    //get hotels/create
-    public function create()
-    {
-        return;
-    }
-
-    //post hotels
-    public function store()
-    {
-        return;
-    }
-
     //get hotels/{hotels}
     public function show(Request $req, $id)
     {
@@ -106,7 +92,6 @@ class HotelController extends Controller
         }
         return response()->json(['status' => $status, 'data' => $hotel]);
     }
-
     public function questionsByHotel(Request $req)
     {
         $questions = array();
@@ -127,7 +112,6 @@ class HotelController extends Controller
             'reviews' => $reviews,
         ]);
     }
-
     public function roomsByHotel(Request $req)
     {
         $id = $req->hotel_id;
@@ -171,25 +155,6 @@ class HotelController extends Controller
             'room' => $rooms
         ]);
     }
-    // public functio
-    //hotels/{hotels}/edit
-    public function edit($id)
-    {
-        return;
-    }
-
-    //put/patch hotels/{hotels}
-    public function update($id)
-    {
-        return;
-    }
-
-    //delete hotels/{hotels}
-    public function destroy($id)
-    {
-        return;
-    }
-
     public function getHotel($id)
     {
         return response()->json(['data' => Hotel::find($id)->toArray()]);

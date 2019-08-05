@@ -18,7 +18,7 @@
                     <span>Địa điểm:</span>
                 </td>
                 <td>
-                    <span>{{$booking->room->hotel['type']}}&nbsp;-&nbsp;{{$booking->room->hotel['name']}}</span>
+                    <span>{{$place}}</span>
                 </td>
             </tr>
             <tr>
@@ -60,10 +60,10 @@
             </tr>
             <tr>
                 <td>
-                    <span>Số ngày ở:</span>
+                    <span>Số đêm ở:</span>
                 </td>
                 <td>
-                    <span>{{$booking->room->days}}&nbsp;ngày</span>
+                    <span>{{$days}}&nbsp;ngày</span>
                 </td>
             </tr>
             @if($booking->discount_value >0)
@@ -78,7 +78,7 @@
                     <h2>Tổng cộng:</h2>
                 </td>
                 <td>
-                    <h2 style="color:orange">{{number_format($booking->room_amount*$booking->room_price*$booking->room->days*((100-$booking->discount_value)/100))}}&nbsp;đồng</h2>
+                    <h2 style="color:orange">{{number_format($booking->room_amount*$booking->room_price*$days*((100-$booking->discount_value)/100))}}&nbsp;đồng</h2>
                 </td>
             </tr>
         </table>

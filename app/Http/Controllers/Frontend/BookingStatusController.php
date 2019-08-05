@@ -20,40 +20,4 @@ class BookingStatusController extends Controller
             'data' => BookingStatus::all()
         ]);
     }
-
-    //get status/create
-    public function create()
-    {
-        return;
-    }
-
-    //post status
-    public function store()
-    {
-        return;
-    }
-
-    //get status/{status}
-    public function show($id)
-    {
-        return;
-    }
-
-    //status/{status}/edit
-    public function edit($id)
-    {
-        return;
-    }
-
-    //put/patch status/{status}
-    public function update($id, Request $req)
-    {
-        return;
-    }
-
-    //delete status/{status}
-    public function destroy($id)
-    {
-        return;
-    }
 }

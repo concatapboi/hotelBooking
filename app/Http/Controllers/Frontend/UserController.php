@@ -32,7 +32,6 @@ class UserController extends Controller
         }
         return response()->json(['user' => $user, 'customer' => $customer]);
     }
-
     //check user
     public function getUser(Request $req)
     {
@@ -47,7 +46,6 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
-
     //check user password
     public function checkUserPassword(Request $req)
     {
@@ -59,7 +57,6 @@ class UserController extends Controller
         }
         return response()->json(['mess' => false]);
     }
-
     //check user password
     public function updateUserPassword(Request $req)
     {
@@ -72,7 +69,6 @@ class UserController extends Controller
         }
         return response()->json(['status' => false]);
     }
-
     //follow
     public function follow(Request $req)
     {
@@ -94,7 +90,6 @@ class UserController extends Controller
         }
         return response()->json(['data' => $f]);
     }
-
     //unfollow
     public function unfollow(Request $req)
     {
@@ -109,50 +104,6 @@ class UserController extends Controller
         }
         return response()->json(['data' => true]);
     }
-
-    //member count
-    public function getMemberCount()
-    {
-        $number = 0;
-        $users = User::all();
-        foreach ($users as $user) {
-            if ($user->isCustomer()) $number++;
-        }
-        return response()->json(['data' => $number]);
-    }
-
-    //
-    public function show($id)
-    {
-        // $loginUser = Auth::check();
-        // $user = User::find($id);
-        // $user->Customer;
-        // $avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
-        // $user->avatar = $avatar;
-        // $user->followers = $user->Followers();
-        // if (sizeOf($user->Followers()) > 0) {
-        //     foreach ($user->Followers() as $f) {
-        //         return response()->json([
-        //             'status' => false,
-        //             'user' => $loginUser,
-        //         ]);
-        //         if ($f->follower_id ==  Auth::user()->id) $user->follow = true;
-        //         else $user->follow = false;
-        //     }
-        // } else $user->follow = false;
-        // $user->customerFollowings = $user->Followings();
-        // $user->hotelFollowings = $user->HotelFollowings();
-        // if ($user->id == Auth::user()->id)
-        //     return response()->json([
-        //         'status' => false,
-        //         'user' => $user,
-        //     ]);
-        // return response()->json([
-        //     'status' => true,
-        //     'user' => $user,
-        // ]);
-    }
-
     public function getUserInfo(Request $req)
     {
         $id = $req->id;
@@ -180,7 +131,6 @@ class UserController extends Controller
             'user' => $user,
         ]);
     }
-
     //put/patch user/{user}
     public function update($id, Request $req)
     {

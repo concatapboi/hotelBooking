@@ -831,9 +831,6 @@ export default {
   created() {
     this.$emit("chooseHotel", this.hotelId);
     console.log(localStorage.getItem('api_token'));
-    // if (Object.keys(this.$route.query).length == 0) {
-    //   this.$router.push({ name: "home" });
-    // }
     this.load();
   },
   mounted() {
@@ -901,10 +898,6 @@ export default {
       })
         .then(res => {
           this.flag.state = true;
-          console.log(res.data.status);
-          console.log(res.data.couponCode);
-          console.log(res.data.expiredCouponCode);
-          console.log(res.data.waitingCouponCode);
           if (res.data.status == true) {
             this.couponCode = res.data.couponCode;
             this.expiredCouponCode = res.data.expiredCouponCode;
@@ -927,6 +920,7 @@ export default {
         })
         .catch(error => {
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             this.router.push({ name: "login" });
           }
@@ -944,8 +938,6 @@ export default {
         .then(res => {
           if (res.data.status == true) {
             this.roomTypes = res.data.data;
-          } else {
-            this.$router.push({ name: "home" });
           }
         })
         .catch(error => {
@@ -1006,8 +998,6 @@ export default {
       this.confirm.dialog = true;
     },
     submitForm: function() {
-      // alert(this.selectedRoomTypes)
-      // return
       this.waiting = true;
       this.$validator.validateAll("form1").then(valid => {
         if (valid) {
@@ -1028,8 +1018,6 @@ export default {
               }
             })
               .then(res => {
-                console.log(res.data);
-                this.waiting = false;
                 if (res.data.status == true) {
                   this.resetForm();
                   this.createForm = false;
@@ -1043,13 +1031,11 @@ export default {
                     this.radio = 0;
                   }
                   this.search = newCoupon.code;
-                  console.log(this.search);
                 } else {
                   if(res.data.message){
                     this.$emit('loadSnackbar',res.data.message);
-                    this.waiting = false;
                   }
-                  // this.$router.push({ name: "home" });
+                  this.$router.push({ name: "home" });
                 }
               })
               .catch(error => {
@@ -1058,6 +1044,8 @@ export default {
                 if (error.response.status == 401) {
                   this.router.push({ name: "login" });
                 }
+              }).then(()=>{
+                this.waiting = false;
               });
           }
         }
@@ -1100,23 +1088,22 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data);
           if (res.data.status == true) {
-            this.waiting = false;
             var index = this.getIndex(id);
             this.expiredCouponCode.push(res.data.couponCode);
             this.couponCode.splice(index, 1);
             this.radio = 2;
             this.search = res.data.couponCode.code;
-          } else {
-            // this.$router.push({ name: "home" });
           }
         })
         .catch(error => {
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             this.router.push({ name: "login" });
           }
+        }).then(()=>{
+            this.waiting = false;
         });
     },
     deleteCode(id){
@@ -1133,21 +1120,20 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data);
           if (res.data.status == true) {
-            this.waiting = false;
             var index = this.getIndex(id);
             this.waitingCouponCode.splice(index,1);
-          } else {
-            // this.$router.push({ name: "home" });
           }
         })
         .catch(error => {
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             this.router.push({ name: "login" });
           }
-        });
+        }).then(()=>{
+            this.waiting = false;
+        })
     },
     openDatePicker: function(item) {
       this.datePicker.state = true;
@@ -1173,9 +1159,7 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data);
           if (res.data.status == true) {
-            this.waiting = false;
             this.datePicker.state = false;
             var index = this.getIndex(this.datePicker.id);
             switch (this.radio) {
@@ -1188,8 +1172,6 @@ export default {
                 this.search = this.waitingCouponCode[index].code;
                 break;
             }
-          } else {
-            // this.$router.push({ name: "home" });
           }
         })
         .catch(error => {
@@ -1198,6 +1180,8 @@ export default {
           if (error.response.status == 401) {
             this.router.push({ name: "login" });
           }
+        }).then(()=>{
+            this.waiting = false;
         });
     }
   }

@@ -382,7 +382,6 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data);
           if (res.data.status != true) {
             this.$router.push({ name: "home" });
           } else {
@@ -391,6 +390,7 @@ export default {
         })
         .catch(error => {
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.$router.push({ name: "login" });
@@ -414,15 +414,7 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.status);
-          if (res.data.status == true) {
-            console.log(res.data.comment);
-            // var comment = res.data.comment;
-            // this.review.comment.push(comment);
-            this.comment.able = false;
-            this.comment.content = "";
-            this.comment.review_id = 0;
-          } else {
+          if (res.data.status == false) {
             this.$emit(
               "loadSnackbar",
               "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?"
@@ -430,14 +422,16 @@ export default {
           }
         })
         .catch(error => {
-          this.comment.able = false;
-          this.comment.content = "";
-          this.comment.review_id = 0;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.$router.push({ name: "login" });
           }
+        }).then(()=>{          
+          this.comment.able = false;
+          this.comment.content = "";
+          this.comment.review_id = 0;
         });
     },
     likeReview: function(id) {
@@ -470,6 +464,7 @@ export default {
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");
@@ -519,6 +514,7 @@ export default {
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");
@@ -563,6 +559,7 @@ export default {
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");

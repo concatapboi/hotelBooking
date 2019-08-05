@@ -3,12 +3,7 @@ import VueRouter  from 'vue-router';
 
 import home  from '@/js/frontend/components/home';
 import about  from '@/js/frontend/components/about';
-import booking  from '@/js/frontend/components/booking';
-import login  from '@/js/frontend/components/login';
-import register  from '@/js/frontend/components/register';
 import hotel  from '@/js/frontend/components/hotel';
-import singleHotel  from '@/js/frontend/components/singleHotel';
-import err  from '@/js/frontend/components/err';
 import user  from '@/js/frontend/components/user';
 import contact  from '@/js/frontend/components/contact';
 import searching  from '@/js/frontend/components/searching';
@@ -26,24 +21,9 @@ const router = new VueRouter({
 			component: home
 		},
 		{
-			path: '/login.html',
-			name: 'login',
-			component: login
-		},
-		{
-			path: '/register.html',
-			name: 'register',
-			component: register
-		},
-		{
 			path: '/hotel/:id',
 			name: 'hotel',
 			component: hotel
-		},
-		{
-			path: '/single-hotel.html',
-			name: 'singleHotel',
-			component: singleHotel
 		},
 		{
 			path: '/community/user/:id',
@@ -54,11 +34,6 @@ const router = new VueRouter({
 			path: '/community/review/',
 			name: 'review',
 			component: review
-		},
-		{
-			path: '/booking.html',
-			name: 'booking',
-			component: booking
 		},
 		{
 			path: '/contact.html',
@@ -75,12 +50,6 @@ const router = new VueRouter({
 			name: 'searching',
 			component: searching
 		},
-		{
-			path: '/error.html',
-			name: 'err',
-			component: err
-		}
-		,
 		{
 			path: '/policies.html',
 			name: 'policy',

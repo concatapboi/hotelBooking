@@ -5,7 +5,9 @@
         <v-flex md12>
           <template>
             <v-card flat>
-              <v-card-title v-if="search !=0 && item.form == false && item.review == false && item.detail == false">Kết quả tìm kiếm...</v-card-title>
+              <v-card-title
+                v-if="search !=0 && item.form == false && item.review == false && item.detail == false"
+              >Kết quả tìm kiếm...</v-card-title>
               <v-card-title v-if="search !=0 && item.detail == true">Chi tiết đơn...</v-card-title>
               <v-card-title v-if="search !=0 && item.form ==true">Thực hiện đánh giá...</v-card-title>
               <v-card-title v-if="search !=0 && item.review ==true">Chi tiết đánh giá của bạn...</v-card-title>
@@ -50,19 +52,23 @@
                             @click="b.expanded = true; getReview(b.item)"
                           >Xem đánh giá...</a>
                           <a
-                          v-else
+                            v-else
                             href="#"
                             class="orange--text"
                             @click="getDetail(b.item)"
                           >Chi tiết đơn...</a>
                         </div>
                         <div v-if="b.item.can_review == true">
-                          <span style="word-wrap: break-word;" class="caption">Bây giờ, bạn đã có thể </span>
+                          <span
+                            style="word-wrap: break-word;"
+                            class="caption"
+                          >Bây giờ, bạn đã có thể</span>
                           <a
                             href="#"
                             class="purple--text"
                             @click="b.expanded = true; formReview(b.item)"
-                          >đánh giá</a> <span class="caption">nhà cung cấp này.</span>
+                          >đánh giá</a>
+                          <span class="caption">nhà cung cấp này.</span>
                         </div>
                       </div>
                     </td>
@@ -214,9 +220,7 @@
                                   <v-flex md5>Tên Phòng:</v-flex>
                                   <v-flex md7>{{booking.room.room_name}}</v-flex>
                                   <v-flex md5>Loại Phòng:</v-flex>
-                                  <v-flex
-                                    md7
-                                  >{{booking.room.room_type.name}}</v-flex>
+                                  <v-flex md7>{{booking.room.room_type.name}}</v-flex>
                                   <v-flex md5>Số Lượng:</v-flex>
                                   <v-flex md7>{{booking.room_amount}}</v-flex>
                                   <v-flex md5>Yêu Cầu Đặc Biệt:</v-flex>
@@ -407,14 +411,14 @@
     </v-flex>
     <v-flex md7 v-else>
       <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
-          <v-flex md3 class="pa-2 ma-2">
-            <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
-              <v-layout fill-height align-center justify-center>
-                <span class="pa-5 caption black--text font-weight-bold">đang tải...</span>
-              </v-layout>
-            </v-img>
-          </v-flex>
-        </v-layout>
+        <v-flex md3 class="pa-2 ma-2">
+          <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
+            <v-layout fill-height align-center justify-center>
+              <span class="pa-5 caption black--text font-weight-bold">đang tải...</span>
+            </v-layout>
+          </v-img>
+        </v-flex>
+      </v-layout>
     </v-flex>
     <v-flex md4 offset-md1>
       <v-card light flat tile>
@@ -449,7 +453,7 @@
                   <span class="body-1 orange--text">Tìm theo ngày</span>
                 </div>
                 <div>
-                  <input type="text" v-model="code" class="pa-2 border"/>
+                  <input type="text" v-model="code" class="pa-2 border" />
                 </div>
                 <div class="mt-1">
                   <span class="grey--text cption font-italic">*nhập ngày theo chuẩn: DD-MM-YYYY</span>
@@ -460,7 +464,7 @@
                   <span class="body-1 orange--text">Tìm theo mã</span>
                 </div>
                 <div>
-                  <input type="text" v-model="bookingCode" class="pa-2 border"/>
+                  <input type="text" v-model="bookingCode" class="pa-2 border" />
                 </div>
                 <div class="mt-1">
                   <span class="grey--text cption font-italic">*nhập mã đơn</span>
@@ -483,7 +487,7 @@
               <div class="ml-3">
                 <v-chip
                   class="pa-1 ma-2 white--text font-weight-bold"
-                  color="red" 
+                  color="red"
                   @click="confirm.dialog = false"
                 >Hủy</v-chip>
                 <v-chip
@@ -544,19 +548,20 @@ export default {
       confirm: {
         dialog: false,
         index: 0,
-        title: "Xóa? Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan.",
+        title:
+          "Xóa? Đồng ý thực hiện hành động này, bạn đã cam kết với chúng tôi rằng bạn đã đọc và hiểu rõ mọi điều khoản liên quan."
       },
       flag: {
         state: false,
         text: ""
       },
-      bookingCode:"",
+      bookingCode: "",
       status: [],
       bookingList: [],
       pureBookingList: [],
       sortedBookingList: [],
       booking: {
-        total:0,
+        total: 0,
         status: {},
         room_price: 0,
         room: {
@@ -572,7 +577,7 @@ export default {
           created_at: ""
         }
       },
-      radioSelected:"",
+      radioSelected: "",
       tblHeaders: [
         {
           text: "Mã",
@@ -610,39 +615,32 @@ export default {
   created() {
     if (Object.keys(this.$route.query).length != 0) {
       this.search = this.$route.query.code;
-      //   this.search.code = 1;
     }
     this.load();
     this.loadBookingStatus();
   },
   watch: {
-    //   'bookingList.length':function(newVal, oldVal){
-    //       console.log(newVal);
-    //       console.log(oldVal);
-    //       if(newVal != oldVal) this.pureBookingList = this.bookingList;
-    //   }
     code: function(val) {
-      if(val.length ==10){
-        let [day,month,year] = val.trim().split('-');
-        val = year+"-"+month+"-"+day;
+      if (val.length == 10) {
+        let [day, month, year] = val.trim().split("-");
+        val = year + "-" + month + "-" + day;
         this.search = this.$moment(val).format("YYYY-MM-DD");
-      }      
+      }
     },
-    bookingCode: function(val){
-      this.search = "bookingcode"+val;
+    bookingCode: function(val) {
+      this.search = "bookingcode" + val;
     },
-    "reviewData.can_comment": function(){
-      if(this.reviewData.can_comment == 0){
+    "reviewData.can_comment": function() {
+      if (this.reviewData.can_comment == 0) {
         this.reviewData.notification = 0;
       }
     }
-    
   },
   methods: {
     getDetail: function(booking) {
-      if(this.search.substr(0,11).localeCompare("bookingcode") !=0)
+      if (this.search.substr(0, 11).localeCompare("bookingcode") != 0)
         this.radioSelected = this.search;
-      this.search = "bookingcode"+booking.id;
+      this.search = "bookingcode" + booking.id;
       this.item.detail = true;
       (this.item.form = false), (this.item.review = false);
       this.booking = booking;
@@ -655,9 +653,9 @@ export default {
       this.code = "";
     },
     getReview: function(booking) {
-      if(this.search.substr(0,11).localeCompare("bookingcode") !=0)
+      if (this.search.substr(0, 11).localeCompare("bookingcode") != 0)
         this.radioSelected = this.search;
-      this.search = "bookingcode"+booking.id;
+      this.search = "bookingcode" + booking.id;
       this.item.review = true;
       this.item.detail = false;
       this.item.form = false;
@@ -665,12 +663,11 @@ export default {
       if (this.booking.review != null) this.review = booking.review;
     },
     formReview: function(booking) {
-      if(this.search.substr(0,11).localeCompare("bookingcode") !=0)
+      if (this.search.substr(0, 11).localeCompare("bookingcode") != 0)
         this.radioSelected = this.search;
-      this.search = "bookingcode"+booking.id;
-      console.log(this.search);
-      this.reviewData.title= "";
-      this.reviewData.content ="";
+      this.search = "bookingcode" + booking.id;
+      this.reviewData.title = "";
+      this.reviewData.content = "";
       this.reviewData.point = 0;
       this.reviewData.can_comment = true;
       this.reviewData.notification = true;
@@ -709,11 +706,15 @@ export default {
                 this.item.review = true;
                 this.$validator.reset();
               } else {
-                this.$emit("loadSnackbar", "Rất tiếc. thực hiện chưa hoàn thành. Thử lại?");
+                this.$emit(
+                  "loadSnackbar",
+                  "Rất tiếc. thực hiện chưa hoàn thành. Thử lại?"
+                );
               }
             })
             .catch(error => {
               console.log(error.response);
+              console.log(error);
               if (error.response.status == 401) {
                 localStorage.removeItem("login_token");
                 this.$router.push({ name: "login" });
@@ -734,16 +735,14 @@ export default {
         .then(res => {
           this.flag.state = true;
           this.bookingList = res.data.data;
-          console.log(this.bookingList);
           this.pureBookingList = res.data.data;
-          if (res.data.status) {
-            if (res.data.data.length == 0)
-              this.flag.text = "Bạn chưa có đơn nào!";
-          }
+          if (this.pureBookingList == 0)
+            this.flag.text = "Bạn chưa có đơn nào!";
         })
         .catch(error => {
           this.flag.state = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.$router.push({ name: "login" });
@@ -764,16 +763,15 @@ export default {
         params: {}
       })
         .then(res => {
-          console.log(res.data.data);
           this.status = res.data.data;
         })
         .catch(error => {
           console.log(error.response);
+          console.log(error);
         });
     },
     cancelBooking: function() {
       var index = this.confirm.index;
-      console.log(this.booking);
       var del = false;
       switch (this.booking.status.id) {
         case 1:
@@ -800,27 +798,29 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.status);
-          if (res.data.status) {
-            // this.$emit("loadSnackbar", "Updated sucessfully!");
-          } else {
+          if (res.data.status == false) {
             flag = false;
-            this.$emit("loadSnackbar", "Rất tiếc, thao tác chưa hoàn thành. Thử lại!");
+            this.$emit(
+              "loadSnackbar",
+              "Rất tiếc, thao tác chưa hoàn thành. Thử lại!"
+            );
           }
         })
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");
             this.$router.push({ name: "login" });
           }
+        }).then(()=>{
+          if (!flag) {
+            if (del) this.bookingList.push(this.booking);
+            else this.bookingList[index] = this.booking;
+          }
         });
-      if (!flag) {
-        if (del) this.bookingList.push(this.booking);
-        else this.bookingList[index] = this.booking;
-      }
       this.booking = {
         status: {},
         room_price: 0,
@@ -839,18 +839,11 @@ export default {
       return this.$moment(date).format("DD-MM-YYYY");
     },
     sortData: function() {
-      console.log(this.sortedBookingList);
-      console.log(this.pureBookingList);
-      console.log(this.bookingList);
       this.sortedBookingList.length = 0;
-      console.log(this.sortedBookingList);
       this.pureBookingList.forEach(element => {
         if (element.status.id == 4) this.sortedBookingList.push(element);
       });
       this.bookingList = this.sortedBookingList;
-      console.log(this.sortedBookingList);
-      console.log(this.pureBookingList);
-      console.log(this.bookingList);
     }
   }
 };

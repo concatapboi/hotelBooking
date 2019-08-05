@@ -605,13 +605,21 @@ export default {
       },
       dictionary: {
         custom: {
+          email: {
+            required: () => "Email không được bỏ trống"
+          },
           username: {
             required: () => "Username không được bỏ trống.",
             min: "Username phải nhiều hơn 3 ký tự"
           },
-          password: {
+           password: {
+            required: () => "Mật khẩu không được bỏ trống",
             min: "Mật khẩu phải nhiều hơn 3 ký tự"
-          }
+          },
+          password_confirmation: {
+            required: () => "Không được bỏ trống",
+            confirmed: "Không khớp, nhập lại"
+          },
         }
       },
       waiting: false,
@@ -619,14 +627,6 @@ export default {
       now: this.$moment(new Date())
         .add(1, "days")
         .format("YYYY-MM-DD"),
-      // checkIn: this.getNextDate(new Date().toISOString().substr(0, 10), 1),
-      // checkInFormatted: this.formatDate(
-      //   this.getNextDate(new Date().toISOString().substr(0, 10), 1)
-      // ),
-      // checkOut: this.getNextDate(new Date().toISOString().substr(0, 10), 2),
-      // checkOutFormatted: this.formatDate(
-      //   this.getNmin.toISOString().substr(0, 10), 2)
-      // )
       checkIn: this.$moment(new Date())
         .add(1, "days")
         .format("YYYY-MM-DD"),
@@ -642,7 +642,6 @@ export default {
     };
   },
   created() {
-    // localStorage.removeItem('login_token');
     this.getLogin();
     this.getData();
     window.setInterval(() => {
@@ -655,7 +654,6 @@ export default {
     }, 1000);
   },
   watch: {
-    // call again the method if dialog changes
     $route: "getLogin",
     dialog: function() {
       this.$refs.form.reset();
@@ -710,12 +708,12 @@ export default {
           }
         })
           .then(res => {
-            console.log(res.data.user);
             this.login.user = res.data.user;
             this.login.check = true;
             this.loginCheck = true;
           })
           .catch(error => {
+            console.log(error);
             console.log(error.response);
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");
@@ -748,7 +746,7 @@ export default {
     submitLogin: function() {
       this.$validator.validateAll("form1").then(valid => {
         if (valid) {
-          // this.waiting = true;
+          this.waiting = true;
           axios({
             method: "post",
             url: "http://localhost:8000/api/login",
@@ -757,7 +755,6 @@ export default {
               password: this.login.password
             }
           }).then(res => {
-            console.log(res.data.errors)
             this.waiting = false;
             if (!res.data.status) {
               if(res.data.errors && res.data.errors.length >0)
@@ -820,11 +817,13 @@ export default {
             }
           }).then(res => {
             this.waiting = false;
-            console.log(res.data.status);
             if (res.data.status) {
+              console.log(res.data.token);
               this.registerDialog = false;
               this.eventSnackbar("Đăng ký thành công!");
               this.login.check = true;
+              localStorage.login_token = res.data.token;
+              this.getLogin();
             } else {
               if(res.data.errors && res.data.errors.length >0)
                 this.eventSnackbar(res.data.errors);
@@ -853,7 +852,6 @@ export default {
       } else this.dialog = val;
     },
     bookingAction: function(booking, cmd) {
-      console.log(booking);
       if (cmd == 1) {
         this.bookingList.detail.booking = booking;
         this.bookingList.detail.dialog = true;
