@@ -607,9 +607,9 @@ export default {
           console.log(response.data);
           if (response.data.status == true) {
             this.show = false;
-
             localStorage.api_token = response.data.token;
             this.api_token = localStorage.getItem("api_token");
+            this.userID = response.data.id;
             this.getHotelList();
             this.chooseHotel = true;
             console.log(this.api_token);
@@ -671,6 +671,7 @@ export default {
       document.location.href = "home?hotelId=" + id;
     },
     validate() {
+      alert(this.userID);
       var _this = this;
       var payment_method = null;
       if (this.newHotelData.policy.online == true) {
