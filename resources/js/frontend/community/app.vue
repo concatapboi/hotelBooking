@@ -404,7 +404,7 @@
                   <span class="caption">Mã Coupon:</span>
                 </v-flex>
                 <v-flex md6 offset-md1>
-                  <span class="font-weight-black brown--text title">"{{couponDetail.couponCode.code}}"</span>
+                  <span class="font-weight-black brown--text title" style="word-wrap: break-word;">"{{couponDetail.couponCode.code}}"</span>
                 </v-flex>
                 <v-flex md12>
                   <span class="caption">Nội Dung:</span>                  

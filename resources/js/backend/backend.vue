@@ -459,12 +459,14 @@ export default {
     window.Echo.channel("ask").listen(".user-ask", e => {
       if (e.data.hotel == this.hotelId) {
         this.notifications.list = [e, ...this.notifications.list];
+        numberOfNewNoti += 1;
       }
     });
     window.Echo.channel("manager").listen(".new-booking", e => {
       console.log(e);
       if (e.hotelId == this.hotelId) {
         this.notifications.list = [e, ...this.notifications.list];
+        this.numberOfNewNoti +=1 
       }
     });
     window.Echo.channel("manager").listen(".accept-booking", e => {

@@ -18,6 +18,7 @@ use App\Models\Customer;
 use App\Events\AcceptBooking;
 use App\Events\MessageSentEvent;
 use App\Mail\PaymentRequest;
+use App\Mail\DeclineOrder;
 
 class BookingController extends Controller
 {
@@ -176,16 +177,19 @@ class BookingController extends Controller
 
         if ($booking->PaymentMethod->id == 1) {
             $booking->update(["status_id" => 4]);
-            Mail::to($request->user())->queue(new AcceptOrderOffline($booking, $room, $room_image, $stay_days));
+            Mail::to($customer)->queue(new AcceptOrderOffline($booking, $room, $room_image, $stay_days));
         } elseif ($booking->PaymentMethod->id == 2) {
             $booking->update(["status_id" => 2]);
-            $booking->hotel = Hotel::find($room->hotel_id);
-            $booking->hotel->policy = Hotel::find($room->hotel_id)->Policy;
-            $booking->customer = User::find($booking->customer_id)->name;
-            return (new PaymentRequest($booking, $room, $room_image, $room->Hotel->credit_card, $stay_days))->render();
+            // $booking->hotel = Hotel::find($room->hotel_id);
+            // $booking->hotel->policy = Hotel::find($room->hotel_id)->Policy;
+            // $booking->customer = User::find($booking->customer_id)->name;
+            $policy = Hotel::find($room->hotel_id)->Policy;
+            $bank = Hotel::find($room->hotel_id)->bank;
+            // return (new PaymentRequest($booking, $room, $room_image, $room->Hotel->credit_card, $stay_days))->render();
             // return $room->Hotel->credit_card;
             // return (new AcceptOrderOnline($booking, $room, $room_image,$room->Hotel->credit_card,$stay_days))->render();
-            // Mail::to($request->user())->queue(new AcceptOrderOnline($booking, $room, $room_image, $room->Hotel->credit_card));
+            // Mail::to($customer)->queue(new AcceptOrderOnline($booking, $room, $room_image, $room->Hotel->credit_card,$stay_days));
+            Mail::to($customer)->queue(new PaymentRequest($booking, $policy, $room_image, $room->Hotel->credit_card,$stay_days,$bank));
         }
         return response()->json([
             "status" => true,
@@ -197,6 +201,8 @@ class BookingController extends Controller
     {
         $booking = Booking::find($request->bookingId);
         $booking->update(["status_id" => 3]);
+        $customer = User::find($booking->customer_id);
+        Mail::to($customer)->queue(new DeclineOrder($booking));
         return response()->json([
             "status" => true,
             // "data" => new BookingResource($booking),

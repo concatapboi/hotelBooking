@@ -156,7 +156,7 @@
                 <v-tab href="#tab-4" @click="getHotelQuestion">Đặt câu hỏi</v-tab>
                 <v-tab href="#tab-5" @click="getAddress(data.address)">Map</v-tab>
                 <v-tab-item value="tab-1">
-                  <v-card light flat tile v-if="rooms.length !=0">
+                  <v-card light flat tile v-if="loadingRoom == false && rooms.length !=0">
                     <v-layout
                       class="search-item"
                       row
@@ -307,7 +307,7 @@
                       <span class="caption font-italic" slot="no-more">Bạn đã đến cuối trang...</span>
                     </infinite-loading>
                   </v-card>
-                  <v-card light flat tile width="100%" v-else>
+                  <v-card light flat tile width="100%" v-else-if="loadingRoom == true">
                     <v-layout row wrap class="pa-0 ma-0" justify-center align-start>
                       <v-flex md3 class="pa-2 ma-2">
                         <v-img :aspect-ratio="1" src="/img/booking/load.gif" style="opacity:0.9">
@@ -317,6 +317,11 @@
                         </v-img>
                       </v-flex>
                     </v-layout>
+                  </v-card>
+                  <v-card v-else light flat tile>
+                    <v-card-title caption>
+                      <span>Không có dữ liệu phòng</span>
+                    </v-card-title>
                   </v-card>
                 </v-tab-item>
                 <v-tab-item value="tab-2">
@@ -1513,6 +1518,7 @@ export default {
   },
   data() {
     return {
+      loadingRoom: true,
       softDelete: false,
       waiting: false,
       text: "",
@@ -1714,7 +1720,6 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data);
           if (res.data.status == true) {
             this.data = res.data.data;
             this.paymentMethods = res.data.data.paymentMethods;
@@ -1765,12 +1770,13 @@ export default {
         .then(res => {
           if (res.data.room.data.length != 0) {
             this.rooms = res.data.room.data;
-            return;
           }
         })
         .catch(error => {
           console.log(error.response);
           console.log(error);
+        }).then(()=>{
+          this.loadingRoom = false;
         });
     },
     getHotelReviews: function() {
@@ -2111,7 +2117,6 @@ export default {
         })
           .then(res => {
             this.$emit("loadSnackbar", "Hủy theo dõi " + value.name);
-            flag = false;
           })
           .catch(error => {
             console.log(error.response);
@@ -2190,7 +2195,6 @@ export default {
     },
     formatKey: function(string) {
       return string.replace(/\s/g, "+");
-      console.log(this.address);
     },
     getAddress: function(address) {
       this.formatKey(address);

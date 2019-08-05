@@ -589,6 +589,7 @@ export default {
   created(){
     if(localStorage.getItem("api_token") != null){
       this.api_token = localStorage.getItem("api_token");
+      // localStorage.clear();
       this.getHotelList();
       this.chooseHotel = true;
     }
@@ -671,7 +672,6 @@ export default {
       document.location.href = "home?hotelId=" + id;
     },
     validate() {
-      alert(this.userID);
       var _this = this;
       var payment_method = null;
       if (this.newHotelData.policy.online == true) {
