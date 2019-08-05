@@ -314,7 +314,6 @@ export default {
   data() {
     return {
       val: 25,
-      // slider: 1,
       placeVal: "",
       checkInVal: "",
       checkInFormattedVal: "",
@@ -332,11 +331,6 @@ export default {
     checkOut: "setSearchValue"
   },
   created() {
-    // window.setInterval(() => {
-    //   if (this.slider == 5) {
-    //     this.slider = 1;
-    //   } else this.slider++;
-    // }, 5000);
     this.setSearchValue();
   },
   methods: {

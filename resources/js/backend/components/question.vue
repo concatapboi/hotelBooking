@@ -112,6 +112,14 @@
                     <v-flex offset-md1 class="font-weight-bold body-2">Rất tiếc, không tìm thấy.</v-flex>
                   </v-layout>
                 </template>
+                <template v-slot:no-data>
+                  <v-layout align-center white>
+                    <v-flex md3>
+                      <v-img :aspect-ratio="1" src="/img/booking/no-result.gif"></v-img>
+                    </v-flex>
+                    <v-flex offset-md1 class="font-weight-bold body-2">Không có dữ liệu.</v-flex>
+                  </v-layout>
+                </template>
               </v-data-table>
             </v-card>
           </template>
@@ -287,16 +295,11 @@ export default {
         }
       })
         .then(res => {
-          this.flag.state = true;
-          console.log(res.data.status);
-          console.log(res.data.questions);
           if (res.data.status == true) {
             this.questionList = res.data.questions;
             this.oldQuestionList = res.data.oldQuestions;
             this.newQuestionList = res.data.newQuestions;
             this.data = this.questionList;
-          } else {
-            // this.$router.push({ name: "home" });
           }
         })
         .catch(error => {
@@ -305,8 +308,8 @@ export default {
             this.router.push({ name: "login" });
           }
         }).then(()=>{
+          this.flag.state = true;
           if(this.$route.query.questionId && this.$route.query.questionId >0){
-            // this.radio = -1;
             let questionId = this.$route.query.questionId;
             let index = this.getIndex(this.questionList,questionId);
             this.search = this.questionList[index].title;
@@ -343,7 +346,6 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data);
           if (res.data.status == true) {
             this.newQuestionList.splice(questionIndex,1);
             this.questionList.splice(this.getIndex(this.questionList,id),1);
@@ -352,15 +354,13 @@ export default {
             this.data  = this.oldQuestionList;
             this.text = "";
             this.openQues(res.data.question.title);
-          } else {
-            // this.$router.push({ name: "home" });
-          }
+          } 
         })
         .catch(error => {
           console.log(error);
           console.log(error.response);
           if (error.response.status == 401) {
-            // this.router.push({ name: "login" });
+            this.router.push({ name: "login" });
           }
         });
     }

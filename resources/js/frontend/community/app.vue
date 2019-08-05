@@ -521,13 +521,10 @@ export default {
       }
     };
   },
-  beforeCreate() {},
   created() {
-    console.log("created");
     this.getLogin();
   },
   mounted() {
-    // this.getLogin();
     this.$validator.localize("en", this.dictionary);
     window.Echo.channel("message").listen(".send-mess", e => {
       this.getNotifications();
@@ -540,7 +537,6 @@ export default {
     });
   },
   watch: {
-    // call again the method if the route changes
     $route: function() {
       this.getLogin();
       this.notifications.state = false;
@@ -587,9 +583,7 @@ export default {
     },
     getLogin: function() {
       this.login.token = localStorage.getItem("login_token");
-      console.log(this.login.token);
       if (this.login.token != null) {
-        console.log("token != null");
         axios({
           method: "get",
           url: "http://localhost:8000/api/getUser",
@@ -601,14 +595,13 @@ export default {
             this.user = res.data.user;
             this.login.check = true;
             this.login.dialog = false;
-            console.log("login");
             this.getNotifications();
             if (this.$route.name == "login")
               this.$router.push({ name: "home" });
-            console.log(this.user);
           })
           .catch(error => {
             console.log(error.response);
+            console.log(error);
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");
               this.login.token = localStorage.getItem("login_token");
@@ -638,12 +631,12 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.data);
           this.notifications.list = res.data.data;
           this.notifications.count = res.data.count;
         })
         .catch(error => {
-          // console.log(error.response);
+          console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.$router.push({ name: "login" });
@@ -651,7 +644,6 @@ export default {
         });
     },
     submitLogin: function() {
-      console.log(this.login);
       this.$validator.validateAll("form1").then(valid => {
         if (valid) {
           axios({
@@ -674,7 +666,6 @@ export default {
                 return;
               }
               localStorage.login_token = res.data.token;
-              // this.eventSnackbar("Login successfully!");
               this.login.dialog = false;
               this.flag = true;
               this.login.check = true;
@@ -686,6 +677,7 @@ export default {
             })
             .catch(error => {
               console.log(error.response);
+              console.log(error);
               if (error.response.status == 401) {
                 localStorage.removeItem("login_token");
                 this.login.token = localStorage.getItem("login_token");
@@ -700,7 +692,6 @@ export default {
     markedAllNotifications: function() {
       var oldList = this.notifications.list;
       var count = this.notifications.count;
-      // this.notifications.list = [];
       this.notifications.list.forEach(element => {
         element.read = true;
       });
@@ -716,7 +707,8 @@ export default {
         .then(res => {})
         .catch(error => {
           flag = false;
-          // console.log(error.response);
+          console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.$router.push({ name: "login" });
@@ -744,7 +736,8 @@ export default {
         .then(res => {})
         .catch(error => {
           flag = false;
-          // console.log(error.response);
+          console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.$router.push({ name: "login" });
@@ -772,8 +765,6 @@ export default {
       }
       if (val.read != true) {
         var index = this.getIndex(val.id);
-        console.log(index);
-        console.log(this.notifications.list[index]);
         this.notifications.list[index].read = true;
         this.notifications.count = this.notifications.count - 1;
         var flag = true;
@@ -785,7 +776,6 @@ export default {
           }
         })
           .then(res => {
-            console.log(res.data);
             if (res.data.status == true) {
               if (val.link) {
                 this.$router.push({
@@ -799,7 +789,8 @@ export default {
           })
           .catch(error => {
             flag = false;
-            // console.log(error.response);
+            console.log(error.response);
+            console.log(error);
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");
               this.$router.push({ name: "login" });

@@ -438,7 +438,6 @@ export default {
       firstTime: true,
       firstLoad: true,
       page: 1,
-      // infiniteId: +new Date()
     };
   },
   created() {
@@ -464,7 +463,6 @@ export default {
     },
     serviceSeleted: "addFilter",
     hotelTypeSeleted: "addFilter",
-    // price: "getData",
     RoomTypeSeleted: "addFilter",
     firstTime: function(newValue, oldValue) {
       if (oldValue != newValue) {
@@ -497,14 +495,12 @@ export default {
         }
       })
         .then(response => {
-          console.log(response.data.data.data);
           this.firstTime = false;
           if (response.data.status == false) {
             this.loading = false;
             this.noData = true;
           } else {
             if (response.data.data.data.length) {
-              // this.page += 1;
               response.data.data.data.forEach(element => {
                 this.data.push(element);
               });
@@ -512,18 +508,12 @@ export default {
             } else {
               $state.complete();
             }
-            // this.loading = false;
-            // this.noData = false;
-            // console.log(response);
-            // console.log(response.data.data);
-            // this.data = response.data.data;
-            // console.log(this.data);
-            // this.getDisctrict();
           }
         })
         .catch(error => {
           this.loading = false;
           console.log(error.response);
+          console.log(error);
         });
     },
     chooseStar: function(i) {
@@ -567,7 +557,6 @@ export default {
     },
     getData: function() {
       this.loading = true;
-      console.log(this.page);
       axios({
         method: "get",
         url: "http://localhost:8000/api/manager/searching",
@@ -592,17 +581,12 @@ export default {
           } else {
             this.loading = false;
             this.noData = false;
-            console.log(response);
-            // console.log(response.data.data);
             this.data = response.data.data.data;
-            console.log(this.data);
             this.getDisctrict();
           }
         })
         .catch(error => {
           this.loading = false;
-          console.log(error.response);
-          console.log(error);
         }).then(()=>{
           if(this.firstLoad == true){
             if(this.$moment(this.checkIn).diff(this.now,'days')>=0 && this.$moment(this.checkIn).diff(this.now,'days')<3)
@@ -618,8 +602,6 @@ export default {
       this.getRoomType();
     },
     getDisctrict: function() {
-      // let temp = this.arrayDistrict;
-      // this.arrayDistrict = [];
       axios
         .get("http://localhost:8000/api/district", {
           params: {
@@ -627,19 +609,16 @@ export default {
           }
         })
         .then(response => {
-          console.log(response);
           if (response.data.status == false) {
-            // this.arrayDistrict = temp;
             this.showDistrict = false;
           } else {
             this.arrayDistrict = response.data.data;
             this.showDistrict = true;
           }
-          console.log(this.districtSeleted)
         })
         .catch(function(error) {
-          // this.arrayDistrict = temp;
           console.log(error);
+          console.log(error.response);
         });
     },
     getService: function() {
@@ -650,11 +629,9 @@ export default {
           }
         })
         .then(response => {
-          console.log(response);
           this.arrayService = response.data.data;
         })
         .catch(function(error) {
-          console.log(error);
         });
     },
     getPrice: function() {},
@@ -666,22 +643,22 @@ export default {
           }
         })
         .then(response => {
-          console.log(response);
           this.arrayHotelType = response.data.data;
         })
         .catch(function(error) {
           console.log(error);
+          console.log(error.response);
         });
     },
     getRoomType: function() {
       axios
         .get("http://localhost:8000/api/room-type", {})
         .then(response => {
-          console.log(response);
           this.arrayRoomType = response.data.data;
         })
         .catch(function(error) {
           console.log(error);
+          console.log(error.response);
         });
     }
   }

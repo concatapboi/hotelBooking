@@ -1571,15 +1571,12 @@ export default {
           }
         },
         dictionary: {
-          attributes: {
-            email: "Dường như đây hông phải là một địa chỉ Email"
-          },
           custom: {
             name: {
-              required: () => "Tên liên hẹe không được bỏ trống"
+              required: () => "Tên liên hệ không được bỏ trống"
             },
             email: {
-              required: () => "Eemail liên hệ không được bỏ trống"
+              required: () => "Email liên hệ không được bỏ trống"
             },
             phone: {
               required: () => "Số điện thoại không được bỏ trống"
@@ -1616,7 +1613,6 @@ export default {
           name: ""
         }
       },
-      // bookingAmount: {},
       mn: {
         menu1: false,
         menu2: false
@@ -1627,12 +1623,6 @@ export default {
       checkInFormattedVal: "",
       checkOutVal: "",
       checkOutFormattedVal: "",
-      // place: this.$route.query.place.replace(/\-/g,' '),
-      // checkIn: this.$route.query.check_in,
-      // checkInFormatted: this.formatDate(this.$route.query.check_in),
-      // checkOut: this.$route.query.check_out,
-      // checkOutFormatted: this.formatDate(this.$route.query.check_out),
-      //---------------------
       count: 0,
       bounds: null,
       address: null,
@@ -1657,7 +1647,6 @@ export default {
     this.active = true;
   },
   created() {
-    // console.log(Object.keys(this.$route.query).length);
     if (Object.keys(this.$route.query).length != 0) {
       this.placeVal = this.$route.query.place.replace(/\-/g, " ");
       this.checkInVal = this.$route.query.check_in;
@@ -1671,7 +1660,6 @@ export default {
   },
   watch: {
     text: function(val) {
-      // if(val==null) this.bookingDialog.couponCode.mess = "";
       this.bookingDialog.couponCode.check = false;
       this.bookingDialog.couponCode.id = 0;
       if (val == null || val.length == 0) {
@@ -1712,38 +1700,8 @@ export default {
     checkIn: "setSearchValue",
     checkOutVal: "loadSearchData",
     checkOut: "setSearchValue"
-    //-------------
   },
   methods: {
-    // load: function() {
-    //   this.userLogin = this.customer;
-    //   this.getHotelDetail();
-    //   if (localStorage.getItem("login_token") != null) {
-    //     axios({
-    //       method: "get",
-    //       url: "http://localhost:8000/api/getUserLogin",
-    //       headers: {
-    //         Authorization: "Bearer " + this.login.token
-    //       }
-    //     })
-    //       .then(res => {
-    //         this.userLogin = res.data.user;
-    //         this.getHotelDetail();
-    //       })
-    //       .catch(error => {
-    //         console.log(error.response);
-    //         if (error.response.status == 401) {
-    //           localStorage.removeItem("login_token");
-    //           this.userLogin = {};
-    //           this.$emit("loadLogin");
-    //         }
-    //       });
-    //   } else {
-    //     this.$emit("loadLogin");
-    //     this.userLogin = {};
-    //     this.getHotelDetail();
-    //   }
-    // },
     getHotelDetail: function() {
       axios({
         method: "get",
@@ -1805,7 +1763,6 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.room.data);
           if (res.data.room.data.length != 0) {
             this.rooms = res.data.room.data;
             return;
@@ -1813,6 +1770,7 @@ export default {
         })
         .catch(error => {
           console.log(error.response);
+          console.log(error);
         });
     },
     getHotelReviews: function() {
@@ -1825,12 +1783,14 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.reviews);
-          this.flag.review = true;
           this.reviewList = res.data.reviews;
         })
         .catch(error => {
           console.log(error.response);
+          console.log(error);
+          this.reviews = [];
+        }).then(()=>{
+          this.flag.review = true;
         });
     },
     getHotelQuestion: function() {
@@ -1842,11 +1802,14 @@ export default {
         }
       })
         .then(res => {
-          this.flag.question = true;
           this.questionList = res.data.questions;
         })
         .catch(error => {
           console.log(error.response);
+          console.log(error);
+          this.questionList = [];
+        }).then(()=>{
+          this.flag.question = true;
         });
     },
     loadRoom($state) {
@@ -1862,7 +1825,6 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.room.data);
           if (res.data.room.data.length != 0) {
             this.rooms = this.rooms.concat(res.data.room.data);
             $state.loaded();
@@ -1974,7 +1936,6 @@ export default {
         },
       })
         .then(res => {
-          alert('run');
           if(res.data.status == true){
             temp = res.data.value;
             this.bookingDialog.couponCode.mess = res.data.mess;
@@ -2013,18 +1974,12 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data);
-          console.log(res.data.mess);
           if (res.data.status == true) {
-            console.log(res.data.booking);
             this.bookingDialog.state = false;
-            this.waiting = false;
             this.$emit("loadLogin");
             this.$emit("loadBookingDetail", res.data.booking, 1);
             this.getHotelRooms();
             this.getHotelDetail();
-          } else {
-            console.log(res.data.mess);
           }
           this.$emit("loadSnackbar", res.data.mess);
         })
@@ -2035,11 +1990,12 @@ export default {
             localStorage.removeItem("login_token");
             this.getLogin(1);
           }
+        }).then(()=>{
+          this.waiting = false;
         });
     },
     openQuestionDialog() {
-      // this.load();
-      if (localStorage.getItem("login_token") == null) {
+      if (this.loginCheck == false) {
         this.$emit("loadLoginDialog", true, 1);
         return;
       }
@@ -2073,7 +2029,6 @@ export default {
           })
             .then(res => {
               if (res.data.status == true) {
-                // this.$emit("loadSnackbar", "Successfully!");
                 this.$validator.reset();
               } else {
                 flag = false;
@@ -2085,7 +2040,6 @@ export default {
             })
             .catch(error => {
               flag = false;
-              console.log(error.response);
               if (error.response.status == 401) {
                 localStorage.removeItem("login_token");
                 this.$emit("loadLoginDialog", true, 1);
@@ -2100,7 +2054,6 @@ export default {
             })
             .then(() => {
               if (!flag) {
-                alert("false");
                 this.questionList.splice(0, 1);
               }
             });
@@ -2109,6 +2062,10 @@ export default {
       });
     },
     followHotel: function(value, cmd) {
+      if(this.loginCheck == false){
+        this.$emit("loadLoginDialog", true, 1);
+        return;
+      }
       var flag = true;
       if (cmd == 1) {
         this.data.followed = true;
@@ -2125,19 +2082,19 @@ export default {
           }
         })
           .then(res => {
-            console.log(res.data.data);
             this.$emit("loadSnackbar", "Theo dõi " + this.data.name+" bạn chấp nhận nhận thông báo về cập nhật (chương trình khuyến mãi,...) của nhà cung cấp này.");
-            
           })
           .catch(error => {
-            flag = false;
             console.log(error.response);
+            console.log(error);
+            flag = false;
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");
               this.$emit("loadLoginDialog", true, 1);
             }
+          }).then(()=>{
+            if (!flag) this.data.followed = false;
           });
-        if (!flag) this.data.followed = false;
       } else {
         this.data.followed = false;
         axios({
@@ -2153,18 +2110,20 @@ export default {
           }
         })
           .then(res => {
-            console.log(res.data.data);
             this.$emit("loadSnackbar", "Hủy theo dõi " + value.name);
-            flag = true;
+            flag = false;
           })
           .catch(error => {
             console.log(error.response);
+            console.log(error);
+            flag = false;
             if (error.response.status == 401) {
               localStorage.removeItem("login_token");
               this.$emit("loadLoginDialog", true, 1);
             }
+          }).then(()=>{
+            if (!flag) this.data.followed = true;
           });
-        if (!flag) this.data.followed = true;
       }
     },
     openImagesDialog: function(val, room) {
@@ -2180,6 +2139,10 @@ export default {
       this.images.dialog = true;
     },
     takeUseful: function(reviewID, index) {
+      if(this.loginCheck == false){
+        this.$emit("loadLoginDialog", true, 1);
+        return;
+      }
       if (this.reviewList[index].useful) this.reviewList[index].useful = false;
       else this.reviewList[index].useful = true;
       var flag = true;
@@ -2239,7 +2202,6 @@ export default {
         }
       })
         .then(response => {
-          console.log(response);
           if (response.data.status == true) {
             this.location = response.data.location.data;
             this.atm = response.data.location.atm;
@@ -2269,11 +2231,6 @@ export default {
               })
               .addTo(map);
             var tooltip = L.tooltip({ direction: top }).setTooltipContent("hi");
-            // var marker = L.marker(ll)
-            //   .addTo(map)
-            //   .bindTooltip(this.data.name)
-            //   .openTooltip();
-
             var redMarker = L.ExtraMarkers.icon({
               icon: "fa-home",
               markerColor: "red",
@@ -2289,6 +2246,7 @@ export default {
         })
         .catch(error => {
           console.log(error.response);
+          console.log(error);
         });
     },
     addMarker: function(map, array, type, color) {

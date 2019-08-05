@@ -13,28 +13,19 @@ use Session;
 
 class CustomerController extends Controller
 {
-
   public function __construct()
   {
     $this->middleware('auth');
   }
-
   public function index()
   {
     return view('Frontend.customer.testLogin');
   }
-
   public function logout()
   {
     Auth::logout();
     return redirect()->route('home');
   }
-
-  public function profile()
-  {
-    return view('Frontend.customer.profile');
-  }
-
   public function followUser($id)
   {
     $follow = new CustomerFollowing();
@@ -43,14 +34,12 @@ class CustomerController extends Controller
     $follow->save();
     return redirect()->back();
   }
-
   public function unfollowUser($id)
   {
     $follow = CustomerFollowing::where('followed_id', $id)->where('follower_id', Auth::user()->id);
     $follow->delete();
     return redirect()->back();
   }
-
   public function followHotel($id)
   {
     $follow = new HotelFollowing();
@@ -59,7 +48,6 @@ class CustomerController extends Controller
     $follow->save();
     return redirect()->back();
   }
-
   public function unfollowHotel($id)
   {
     $follow = HotelFollowing::where('hotel_id', $id)->where('customer_id', Auth::user()->id);

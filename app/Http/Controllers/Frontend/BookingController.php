@@ -41,13 +41,6 @@ class BookingController extends Controller
             'data' => $bookingList
         ]);
     }
-
-    //get booking/create
-    public function create()
-    {
-        return;
-    }
-
     //post booking
     public function store(Request $req)
     {
@@ -116,38 +109,20 @@ class BookingController extends Controller
                     $temp['type'] = $hotel->HotelType->name;
                     $booking->room->hotel = $temp;
                     $booking->room->image = RoomImage::where('room_id', $booking->room->id)->where('is_primary', 1)->first()->image_link;
-                    // Mail::to(Auth::user())->queue(new BookingCreatedConfirm(Auth::user(),$booking));
-                    // new BookingCreatedConfirm(Auth::user(),$booking);
+                    $place = $temp['type']." - ".$temp['name'];
+                    $days = $booking->room->days;
+                    Mail::to(Auth::user())->queue(new BookingCreatedConfirm(Auth::user(),$booking,$place,$days));
                 }
             } else {
                 $status = false;
                 $mess = 'Lỗi dữ liệu.';
             }
-        } else return response()->json(['status' => $status, 'mess' => $validateData->errors()]);
-        
+        } else return response()->json(['status' => $status, 'mess' => $validateData->errors()]);        
         $hotel = $booking->Room->Hotel;
         $hotel->notify(new AppNewBooking(Booking::find($booking->id)));
         $notificationId = $hotel->unreadNotifications->first()->id;
         Broadcast(new newBooking(Booking::find($booking->id),$notificationId,$hotel->id));
         return response()->json(['status' => $status, 'mess' => $mess, 'booking' => $booking]);
-    }
-    public function testMail()
-    {
-        $booking = Booking::find(1);
-        $booking->Status;
-        $booking->cancel_status = $booking->Hotel()->CancelableStatus();;
-        $booking->PaymentMethod;
-        $hotel = $booking->Room->Hotel;
-        $booking->room->room_mode = $booking->Room->RoomMode;
-        $booking->room->room_type = $booking->Room->RoomType;
-        $booking->room->days = Carbon::parse($booking->check_in)->diffInDays(Carbon::parse($booking->check_out));
-        $temp = array();
-        $temp['id'] = $hotel->id;
-        $temp['name'] = $hotel->name;
-        $temp['type'] = $hotel->HotelType->name;
-        $booking->room->hotel = $temp;
-        $booking->room->image = RoomImage::where('room_id', $booking->room->id)->where('is_primary', 1)->first()->image_link;
-        return (new BookingCreatedConfirm(Auth::user(),$booking))->render();
     }
     //get booking/{booking}
     public function show($id)
@@ -166,13 +141,6 @@ class BookingController extends Controller
             'booking' => $data
         ]);
     }
-
-    //booking/{booking}/edit
-    public function edit($id)
-    {
-        return;
-    }
-
     //put/patch booking/{booking}
     public function update(Request $req, $id)
     {
@@ -200,11 +168,5 @@ class BookingController extends Controller
             }
         }
         return response()->json(['status' => $status]);
-    }
-
-    //delete booking/{booking}
-    public function destroy($id)
-    {
-        return;
     }
 }

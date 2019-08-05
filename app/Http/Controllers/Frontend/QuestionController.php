@@ -19,12 +19,6 @@ use App\Notifications\UserAskNotification;
 
 class QuestionController extends Controller
 {
-    //get question
-    public function index()
-    {
-        return;
-    }
-
     //get question/create
     public function create(Request $req)
     {
@@ -70,35 +64,5 @@ class QuestionController extends Controller
             'status' => true,
             'errors' => null,
         ]);
-    }
-
-    //post question
-    public function store()
-    {
-        return;
-    }
-
-    //get question/{hotels}
-    public function show($id)
-    {
-        return;
-    }
-
-    //question/{question}/edit
-    public function edit($id)
-    {
-        return;
-    }
-
-    //put/patch question/{question}
-    public function update($id, Request $req)
-    {
-        return;
-    }
-
-    //delete question/{question}
-    public function destroy($id)
-    {
-        return;
     }
 }

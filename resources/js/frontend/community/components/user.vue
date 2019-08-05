@@ -441,37 +441,7 @@ export default {
     }
   },
   methods: {
-    // load: function() {
-    //   if (localStorage.getItem("login_token") != null) {
-    //     axios({
-    //       method: "get",
-    //       url: "http://localhost:8000/api/getUserLogin",
-    //       headers: {
-    //         Authorization: "Bearer " + localStorage.getItem("login_token")
-    //       }
-    //     })
-    //       .then(res => {
-    //         console.log(res.data.user);
-    //         this.user = res.data.user;
-    //         this.getData();
-    //       })
-    //       .catch(error => {
-    //         console.log(error.response);
-    //         if (error.response.status == 401) {
-    //           localStorage.removeItem("login_token");
-    //           this.user = {};
-    //           this.$emit("loadLogin");
-    //         }
-    //       });
-    //   } else {
-    //     this.$emit("loadLogin");
-    //   }
-    // },
     getData: function() {
-      // if (this.user.id == this.$route.params.id) {
-      //   this.$router.push({ name: "account" });
-      //   return;
-      // }
       this.id = this.$route.params.id;
       axios({
         method: "get",
@@ -488,18 +458,16 @@ export default {
             this.$router.push({ name: "account" });
             return;
           }
-          console.log(res.data.user);
           this.data = res.data.user;
           return;
         })
         .catch(error => {
           this.$emit("loadLogin");
           console.log(error.response);
+          console.log(error);
         });
     },
     followUser: function(value) {
-      console.log(value);
-      console.log(this.user.id);
       this.data.follow = true;
       var flag = true;
       axios({
@@ -515,20 +483,20 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
             this.$emit("loadSnackbar", "Xảy ra lỗi, thử lại?");
           }
-          // this.$emit("loadSnackbar", "Following " + value.name);
           this.getData();
         })
         .catch(error => {
           flag = false;
           this.$emit("loadLogin");
           console.log(error.response);
-        });
-      if (!flag) this.data.follow = false;
+          console.log(error);
+        }).then(()=>{
+          if (!flag) this.data.follow = false;
+        })
     },
     unfollowUser: function(value) {
       this.data.follow = false;
@@ -546,20 +514,20 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.data);
           if (res.data.data == null) {
             flag = false;
             this.$emit("loadSnackbar", "Đã xảy ra lỗi, thử lại?");
           }
-          // this.$emit("loadSnackbar", "Unfollowing " + value.name);
           this.getData();
         })
         .catch(error => {
           this.$emit("loadLogin");
           console.log(error.response);
+          console.log(error);
           flag = false;
+        }).then(()=>{
+          if (!flag) this.data.follow = true;
         });
-      if (!flag) this.data.follow = true;
     },
     getIndex(id) {
       var index = -1;
@@ -601,6 +569,7 @@ export default {
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");
@@ -637,29 +606,21 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.status);
-          if (res.data.status == true) {
-            console.log(res.data.comment);
-            var comment = res.data.comment;
-            // this.data.review[index].comment.push(comment);
-            // this.data.review[index].comments =
-            //   this.data.review[index].comments + 1;
-            this.comment.able = false;
-            this.comment.content = "";
-            this.comment.review_id = 0;
-          } else {
+          if (res.data.status == false) {
             this.$emit("loadSnackbar", "Đã xảy ra lỗi, thử lại?");
           }
         })
-        .catch(error => {
-          this.comment.able = false;
-          this.comment.content = "";
-          this.comment.review_id = 0;
+        .catch(error => {          
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.$router.push({ name: "login" });
           }
+        }).then(()=>{
+          this.comment.able = false;
+          this.comment.content = "";
+          this.comment.review_id = 0;
         });
     },
     formatDate: function(date) {
@@ -695,6 +656,7 @@ export default {
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");

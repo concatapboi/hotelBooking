@@ -31,31 +31,6 @@ class NotificationsController extends Controller
             'count' => $count
         ]);
     }
-
-    //get notifications/create
-    public function create()
-    {
-        return;
-    }
-
-    //post notifications
-    public function store()
-    {
-        return;
-    }
-
-    //get notifications/{notifications}
-    public function show($id)
-    {
-        return;
-    }
-
-    //notifications/{notifications}/edit
-    public function edit($id)
-    {
-        return;
-    }
-
     //put/patch notifications/{notifications}
     public function update($id, Request $req)
     {
@@ -69,7 +44,6 @@ class NotificationsController extends Controller
             'status' => true,
         ]);
     }
-
     public function updateAll(Request $req)
     {
         Auth::user()->unreadNotifications->markAsRead();
@@ -77,18 +51,11 @@ class NotificationsController extends Controller
             'status' => true
         ]);
     }
-
     public function deleteAll(Request $req)
     {
         Auth::user()->notifications()->delete();
         return response()->json([
             'status' => true
         ]);
-    }
-
-    //delete notifications/{notifications}
-    public function destroy($id)
-    {
-        return;
     }
 }

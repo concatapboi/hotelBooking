@@ -11,12 +11,6 @@ use App\Models\Room;
 
 class CouponCodeController extends Controller
 {
-    //get couponcode
-    public function index()
-    {
-        return;
-    }
-
     public function checkCouponCode(Request $req)
     {
         $value = 0;
@@ -63,41 +57,5 @@ class CouponCodeController extends Controller
             'value' => $value,
             'mess' => $mess,
         ]);
-    }
-
-    //get couponcode/create
-    public function create()
-    {
-        return;
-    }
-
-    //post couponcode
-    public function store()
-    {
-        return;
-    }
-
-    //get couponcode/{couponcode}
-    public function show($id)
-    {
-        return;
-    }
-
-    //couponcode/{couponcode}/edit
-    public function edit($id)
-    {
-        return;
-    }
-
-    //put/patch couponcode/{couponcode}
-    public function update($id, Request $req)
-    {
-        return;
-    }
-
-    //delete couponcode/{couponcode}
-    public function destroy($id)
-    {
-        return;
     }
 }

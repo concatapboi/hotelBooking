@@ -5,7 +5,6 @@ import home  from '@/js/frontend/community/components/home';
 import account  from '@/js/frontend/community/components/account';
 import hotel  from '@/js/frontend/community/components/hotel';
 import user  from '@/js/frontend/community/components/user';
-import news  from '@/js/frontend/community/components/news';
 import login  from '@/js/frontend/community/components/login';
 import review  from '@/js/frontend/community/components/review';
 import bookingList  from '@/js/frontend/community/components/booking-list';
@@ -18,10 +17,6 @@ const router = new VueRouter({
 		{
 			path: '/community/',
 			name: 'home',
-			token: localStorage.getItem('login_token'),
-			query:{
-				'token' : localStorage.getItem('login_token')
-			},
 			component: home
 		},
 		{
@@ -53,11 +48,6 @@ const router = new VueRouter({
 			path: '/community/user/:id',
 			name: 'user',
 			component: user
-		},
-		{
-			path: '/community/news',
-			name: 'news',
-			component: news
 		}
 	]
 });

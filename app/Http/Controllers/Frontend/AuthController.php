@@ -16,7 +16,6 @@ use Session;
 
 class AuthController extends Controller
 {
-
     public function postLogin(Request $req)
     {
         $validateData = Validator::make(
@@ -68,38 +67,22 @@ class AuthController extends Controller
             }
         }
     }
-
     public function getUserLogin()
     {
         $user = Auth::user();
         $user->Customer;
         $avatar = UserImage::where('user_id', $user->id)->where('is_primary', 1)->first();
         $user->avatar = $avatar;
-        $user->booking = $user->bookingList();  
-        // foreach ($user->Booking as $b) {
-        //     $b->Status;
-        //     $b->cancel_status = $b->Hotel()->CancelableStatus();
-        //     $b->PaymentMethod;
-        //     $b->Room->RoomMode;
-        //     $b->Room->RoomType;
-        //     $b->Room->Hotel->HotelType;
-        // };
+        $user->booking = $user->bookingList();
         return response()->json([
             'user' => $user,
         ]);
     }
-
     public function postLogout()
     {
         JWTAuth::invalidate();
         return response()->json(['status' => true]);
     }
-
-    public function check()
-    {
-        dd(Auth::check());
-    }
-
     public function postRegister(Request $req)
     {
         $validateData = Validator::make(
@@ -112,7 +95,7 @@ class AuthController extends Controller
             [
                 'username.required' => 'Chưa nhập username!',
                 'username.min' => 'Username phải hơn 3 ký tự!',
-                'username.unique' => 'Username is đã tồn tại!',
+                'username.unique' => 'Username đã tồn tại!',
                 'password.required' => 'Chưa nhập password!',
                 'password.min' => 'Password phải hơn 3 ký tự!',
                 'email.required' => 'Email rỗng!',
@@ -138,12 +121,21 @@ class AuthController extends Controller
         $user->api_token = Str::random(60);
         $user->remember_token = Str::random(10);
         $user->save();
+        UserImage::create([
+            'image_link' => rand(1,25).'.png',
+            'is_primary' => 1,
+            'user_id' => $user->id,
+            'name' => "",
+        ]);
         $customer = new Customer();
         $customer->user_id = $user->id;
         $customer->address = $req->address;
         $customer->save();
+        $arr = array('username' => $user->username, 'password' => $req->password);
+        $token = JWTAuth::attempt($arr);
         return response()->json([
             'status' => $status,
+            'token' => $token,
             'errors' => array("username" => "", "password" => "", "email" => ""),
         ]);
     }

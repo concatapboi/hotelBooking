@@ -401,17 +401,17 @@ class DatabaseSeeder extends Seeder
         for ($uID = $mnNum + 1; $uID <= 10; $uID++) {
             //Booking
             $bNo = rand(5, 10);
-            // for ($b = 1; $b <= $bNo; $b++) {
-            //     $m = rand(1, 8);
-            //     $d = rand(10, 25);
-            //     if($m == 2 && $d>=23) $d = 20;
-            //     factory(App\Models\Booking::class)->create([
-            //         'customer_id' => $uID,
-            //         'check_in' => '2019-0' . $m . '-' . $d,
-            //         'check_out' => '2019-0' . $m . '-' . ($d + 5),
-            //         'room_id' => rand(1, $count),
-            //     ]);
-            // }
+            for ($b = 1; $b <= $bNo; $b++) {
+                $m = rand(1, 8);
+                $d = rand(10, 25);
+                if($m == 2 && $d>=23) $d = 20;
+                factory(App\Models\Booking::class)->create([
+                    'customer_id' => $uID,
+                    'check_in' => '2019-0' . $m . '-' . $d,
+                    'check_out' => '2019-0' . $m . '-' . ($d + 5),
+                    'room_id' => rand(1, $count),
+                ]);
+            }
             //HotelFollowing
             for ($f = 1; $f <= rand(2, 5); $f++) {
                 factory(App\Models\HotelFollowing::class)->create([

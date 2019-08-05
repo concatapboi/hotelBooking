@@ -66,7 +66,6 @@ class CustomerReviewController extends Controller
             'status' => false,
         ]);
     }
-
     public function getNotification(Request $req)
     {
         if (Auth::check()) {
@@ -109,7 +108,6 @@ class CustomerReviewController extends Controller
             'status' => false,
         ]);
     }
-
     public function updateUseful(Request $req)
     {
         if (Auth::check()) {

@@ -320,20 +320,6 @@
         </v-flex>
       </v-layout>
     </v-flex>
-    <!-- <v-flex shrink md4>
-      <v-layout row wrap class="pa-0 ma-0">
-        <v-flex md12 class="my-2 white">
-          <div v-for="i in 5" :key="i">
-            {{i}}
-          </div>
-        </v-flex>
-        <v-flex md12 class="my-2 white">
-          <div v-for="i in 5" :key="i">
-            {{i}}
-          </div>
-        </v-flex>
-      </v-layout>
-    </v-flex>-->
   </v-layout>
 </template>
 
@@ -429,18 +415,18 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.data);
           this.feeds = res.data.data;
-          this.flag = true;
-          return;
         })
         .catch(error => {
+          console.log(error);
           console.log(error.response);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");
             this.$router.push({ name: "login" });
           }
+        }).then(()=>{
+          this.flag = true;
         });
     },
     loadFeeds($state) {
@@ -456,7 +442,6 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.data);
           if (res.data.data.length != 0) {
             this.feeds = this.feeds.concat(res.data.data);
             $state.loaded();
@@ -508,6 +493,7 @@ export default {
         })
         .catch(error => {
           flag = false;
+          console.log(error);
           console.log(error.response);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
@@ -545,31 +531,24 @@ export default {
         }
       })
         .then(res => {
-          console.log(res.data.status);
-          if (res.data.status == true) {
-            console.log(res.data.comment);
-            var comment = res.data.comment;
-            // this.feeds[index].comment.push(comment);
-            // this.feeds[index].comments = this.feeds[index].comments+1;
-            this.comment.able = false;
-            this.comment.content = "";
-            this.comment.review_id = 0;
-          } else {
+          if (res.data.status == false) {
             this.$emit(
               "loadSnackbar",
               "Rất tiếc, thực hiện chưa hoàn thành. Thử lại?"
             );
           }
         })
-        .catch(error => {
-          this.comment.able = false;
-          this.comment.content = "";
-          this.comment.review_id = 0;
+        .catch(error => {          
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.$router.push({ name: "login" });
           }
+        }).then(()=>{
+          this.comment.able = false;
+          this.comment.content = "";
+          this.comment.review_id = 0;
         });
     },
     formatDate: function(date) {
@@ -605,6 +584,7 @@ export default {
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");
@@ -650,6 +630,7 @@ export default {
         .catch(error => {
           flag = false;
           console.log(error.response);
+          console.log(error);
           if (error.response.status == 401) {
             localStorage.removeItem("login_token");
             this.login.token = localStorage.getItem("login_token");
