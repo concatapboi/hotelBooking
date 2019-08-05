@@ -9,12 +9,12 @@
     </style>
 </head>
 <body>
-    <h1>Chào&nbsp;{{$booking->customer}}</h1>
-    <div>Yêu cầu đặt phòng của bạn đã được&nbsp;{{$booking->hotel->name}}&nbsp;chấp nhận.<br>
-    Trvel thông báo đến cho bạn rằng: <span style="font-weight:bold">bạn cần thanh toán cho phía&nbsp;{{$booking->hotel->name}}&nbsp;trước khi đến nhận phòng.</span></div>
-   @if($booking->hotel->policy->cancelable >0)
+    <h1>Chào&nbsp;{{$booking->contact_name}}</h1>
+    <div>Yêu cầu đặt phòng của bạn đã được&nbsp;{{$booking->hotel_name}}&nbsp;chấp nhận.<br>
+    Trvel thông báo đến cho bạn rằng: <span style="font-weight:bold">bạn cần thanh toán cho phía&nbsp;{{$booking->hotel_name}}&nbsp;trước khi đến nhận phòng.</span></div>
+   @if($policy->cancelable >0)
     <div>
-        Lưu ý,&nbsp;{{$booking->hotel->name}}&nbsp;cho phép người đặt được phép hủy phòng trước ngày check-in&nbsp;{{$booking->hotel->policy->cancelable}}&nbsp;ngày.
+        Lưu ý,&nbsp;{{$booking->hotel_name}}&nbsp;cho phép người đặt được phép hủy phòng trước ngày check-in&nbsp;{{$policy->cancelable}}&nbsp;ngày.
         Bạn cần cân nhắc thanh toán đúng thời hạn để không bị hủy lượt đặt phòng.
     </div>
     @else
@@ -25,7 +25,7 @@
    @endif
    <div>
        Bạn cần chuyển khoản vào tài khoản:&nbsp;<span style="font-size:20px;font-weight:bold">{{$credit_card}}</span>.<br>
-   Ngân hàng&nbsp;<span style="font-size:20px;font-weight:bold">{{$booking->hotel->bank}}</span>
+   Ngân hàng&nbsp;<span style="font-size:20px;font-weight:bold">{{$bank}}</span>
    </div>
 </body>
 </html>

@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
         static $userNum = 25, $mnNum = 5, $adNum = 3, $hotelNum = 15, $questionNum = 40;
 
         //không thể thay đổi
-        static $hotelType = 7, $roomMode = 4,  $roomType= 4, $bedType = 5, $roomService = 5, $feature = 8, $bookingStatus = 5, $paymentMethod = 2;
+        static $hotelType = 7, $roomMode = 4,  $roomType = 4, $bedType = 5, $roomService = 5, $feature = 8, $bookingStatus = 5, $paymentMethod = 2;
 
         //Dữ liệu
-        static $userAddress = ['Long An','Hà Nội','Hồ Chí Minh','Quãng Ngải','Đà Nẵng','Cà Mau','Hải Phòng'];
+        static $userAddress = ['Long An', 'Hà Nội', 'Hồ Chí Minh', 'Quãng Ngải', 'Đà Nẵng', 'Cà Mau', 'Hải Phòng'];
 
         //User:
         factory(App\Models\User::class, $userNum)->create();
@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
             DB::table('customer')->insert([
                 'user_id' => $cus,
                 'coin' => rand(100, 100000),
-                'address' => $userAddress[rand(0,6)],
+                'address' => $userAddress[rand(0, 6)],
             ]);
         }
 
@@ -82,9 +82,9 @@ class DatabaseSeeder extends Seeder
 
         //User image:
         for ($j = 1; $j <= $userNum; $j++) {
-            $img = rand(1,25);
+            $img = rand(1, 25);
             DB::table('user_image')->insert([
-                'image_link' => $img.'.png',
+                'image_link' => $img . '.png',
                 'name' => 'dog2',
                 'is_primary' => 1,
                 'user_id' => $j
@@ -130,16 +130,6 @@ class DatabaseSeeder extends Seeder
             'description' => 'Suite',
             'status' => 1,
         ]);
-        // DB::table('room_type')->insert([
-        //     'name' => 'Economy ',
-        //     'description' => 'economy ',
-        //     'status' => 1,
-        // ]);
-        // DB::table('room_type')->insert([
-        //     'name' => 'Business',
-        //     'description' => 'business  ',
-        //     'status' => 1,
-        // ]);
 
         //Bed Type: 5
         DB::table('bed_type')->insert([
@@ -247,56 +237,195 @@ class DatabaseSeeder extends Seeder
             'status' => true,
         ]);
 
-        // //Coupon code
-        // factory(App\Models\CouponCode::class, $couponCode)->create();
-
         //Hotel: 15
         //length 16
-        $arr = [1,3,16,28,29,32,33,35,40,87,98,106,109];
-        for($i = 1;$i<=$hotelNum;$i++){
-            $rand = rand(0,sizeOf($arr)-1);
+        $arr = [1, 3, 16, 28, 29, 32, 33, 35, 40, 87, 98, 106, 109];
+        ///////////////////////////////
+        //Hotel 1
+        factory(App\Models\Hotel::class)->create([
+            'verified' => 1,
+            'rank_point' => 100,
+            'name' => 'LVTN HCM city',
+            'stars_num' => 5,
+            'meta_name' => 'hotel',
+            'hotel_type_id' => rand(1, 7),
+            'hotel_manager_id' => 1,
+            'ward_id' => 354,
+            'address' => '180 Cao Lo, phuong 4, quan 8, thanh pho Ho Chi Minh',
+        ]);
+        factory(App\Models\Policy::class)->create([
+            'hotel_id' => 1,
+            'check_in' => '08:00',
+            'check_out' => '13:00',
+            'cancelable' => 7,
+            'payment_method' => 2,
+            'can_refund' => 15,
+            'content' => 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In 7 ngày. Chúng tôi chấp nhận hoàn trả 15% các chi phí mà bạn đã thanh toán.'
+        ]);
+        factory(App\Models\Booking::class)->create([
+            'hotel_name' => 'LVTN HCM city',
+            'room_price' => rand(50000, 1000000),
+            'room_amount' => 1,
+            'contact_email' => 'k212nguyen@gmail.com',
+            'check_in' => "2020-03-21",
+            'check_out' => "2020-05-21",
+            'room_id' => 1,
+            'customer_id' => 7,
+            'status_id' => 1,
+            'payment_method_id' => 1,
+        ]);
+        factory(App\Models\Booking::class)->create([
+            'hotel_name' => 'LVTN HCM city',
+            'room_price' => rand(50000, 1000000),
+            'room_amount' => 1,
+            'contact_email' => 'k212nguyen@gmail.com',
+            'check_in' => "2020-03-21",
+            'check_out' => "2020-05-21",
+            'room_id' => 1,
+            'customer_id' => 7,
+            'status_id' => 1,
+            'payment_method_id' => 2,
+        ]);
+        factory(App\Models\Booking::class)->create([
+            'hotel_name' => 'LVTN HCM city',
+            'room_price' => rand(50000, 1000000),
+            'room_amount' => 1,
+            'contact_email' => 'k212nguyen@gmail.com',
+            'check_in' => "2020-03-21",
+            'check_out' => "2020-05-21",
+            'room_id' => 1,
+            'customer_id' => 7,
+            'status_id' => 2,
+            'payment_method_id' => 1,
+        ]);
+        factory(App\Models\Booking::class)->create([
+            'hotel_name' => 'LVTN HCM city',
+            'room_price' => rand(50000, 1000000),
+            'room_amount' => 1,
+            'contact_email' => 'k212nguyen@gmail.com',
+            'check_in' => "2020-03-21",
+            'check_out' => "2020-05-21",
+            'room_id' => 1,
+            'customer_id' => 7,
+            'status_id' => 2,
+            'payment_method_id' => 2,
+        ]);
+        factory(App\Models\Booking::class)->create([
+            'hotel_name' => 'LVTN HCM city',
+            'room_price' => rand(50000, 1000000),
+            'room_amount' => 1,
+            'contact_email' => 'k212nguyen@gmail.com',
+            'check_in' => "2020-03-21",
+            'check_out' => "2020-05-21",
+            'room_id' => 1,
+            'customer_id' => 7,
+            'status_id' => 3,
+            'payment_method_id' => 2,
+        ]);
+        factory(App\Models\Booking::class)->create([
+            'hotel_name' => 'LVTN HCM city',
+            'room_price' => rand(50000, 1000000),
+            'room_amount' => 1,
+            'contact_email' => 'k212nguyen@gmail.com',
+            'check_in' => "2017-03-21",
+            'check_out' => "2018-05-21",
+            'room_id' => 1,
+            'customer_id' => 7,
+            'status_id' => 4,
+            'payment_method_id' => 1,
+        ]);
+        factory(App\Models\Booking::class)->create([
+            'hotel_name' => 'LVTN HCM city',
+            'room_price' => rand(50000, 1000000),
+            'room_amount' => 1,
+            'contact_email' => 'k212nguyen@gmail.com',
+            'check_in' => "2017-03-21",
+            'check_out' => "2018-05-21",
+            'room_id' => 1,
+            'customer_id' => 7,
+            'status_id' => 4,
+            'payment_method_id' => 2,
+        ]);
+        factory(App\Models\Booking::class)->create([
+            'hotel_name' => 'LVTN HCM city',
+            'room_price' => rand(50000, 1000000),
+            'room_amount' => 1,
+            'contact_email' => 'k212nguyen@gmail.com',
+            'check_in' => "2017-03-21",
+            'check_out' => "2018-05-21",
+            'room_id' => 1,
+            'customer_id' => 6,
+            'status_id' => 8,
+            'payment_method_id' => 1,
+        ]);
+        factory(App\Models\Booking::class)->create([
+            'hotel_name' => 'LVTN HCM city',
+            'room_price' => rand(50000, 1000000),
+            'room_amount' => 1,
+            'contact_email' => 'k212nguyen@gmail.com',
+            'check_in' => "2017-03-21",
+            'check_out' => "2018-05-21",
+            'room_id' => 1,
+            'customer_id' => 6,
+            'status_id' => 5,
+            'payment_method_id' => 1,
+        ]);
+        factory(App\Models\Booking::class)->create([
+            'hotel_name' => 'LVTN HCM city',
+            'room_price' => rand(50000, 1000000),
+            'room_amount' => 1,
+            'contact_email' => 'k212nguyen@gmail.com',
+            'check_in' => "2017-03-21",
+            'check_out' => "2018-05-21",
+            'room_id' => 1,
+            'customer_id' => 6,
+            'status_id' => 6,
+            'payment_method_id' => 1,
+        ]);
+        /////////////////////////////////////
+        for ($i = 2; $i <= $hotelNum; $i++) {
+            $rand = rand(0, sizeOf($arr) - 1);
             factory(App\Models\Hotel::class)->create([
                 'ward_id' => $arr[$rand],
                 'address' => 'Hà Nội',
             ]);
-            $method = rand (0,2);
-            $cancel = rand (0,7);
-            $refund = rand(0,15);
+            $method = rand(0, 2);
+            $cancel = rand(0, 7);
+            $refund = rand(0, 15);
             $content = '';
             $check_in = '08:00';
             $check_out = '17:00';
-            switch($method){
+            switch ($method) {
                 case 0:
                     $refund = 0;
-                    $content = $content.'Chỉ chấp nhận thanh toán tại chỗ.';
+                    $content = $content . 'Chỉ chấp nhận thanh toán tại chỗ.';
                     break;
                 case 1:
-                    $content = $content.'Chỉ chấp nhận thanh toán trực tuyến.';
+                    $content = $content . 'Chỉ chấp nhận thanh toán trực tuyến.';
                     break;
             }
-            switch($cancel){
+            switch ($cancel) {
                 case 0:
-                    $content = $content.'Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng. ';
+                    $content = $content . 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn không thể hủy đơn đặt phòng. ';
                     break;
                 default:
-                    if($refund == 0){
-                        $content = $content.'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In '.$cancel.' ngày. Tuy nhiên, bạn sẽ không được hoàn trả phí đã thanh toán.';
-                    }else{
-                        $content = $content.'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In '.$cancel.' ngày. Chúng tôi chấp nhận hoàn trả '.$refund.'% các chi phí mà bạn đã thanh toán.';
+                    if ($refund == 0) {
+                        $content = $content . 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In ' . $cancel . ' ngày. Tuy nhiên, bạn sẽ không được hoàn trả phí đã thanh toán.';
+                    } else {
+                        $content = $content . 'Sau khi yêu cầu đặt phòng được chấp nhận, bạn có thể hủy đơn đặt phòng trước ngày Check-In ' . $cancel . ' ngày. Chúng tôi chấp nhận hoàn trả ' . $refund . '% các chi phí mà bạn đã thanh toán.';
                     }
-                break;
+                    break;
             }
             factory(App\Models\Policy::class)->create([
                 'hotel_id' => $i,
-                'check_in' => $check_in.':00',
-                'check_out' => $check_out.':00',
+                'check_in' => $check_in . ':00',
+                'check_out' => $check_out . ':00',
                 'cancelable' => $cancel,
                 'payment_method' => $method,
                 'can_refund' => $refund,
                 'content' => $content
             ]);
-
-        }       
+        }
 
         static $count = 0, $countCoup = 0;
         for ($h = 1; $h <= $hotelNum; $h++) {
@@ -338,26 +467,26 @@ class DatabaseSeeder extends Seeder
         static $img = 0;
         for ($r = 1; $r <= $count; $r++) {
             //RoomImage
-            if($img == 50) $img =0;
+            if ($img == 50) $img = 0;
             $img++;
             factory(App\Models\RoomImage::class)->create([
                 'room_id' => $r,
-                'image_link' => $img.'.png',
-            ]); 
-            for($i=0;$i<4;$i++){
-                $rI = rand($img+1,50);
+                'image_link' => $img . '.png',
+            ]);
+            for ($i = 0; $i < 4; $i++) {
+                $rI = rand($img + 1, 50);
                 factory(App\Models\RoomImage::class)->create([
                     'room_id' => $r,
-                    'image_link' => $rI.'.png',
+                    'image_link' => $rI . '.png',
                     'is_primary' => 0,
-                ]); 
+                ]);
             }
             //RoomFeature
             $noRF = rand(2, $feature);
             for ($rF = 1; $rF <= $noRF; $rF++) {
                 factory(App\Models\RoomFeature::class)->create([
                     'room_id' => $r
-                ]); 
+                ]);
             }
             //RoomBedType
             $noB = rand(1, 2);
@@ -400,18 +529,18 @@ class DatabaseSeeder extends Seeder
 
         for ($uID = $mnNum + 1; $uID <= 10; $uID++) {
             //Booking
-            $bNo = rand(5, 10);
-            for ($b = 1; $b <= $bNo; $b++) {
-                $m = rand(1, 8);
-                $d = rand(10, 25);
-                if($m == 2 && $d>=23) $d = 20;
-                factory(App\Models\Booking::class)->create([
-                    'customer_id' => $uID,
-                    'check_in' => '2019-0' . $m . '-' . $d,
-                    'check_out' => '2019-0' . $m . '-' . ($d + 5),
-                    'room_id' => rand(1, $count),
-                ]);
-            }
+            // $bNo = rand(5, 10);
+            // for ($b = 1; $b <= $bNo; $b++) {
+            //     $m = rand(1, 8);
+            //     $d = rand(10, 25);
+            //     if($m == 2 && $d>=23) $d = 20;
+            //     factory(App\Models\Booking::class)->create([
+            //         'customer_id' => $uID,
+            //         'check_in' => '2019-0' . $m . '-' . $d,
+            //         'check_out' => '2019-0' . $m . '-' . ($d + 5),
+            //         'room_id' => rand(1, $count),
+            //     ]);
+            // }
             //HotelFollowing
             for ($f = 1; $f <= rand(2, 5); $f++) {
                 factory(App\Models\HotelFollowing::class)->create([
@@ -431,13 +560,13 @@ class DatabaseSeeder extends Seeder
 
         factory(App\Models\HotelImage::class, $hotelNum)->create([]);
         factory(App\Models\Question::class, $questionNum)->create([]);
-        for($i =1;$i<=$hotelNum;$i++){
-            for($j=1;$j<=4;$j++){
-                $img = rand(1,30);
+        for ($i = 1; $i <= $hotelNum; $i++) {
+            for ($j = 1; $j <= 4; $j++) {
+                $img = rand(1, 30);
                 factory(App\Models\HotelImage::class)->create([
                     'hotel_id' => $i,
                     'is_primary' => 0,
-                    'image_link' => $img.'.png',
+                    'image_link' => $img . '.png',
                 ]);
             }
         }

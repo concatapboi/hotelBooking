@@ -53,7 +53,6 @@ $factory->define(App\Models\Hotel::class, function (Faker $faker) {
         'rank_point' => $no,
         'name' => $faker->company,
         'description' => $hotelDes[rand(0,3)],
-        // 'description' => $faker->text($maxNbChars = 1200),
         'stars_num' => rand(0, 5),
         'meta_name' => 'hotel',
         'email' => $faker->email,
@@ -231,7 +230,7 @@ $factory->define(App\Models\CustomerFollowing::class, function (Faker $faker) {
 });
 $factory->define(App\Models\CouponCode::class, function (Faker $faker) {
     static $n = 1;
-    $m = rand(7, 9);
+    $m = rand(5, 9);
     $d = rand(10, 20);
     $coupon = rand(0, 3);
     static $titleArr = [

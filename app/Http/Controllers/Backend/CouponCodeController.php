@@ -86,8 +86,8 @@ class CouponCodeController extends Controller
                 'data' => $validateData->errors(),
             ]);
         }
-        $oldCouponCodes = CouponCode::where('code',$couponCode['code'])->get();
-        if(sizeOf($oldCouponCodes)>0) {
+        $oldCouponCodes = CouponCode::where('code', $couponCode['code'])->get();
+        if (sizeOf($oldCouponCodes) > 0) {
             return response()->json([
                 'status' => false,
                 'messages' => "Code đã tạo.",
@@ -107,7 +107,7 @@ class CouponCodeController extends Controller
             'hotel_id' => $req->hotelId,
         ]);
         $roomTypes = $req->roomTypes;
-        foreach($roomTypes as $key => $value){
+        foreach ($roomTypes as $key => $value) {
             ApplyCouponCodeRoomType::create([
                 'coupon_code_id' => $newCouponCode->id,
                 'room_type_id' => $value
@@ -118,14 +118,14 @@ class CouponCodeController extends Controller
         } else {
             $newCouponCode->during = true;
             $newCouponCode->days = Carbon::now()->diffInDays(Carbon::parse($newCouponCode->start_at));
-            $hotel = new HotelFrontendResource(Hotel::find($req->hotelId));
-            $message = $hotel->name." vừa cập nhật một mã khuyến mãi.";
-            $hotelFollowers = HotelFollowing::where('hotel_id',$req->hotelId)->get('customer_id');
-            foreach($hotelFollowers as $follower){
-                User::find($follower->customer_id)->notify(new NewCouponCodeNotification($hotel,$message,$newCouponCode));
-            }
-            broadcast(new NewCouponCode($hotel,$message,$newCouponCode));
         }
+        $hotel = new HotelFrontendResource(Hotel::find($req->hotelId));
+        $message = $hotel->name . " vừa cập nhật một mã khuyến mãi.";
+        $hotelFollowers = HotelFollowing::where('hotel_id', $req->hotelId)->get('customer_id');
+        foreach ($hotelFollowers as $follower) {
+            User::find($follower->customer_id)->notify(new NewCouponCodeNotification($hotel, $message, $newCouponCode));
+        }
+        broadcast(new NewCouponCode($hotel, $message, $newCouponCode));
         return response()->json([
             'status' => true,
             'data' => $newCouponCode,

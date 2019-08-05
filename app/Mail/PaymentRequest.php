@@ -21,16 +21,18 @@ class PaymentRequest extends Mailable
      */
     public $credit_card;
     public $booking;
-    public $room;
+    public $policy;
     public $image;
     public $stay_days;
-    public function __construct(Booking $booking,Room $room,RoomImage $image,$credit_card,$stay_days)
+    public $bank;
+    public function __construct(Booking $booking, $policy,RoomImage $image,$credit_card,$stay_days,$bank)
     {
         $this->booking = $booking;
-        $this->room = $room;
+        $this->policy = $policy;
         $this->image = $image;
         $this->stay_days = $stay_days;
         $this->credit_card = $credit_card;
+        $this->bank = $bank;
     }
 
     /**
